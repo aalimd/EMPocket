@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-weight="bold">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="format-detection" content="telephone=no">
+<title>EM-CPs — Emergency Medicine Cardinal Presentations</title>
+<meta name="description" content="Interactive emergency medicine cardinal presentations: chest pain, dyspnea, abdominal pain and more. Rosen's-based framework for students, residents and consultants.">
+<meta name="theme-color" content="#0c1613" id="themeColor">
+<link rel="manifest" href="manifest.json?v=20260903-48">
+<link rel="icon" href="assets/icon.svg?v=20260903-48" type="image/svg+xml">
+<link rel="icon" href="assets/icon-192.png?v=20260903-48" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260903-48" sizes="180x180">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="assets/app.css?v=20260903-48">
+<script>
+(function () {
+    try {
+        var p = JSON.parse(localStorage.getItem('em-cps-prefs') || '{}');
+        var r = document.documentElement;
+        var theme = p.theme || 'dark';
+        r.setAttribute('data-theme', theme === 'light' ? 'light' : 'dark');
+        if (p.bold !== false) r.setAttribute('data-weight', 'bold');
+        if (p.scale) r.style.setProperty('--type-scale', String(p.scale));
+        var meta = document.getElementById('themeColor');
+        if (meta) meta.setAttribute('content', theme === 'light' ? '#0b3d2e' : '#0c1613');
+    } catch (e) {}
+})();
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#stage">Skip to main content</a>
+
+<!-- ═══════════ Sidebar ═══════════ -->
+<nav class="sidebar" id="sidebar" aria-label="Presentations">
+    <button class="brand" id="brandBtn" type="button" title="All presentations">
+        <span class="brand-mark">EM</span>
+        <span class="brand-text">
+            <strong>EM-CPs</strong>
+            <span>Cardinal Presentations</span>
+        </span>
+    </button>
+    <div class="side-list" id="sideList"></div>
+    <div class="side-footer">
+        <button class="side-btn install-btn" id="installBtn" type="button" hidden>⇩ Install EM-CPs</button>
+        <button class="side-btn" id="printBtn" type="button" title="Print / Export PDF (Ctrl+P)">🖨️ Export PDF</button>
+        <button class="side-btn disclaimer-link-btn" id="disclaimerLinkBtn" type="button" title="View Educational Terms &amp; Disclaimer">⚖️ Clinical Disclaimer</button>
+        <p class="side-note">Education only — never replaces clinical judgment or local protocols.</p>
+    </div>
+</nav>
+<div class="side-backdrop" id="sideBackdrop"></div>
+
+<!-- ═══════════ Main ═══════════ -->
+<div class="main">
+
+    <header class="topbar">
+        <button class="icon-btn burger" id="burgerBtn" type="button" aria-label="Open presentations menu" aria-controls="sidebar" aria-expanded="false">☰</button>
+        <button class="home-btn" id="homeBtn" type="button" title="All presentations (H)" aria-label="All presentations" data-nav="home"><span class="header-icon" aria-hidden="true">⌂</span><span class="header-label">Home</span></button>
+        <button class="home-btn utility-btn" id="studyBtn" type="button" title="Personal study queue (S)" aria-label="Open study queue" data-nav="study"><span class="header-icon" aria-hidden="true">🧠</span> <span class="header-label">Study</span></button>
+        <button class="home-btn utility-btn" id="shiftBtn" type="button" title="Focused shift-ready view (V)" aria-label="Open focused shift view" data-nav="shift"><span class="header-icon" aria-hidden="true">⚡</span> <span class="header-label">Shift</span></button>
+        <button class="home-btn utility-btn" id="ecgBtn" type="button" title="ECG Interpretation from scratch (E)" aria-label="Open ECG from scratch guide" data-nav="ecg"><span class="header-icon" aria-hidden="true">📈</span> <span class="header-label">ECG</span></button>
+        <div class="searchwrap">
+            <span class="search-ico" aria-hidden="true">🔎</span>
+            <input type="search" id="searchInput" placeholder="Search presentations, red flags, workup…"
+                   autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" inputmode="search" aria-label="Search EM-CPs" role="combobox" aria-autocomplete="list" aria-controls="searchResults" aria-expanded="false">
+            <button class="search-clear-btn" id="searchClearBtn" type="button" aria-label="Clear search query" hidden>✕</button>
+            <kbd class="search-kbd" title="Press / to search" aria-hidden="true">/</kbd>
+        </div>
+        <button class="tools-toggle" id="toolsToggle" type="button" aria-label="Open learning and reading tools" aria-expanded="false" aria-controls="topbarTools"><span class="header-icon" aria-hidden="true">⚙</span><span class="header-label">Tools</span></button>
+        <div class="topbar-tools" id="topbarTools">
+            <div class="mode-tools" id="modeTools" role="group" aria-label="Learning mode">
+                <span class="mode-label">Mode</span>
+                <button class="mode-chip" type="button" data-mode="student" aria-pressed="true">Student</button>
+                <button class="mode-chip" type="button" data-mode="intern" aria-pressed="false">Intern</button>
+                <button class="mode-chip" type="button" data-mode="resident" aria-pressed="false">Resident</button>
+            </div>
+            <div class="chips" id="filterChips" role="group" aria-label="Severity filter">
+                <button class="chip chip-all active" type="button" data-sev="all" aria-pressed="true">All</button>
+                <button class="chip chip-critical" type="button" data-sev="critical" aria-pressed="false">🔴 Critical</button>
+                <button class="chip chip-emergent" type="button" data-sev="emergent" aria-pressed="false">🟠 Emergent</button>
+                <button class="chip chip-common" type="button" data-sev="common" aria-pressed="false">🟢 Common</button>
+            </div>
+            <div class="pref-tools" role="group" aria-label="Reading options">
+                <button type="button" class="pref-btn" id="fontDown" title="Smaller text">A−</button>
+                <span class="pref-scale" id="fontLabel">100%</span>
+                <button type="button" class="pref-btn" id="fontUp" title="Larger text">A+</button>
+                <button type="button" class="pref-btn" id="boldBtn" title="Bold text" aria-pressed="true"><strong>B</strong></button>
+                <button type="button" class="pref-btn" id="themeBtn" title="Light mode" aria-pressed="true">☀️</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="stage" id="stage" tabindex="-1" role="main" aria-label="Presentation content"></main>
+
+    <footer class="foot">
+        <p><strong>EM-CPs</strong> — Built on the approach of <em>Rosen's Emergency Medicine</em> (10th ed., 2023)
+            and corroborating society guidance reviewed in September 2026 (Tintinalli's 9th ed., ACC/AHA, ESC, SSC, AAP, ACG, GINA/GOLD, ACEP). Educational reference for
+            students, residents &amp; consultants — always apply clinical judgment and institutional protocols.</p>
+    </footer>
+</div>
+
+<!-- ═══════════ Educational Disclaimer Dialog ═══════════ -->
+<div class="disclaimer-overlay" id="disclaimerOverlay" role="dialog" aria-modal="true" aria-labelledby="disclaimerTitle" aria-describedby="disclaimerDesc" hidden>
+    <div class="disclaimer-modal">
+        <div class="disclaimer-header">
+            <div class="disclaimer-badge">
+                <span class="badge-icon" aria-hidden="true">⚠️</span>
+                <span>Mandatory Clinical Notice</span>
+            </div>
+            <h2 id="disclaimerTitle">Educational &amp; Reference Purpose Only</h2>
+            <p id="disclaimerDesc" class="disclaimer-sub">Please review and confirm your agreement before accessing EM-CPs.</p>
+        </div>
+
+        <div class="disclaimer-body">
+            <div class="disclaimer-callout">
+                <strong>EM-CPs is designed solely for medical education, cognitive practice, and training reference.</strong>
+            </div>
+            <ul class="disclaimer-points">
+                <li>
+                    <span class="point-ico" aria-hidden="true">🩺</span>
+                    <div>
+                        <strong>Not a Clinical Decision Support Tool</strong>
+                        <p>This software does not provide patient-specific medical advice, diagnostic certainty, or automated clinical triage.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="point-ico" aria-hidden="true">⚖️</span>
+                    <div>
+                        <strong>Independent Clinical Responsibility</strong>
+                        <p>Always perform thorough in-person patient assessments, verify medication indications/dosages/contraindications, and follow local institutional protocols and senior supervision.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="point-ico" aria-hidden="true">📚</span>
+                    <div>
+                        <strong>Rosen's &amp; Guidelines Foundation</strong>
+                        <p>Content is synthesized from <em>Rosen's Emergency Medicine</em> (10th ed., 2023) and corroborating consensus guidance for academic study.</p>
+                    </div>
+                </li>
+            </ul>
+
+            <label class="disclaimer-agree-label" for="disclaimerCheck">
+                <input type="checkbox" id="disclaimerCheck" required>
+                <span>I understand and agree that EM-CPs is strictly an educational tool, and that all clinical decisions and patient care remain my independent professional responsibility.</span>
+            </label>
+        </div>
+
+        <div class="disclaimer-footer">
+            <button type="button" class="disclaimer-btn" id="disclaimerAcceptBtn" disabled>
+                <span>Accept &amp; Enter EM-CPs</span>
+                <span class="btn-arrow" aria-hidden="true">→</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<noscript><p class="noscript">EM-CPs needs JavaScript enabled to show presentations.</p></noscript>
+
+<script src="assets/ecg-svg.js?v=20260903-48"></script>
+<script src="assets/data.js?v=20260903-48"></script>
+<script src="assets/app.js?v=20260903-48"></script>
+</body>
+</html>

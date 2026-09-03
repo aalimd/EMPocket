@@ -1,0 +1,28 @@
+# Hostinger / Apache / LiteSpeed production defaults for this static PWA.
+Options -Indexes
+
+<Files "manifest.json">
+    ForceType application/manifest+json
+</Files>
+
+<IfModule mod_headers.c>
+    # Keep the app shell and service worker revalidating so new clinical content is not held stale.
+    <FilesMatch "\.(?:html|js|json)$">
+        Header always set Cache-Control "no-cache, max-age=0, must-revalidate"
+    </FilesMatch>
+    <Files "sw.js">
+        Header always set Cache-Control "no-cache, no-store, must-revalidate"
+    </Files>
+    <FilesMatch "\.(?:png|svg|webp|jpg|jpeg|gif|ico)$">
+        Header always set Cache-Control "public, max-age=604800"
+    </FilesMatch>
+
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    # Cloudflare Web Analytics (beacon.min.js) is auto-injected on the live host.
+    # script-src: load the beacon; connect-src: POST RUM (auto uses same-origin
+    # /cdn-cgi/rum; manual/JS snippet uses cloudflareinsights.com).
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+</IfModule>
