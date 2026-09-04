@@ -103,11 +103,13 @@
     return '<path class="ecg-trace ecg-trace-faint" d="' + d + '"/>';
   }
 
-  function caseSvg(spec) {
+  function caseSvg(spec, specId) {
     /* A pattern library should show the diagnostic leads, not a shrunken 12-lead. */
     var shown = spec.display || ['II'];
     var laneH = spec.laneH || 58;
     var height = 62 + shown.length * laneH + 30;
+    var useEngine = !!(spec.useEngine && window.ECG_ENGINE && window.ECG_ENGINE.focusedTracePath);
+    var enginePattern = spec.useEngine || specId;
     var body = '<svg class="ecg-svg ecg-paper ecg-case-12lead" viewBox="0 0 720 ' + height + '" aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMid meet"><title>' + esc(spec.title) + ' — synthetic focused-lead teaching tracing</title><text class="ecg-lead ecg-case-header" x="18" y="18">SYNTHETIC FOCUSED ECG · 25 mm/s · 10 mm/mV · ' + esc(spec.header) + '</text>';
     shown.forEach(function (leadName, index) {
       var y = 58 + index * laneH;
@@ -117,43 +119,147 @@
       if (spec.baseline) {
         body += '<line x1="64" y1="' + y + '" x2="674" y2="' + y + '" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 4" opacity="0.9"/>';
       }
-      body += '<text class="ecg-lead" x="42" y="' + (y - 24) + '">' + esc(leadName) + '</text><path class="ecg-trace' + (morphology.qrs > 11 || morphology.sine ? ' ecg-trace-wide' : '') + '" d="' + trace(64, y, morphology, 610) + '"/>';
+      var traceD, isWide;
+      if (useEngine) {
+        try {
+          var engOpts = Object.assign({}, spec.engineOpts, { lane: leadName });
+          traceD = window.ECG_ENGINE.focusedTracePath(leadName, enginePattern, y, engOpts).d;
+          var engCd = window.ECG_ENGINE.createPatternCase(enginePattern, engOpts);
+          var engQrs = engCd.qrsMs;
+          if (engCd.dissociated && engCd.dissociated.ventricularBeats.length) engQrs = engCd.dissociated.ventricularBeats[0].qrsMs;
+          isWide = engQrs >= 120 || !!engCd.sine;
+        } catch (e) {
+          traceD = trace(64, y, morphology, 610);
+          isWide = morphology.qrs > 11 || morphology.sine;
+        }
+      } else {
+        traceD = trace(64, y, morphology, 610);
+        isWide = morphology.qrs > 11 || morphology.sine;
+      }
+      body += '<text class="ecg-lead" x="42" y="' + (y - 24) + '">' + esc(leadName) + '</text><path class="ecg-trace' + (isWide ? ' ecg-trace-wide' : '') + '" d="' + traceD + '"/>';
+      // Overlay X positions: engine uses physiological first-beat J; schematic uses 64+26+w.
+      function overlayJX() {
+        if (useEngine) {
+          try { return window.ECG_ENGINE.focusedFirstJX(enginePattern, Object.assign({}, spec.engineOpts)); }
+          catch (e2) { /* fall through */ }
+        }
+        var wOld = morphology.qrs || 8;
+        return 64 + 26 + wOld;
+      }
+      function overlayApexX() {
+        if (useEngine) {
+          try { return window.ECG_ENGINE.focusedApexX(leadName, enginePattern, Object.assign({}, spec.engineOpts)); }
+          catch (e3) { /* fall through */ }
+        }
+        var awOld = morphology.qrs || 8;
+        return 64 + 26 + awOld + 22;
+      }
       if (spec.stHighlight && morphology.st) {
-        var w2 = morphology.qrs || 8;
-        var jx2 = 64 + 26 + w2;
-        var jy2 = y - (morphology.st || 0);
-        var col = morphology.st > 0 ? '#dc2626' : '#2563eb';
+        var jx2, jy2, col;
+        if (useEngine) {
+          try {
+            jx2 = window.ECG_ENGINE.focusedFirstJX(enginePattern, Object.assign({}, spec.engineOpts));
+            var oy2 = window.ECG_ENGINE.focusedOverlayY(leadName, enginePattern, y, Object.assign({}, spec.engineOpts));
+            jy2 = oy2.jy;
+          } catch (eH) {
+            var w2b = morphology.qrs || 8;
+            jx2 = 64 + 26 + w2b;
+            jy2 = y - (morphology.st || 0);
+          }
+          col = ((spec.engineStSign && spec.engineStSign[leadName]) || (morphology.st > 0)) ? '#dc2626' : '#2563eb';
+          if (typeof col !== 'string') col = '#dc2626';
+          // Determine colour from engine ST when available.
+          try {
+            var engCdH = window.ECG_ENGINE.createPatternCase(enginePattern, Object.assign({}, spec.engineOpts, { lane: leadName, noise: { disabled: true } }));
+            var ovH = (engCdH.leadOverrides && engCdH.leadOverrides[leadName]) || {};
+            col = (ovH.stMv || 0) >= 0 ? '#dc2626' : '#2563eb';
+          } catch (eH2) { col = morphology.st > 0 ? '#dc2626' : '#2563eb'; }
+        } else {
+          var w2 = morphology.qrs || 8;
+          jx2 = 64 + 26 + w2;
+          jy2 = y - (morphology.st || 0);
+          col = morphology.st > 0 ? '#dc2626' : '#2563eb';
+        }
         body += '<path class="ecg-sthl" d="M' + jx2 + ',' + jy2 + ' H' + (jx2 + 16) + '" stroke="' + col + '" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.85"' + waveAttr + '/>';
       }
       if (spec.jDots) {
-        var w = morphology.qrs || 8;
-        var jx = 64 + 26 + w;
-        var jy = y - (morphology.st || 0);
+        var jx, jy;
+        if (useEngine) {
+          try {
+            jx = window.ECG_ENGINE.focusedFirstJX(enginePattern, Object.assign({}, spec.engineOpts));
+            jy = window.ECG_ENGINE.focusedOverlayY(leadName, enginePattern, y, Object.assign({}, spec.engineOpts)).jy;
+          } catch (eJ) {
+            var wJ = morphology.qrs || 8;
+            jx = 64 + 26 + wJ;
+            jy = y - (morphology.st || 0);
+          }
+        } else {
+          var w = morphology.qrs || 8;
+          jx = 64 + 26 + w;
+          jy = y - (morphology.st || 0);
+        }
         body += '<circle class="ecg-j" cx="' + jx + '" cy="' + jy + '" r="3"' + waveAttr + '><title>J-point ' + esc(leadName) + ' — ST measured here</title></circle>';
       }
       if (spec.apexDots && morphology.broadT) {
-        var aw = morphology.qrs || 8;
-        var ajx = 64 + 26 + aw;
-        var ax = ajx + 22, ay = y - (morphology.st || 0) - (morphology.t || 0);
+        var ax, ay;
+        if (useEngine) {
+          try {
+            ax = window.ECG_ENGINE.focusedApexX(leadName, enginePattern, Object.assign({}, spec.engineOpts));
+            ay = window.ECG_ENGINE.focusedOverlayY(leadName, enginePattern, y, Object.assign({}, spec.engineOpts)).apexY;
+          } catch (eA) {
+            var awF = morphology.qrs || 8;
+            var ajxF = 64 + 26 + awF;
+            ax = ajxF + 22; ay = y - (morphology.st || 0) - (morphology.t || 0);
+          }
+        } else {
+          var aw = morphology.qrs || 8;
+          var ajx = 64 + 26 + aw;
+          ax = ajx + 22; ay = y - (morphology.st || 0) - (morphology.t || 0);
+        }
         body += '<circle class="ecg-j"' + waveAttr + ' cx="' + ax + '" cy="' + ay + '" r="3"><title>T apex ' + esc(leadName) + ' — taller than R</title></circle>';
       }
       if (spec.broadBase && morphology.broadT) {
-        var bw = morphology.qrs || 8;
-        var bjx = 64 + 26 + bw;
+        var bjx;
+        if (useEngine) {
+          try { bjx = window.ECG_ENGINE.focusedFirstJX(enginePattern, Object.assign({}, spec.engineOpts)); }
+          catch (eB) { var bwF = morphology.qrs || 8; bjx = 64 + 26 + bwF; }
+        } else {
+          var bw = morphology.qrs || 8;
+          bjx = 64 + 26 + bw;
+        }
         body += '<path class="ecg-marker"' + waveAttr + ' d="M' + bjx + ',' + (y + 10) + ' H' + (bjx + 46) + '"/>';
         body += '<text class="ecg-label"' + waveAttr + ' x="' + (bjx + 6) + '" y="' + (y + 24) + '">broad base</text>';
       }
       if (spec.badges && spec.badges[leadName]) {
-        body += '<text class="ecg-label ecg-label-b" x="150" y="' + (y - 26) + '"' + waveAttr + '>' + esc(spec.badges[leadName]) + '</text>';
+        // Engine lanes carry tall realistic R/T peaks under the old badge slot,
+        // so right-align badges to the lane end: this keeps the annotated first
+        // complex (J-dot, ST highlight, apex, caliper near x≈160–220) clear.
+        // Schematic lanes keep the legacy slot (no behavior change there).
+        var badgeX = useEngine ? 668 : 150;
+        var badgeAnchor = useEngine ? ' text-anchor="end"' : '';
+        body += '<text class="ecg-label ecg-label-b" x="' + badgeX + '" y="' + (y - 26) + '"' + waveAttr + badgeAnchor + '>' + esc(spec.badges[leadName]) + '</text>';
       }
       if (spec.calipers && spec.calipers[leadName]) {
-        var wq = morphology.qrs || 8;
-        var cx = 64 + 26 + wq + 18;
-        var jy3 = y - (morphology.st || 0);
+        var cx, jy3;
+        if (useEngine) {
+          try {
+            var jxC = window.ECG_ENGINE.focusedFirstJX(enginePattern, Object.assign({}, spec.engineOpts));
+            cx = jxC + 18;
+            jy3 = window.ECG_ENGINE.focusedOverlayY(leadName, enginePattern, y, Object.assign({}, spec.engineOpts)).jy;
+          } catch (eC) {
+            var wqF = morphology.qrs || 8;
+            cx = 64 + 26 + wqF + 18;
+            jy3 = y - (morphology.st || 0);
+          }
+        } else {
+          var wq = morphology.qrs || 8;
+          cx = 64 + 26 + wq + 18;
+          jy3 = y - (morphology.st || 0);
+        }
         body += '<line class="ecg-marker"' + waveAttr + ' x1="' + cx + '" y1="' + jy3 + '" x2="' + cx + '" y2="' + y + '"/>';
         body += '<text class="ecg-label"' + waveAttr + ' x="' + (cx + 6) + '" y="' + (y + 14) + '">' + esc(spec.calipers[leadName]) + '</text>';
       }
-      if (spec.strip === 'block' && index === 0) body += pWaves(y, 70, 680, 38);
+      if (spec.strip === 'block' && index === 0 && !useEngine) body += pWaves(y, 70, 680, 38);
       if (spec.strip === 'af' && index === 0) body += afStrip();
     });
     var brackets = spec.brackets || (spec.bracket ? [spec.bracket] : []);
@@ -181,8 +287,29 @@
         if (hi === -1) return;
         var hy0 = 58 + hi * laneH;
         var hmo = spec.leads[h.lead] || spec.stripLead || spec.base;
-        var hwq = hmo.qrs || 8, hst = hmo.st || 0, ht = hmo.t || 0;
-        var hjx = 64 + 26 + hwq;
+        var hjx, hst, ht, isBiphasic;
+        if (useEngine) {
+          try {
+            hjx = window.ECG_ENGINE.focusedFirstJX(enginePattern, Object.assign({}, spec.engineOpts));
+            var oyH = window.ECG_ENGINE.focusedOverlayY(h.lead, enginePattern, hy0, Object.assign({}, spec.engineOpts));
+            // Vertical extent from engine J + T peak (covers STE + tall/inverted T).
+            hst = hy0 - oyH.jy;
+            ht = (oyH.apexY < oyH.jy ? oyH.jy - oyH.apexY : oyH.jy - oyH.apexY);
+            // ht signed: positive up, negative down; use magnitudes for box.
+            var topY = Math.min(hy0, oyH.jy, oyH.apexY);
+            var botY = Math.max(hy0, oyH.jy, oyH.apexY);
+            hst = 0; ht = 0; // use topY/botY directly below
+            var hxE = hjx - 14, hwE = 170;
+            var htopE = hy0 - (laneH - 12) / 2;
+            var hbotE = hy0 + (laneH - 12) / 2;
+            if (topY - 12 < htopE) htopE = Math.max(24, topY - 12);
+            if (botY + 8 > hbotE) hbotE = botY + 8;
+            body += '<g class="ecg-hot" tabindex="0" role="button" data-wave="' + h.wave + '" aria-label="' + esc(h.label) + '"><rect x="' + hxE + '" y="' + htopE + '" width="' + hwE + '" height="' + (hbotE - htopE) + '" rx="6" class="ecg-hotzone"/><title>' + esc(h.title) + '</title></g>';
+            return;
+          } catch (eH) { /* fall through to schematic */ }
+        }
+        var hwq = hmo.qrs || 8; hst = hmo.st || 0; ht = hmo.t || 0;
+        hjx = 64 + 26 + hwq;
         /* Wide lane-height zone across two beats: comfortable tap target on
            phones, same finding everywhere inside so no hover ambiguity. */
         var hx = hjx - 14, hw = 170;
@@ -286,8 +413,8 @@
     'hyperacute-t': ['Normal', 'Hyperacute', 'HyperK?'],
     'wellens': ['Type A', 'Type B'],
     'dewinter': ['V3', 'aVR'],
-    'sgarbossa': ['V1'],
-    'posterior-omi': ['V2'],
+    'sgarbossa': ['V5', 'V3', 'V1'],
+    'posterior-omi': ['V1', 'V2', 'V3', 'V8'],
     'avr-lmca': ['aVR', 'II'],
     'hyperkalemia': ['II'],
     'hypokalemia': ['V3'],
@@ -371,6 +498,56 @@
     { lead: 'aVR', wave: 'dewinter', title: 'aVR: reciprocal STE', label: 'Lead aVR: 0.5–2 mm ST elevation seen in >80% of de Winter cases. Confirms acute proximal LAD occlusion.' }
   ];
   cases['dewinter'].note2 = 'de Winter is an anterior OMI equivalent (~2% of LAD occlusions). Do NOT wait for millimetre STEMI — activate cath lab.';
+  /* Smith-modified Sgarbossa in LBBB (paced uses same thresholds) — one lead
+     per criterion so concordance vs discordance is actually visible, like a
+     real ECG: V5 lateral positive QRS + concordant STE, V3 anterior negative
+     QRS + concordant STD, V1 septal QS + excessive discordant STE (ST/S). */
+  cases['sgarbossa'].laneH = 68;
+  cases['sgarbossa'].jDots = true;
+  cases['sgarbossa'].baseline = true;
+  cases['sgarbossa'].stHighlight = true;
+  cases['sgarbossa'].waves = { 'V5': 'sgSte', 'V3': 'sgStd', 'V1': 'sgDis' };
+  cases['sgarbossa'].badges = {
+    'V5': 'LATERAL V5 · concordant STE ≥1 mm ①',
+    'V3': 'ANTERIOR V3 · concordant STD ≥1 mm ②',
+    'V1': 'SEPTAL V1 · discordant STE/S ≥25% ③'
+  };
+  cases['sgarbossa'].calipers = { 'V1': 'STE 3 mm / S 10 mm = 0.30' };
+  cases['sgarbossa'].hotspots = [
+    { lead: 'V5', wave: 'sgSte', title: 'V5 · concordant STE ≥1 mm', label: 'Criterion 1: ST elevation in the same direction as a positive QRS in a lateral lead. Any 1 of 3 is OMI.' },
+    { lead: 'V3', wave: 'sgStd', title: 'V3 · concordant STD ≥1 mm', label: 'Criterion 2: ST depression in the same direction as a negative QRS in V1–V3. Any 1 of 3 is OMI.' },
+    { lead: 'V1', wave: 'sgDis', title: 'V1 · discordant STE/S ≥25%', label: 'Criterion 3: ST elevation opposite a negative QS with ST depth at least 25 percent of S depth. Original 5 mm rule is obsolete.' }
+  ];
+  cases['sgarbossa'].note2 = 'LBBB + paced share thresholds. ANY 1 of 3 = OMI. Wide QRS ≥120 ms with LBBB shape (no Q lateral, QS V1).';
+  /* Isolated posterior OMI — anterior mirror plus true posterior confirmation,
+     like a real ECG: V1-V3 horizontal STD with tall R (R/S>1) and upright T,
+     plus V8 posterior STE>=0.5mm. Flip shows the hidden STEMI. */
+  cases['posterior-omi'].jDots = true;
+  cases['posterior-omi'].baseline = true;
+  cases['posterior-omi'].stHighlight = true;
+  cases['posterior-omi'].waves = { 'V1': 'post', 'V2': 'post', 'V3': 'post', 'V8': 'post' };
+  cases['posterior-omi'].badges = {
+    'V1': 'MIRROR V1 · horizontal STD + tall R',
+    'V2': 'MIRROR V2 · STD + R/S>1 + upright T',
+    'V3': 'MIRROR V3 · STD + tall R/T',
+    'V8': 'POSTERIOR V8 · STE ≥0.5 mm confirms'
+  };
+  cases['posterior-omi'].hotspots = [
+    { lead: 'V1', wave: 'post', title: 'V1 · mirror STD + tall R', label: 'Anterior mirror: horizontal ST depression with tall R wave. Flip shows posterior ST elevation.' },
+    { lead: 'V2', wave: 'post', title: 'V2 · STD + R/S>1 + upright T', label: 'Posterior mirror in V2: horizontal STD with prominent R (R/S above 1) and upright T. Do not label anterior ischemia.' },
+    { lead: 'V3', wave: 'post', title: 'V3 · mirror STD + tall T', label: 'Contiguous V1–V3 mirror change with upright T waves. Territorial posterior injury until V7–V9 prove otherwise.' },
+    { lead: 'V8', wave: 'post', title: 'V8 · posterior STE ≥0.5 mm', label: 'True posterior lead V8 (V7–V9 set): ST elevation at least 0.5 mm confirms posterior infarction. LCx or distal RCA.' }
+  ];
+  cases['posterior-omi'].note2 = 'Flip V1–V3 → posterior STE. Record V7–V9; STE ≥0.5 mm diagnostic. Digitalis scooped STD is not horizontal territorial mirror.';
+  /* Phase 2: engine-backed realistic traces for 9 representative patterns.
+     Teaching text/badges/hotspots/notes above are preserved verbatim;
+     only trace generation switches to ECG_ENGINE signals. Fallback to
+     schematic beat() remains if engine is missing. */
+  ['stemi-criteria', 'hyperacute-t', 'wellens', 'dewinter', 'hyperkalemia', 'vt-vs-svt', 'complete-heart-block', 'sgarbossa', 'posterior-omi'].forEach(function (id) {
+    if (cases[id]) cases[id].useEngine = id;
+  });
+  cases['hyperkalemia'].engineOpts = { stage: 'advanced' };
+  // VT/CHB: engine draws real AV dissociation; old faint pWaves overlay off via useEngine.
 
   Object.keys(cases).forEach(function (id) {
     if (!window.ECG_SVG || !window.ECG_SVG[id]) return;
@@ -378,6 +555,6 @@
     window.ECG_SVG[id].title = item.title;
     window.ECG_SVG[id].caption = 'Synthetic, de-identified 12-lead teaching tracing at nominal 25 mm/s and 10 mm/mV. It illustrates the stated pattern, not a patient ECG and not a substitute for serial ECGs, clinical context, or local protocol.';
     window.ECG_SVG[id].noCompare = true;
-    window.ECG_SVG[id].svg = caseSvg(item);
+    window.ECG_SVG[id].svg = caseSvg(item, id);
   });
 }());

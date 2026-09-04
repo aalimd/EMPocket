@@ -3643,7 +3643,7 @@ html[data-theme="dark"] .home-btn.active-nav {
   max-height: 220px;
 }
 /* Step 5 is a dense evidence map, not a short rhythm strip: never shrink its labels into illegibility. */
-.ecg-fig[data-ecg-fig="ischemia-map"] .ecg-svg { max-height: 520px !important; }
+.ecg-fig[data-ecg-fig="ischemia-map"] .ecg-svg { max-height: 830px !important; }
 .ecg-trace {
   fill: none;
   stroke: var(--ink);
@@ -3983,6 +3983,15 @@ html[data-theme="dark"] .ecg-inspector strong { color: var(--accent); }
 .ecg-fig[data-sel="dewinter"] .ecg-marker:not([data-wave="dewinter"]) { opacity: 0.12; }
 .ecg-fig[data-sel="dewinter"] text.ecg-label[data-wave]:not([data-wave="dewinter"]) { opacity: 0.12; }
 .ecg-fig[data-sel="dewinter"] circle.ecg-j:not([data-wave="dewinter"]) { opacity: 0.12; }
+.ecg-fig[data-sel="sgSte"] .ecg-marker:not([data-wave="sgSte"]) { opacity: 0.12; }
+.ecg-fig[data-sel="sgSte"] text.ecg-label[data-wave]:not([data-wave="sgSte"]) { opacity: 0.12; }
+.ecg-fig[data-sel="sgSte"] circle.ecg-j:not([data-wave="sgSte"]) { opacity: 0.12; }
+.ecg-fig[data-sel="sgStd"] .ecg-marker:not([data-wave="sgStd"]) { opacity: 0.12; }
+.ecg-fig[data-sel="sgStd"] text.ecg-label[data-wave]:not([data-wave="sgStd"]) { opacity: 0.12; }
+.ecg-fig[data-sel="sgStd"] circle.ecg-j:not([data-wave="sgStd"]) { opacity: 0.12; }
+.ecg-fig[data-sel="sgDis"] .ecg-marker:not([data-wave="sgDis"]) { opacity: 0.12; }
+.ecg-fig[data-sel="sgDis"] text.ecg-label[data-wave]:not([data-wave="sgDis"]) { opacity: 0.12; }
+.ecg-fig[data-sel="sgDis"] circle.ecg-j:not([data-wave="sgDis"]) { opacity: 0.12; }
 .ecg-fig[data-sel="ant"] .ecg-marker:not([data-wave="ant"]) { opacity: 0.12; }
 .ecg-fig[data-sel="ant"] text.ecg-label[data-wave]:not([data-wave="ant"]) { opacity: 0.12; }
 .ecg-fig[data-sel="ant"] circle.ecg-j:not([data-wave="ant"]) { opacity: 0.12; }
@@ -4052,4 +4061,18 @@ html[data-theme="dark"] .ecg-wavebtn[aria-pressed="true"] { background: var(--ac
 }
 @media (forced-colors: active) {
   .ecg-svg text { stroke: none; }
+}
+
+/* v5.0 ECG engine 12-lead (Phase 1): paper grid lives inside the SVG so paper
+   and waveform stay geometrically locked. Container only provides readable
+   horizontal scroll on phones; engine SVG is self-styled (always light paper)
+   and needs no theme overrides. */
+.ecg-svg.ecg-engine-12lead { max-height: 560px; }
+.ecg-fig .ecg-svg.ecg-engine-12lead { width: 100%; height: auto; }
+@media (max-width: 700px) {
+  .ecg-media .ecg-svg-wrap:has(.ecg-engine-12lead) { min-width: 920px; }
+  .ecg-svg.ecg-engine-12lead { max-height: none; min-width: 920px; }
+}
+@media print {
+  .ecg-svg.ecg-engine-12lead { max-height: none; }
 }

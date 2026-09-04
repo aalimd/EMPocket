@@ -15,8 +15,8 @@ Investigation snapshot for anyone working on the ECG guide. **Read this before c
 |---|---|
 | Written teaching (`ECG_DATA` in `assets/data.js`) | Strong. ED-framed, 2025 ACC/AHA/ACEP-aligned on the big items (new LBBB is not a STEMI equivalent; aVR STE + diffuse STD is not automatic code STEMI; OMI equivalents exist). |
 | “ECG images” | **There are no real ECG photographs.** Every figure is an original SVG cartoon in `assets/ecg-svg.js`. |
-| Calibration SVG (`rate-calibration`) | Only figure that is internally to scale (8 SVG units ≈ 1 mm ≈ 40 ms / 0.1 mV). |
-| Other 24 SVGs | Morphology mnemonics, **not** millimetre-accurate 12-leads. Do not teach learners to count boxes on them. |
+| Calibration SVG (`rate-calibration`) | Internally to scale (8 SVG units ≈ 1 mm ≈ 40 ms / 0.1 mV), as is the engine 12-lead demo (dev harness only, not shown in the app). |
+| Other SVGs | Four classes — see §7. Legacy schematics are morphology mnemonics, **not** millimetre-accurate 12-leads. Engine-generated focused tracings (9 migrated cards) use calibrated in-SVG geometry (same 8 u/mm). Do not teach learners to count boxes on screen: responsive CSS scaling stretches the whole SVG, which preserves the internal waveform-to-grid ratio but not on-screen millimetres. |
 | Real PNG library | Planned, not built. `assets/ecg/` contains only `README.txt`. Every `png` field is `null`. |
 
 **Rule of thumb:** trust the **words** on the pattern cards. Treat the **pictures** as icons of a pattern name.
@@ -27,15 +27,18 @@ Investigation snapshot for anyone working on the ECG guide. **Read this before c
 
 ```
 EM-CPs/
-├── index.html                 # loads ecg-svg.js, then data.js, then app.js
+├── index.html                 # loads ecg-svg.js, engine, case-tracings, data.js, then app.js
 ├── assets/
 │   ├── data.js                # ECG_DATA (steps, patterns, pearls, refs)
 │   ├── ecg-svg.js             # base window.ECG_SVG library (title, caption, png, svg)
+│   ├── ecg-engine.js          # window.ECG_ENGINE: calibrated synthetic ECG renderer (see §7)
 │   ├── ecg-case-tracings.js   # focused-lead synthetic pattern-library ECG tracings
 │   ├── app.js                 # routing #ecg, renderEcg(), ecgFigure(), tools
 │   ├── app.css                # .ecg-fig, paper grid, lightbox, paper theme
 │   └── ecg/
 │       └── README.txt         # how to add real PNGs later
+├── dev/
+│   └── ecg-compare.html       # LOCAL-ONLY dev harness (schematic vs engine + validation tables; never deploy)
 ├── sw.js                      # must list new assets; bump CACHE_VERSION
 └── docs/
     └── ECG-SECTION.md         # this file
@@ -44,8 +47,10 @@ EM-CPs/
 Script order in `index.html` (must stay this order):
 
 1. `assets/ecg-svg.js`
-2. `assets/data.js`
-3. `assets/app.js`
+2. `assets/ecg-engine.js` (must load before `ecg-case-tracings.js`, which delegates 9 migrated cards to it)
+3. `assets/ecg-case-tracings.js`
+4. `assets/data.js`
+5. `assets/app.js`
 
 Cache busting: query token on every asset URL (example at review time: `?v=20260903-34`) **and** `CACHE_VERSION` in `sw.js`. Change both when you edit ECG files.
 
@@ -191,11 +196,20 @@ Fix these only if you are already editing copy. They are not drawing bugs.
 ## 7. Images — how they work
 
 - Library: `window.ECG_SVG` in `assets/ecg-svg.js`.
-- Header comment claims “640×260, paper scale approx 25 mm/s, 10 mm/mV.” **That scale is true only for `rate-calibration`.**
-- Each figure is badged **Schematic** and credits LITFL as a place to see *real* 12-leads (`https://litfl.com/ecg-library/`). LITFL images are **not** bundled.
+- Header comment claims “640×260, paper scale approx 25 mm/s, 10 mm/mV.” **That scale is true only for `rate-calibration` among the legacy schematics** (engine-generated art below is separately calibrated).
+- Each figure is badged **Schematic** and credits LITFL as a place to see *real* 12-leads (`https://litfl.com/ecg-library/`). LITFL images are **not** bundled. Engine-generated cards instead carry a `SYNTHETIC … ECG` header; neither kind is a patient recording and neither is diagnostically validated.
 - `aria-hidden="true"` is set on the SVGs. Hotspots on the first two figures are therefore hidden from assistive tech even though they have `role="button"`.
 
-### Calibration figure (the only to-scale drawing)
+### Figure classes (read this before counting boxes)
+
+1. **Legacy schematic teaching figures** (`ecg-svg.js` method figures, 9 unmigrated pattern cards): morphology mnemonics, not calibrated. Do not count boxes on them.
+2. **Engine-generated focused ECGs** (9 migrated pattern cards: inferior STEMI, hyperacute-T comparator, Wellens A/B, de Winter, hyperkalemia stages, monomorphic VT, complete heart block, Smith-modified Sgarbossa, posterior OMI): waveform and paper grid share one SVG geometry at 8 units/mm, so internal timing/amplitude calibration is consistent (25 mm/s, 10 mm/mV).
+3. **Full calibrated synthetic 12-lead** (`window.ECG_ENGINE.renderNormal12Lead`, normal sinus rhythm demo): same shared-geometry construction in conventional 3×4 + 10 s Lead II layout with calibration pulse. Currently exposed only through the local `dev/ecg-compare.html` harness, not in the app.
+4. **Future PNGs** (`assets/ecg/<id>.png`, de-identified): real recordings, if ever added, take precedence via the existing PNG-first/SVG-fallback path.
+
+For classes 2–3, responsive CSS scaling stretches the whole SVG on screen: the internal waveform-to-grid ratio is preserved, but on-screen millimetres are not. Do not teach learners to count screen boxes on any figure.
+
+### Calibration figure (the to-scale reference drawing)
 
 `rate-calibration` is built as:
 
@@ -217,7 +231,7 @@ Do not “simplify” this path without re-checking those spans.
 
 ### Pattern-library figures
 
-The 18 pattern-library cards are generated in `ecg-case-tracings.js` as compact, synthetic focused-lead tracings. Each uses one representative lead, adding a paired lead only when comparison is intrinsic to the finding (for example V2–V3 for Wellens or aVR/II for diffuse subendocardial ischaemia). They are educational simulations, not patient recordings; the nominal 25 mm/s and 10 mm/mV labels do not make the responsive screen grid measurable.
+The 18 pattern-library cards are generated in `ecg-case-tracings.js` as compact, synthetic focused-lead tracings. Each uses one representative lead, adding paired leads only when comparison is intrinsic to the finding (for example II/III/aVF/aVL for inferior injury, V2–V3 for Wellens, V5/V3/V1 for the three Sgarbossa criteria, V1–V3/V8 for posterior OMI). Nine cards delegate trace generation to `window.ECG_ENGINE` (see class 2 above) while keeping the established card layout, badges, hotspots, and teaching copy; the other nine keep the legacy schematic beats. They are educational simulations, not patient recordings; the nominal 25 mm/s and 10 mm/mV labels do not make the responsive screen grid measurable.
 
 The seven method figures in `ecg-svg.js` retain their purpose-built schematic layout. Except for `rate-calibration`, do not use the responsive screen grid to count millimetres.
 
