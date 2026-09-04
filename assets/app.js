@@ -1656,8 +1656,9 @@
         overlay.hidden = true;
         overlay.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) searchInput.focus();
+        // Do not focus the search field here: on phones that opens the keyboard
+        // immediately after the learner accepts the disclaimer.
+        if (stage && stage.focus) stage.focus({ preventScroll: true });
     }
     function setupDisclaimer() {
         const overlay = document.getElementById('disclaimerOverlay');
@@ -1838,13 +1839,13 @@
                 const open = !topbarTools.classList.contains('open');
                 topbarTools.classList.toggle('open', open);
                 toolsToggle.setAttribute('aria-expanded', String(open));
-                toolsToggle.setAttribute('aria-label', open ? 'Close learning and reading tools' : 'Open learning and reading tools');
+                toolsToggle.setAttribute('aria-label', open ? 'Close filters and reading tools' : 'Open filters and reading tools');
             });
             document.addEventListener('click', (e) => {
                 if (topbarTools.classList.contains('open') && !topbarTools.contains(e.target) && e.target !== toolsToggle && !toolsToggle.contains(e.target)) {
                     topbarTools.classList.remove('open');
                     toolsToggle.setAttribute('aria-expanded', 'false');
-                    toolsToggle.setAttribute('aria-label', 'Open learning and reading tools');
+                    toolsToggle.setAttribute('aria-label', 'Open filters and reading tools');
                 }
             });
         }
@@ -1947,7 +1948,7 @@
                 if (tools && tools.classList.contains('open')) {
                     tools.classList.remove('open');
                     toolsToggle.setAttribute('aria-expanded', 'false');
-                    toolsToggle.setAttribute('aria-label', 'Open learning and reading tools');
+                    toolsToggle.setAttribute('aria-label', 'Open filters and reading tools');
                     toolsToggle.focus();
                     return;
                 }

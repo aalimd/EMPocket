@@ -4054,6 +4054,51 @@ html[data-theme="dark"] .ecg-wavebtn[aria-pressed="true"] { background: var(--ac
   .ecg-svg text { stroke: none; }
 }
 
+/* ── Small-screen containment: keep every app surface inside the viewport ── */
+@media (max-width: 600px) {
+  html, body, .main, .topbar, .stage, .stage > *, .foot {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+  .main { margin-left: 0; }
+  .sidebar {
+    width: min(88vw, 320px);
+    max-width: calc(100vw - env(safe-area-inset-right, 0px));
+    padding: max(14px, env(safe-area-inset-top, 14px)) 12px calc(14px + env(safe-area-inset-bottom, 0px));
+  }
+  .side-list, .side-footer, .brand-text, .side-item, .side-btn { min-width: 0; }
+  .side-item, .side-btn { overflow-wrap: anywhere; }
+
+  .topbar > * { min-width: 0; }
+  .topbar-tools, .chips, .pref-tools { max-width: 100%; min-width: 0; }
+  .topbar-tools.open { overflow: hidden; }
+  .pref-tools { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .pref-btn, .pref-scale { min-width: 0; }
+  .section-card, .sec-head, .sec-body, .cp-hero, .hero, .ecg-hero,
+  .study-dashboard, .personal-plan, .shift-sheet, .shift-topline,
+  .ecg-pattern, .ecg-fig, .ecg-media { min-width: 0; max-width: 100%; }
+}
+
+@media (max-width: 360px) {
+  .topbar {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 5px;
+    padding-inline: 8px;
+  }
+  .burger, #homeBtn, #studyBtn, #shiftBtn, #ecgBtn, .tools-toggle {
+    min-width: 0;
+    width: 100%;
+    height: 44px;
+    min-height: 44px;
+  }
+  .tools-toggle .header-label { display: none; }
+  .sidebar { width: min(92vw, 300px); }
+  .stage { padding-inline: 10px; }
+  .hero, .cp-hero, .ecg-hero { padding-left: 16px; padding-right: 16px; }
+  .chip { font-size: 0.68rem; }
+}
+
 /* v5.0 ECG engine 12-lead (Phase 1): paper grid lives inside the SVG so paper
    and waveform stay geometrically locked. Container only provides readable
    horizontal scroll on phones; engine SVG is self-styled (always light paper)

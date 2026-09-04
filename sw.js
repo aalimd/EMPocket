@@ -1,5 +1,5 @@
 /* EM Pocket service worker — resilient app-shell caching for offline clinical reference. */
-const CACHE_VERSION = 'v113';
+const CACHE_VERSION = 'v114';
 const SCOPE_KEY = new URL(self.registration.scope).pathname.toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '') || 'root';
@@ -8,8 +8,8 @@ const CACHE = CACHE_PREFIX + CACHE_VERSION;
 const CORE_ASSETS = [
     './',
     './index.html',
-    './assets/app.css?v=20260908-02',
-    './assets/app.js?v=20260908-02',
+    './assets/app.css?v=20260908-03',
+    './assets/app.js?v=20260908-03',
     './assets/data.js?v=20260904-62',
     './assets/ecg-svg.js?v=20260905-03',
     './assets/ecg-engine.js?v=20260907-01',
