@@ -119,12 +119,6 @@
         immunocompromised: ['fever', 'pediatric-fever', 'dyspnea', 'abdominal-pain', 'headache', 'rash', 'sore-throat'],
         trauma: ['multiple-trauma', 'falls-geriatric-trauma', 'back-pain', 'headache', 'weakness', 'limb-ischemia', 'chest-pain']
     };
-    const LEARNER_MODES = {
-        student: { label: 'Student', focus: 'Build the pattern: name the first action and the dangerous diagnoses before revealing the answer.' },
-        intern: { label: 'Intern', focus: 'Run the first pass: decide what must happen now, what to order, and when to escalate.' },
-        resident: { label: 'Resident', focus: 'Lead the decision: stress-test the differential, disposition, and consultant trigger.' }
-    };
-
     function esc(s) {
         return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
@@ -215,7 +209,7 @@
         t._h = setTimeout(() => t.classList.remove('show'), 2200);
     }
     function setTitle(name) {
-        document.title = name ? name + ' — EM-CPs' : 'EM-CPs — Emergency Medicine Cardinal Presentations';
+        document.title = name ? name + ' — EM Pocket' : 'EM Pocket — Emergency Medicine Reference';
     }
     function setStageContext(label, labelledBy) {
         stage.removeAttribute('aria-live');
@@ -257,7 +251,6 @@
     function normalizeLearning(value) {
         const data = isRecord(value) ? value : {};
         return {
-            mode: LEARNER_MODES[data.mode] ? data.mode : 'student',
             reviewed: isRecord(data.reviewed) ? data.reviewed : {},
             reviewPlan: isRecord(data.reviewPlan) ? data.reviewPlan : {},
             saved: isRecord(data.saved) ? data.saved : {},
@@ -289,10 +282,6 @@
             learningStorageAvailable = false;
             return false;
         }
-    }
-    function learnerMode() {
-        const mode = loadLearning().mode;
-        return LEARNER_MODES[mode] ? mode : 'student';
     }
     function reviewedIds() {
         const ids = loadLearning().reviewed || {};
@@ -354,14 +343,6 @@
     }
     function patientMatches(cp) {
         return patientFilter === 'all' || (PATIENT_CONTEXTS[patientFilter] || []).indexOf(cp.id) !== -1;
-    }
-    function syncLearningControls() {
-        const mode = learnerMode();
-        document.querySelectorAll('.mode-chip').forEach(btn => {
-            const active = btn.dataset.mode === mode;
-            btn.classList.toggle('active', active);
-            btn.setAttribute('aria-pressed', String(active));
-        });
     }
     function dispClass(title) {
         const t = String(title).toLowerCase();
@@ -523,7 +504,7 @@
         }).join('');
         stage.innerHTML =
             '<section class="hero">' +
-            '<h1>Emergency Medicine — Cardinal Presentations</h1>' +
+            '<h1>Emergency medicine, in your pocket</h1>' +
             '<div class="hero-badges">' +
             '<span class="hbadge">📘 Rosen\u2019s 10th ed. (2023)</span>' +
             '<span class="hbadge">📗 Tintinalli\u2019s 9th ed.</span>' +
@@ -705,12 +686,10 @@
     }
 
     function learningLoopHtml(cp) {
-        const mode = learnerMode();
-        const meta = LEARNER_MODES[mode];
         const firstAction = (cp.approach || [])[0] || 'Stabilize the patient, then use the local pathway.';
         const threats = cp.dontMiss.filter(d => d[1] === 'critical').slice(0, 3).map(d => d[0]);
         return '<section class="learning-loop" aria-label="Rapid recall practice">' +
-            '<div class="learning-head"><div><span class="learning-kicker">🧠 ' + esc(meta.label) + ' mode</span><h2>Rapid recall</h2><p>' + esc(meta.focus) + '</p></div>' +
+            '<div class="learning-head"><div><span class="learning-kicker">🧠 PRACTICE REFRESHER</span><h2>Rapid recall</h2><p>Test your first action and the dangerous diagnoses before revealing the answer.</p></div>' +
             '<button type="button" class="review-btn" id="reviewBtn" aria-pressed="' + isReviewed(cp.id) + '">' + reviewActionLabel(cp.id) + '</button></div>' +
             '<div class="recall-grid">' +
             '<div class="recall-card"><span>01 · First move</span><p>Before you scroll, what needs to happen first?</p><button type="button" class="reveal-btn" data-reveal="action">Reveal answer</button><div class="reveal-answer" id="recall-action" hidden>' + esc(firstAction) + '</div></div>' +
@@ -1173,8 +1152,6 @@
         ecgFocusId = patternTarget || null;
         setTitle('ECG from scratch');
         setStageContext(null, 'ecgTitle');
-        const mode = learnerMode();
-        const meta = LEARNER_MODES[mode] || LEARNER_MODES.student;
         const first = ecg.firstPass[0] || 'Treat the unstable patient before decorating the 12-lead.';
         const killers = ecg.patterns.filter(function (p) { return p.severity === 'critical'; }).slice(0, 5).map(function (p) { return p.name; });
         const fakeCp = topicRecord(ECG_TOPIC_ID);
@@ -1227,7 +1204,7 @@
                 '</article>';
         }).join('') : '<p class="empty-filter">No patterns in this filter. Choose All, or another severity/category.</p>') + '</div>';
         const recallHtml = '<section class="learning-loop" aria-label="ECG rapid recall">' +
-            '<div class="learning-head"><div><span class="learning-kicker">🧠 ' + esc(meta.label) + ' mode</span><h2>Rapid recall</h2><p>' + esc(meta.focus) + '</p></div>' +
+            '<div class="learning-head"><div><span class="learning-kicker">🧠 PRACTICE REFRESHER</span><h2>Rapid recall</h2><p>Test your first action and the dangerous patterns before revealing the answer.</p></div>' +
             '<button type="button" class="review-btn" id="reviewBtn" aria-pressed="' + isReviewed(ECG_TOPIC_ID) + '">' + reviewActionLabel(ECG_TOPIC_ID) + '</button></div>' +
             '<div class="recall-grid">' +
             '<div class="recall-card"><span>01 · First move</span><p>The patient is hypotensive with a wide-complex tachycardia. What happens before a prettier 12-lead?</p><button type="button" class="reveal-btn" data-reveal="ecg-action">Reveal answer</button><div class="reveal-answer" id="recall-ecg-action" hidden>' + esc(first) + '</div></div>' +
@@ -1379,7 +1356,7 @@
         const copy = document.getElementById('copyReview');
         if (copy) copy.addEventListener('click', async () => {
             const selected = Array.from(boxes).filter(b => b.checked).map(b => cp.redFlags[Number(b.dataset.rf)]);
-            const summary = 'EM-CPs educational review — ' + cp.name + '\nSelected red flags: ' +
+            const summary = 'EM Pocket educational review — ' + cp.name + '\nSelected red flags: ' +
                 (selected.length ? selected.map(x => '• ' + x).join('\n') : 'None selected') +
                 '\n\nUse clinical judgment and local protocols.';
             try {
@@ -1666,7 +1643,7 @@
         } else {
             check.checked = false;
             btn.disabled = true;
-            if (btnText) btnText.textContent = 'Accept & Enter EM-CPs';
+            if (btnText) btnText.textContent = 'Accept & Enter EM Pocket';
         }
 
         requestAnimationFrame(() => {
@@ -1701,7 +1678,7 @@
             if (!check.checked) return;
             setDisclaimerAgreed();
             hideDisclaimer();
-            toast('Educational terms acknowledged. Welcome to EM-CPs.');
+            toast('Educational terms acknowledged. Welcome to EM Pocket.');
         });
 
         if (linkBtn) {
@@ -1817,15 +1794,6 @@
         syncSidebarAccessibility();
         bindFilters();
         bindPrefs();
-        syncLearningControls();
-        document.querySelectorAll('.mode-chip').forEach(btn => btn.addEventListener('click', () => {
-            const learning = loadLearning();
-            learning.mode = btn.dataset.mode;
-            saveLearning(learning);
-            syncLearningControls();
-            refreshActiveRoute();
-        }));
-
         function goHome() { showHome(); closeSidebar(); }
         const brand = document.getElementById('brandBtn');
         if (brand) brand.addEventListener('click', goHome);
@@ -1897,7 +1865,7 @@
         if (installBtn) installBtn.addEventListener('click', async () => {
             if (!deferredInstallPrompt) {
                 if (isIosDevice()) toast('To install on iPhone or iPad: open this site in Safari, tap Share, then Add to Home Screen.');
-                else toast('Use your browser menu and choose Install app to add EM-CPs to your device.');
+                else toast('Use your browser menu and choose Install app to add EM Pocket to your device.');
                 return;
             }
             deferredInstallPrompt.prompt();
@@ -1908,9 +1876,9 @@
         window.addEventListener('appinstalled', () => {
             deferredInstallPrompt = null;
             if (installBtn) installBtn.hidden = true;
-            toast('EM-CPs installed and ready for offline use.');
+            toast('EM Pocket is installed and ready for offline use.');
         });
-        window.addEventListener('offline', () => toast('You’re offline — saved EM-CPs content remains available.'));
+        window.addEventListener('offline', () => toast('You’re offline — saved EM Pocket content remains available.'));
         window.addEventListener('online', () => toast('You’re back online.'));
 
         const input = document.getElementById('searchInput');

@@ -151,7 +151,7 @@ html:not([data-weight="bold"]) {
 }
 
 body { font-weight: var(--font-weight-body, 400); }
-strong, b, h1, h2, h3, h4, h5, h6, .brand-text strong, .btn, .chip, .mode-chip, .home-btn {
+strong, b, h1, h2, h3, h4, h5, h6, .brand-text strong, .btn, .chip, .home-btn {
     font-weight: var(--font-weight-title, 700);
 }
 
@@ -599,59 +599,6 @@ html[data-theme="dark"] .home-btn.on-home {
     color: var(--brand-2);
 }
 .icon-btn:active { transform: scale(0.94); }
-
-/* Mode Segmented Control */
-.mode-tools {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    padding: 3px;
-    border: 1.5px solid var(--line);
-    border-radius: var(--radius-full);
-    background: var(--card);
-    box-shadow: var(--shadow-sm);
-}
-.mode-label {
-    padding: 0 7px;
-    color: var(--ink-soft);
-    font-size: 0.66rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-.mode-chip {
-    border: 0;
-    border-radius: var(--radius-full);
-    padding: 6px 11px;
-    background: transparent;
-    color: var(--ink-soft);
-    font: inherit;
-    font-size: 0.74rem;
-    font-weight: 700;
-    cursor: pointer;
-    min-height: 36px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: all var(--transition-fast) ease;
-}
-.mode-chip:hover {
-    color: var(--ink);
-    background: var(--bg);
-}
-.mode-chip:active { transform: scale(0.96); }
-.mode-chip.active {
-    background: var(--brand-2);
-    color: #ffffff;
-    font-weight: 800;
-    box-shadow: 0 2px 6px rgba(16, 89, 68, 0.25);
-}
-html[data-theme="dark"] .mode-chip.active {
-    background: var(--accent);
-    color: #05241a;
-    box-shadow: 0 2px 8px rgba(45, 212, 168, 0.3);
-}
 
 /* Severity Filter Chips */
 .chips { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -2786,11 +2733,6 @@ html[data-theme="dark"] .rf-progress { background: #3d1c1c; }
         width: 100%;
         min-width: 0;
     }
-    .mode-tools {
-        width: 100%;
-        justify-content: space-between;
-    }
-    .mode-chip { flex: 1; text-align: center; }
     .chips {
         width: 100%;
         display: grid;
@@ -2853,18 +2795,6 @@ html[data-theme="dark"] .rf-progress { background: #3d1c1c; }
     .cp-grid { grid-template-columns: 1fr; }
     .chips { grid-template-columns: 1fr 1fr; }
     .dx-grid, .study-topic-list { grid-template-columns: minmax(0, 1fr); }
-    .mode-tools {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        min-width: 0;
-        max-width: 100%;
-    }
-    .mode-label {
-        grid-column: 1 / -1;
-        padding: 2px 4px;
-        text-align: center;
-    }
-    .mode-chip { width: 100%; min-width: 0; padding-inline: 4px; }
     .pref-tools {
         display: grid;
         grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -2916,10 +2846,10 @@ html[data-theme="dark"] .rf-progress { background: #3d1c1c; }
 
 /* ─────────── High Contrast & Forced Colors ─────────── */
 @media (forced-colors: active) {
-    .btn, .chip, .mode-chip, .home-btn, .side-item, .cp-card, .dx-card, .section-card {
+    .btn, .chip, .home-btn, .side-item, .cp-card, .dx-card, .section-card {
         border: 1.5px solid ButtonText;
     }
-    .chip.active, .mode-chip.active, .home-btn.on-home {
+    .chip.active, .home-btn.on-home {
         background: Highlight;
         color: HighlightText;
     }
@@ -3218,7 +3148,7 @@ a { color: inherit; }
 }
 /* High-visibility keyboard focus for all interactive controls */
 .home-btn:focus-visible, .utility-btn:focus-visible, .icon-btn:focus-visible,
-.chip:focus-visible, .mode-chip:focus-visible, .pref-btn:focus-visible,
+.chip:focus-visible, .pref-btn:focus-visible,
 .tools-toggle:focus-visible, .side-item:focus-visible, .side-btn:focus-visible,
 .cp-card:focus-visible, .sec-head:focus-visible, .back-btn:focus-visible,
 .pager-btn:focus-visible, .related-chip:focus-visible, .quiz-option:focus-visible,
@@ -3234,7 +3164,7 @@ a { color: inherit; }
 /* ── 2. Professional button system ── */
 /* Shared pressable behaviour */
 .home-btn, .utility-btn, .icon-btn, .tools-toggle,
-.btn, .back-btn, .chip, .mode-chip, .pref-btn,
+.btn, .back-btn, .chip, .pref-btn,
 .side-btn, .side-item, .cp-card, .study-stat, .patient-chip,
 .case-action, .reveal-btn, .review-btn, .save-topic, .rf-clear,
 .related-chip, .pager-btn, .quiz-option, .study-topic,
@@ -3252,7 +3182,7 @@ button:disabled, button[disabled], button[aria-disabled="true"] {
 .quiz-option:disabled { opacity: 1; cursor: default; }
 .quiz-option.correct:disabled, .quiz-option.incorrect:disabled { opacity: 1; }
 /* Prevent text overflow on small screens for all pill buttons */
-.chip, .mode-chip, .patient-chip, .related-chip, .case-action,
+.chip, .patient-chip, .related-chip, .case-action,
 .home-btn, .back-btn, .pager-btn, .review-btn {
   max-width: 100%;
   overflow: hidden;
@@ -3600,6 +3530,67 @@ html[data-theme="dark"] .home-btn.active-nav {
 }
 .sec-body, .ecg-step-body, .case-prompt p, .case-answer p, .ov-s {
   overflow-wrap: break-word;
+}
+
+/* ── EM Pocket phone layout: a calmer, thumb-friendly reading surface ── */
+@media (max-width: 600px) {
+  :root { --touch-target: 46px; }
+
+  .topbar {
+    grid-template-columns: repeat(6, minmax(40px, 1fr));
+    gap: 6px;
+    padding: max(8px, env(safe-area-inset-top, 8px)) 12px 9px;
+  }
+  .burger, #homeBtn, #studyBtn, #shiftBtn, #ecgBtn, .tools-toggle {
+    width: 100%;
+    min-width: 0;
+    height: 46px;
+    min-height: 46px;
+    border-radius: 12px;
+  }
+  .searchwrap {
+    min-height: 48px;
+    margin-top: 2px;
+    padding: 7px 12px;
+    border-radius: 14px;
+  }
+  #searchInput { font-size: 0.9rem; }
+  .topbar-tools {
+    gap: 10px;
+    margin-top: 0;
+    padding: 12px;
+    border-radius: 14px;
+  }
+  .chips { gap: 6px; }
+  .chip {
+    min-height: 44px;
+    padding-inline: 6px;
+    font-size: 0.72rem;
+  }
+  .pref-tools {
+    padding: 4px;
+    border-radius: 12px;
+    background: var(--bg);
+  }
+  .pref-btn { min-height: 42px; }
+
+  .stage { padding: 18px 12px 30px; }
+  .foot { padding: 18px 16px calc(20px + env(safe-area-inset-bottom, 0px)); }
+  .hero, .cp-hero, .ecg-hero { border-radius: 16px; }
+  .hero { padding: 20px 18px; margin-bottom: 14px; }
+  .hero h1 { font-size: 1.55rem; line-height: 1.18; }
+  .hero-badges { gap: 6px; margin-top: 14px; }
+  .hbadge { padding: 5px 8px; font-size: 0.67rem; }
+  .ecg-entry { margin-bottom: 14px; border-radius: 16px; }
+  .study-dashboard { margin-bottom: 16px; padding: 16px; border-radius: 16px; }
+  .patient-filter { margin-bottom: 16px; padding-bottom: 6px; }
+  .home-group { margin-bottom: 24px; }
+  .group-title { margin-bottom: 10px; }
+  .cp-grid { gap: 10px; }
+  .cp-card { min-height: 128px; padding: 16px 18px; border-radius: 16px; }
+  .cp-card .cp-ico { font-size: 1.7rem; margin-bottom: 4px; }
+  .cp-card h3 { font-size: 1rem; }
+  .cp-card .cp-count { top: 12px; right: 12px; }
 }
 
 /* ══════════ v4.1 final cross-browser fallbacks (inset, sticky, gap) ══════════ */

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECG Engine Phase 1+2 — LOCAL dev comparison (do not deploy)</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #0c1613; color: #e8f0ec; }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.2rem; } h2 { font-size: 1rem; margin-top: 28px; }
+  .warn { background: #3f2d06; border: 1px solid #b45309; padding: 10px 14px; border-radius: 8px; }
+  .paper { background: #fff; border-radius: 8px; padding: 8px; overflow-x: auto; margin-bottom: 12px; }
+  .paper svg { width: 100%; height: auto; display: block; }
+  @media (max-width: 700px) { .paper svg { min-width: 560px; } }
+  table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
+  td, th { border: 1px solid #2b3b35; padding: 6px 8px; text-align: left; }
+  .ok { color: #4ade80; font-weight: 800; } .fail { color: #f87171; font-weight: 800; }
+  code { background: #1a2622; padding: 1px 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<main>
+  <p class="warn"><strong>LOCAL ONLY — do not deploy.</strong> Temporary Phase 1+2 validation harness.
+  Delete <code>dev/</code> before any commit. All tracings below are <strong>synthetic educational ECGs</strong>, never patient recordings.</p>
+  <h1>Phase 1: normal 12-lead (engine) vs calibration reference</h1>
+  <h2>NEW — normal sinus 12-lead (3×4 + 10 s Lead II)</h2>
+  <div class="paper" id="newFig"></div>
+  <h2>Reference — rate-calibration (to-scale)</h2>
+  <div class="paper" id="oldFig"></div>
+  <h1>Phase 2: 7 migrated patterns (engine focused views)</h1>
+  <div id="phase2Figs"></div>
+  <h2>Geometry (25 mm/s, 10 mm/mV, 8 u/mm)</h2>
+  <table id="geomTable"><thead><tr><th>Check</th><th>Got</th><th>Want</th><th>Result</th></tr></thead><tbody></tbody></table>
+  <h2>Normal morphology (noise-free)</h2>
+  <table id="morphTable"><thead><tr><th>Check</th><th>Detail</th><th>Result</th></tr></thead><tbody></tbody></table>
+  <h2>Intervals / rate / rendering</h2>
+  <table id="intTable"><thead><tr><th>Check</th><th>Detail</th><th>Result</th></tr></thead><tbody></tbody></table>
+  <h2>Phase 2 pathology (noise-free probes)</h2>
+  <table id="patTable"><thead><tr><th>Check</th><th>Detail</th><th>Result</th></tr></thead><tbody></tbody></table>
+  <h2>Determinism</h2>
+  <p id="detLine"></p>
+  <h2>Regression</h2>
+  <table id="regTable"><thead><tr><th>Check</th><th>Result</th></tr></thead><tbody></tbody></table>
+</main>
+<script src="../assets/ecg-svg.js?v=dev"></script>
+<script src="../assets/ecg-engine.js?v=dev"></script>
+<script src="../assets/ecg-case-tracings.js?v=dev"></script>
+<script>
+(function () {
+  var eng = window.ECG_ENGINE;
+  document.getElementById('newFig').innerHTML = eng.renderNormal12Lead({}).svg;
+  document.getElementById('oldFig').innerHTML =
+    (window.ECG_SVG && window.ECG_SVG['rate-calibration'] ? window.ECG_SVG['rate-calibration'].svg : '<p>missing</p>');
+  var phase2 = ['stemi-criteria','hyperacute-t','wellens','dewinter','sgarbossa','posterior-omi','hyperkalemia','vt-vs-svt','complete-heart-block'];
+  var wrap = document.getElementById('phase2Figs');
+  phase2.forEach(function (id) {
+    var h = document.createElement('h2'); h.textContent = id; wrap.appendChild(h);
+    var d = document.createElement('div'); d.className = 'paper';
+    d.innerHTML = (window.ECG_SVG && window.ECG_SVG[id] ? window.ECG_SVG[id].svg : '<p>missing '+id+'</p>');
+    wrap.appendChild(d);
+  });
+  // Hyperkalemia stages (engine direct, not in app card which shows advanced).
+  ['early','progressive','advanced','severe'].forEach(function (st) {
+    var h = document.createElement('h2'); h.textContent = 'hyperkalemia stage: ' + st + ' (engine probe)'; wrap.appendChild(h);
+    var d = document.createElement('div'); d.className = 'paper';
+    var cd = eng.createPatternCase('hyperkalemia', { stage: st, noise: { disabled: true } });
+    var path = '', x0 = 64, y = 100, dur = 3050, step = 4, n = Math.floor(dur / step);
+    for (var i = 0; i <= n; i++) {
+      var t = i * step;
+      var mv = eng.leadVoltageAt('II', t, (function(){ var c2 = eng.createPatternCase('hyperkalemia',{stage:st}); return c2; })(), Math.round(t/step));
+      var x = x0 + eng.msToUnits(t), yy = y - eng.mvToUnits(mv);
+      path += (i === 0 ? 'M' : ' L') + x.toFixed(1) + ',' + yy.toFixed(1);
+    }
+    void cd;
+    d.innerHTML = '<svg viewBox="0 0 720 160" style="width:100%;height:auto;background:#fff"><path d="' + path + '" fill="none" stroke="#111" stroke-width="2"/></svg>';
+    wrap.appendChild(d);
+  });
+  function row(tbodyId, cells) {
+    var tr = document.createElement('tr');
+    cells.forEach(function (c) {
+      var td = document.createElement('td');
+      if (c && c.html) td.innerHTML = c.html; else td.textContent = c;
+      tr.appendChild(td);
+    });
+    document.querySelector('#' + tbodyId + ' tbody').appendChild(tr);
+  }
+  eng.validateGeometry().forEach(function (c) {
+    row('geomTable', [c.name, String(c.got), String(c.want),
+      { html: c.ok ? '<span class="ok">PASS</span>' : '<span class="fail">FAIL</span>' }]);
+  });
+  var quiet = eng.createNormalSinusCase({ noise: { disabled: true } });
+  eng.validateNormalMorphology(quiet).checks.forEach(function (c) {
+    row('morphTable', [c.name, String(c.got || ''), { html: c.ok ? '<span class="ok">PASS</span>' : '<span class="fail">FAIL</span>' }]);
+  });
+  eng.validateIntervals(quiet).forEach(function (c) {
+    row('intTable', [c.name, String(c.got || ''), { html: c.ok ? '<span class="ok">PASS</span>' : '<span class="fail">FAIL</span>' }]);
+  });
+  eng.validatePatterns().forEach(function (c) {
+    row('patTable', [c.name, String(c.got || ''), { html: c.ok ? '<span class="ok">PASS</span>' : '<span class="fail">FAIL</span>' }]);
+  });
+  var a = eng.renderNormal12Lead({ seed: 12345 }).svg;
+  var b = eng.renderNormal12Lead({ seed: 12345 }).svg;
+  var c2 = eng.renderNormal12Lead({ seed: 999 }).svg;
+  var det = (a === b) && (a !== c2);
+  document.getElementById('detLine').innerHTML = det
+    ? '<span class="ok">PASS</span> — same seed identical (' + a.length + ' chars).'
+    : '<span class="fail">FAIL</span>';
+  var steps = ['rate-calibration','rhythm-axis','intervals','hypertrophy','ischemia-map','omi-equivalents','toxic-metabolic-mimics'];
+  var pats = ['stemi-criteria','hyperacute-t','wellens','dewinter','sgarbossa','posterior-omi','avr-lmca','hyperkalemia','hypokalemia','hypothermia','brugada','pe-strain','pericarditis-ber','tca-toxicity','wpw','vt-vs-svt','complete-heart-block','electrical-alternans'];
+  var missing = steps.concat(pats).filter(function (id) { return !(window.ECG_SVG && window.ECG_SVG[id] && window.ECG_SVG[id].svg); });
+  [['7 steps', steps.every(function(id){return window.ECG_SVG[id];})],
+   ['18 patterns', pats.every(function(id){return window.ECG_SVG[id];})],
+   ['No missing ('+missing.length+')', missing.length===0],
+   ['No orphan engine key', !window.ECG_SVG['normal-sinus-12lead']],
+   ['Engine v2 exposed', !!(eng && eng.validatePatterns && eng.createPatternCase)]
+  ].forEach(function (pair) {
+    row('regTable', [pair[0], { html: pair[1] ? '<span class="ok">PASS</span>' : '<span class="fail">FAIL</span>' }]);
+  });
+  console.log('[ecg-phase2] patterns', eng.validatePatterns());
+})();
+</script>
+</body>
+</html>

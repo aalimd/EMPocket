@@ -6,17 +6,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
 <meta name="format-detection" content="telephone=no">
-<title>EM-CPs — Emergency Medicine Cardinal Presentations</title>
-<meta name="description" content="Interactive emergency medicine cardinal presentations: chest pain, dyspnea, abdominal pain and more. Rosen's-based framework for students, residents and consultants.">
+<title>EM Pocket — Emergency Medicine Reference</title>
+<meta name="description" content="A focused emergency medicine reference for chest pain, dyspnea, abdominal pain, and more. Rosen's-based frameworks for clinical learning and review.">
 <meta name="theme-color" content="#0c1613" id="themeColor">
-<link rel="manifest" href="manifest.json?v=20260903-48">
+<link rel="manifest" href="manifest.json?v=20260908-02">
 <link rel="icon" href="assets/icon.svg?v=20260903-48" type="image/svg+xml">
 <link rel="icon" href="assets/icon-192.png?v=20260903-48" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260903-48" sizes="180x180">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="assets/app.css?v=20260906-02">
+<link rel="stylesheet" href="assets/app.css?v=20260908-02">
 <script>
 (function () {
     try {
@@ -41,13 +41,13 @@
     <button class="brand" id="brandBtn" type="button" title="All presentations">
         <span class="brand-mark">EM</span>
         <span class="brand-text">
-            <strong>EM-CPs</strong>
-            <span>Cardinal Presentations</span>
+            <strong>EM Pocket</strong>
+            <span>Emergency Medicine Reference</span>
         </span>
     </button>
     <div class="side-list" id="sideList"></div>
     <div class="side-footer">
-        <button class="side-btn install-btn" id="installBtn" type="button" hidden>⇩ Install EM-CPs</button>
+        <button class="side-btn install-btn" id="installBtn" type="button" hidden>⇩ Install EM Pocket</button>
         <button class="side-btn" id="printBtn" type="button" title="Print / Export PDF (Ctrl+P)">🖨️ Export PDF</button>
         <button class="side-btn disclaimer-link-btn" id="disclaimerLinkBtn" type="button" title="View Educational Terms &amp; Disclaimer">⚖️ Clinical Disclaimer</button>
         <p class="side-note">Education only — never replaces clinical judgment or local protocols.</p>
@@ -67,18 +67,12 @@
         <div class="searchwrap">
             <span class="search-ico" aria-hidden="true">🔎</span>
             <input type="search" id="searchInput" placeholder="Search presentations, red flags, workup…"
-                   autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" inputmode="search" aria-label="Search EM-CPs" role="combobox" aria-autocomplete="list" aria-controls="searchResults" aria-expanded="false">
+                   autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" inputmode="search" aria-label="Search EM Pocket" role="combobox" aria-autocomplete="list" aria-controls="searchResults" aria-expanded="false">
             <button class="search-clear-btn" id="searchClearBtn" type="button" aria-label="Clear search query" hidden>✕</button>
             <kbd class="search-kbd" title="Press / to search" aria-hidden="true">/</kbd>
         </div>
-        <button class="tools-toggle" id="toolsToggle" type="button" aria-label="Open learning and reading tools" aria-expanded="false" aria-controls="topbarTools"><span class="header-icon" aria-hidden="true">⚙</span><span class="header-label">Tools</span></button>
+        <button class="tools-toggle" id="toolsToggle" type="button" aria-label="Open filters and reading tools" aria-expanded="false" aria-controls="topbarTools"><span class="header-icon" aria-hidden="true">⚙</span><span class="header-label">Tools</span></button>
         <div class="topbar-tools" id="topbarTools">
-            <div class="mode-tools" id="modeTools" role="group" aria-label="Learning mode">
-                <span class="mode-label">Mode</span>
-                <button class="mode-chip" type="button" data-mode="student" aria-pressed="true">Student</button>
-                <button class="mode-chip" type="button" data-mode="intern" aria-pressed="false">Intern</button>
-                <button class="mode-chip" type="button" data-mode="resident" aria-pressed="false">Resident</button>
-            </div>
             <div class="chips" id="filterChips" role="group" aria-label="Severity filter">
                 <button class="chip chip-all active" type="button" data-sev="all" aria-pressed="true">All</button>
                 <button class="chip chip-critical" type="button" data-sev="critical" aria-pressed="false">🔴 Critical</button>
@@ -98,7 +92,7 @@
     <main class="stage" id="stage" tabindex="-1" role="main" aria-label="Presentation content"></main>
 
     <footer class="foot">
-        <p><strong>EM-CPs</strong> — Built on the approach of <em>Rosen's Emergency Medicine</em> (10th ed., 2023)
+        <p><strong>EM Pocket</strong> — Built on the approach of <em>Rosen's Emergency Medicine</em> (10th ed., 2023)
             and corroborating society guidance reviewed in September 2026 (Tintinalli's 9th ed., ACC/AHA, ESC, SSC, AAP, ACG, GINA/GOLD, ACEP). Educational reference for
             students, residents &amp; consultants — always apply clinical judgment and institutional protocols.</p>
     </footer>
@@ -113,12 +107,12 @@
                 <span>Mandatory Clinical Notice</span>
             </div>
             <h2 id="disclaimerTitle">Educational &amp; Reference Purpose Only</h2>
-            <p id="disclaimerDesc" class="disclaimer-sub">Please review and confirm your agreement before accessing EM-CPs.</p>
+            <p id="disclaimerDesc" class="disclaimer-sub">Please review and confirm your agreement before accessing EM Pocket.</p>
         </div>
 
         <div class="disclaimer-body">
             <div class="disclaimer-callout">
-                <strong>EM-CPs is designed solely for medical education, cognitive practice, and training reference.</strong>
+                <strong>EM Pocket is designed solely for medical education, cognitive practice, and training reference.</strong>
             </div>
             <ul class="disclaimer-points">
                 <li>
@@ -146,13 +140,13 @@
 
             <label class="disclaimer-agree-label" for="disclaimerCheck">
                 <input type="checkbox" id="disclaimerCheck" required>
-                <span>I understand and agree that EM-CPs is strictly an educational tool, and that all clinical decisions and patient care remain my independent professional responsibility.</span>
+                <span>I understand and agree that EM Pocket is strictly an educational tool, and that all clinical decisions and patient care remain my independent professional responsibility.</span>
             </label>
         </div>
 
         <div class="disclaimer-footer">
             <button type="button" class="disclaimer-btn" id="disclaimerAcceptBtn" disabled>
-                <span>Accept &amp; Enter EM-CPs</span>
+                <span>Accept &amp; Enter EM Pocket</span>
                 <span class="btn-arrow" aria-hidden="true">→</span>
             </button>
         </div>
@@ -160,12 +154,12 @@
 </div>
 
 <div class="toast" id="toast" role="status"></div>
-<noscript><p class="noscript">EM-CPs needs JavaScript enabled to show presentations.</p></noscript>
+<noscript><p class="noscript">EM Pocket needs JavaScript enabled to show presentations.</p></noscript>
 
 <script src="assets/ecg-svg.js?v=20260905-03"></script>
 <script src="assets/ecg-engine.js?v=20260907-01"></script>
 <script src="assets/ecg-case-tracings.js?v=20260907-01"></script>
 <script src="assets/data.js?v=20260904-62"></script>
-<script src="assets/app.js?v=20260906-02"></script>
+<script src="assets/app.js?v=20260908-02"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 {
-    "name": "EM-CPs — Cardinal Presentations",
-    "short_name": "EM-CPs",
-    "description": "Interactive emergency medicine cardinal presentations. Rosen's-based frameworks for students, residents and consultants.",
+    "name": "EM Pocket — Emergency Medicine Reference",
+    "short_name": "EM Pocket",
+    "description": "A focused emergency medicine reference for clinical learning and review.",
     "start_url": "./",
     "scope": "./",
     "display": "standalone",
