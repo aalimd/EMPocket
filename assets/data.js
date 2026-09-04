@@ -1573,8 +1573,8 @@ const ECG_DATA = {
             tag: 'STEMI activation rule',
             category: 'omi',
             severity: 'critical',
-            leads: 'Two contiguous leads at the J point',
-            criteria: 'Fourth Universal Definition: STE in V2–V3 ≥ 2.5 mm (men &lt;40), ≥ 2.0 mm (men ≥40), ≥ 1.5 mm (women); ≥ 1.0 mm in all other leads. Posterior V7–V9 ≥ 0.5 mm. Reciprocal STD greatly increases specificity.',
+            leads: 'II, III, aVF (STE) + aVL (mirror STD) — 2 contiguous at J point',
+            criteria: 'Inferior example: convex STE ≥1 mm in II + III + aVF with mirror STD in aVL. General rule: STE in V2–V3 ≥ 2.5 mm (men &lt;40), ≥ 2.0 mm (men ≥40), ≥ 1.5 mm (women); ≥ 1.0 mm in all other leads ×2 contiguous. Posterior V7–V9 ≥ 0.5 mm. MIRROR — inferior up, aVL down.',
             significance: 'Still the operational trigger for most cath-lab activations. Misses &gt;25% of acute occlusions — that is why OMI equivalents exist.',
             action: 'If millimetre STEMI + compatible symptoms/signs: immediate reperfusion pathway per local STEMI protocol. Add V4R for inferior STE and V7–V9 for isolated anterior STD.',
             caution: 'A tracing that fails millimetre criteria can still be OMI (hyperacute T, Wellens, de Winter, posterior, Aslanger, Smith-modified Sgarbossa).'
@@ -1585,8 +1585,8 @@ const ECG_DATA = {
             tag: 'Earliest OMI sign',
             category: 'omi',
             severity: 'critical',
-            leads: 'Territory of the occluded artery (often precordial or inferior)',
-            criteria: 'Broad, bulky, symmetric T waves with a wide base that dwarf a relatively small R wave; loss of normal ST-T concavity. May precede any millimetre STE. Compare with an old ECG and repeat in 10–15 minutes.',
+            leads: 'One V3 viewpoint, three shapes: normal vs hyperacute vs hyperK',
+            criteria: 'Side-by-side in a single V3 viewpoint. Normal: smooth asymmetric T, R > T. Hyperacute: broad-based bulky ("inflated") T dwarfing QRS with straightened takeoff — always confirm territorial across 2+ adjacent leads in the patient, never all leads. HyperK tenting: narrow pointed peak with flat P, usually diffuse. May precede any millimetre STE. Compare with an old ECG, repeat in 10–15 minutes, and check potassium too — OMI and hyperK can coexist.',
             significance: 'Minutes-old coronary occlusion. Waiting for millimetre STE loses myocardium.',
             action: 'Treat as OMI: serial ECGs, old tracing, posterior/right-sided leads as indicated, immediate cardiology escalation. Do not wait for a “diagnostic” STEMI millimetre if the T waves are blowing up in a territorial distribution.',
             caution: 'HyperK tented T waves are narrow-based and diffuse; hyperacute T waves are broad-based and territorial. HyperK and OMI can coexist — treat both possibilities.'

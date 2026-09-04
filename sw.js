@@ -1,5 +1,5 @@
 /* EM-CPs service worker — resilient app-shell caching for offline clinical reference. */
-const CACHE_VERSION = 'v87';
+const CACHE_VERSION = 'v104';
 const SCOPE_KEY = new URL(self.registration.scope).pathname.toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '') || 'root';
@@ -8,10 +8,11 @@ const CACHE = CACHE_PREFIX + CACHE_VERSION;
 const CORE_ASSETS = [
     './',
     './index.html',
-    './assets/app.css?v=20260903-48',
-    './assets/app.js?v=20260903-48',
-    './assets/data.js?v=20260903-48',
-    './assets/ecg-svg.js?v=20260903-48'
+    './assets/app.css?v=20260904-64',
+    './assets/app.js?v=20260904-63',
+    './assets/data.js?v=20260904-62',
+    './assets/ecg-svg.js?v=20260904-49',
+    './assets/ecg-case-tracings.js?v=20260904-64'
 ];
 const OPTIONAL_ASSETS = [
     './manifest.json?v=20260903-48',

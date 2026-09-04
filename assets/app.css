@@ -3774,6 +3774,7 @@ html[data-theme="dark"] .ecg-tool[aria-pressed="true"] { background: var(--accen
 /* Annotation toggle */
 .ecg-fig.hide-anno .ecg-marker,
 .ecg-fig.hide-anno circle.ecg-j,
+.ecg-fig.hide-anno .ecg-sthl,
 .ecg-fig.hide-anno text.ecg-label:not(.ecg-lead) { display: none; }
 /* Normal-reference inset (hidden until toggled) */
 .ecg-normal-ref { display: none; }
@@ -3834,6 +3835,7 @@ html[data-theme="dark"] .ecg-tool[aria-pressed="true"] { background: var(--accen
   .ecg-tools, .ecg-lightbox { display: none !important; }
   .ecg-fig.hide-anno .ecg-marker,
   .ecg-fig.hide-anno circle.ecg-j,
+  .ecg-fig.hide-anno .ecg-sthl,
   .ecg-fig.hide-anno text.ecg-label:not(.ecg-lead) { display: block !important; }
   .ecg-normal-ref { display: none !important; }
 }
@@ -3859,7 +3861,17 @@ html[data-theme="dark"] .ecg-tool[aria-pressed="true"] { background: var(--accen
 }
 .ecg-svg.ecg-paper { max-height: 340px; }
 .ecg-svg.ecg-tall { max-height: 460px; }
+.ecg-svg.ecg-case-12lead { max-height: 320px; }
+/* Keep the conventional 3 × 4 + rhythm-strip layout readable on a phone. */
+@media (max-width: 700px) { .ecg-svg.ecg-case-12lead { max-height: 260px; } }
 @media (max-width: 700px) { .ecg-svg.ecg-tall { max-height: 300px; } }
+/* Phones: let wide ECG figures pan horizontally instead of shrinking to
+   unreadable size. min-width keeps annotation text near 9px at 360px. */
+@media (max-width: 700px) {
+  .ecg-media { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .ecg-media .ecg-svg-wrap { min-width: 560px; }
+  .ecg-media .ecg-svg-wrap .ecg-svg { max-height: none; }
+}
 .ecg-paper .ecg-trace { stroke: #111111; }
 .ecg-paper .ecg-rhythm { stroke-width: 2; opacity: 0.95; }
 .ecg-paper .ecg-label { fill: #374151; stroke: #ffffff; }
@@ -3950,6 +3962,60 @@ html[data-theme="dark"] .ecg-inspector strong { color: var(--accent); }
 .ecg-fig[data-sel="rr"] .ecg-marker:not([data-wave="rr"]) { opacity: 0.12; }
 .ecg-fig[data-sel="rr"] text.ecg-label[data-wave]:not([data-wave="rr"]) { opacity: 0.12; }
 .ecg-fig[data-sel="rr"] circle.ecg-j:not([data-wave="rr"]) { opacity: 0.12; }
+.ecg-fig[data-sel="inf"] .ecg-marker:not([data-wave="inf"]) { opacity: 0.12; }
+.ecg-fig[data-sel="inf"] text.ecg-label[data-wave]:not([data-wave="inf"]) { opacity: 0.12; }
+.ecg-fig[data-sel="inf"] circle.ecg-j:not([data-wave="inf"]) { opacity: 0.12; }
+.ecg-fig[data-sel="mirror"] .ecg-marker:not([data-wave="mirror"]) { opacity: 0.12; }
+.ecg-fig[data-sel="mirror"] text.ecg-label[data-wave]:not([data-wave="mirror"]) { opacity: 0.12; }
+.ecg-fig[data-sel="mirror"] circle.ecg-j:not([data-wave="mirror"]) { opacity: 0.12; }
+.ecg-fig[data-sel="hyperacute"] .ecg-marker:not([data-wave="hyperacute"]) { opacity: 0.12; }
+.ecg-fig[data-sel="hyperacute"] text.ecg-label[data-wave]:not([data-wave="hyperacute"]) { opacity: 0.12; }
+.ecg-fig[data-sel="hyperacute"] circle.ecg-j:not([data-wave="hyperacute"]) { opacity: 0.12; }
+.ecg-fig[data-sel="hyperk"] .ecg-marker:not([data-wave="hyperk"]) { opacity: 0.12; }
+.ecg-fig[data-sel="hyperk"] text.ecg-label[data-wave]:not([data-wave="hyperk"]) { opacity: 0.12; }
+.ecg-fig[data-sel="hyperk"] circle.ecg-j:not([data-wave="hyperk"]) { opacity: 0.12; }
+.ecg-fig[data-sel="ischa"] .ecg-marker:not([data-wave="ischa"]) { opacity: 0.12; }
+.ecg-fig[data-sel="ischa"] text.ecg-label[data-wave]:not([data-wave="ischa"]) { opacity: 0.12; }
+.ecg-fig[data-sel="ischa"] circle.ecg-j:not([data-wave="ischa"]) { opacity: 0.12; }
+.ecg-fig[data-sel="wellens"] .ecg-marker:not([data-wave="wellens"]) { opacity: 0.12; }
+.ecg-fig[data-sel="wellens"] text.ecg-label[data-wave]:not([data-wave="wellens"]) { opacity: 0.12; }
+.ecg-fig[data-sel="wellens"] circle.ecg-j:not([data-wave="wellens"]) { opacity: 0.12; }
+.ecg-fig[data-sel="dewinter"] .ecg-marker:not([data-wave="dewinter"]) { opacity: 0.12; }
+.ecg-fig[data-sel="dewinter"] text.ecg-label[data-wave]:not([data-wave="dewinter"]) { opacity: 0.12; }
+.ecg-fig[data-sel="dewinter"] circle.ecg-j:not([data-wave="dewinter"]) { opacity: 0.12; }
+.ecg-fig[data-sel="ant"] .ecg-marker:not([data-wave="ant"]) { opacity: 0.12; }
+.ecg-fig[data-sel="ant"] text.ecg-label[data-wave]:not([data-wave="ant"]) { opacity: 0.12; }
+.ecg-fig[data-sel="ant"] circle.ecg-j:not([data-wave="ant"]) { opacity: 0.12; }
+.ecg-fig[data-sel="post"] .ecg-marker:not([data-wave="post"]) { opacity: 0.12; }
+.ecg-fig[data-sel="post"] text.ecg-label[data-wave]:not([data-wave="post"]) { opacity: 0.12; }
+.ecg-fig[data-sel="post"] circle.ecg-j:not([data-wave="post"]) { opacity: 0.12; }
+.ecg-fig[data-sel="narrow"] .ecg-marker:not([data-wave="narrow"]) { opacity: 0.12; }
+.ecg-fig[data-sel="narrow"] text.ecg-label[data-wave]:not([data-wave="narrow"]) { opacity: 0.12; }
+.ecg-fig[data-sel="narrow"] circle.ecg-j:not([data-wave="narrow"]) { opacity: 0.12; }
+.ecg-fig[data-sel="wide"] .ecg-marker:not([data-wave="wide"]) { opacity: 0.12; }
+.ecg-fig[data-sel="wide"] text.ecg-label[data-wave]:not([data-wave="wide"]) { opacity: 0.12; }
+.ecg-fig[data-sel="wide"] circle.ecg-j:not([data-wave="wide"]) { opacity: 0.12; }
+.ecg-fig[data-sel="psinus"] .ecg-marker:not([data-wave="psinus"]) { opacity: 0.12; }
+.ecg-fig[data-sel="psinus"] text.ecg-label[data-wave]:not([data-wave="psinus"]) { opacity: 0.12; }
+.ecg-fig[data-sel="psinus"] circle.ecg-j:not([data-wave="psinus"]) { opacity: 0.12; }
+.ecg-fig[data-sel="axis"] .ecg-marker:not([data-wave="axis"]) { opacity: 0.12; }
+.ecg-fig[data-sel="axis"] text.ecg-label[data-wave]:not([data-wave="axis"]) { opacity: 0.12; }
+.ecg-fig[data-sel="axis"] circle.ecg-j:not([data-wave="axis"]) { opacity: 0.12; }
+.ecg-fig[data-sel="reg"] .ecg-marker:not([data-wave="reg"]) { opacity: 0.12; }
+.ecg-fig[data-sel="reg"] text.ecg-label[data-wave]:not([data-wave="reg"]) { opacity: 0.12; }
+.ecg-fig[data-sel="reg"] circle.ecg-j:not([data-wave="reg"]) { opacity: 0.12; }
+.ecg-fig[data-sel="v1"] .ecg-marker:not([data-wave="v1"]) { opacity: 0.12; }
+.ecg-fig[data-sel="v1"] text.ecg-label[data-wave]:not([data-wave="v1"]) { opacity: 0.12; }
+.ecg-fig[data-sel="v1"] circle.ecg-j:not([data-wave="v1"]) { opacity: 0.12; }
+.ecg-fig[data-sel="v5"] .ecg-marker:not([data-wave="v5"]) { opacity: 0.12; }
+.ecg-fig[data-sel="v5"] text.ecg-label[data-wave]:not([data-wave="v5"]) { opacity: 0.12; }
+.ecg-fig[data-sel="v5"] circle.ecg-j:not([data-wave="v5"]) { opacity: 0.12; }
+.ecg-fig[data-sel="chambers"] .ecg-marker:not([data-wave="chambers"]) { opacity: 0.12; }
+.ecg-fig[data-sel="chambers"] text.ecg-label[data-wave]:not([data-wave="chambers"]) { opacity: 0.12; }
+.ecg-fig[data-sel="chambers"] circle.ecg-j:not([data-wave="chambers"]) { opacity: 0.12; }
+.ecg-fig[data-sel="lowv"] .ecg-marker:not([data-wave="lowv"]) { opacity: 0.12; }
+.ecg-fig[data-sel="lowv"] text.ecg-label[data-wave]:not([data-wave="lowv"]) { opacity: 0.12; }
+.ecg-fig[data-sel="lowv"] circle.ecg-j:not([data-wave="lowv"]) { opacity: 0.12; }
 .ecg-fig[data-sel] .ecg-marker[data-wave] { stroke-width: 2.2; }
 @media (prefers-reduced-motion: reduce) { .ecg-fig .ecg-marker, .ecg-fig text.ecg-label[data-wave], .ecg-fig circle.ecg-j { transition: none !important; } }
 /* v4.9 wave buttons below ECG */

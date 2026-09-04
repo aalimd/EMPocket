@@ -30,7 +30,8 @@ EM-CPs/
 ├── index.html                 # loads ecg-svg.js, then data.js, then app.js
 ├── assets/
 │   ├── data.js                # ECG_DATA (steps, patterns, pearls, refs)
-│   ├── ecg-svg.js             # window.ECG_SVG library (title, caption, png, svg)
+│   ├── ecg-svg.js             # base window.ECG_SVG library (title, caption, png, svg)
+│   ├── ecg-case-tracings.js   # focused-lead synthetic pattern-library ECG tracings
 │   ├── app.js                 # routing #ecg, renderEcg(), ecgFigure(), tools
 │   ├── app.css                # .ecg-fig, paper grid, lightbox, paper theme
 │   └── ecg/
@@ -103,7 +104,7 @@ Current inventory: **7 steps + 18 patterns = 25 SVGs**. No missing keys, no orph
 - `ecgFigure(id)` prefers `png` (with SVG fallback on `img` error); otherwise injects SVG.
 - `ecgSvgWithRef(svg)` appends a dashed “Normal ST-T” overlay group (hidden until the **Normal** tool is pressed).
 - Tools on each figure: **Annotations**, **Normal**, **Enlarge** (lightbox).
-- Hotspots (`data-wave`, `.ecg-hot`) exist only on `rate-calibration` and `rhythm-axis`. Inspector copy lives in `ECG_WAVE_INFO`.
+- Hotspots (`.ecg-hot` with `data-wave`) exist on the calibration, axis, interval, voltage and ischemia method figures and on the pattern cards rebuilt as teaching comparators (`stemi-criteria`, `hyperacute-t`, `wellens`, `dewinter`). Inspector copy lives in `ECG_WAVE_INFO`. Any card can expose tappable wave buttons + inspector text with plain `data-wave` tags (no `.ecg-hot` needed).
 
 ### CSS paper grid (important)
 
@@ -214,9 +215,11 @@ Checked internally:
 
 Do not “simplify” this path without re-checking those spans.
 
-### Other 24 figures
+### Pattern-library figures
 
-They are **cartoons**. Labels such as “2 mm”, “5 mm”, “HR 36”, “5 vs 9” are **captions**, not measurements of the path. The CSS grid does not make them real paper.
+The 18 pattern-library cards are generated in `ecg-case-tracings.js` as compact, synthetic focused-lead tracings. Each uses one representative lead, adding a paired lead only when comparison is intrinsic to the finding (for example V2–V3 for Wellens or aVR/II for diffuse subendocardial ischaemia). They are educational simulations, not patient recordings; the nominal 25 mm/s and 10 mm/mV labels do not make the responsive screen grid measurable.
+
+The seven method figures in `ecg-svg.js` retain their purpose-built schematic layout. Except for `rate-calibration`, do not use the responsive screen grid to count millimetres.
 
 ### “Normal” overlay quirk
 
@@ -238,10 +241,10 @@ svg.indexOf('viewBox="0 0 640') !== -1 ? ECG_NORMAL_REF_WIDE : ECG_NORMAL_REF
 |---|---|---|
 | `rate-calibration` | Scale, rate, intervals | — |
 | `rhythm-axis` | Narrow vs wide vs irregular; I/aVF quadrants | Path has messy `H118,84` syntax. Axis box is a diagram, not a tracing. |
-| `wellens` | Type A +/− vs Type B deep inverted T; R preserved; ST flat | Depth is not a real 5 mm. |
-| `dewinter` | J-point STD then tall T, no STE | Millimetres are not real. |
-| `hyperacute-t` | Broad bulky T &gt; R, territorial vs hyperK | Not a 12-lead. |
-| `stemi-criteria` | Convex STE + reciprocal STD idea; J-dots | Not two contiguous leads. |
+| `wellens` | Type A biphasic vs Type B deep symmetric inversion comparator; R preserved, pain-free note, hotspots + Wellens inspector button | Synthetic focused leads, not a measured 12-lead. |
+| `dewinter` | V3 upsloping STD → tall T paired with reciprocal aVR STE; hotspots + de Winter inspector button | Synthetic focused leads, not a measured 12-lead. |
+| `hyperacute-t` | 3-shape comparator in one V3 viewpoint (normal vs hyperacute vs hyperK tenting); apex/broad-base markers, hotspots + T-wave/Hyperacute/HyperK inspector buttons | Synthetic, not a measured 12-lead. Territorial confirmation lives in card text + inspector, not the drawing. |
+| `stemi-criteria` | Inferior II/III/aVF convex STE + aVL mirror STD; connected baseline, J-dots, red/blue ST highlights, red mm calipers, contiguous bracket, MIRROR mnemonic, hover/tap hotspots + tappable Inferior-STE/Mirror-STD inspector buttons | Synthetic, not a measured 12-lead. |
 | `brugada` | Coved STE → negative T; saddle ≠ Type 1 | Not a measured ≥2 mm. |
 | `hyperkalemia` | Tented T → wide QRS → sine ladder | Tented T is not 6–8 mm on canvas. |
 | `hypokalemia` | U after T | QU ms not to scale. |
