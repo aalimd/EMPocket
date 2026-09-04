@@ -1497,8 +1497,21 @@
         else showPresentation(id, target);
     }
 
-    /* ---------- reading prefs: theme, size, bold ---------- */
+    /* ---------- reading prefs: theme, accent, size, bold ---------- */
     const SCALE_STEPS = [0.85, 1, 1.12, 1.25, 1.4];
+    const ACCENTS = ['emerald', 'ocean', 'violet', 'rose', 'amber', 'teal'];
+    const ACCENT_LABELS = { emerald: 'Emerald green', ocean: 'Ocean blue', violet: 'Violet purple', rose: 'Rose red', amber: 'Amber orange', teal: 'Teal cyan' };
+    const ACCENT_META = {
+        emerald: { light: '#0b3d2e', dark: '#0c1613' },
+        ocean: { light: '#0b2e5e', dark: '#0a1a36' },
+        violet: { light: '#2e1a6b', dark: '#190f3d' },
+        rose: { light: '#5c0f22', dark: '#330913' },
+        amber: { light: '#4d2405', dark: '#261506' },
+        teal: { light: '#07333b', dark: '#052025' }
+    };
+    function normalizeAccent(v) {
+        return ACCENTS.indexOf(v) !== -1 ? v : 'emerald';
+    }
     function nearestScale(v) {
         const n = Number(v) || 1;
         let best = 1, distance = Infinity;
@@ -1512,6 +1525,7 @@
         const prefs = isRecord(value) ? value : {};
         return {
             theme: prefs.theme === 'light' ? 'light' : 'dark',
+            accent: normalizeAccent(prefs.accent),
             scale: nearestScale(prefs.scale),
             bold: typeof prefs.bold === 'boolean' ? prefs.bold : true
         };
@@ -1545,7 +1559,9 @@
     function applyPrefs(p) {
         const r = document.documentElement;
         const dark = p.theme === 'dark';
+        const accent = normalizeAccent(p.accent);
         r.setAttribute('data-theme', dark ? 'dark' : 'light');
+        r.setAttribute('data-accent', accent);
         if (p.bold !== false) r.setAttribute('data-weight', 'bold');
         else r.removeAttribute('data-weight');
         const scale = nearestScale(p.scale);
@@ -1560,8 +1576,17 @@
         }
         if (boldBtn) boldBtn.setAttribute('aria-pressed', p.bold !== false ? 'true' : 'false');
         if (label) label.textContent = Math.round(scale * 100) + '%';
+        try {
+            document.querySelectorAll('.accent-dot').forEach(function (dot) {
+                const on = dot.getAttribute('data-accent') === accent;
+                dot.setAttribute('aria-pressed', on ? 'true' : 'false');
+            });
+        } catch (e) {}
         const meta = document.getElementById('themeColor');
-        if (meta) meta.setAttribute('content', dark ? '#0c1613' : '#0b3d2e');
+        if (meta) {
+            const m = ACCENT_META[accent] || ACCENT_META.emerald;
+            meta.setAttribute('content', dark ? m.dark : m.light);
+        }
     }
     function bindPrefs() {
         let p = loadPrefs();
@@ -1591,6 +1616,14 @@
             const i = SCALE_STEPS.indexOf(nearestScale(p.scale));
             p.scale = SCALE_STEPS[Math.max(0, i - 1)];
             savePrefs(p); applyPrefs(p);
+        });
+        document.querySelectorAll('.accent-dot').forEach(function (dot) {
+            dot.addEventListener('click', function () {
+                p = loadPrefs();
+                p.accent = normalizeAccent(dot.getAttribute('data-accent'));
+                savePrefs(p); applyPrefs(p);
+                toast('App color: ' + (ACCENT_LABELS[p.accent] || p.accent) + '.');
+            });
         });
     }
 

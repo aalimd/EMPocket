@@ -548,6 +548,11 @@
   });
   cases['hyperkalemia'].engineOpts = { stage: 'advanced' };
   // VT/CHB: engine draws real AV dissociation; old faint pWaves overlay off via useEngine.
+  // Step 6 legend: same integration layer re-renders the omi-equivalents ladder
+  // with realistic engine mini-traces; step title/caption are preserved below.
+  if (window.ECG_SVG && window.ECG_SVG['omi-equivalents'] && window.ECG_ENGINE && window.ECG_ENGINE.renderOmiLegend) {
+    try { window.ECG_SVG['omi-equivalents'].svg = window.ECG_ENGINE.renderOmiLegend(); } catch (e) {}
+  }
 
   Object.keys(cases).forEach(function (id) {
     if (!window.ECG_SVG || !window.ECG_SVG[id]) return;

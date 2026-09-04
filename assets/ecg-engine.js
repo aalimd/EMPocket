@@ -859,6 +859,42 @@ function focusedOverlayY(displayName, patternId, y, patternOpts) {
   return { jy: y - mvToUnits(jv), apexY: y - mvToUnits(best), jMv: jv, tMv: best };
 }
 
+/* ── Step 6 legend: OMI equivalents at a glance ──
+   Same slots, labels and 640-wide viewBox as the legacy V2–V4 ladder, but each
+   mini-sketch is a true engine signal window (0.2u/ms, 80u/mV — same scale as
+   every other engine tracing) instead of a cartoon: hyperacute bulky T,
+   de Winter STD→tall T, Wellens B inversion, plus a realistic sinus rhythm
+   strip. Baselines/labels sit lower than legacy so tall realistic T waves
+   clear the header; no teaching copy is changed here. */
+function renderOmiLegend() {
+  function miniTrace(displayName, patternId, xSlot, yBase, wU, tStartMs, stepMs, laneOpts) {
+    var caseData = createPatternCase(patternId, Object.assign({}, laneOpts, { lane: displayName }));
+    var d = '', n = Math.floor((wU / 0.2) / stepMs);
+    for (var i = 0; i <= n; i++) {
+      var t = tStartMs + i * stepMs;
+      var mv = leadVoltageAt(displayName, t, caseData, Math.round(t / STEP_MS));
+      var x = xSlot + msToUnits(t - tStartMs);
+      var y = yBase - mvToUnits(mv);
+      d += (i === 0 ? 'M' : ' L') + r1(x) + ',' + r1(y);
+    }
+    return '<path class="ecg-trace" d="' + d + '" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+  }
+  var s = '<svg class="ecg-svg ecg-paper" viewBox="0 0 640 304" role="img" aria-labelledby="ecgOmiTitle" preserveAspectRatio="xMidYMid meet">';
+  s += '<title id="ecgOmiTitle">OMI equivalents at a glance — synthetic teaching ladder: hyperacute, de Winter, Wellens</title>';
+  s += '<text class="ecg-lead" x="10" y="26">V2–V4 ladder</text>';
+  s += '<text class="ecg-lead ecg-lead-rhy" x="10" y="228">II rhythm</text>';
+  s += '<line class="ecg-sep" x1="0" y1="208" x2="640" y2="208"/>';
+  s += miniTrace('Hyperacute', 'hyperacute-t', 70, 120, 150, 230, 2);
+  s += '<text class="ecg-label" x="70" y="186">hyperacute broad</text>';
+  s += miniTrace('V3', 'dewinter', 240, 120, 150, 230, 2);
+  s += '<text class="ecg-label" x="240" y="186">de Winter STD→T</text>';
+  s += miniTrace('Type B', 'wellens', 410, 120, 150, 230, 2);
+  s += '<text class="ecg-label" x="430" y="186">Wellens B ↓</text>';
+  s += miniTrace('II', 'normal-sinus', 70, 258, 360, 0, 4);
+  s += '</svg>';
+  return s;
+}
+
 /* ── Lightweight self-checks for local validation (no framework) ── */
 function validateGeometry() {
   var checks = [];
@@ -1169,6 +1205,7 @@ window.ECG_ENGINE = {
   createPatternCase: createPatternCase,
   leadVoltageAt: leadVoltageAt,
   renderNormal12Lead: renderNormal12Lead,
+  renderOmiLegend: renderOmiLegend,
   renderPaperGrid: renderPaperGrid,
   renderCalibrationPulse: renderCalibrationPulse,
   focusedTracePath: focusedTracePath,
