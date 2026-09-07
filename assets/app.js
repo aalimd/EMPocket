@@ -101,6 +101,35 @@
     const stage = document.getElementById('stage');
     const SEV_ICON = { critical: '🔴', emergent: '🟠', common: '🟢' };
     const SEV_LABEL = { critical: 'Critical', emergent: 'Emergent', common: 'Common' };
+    /* Distinct per-presentation icons — original `cp.icon` emoji kept in data.js, never deleted.
+       Each subject keeps its own icon (🫀🫁🧠…). System chrome (home/ecg/theme/bolt) stays mono SVG. */
+    function monoSvg(inner) {
+        return '<svg class="mono-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + inner + '</svg>';
+    }
+    const GROUP_SVG = {
+        generic: monoSvg('<path d="M4 6h16M4 12h16M4 18h10"/>'),
+        ecg: monoSvg('<path d="M2 12h5l3-8 4 16 3-8h5"/>'),
+        home: monoSvg('<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-8H9v8H4a1 1 0 0 1-1-1z"/>'),
+        bolt: monoSvg('<path d="m13 2-9 12h7l-1 8 10-12h-7z"/>')
+    };
+    const THEME_SVG = {
+        moon: monoSvg('<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'),
+        sun: monoSvg('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>')
+    };
+    function iconForId(id) {
+        if (id === 'ecg') return GROUP_SVG.ecg;
+        try {
+            var cp = (typeof BY_ID !== 'undefined' && BY_ID[id]) ? BY_ID[id] : null;
+            if (cp && cp.icon) return '<span class="emoji-ico" aria-hidden="true">' + esc(cp.icon) + '</span>';
+        } catch (e) {}
+        return GROUP_SVG.generic;
+    }
+    function iconFor(cp) {
+        if (cp && cp.id === 'ecg') return GROUP_SVG.ecg;
+        if (cp && cp.icon) { try { return '<span class="emoji-ico" aria-hidden="true">' + esc(cp.icon) + '</span>'; } catch (e) {} }
+        return iconForId(cp && cp.id);
+    }
+    function sevDot(sev) { return '<span class="sev-dot sev-' + sev + '" aria-hidden="true"></span>'; }
     let currentId = null;
     let severityFilter = 'all';
     let searchCursor = -1;
@@ -108,6 +137,7 @@
     let sidebarReturnFocus = null;
     const reviewState = {};
     let patientFilter = 'all';
+    let libraryFiltersOpen = false;
     let caseCursor = 0;
     let offlineStatus = ('serviceWorker' in navigator && navigator.serviceWorker.controller) ? 'Works offline' :
         ('serviceWorker' in navigator ? 'Offline setup pending' : 'Online access');
@@ -120,26 +150,31 @@
         trauma: ['multiple-trauma', 'falls-geriatric-trauma', 'back-pain', 'headache', 'weakness', 'limb-ischemia', 'chest-pain']
     };
     function esc(s) {
-        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
     function rich(s) {
         const allowed = { STRONG: 1, EM: 1, BR: 1 };
-        const wrap = document.createElement('div');
-        wrap.innerHTML = String(s);
+        // Parse into an inert template, then sanitize descendants before unwrapping.
+        const template = document.createElement('template');
+        template.innerHTML = String(s);
+        const wrap = template.content;
         (function clean(node) {
             Array.from(node.childNodes).forEach(function (child) {
                 if (child.nodeType === 8) { node.removeChild(child); return; }
                 if (child.nodeType !== 1) return;
+                if (['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'EMBED', 'SVG', 'MATH', 'TEMPLATE'].indexOf(child.tagName) !== -1) {
+                    node.removeChild(child); return;
+                }
+                clean(child);
                 if (!allowed[child.tagName]) {
                     while (child.firstChild) node.insertBefore(child.firstChild, child);
                     node.removeChild(child);
                     return;
                 }
                 Array.from(child.attributes).forEach(function (a) { child.removeAttribute(a.name); });
-                clean(child);
             });
         }(wrap));
-        return wrap.innerHTML;
+        return template.innerHTML;
     }
 
     const ECG_TOPIC_ID = 'ecg';
@@ -200,6 +235,17 @@
     }
     function stripTags(s) {
         return String(s).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    }
+    function evidenceHtml(id) {
+        const evidence = window.CLINICAL_EVIDENCE;
+        const keys = evidence && evidence.topics[id];
+        if (!Array.isArray(keys)) return '';
+        const links = keys.map(function (key) {
+            const source = evidence.sources[key];
+            if (!source || !/^https:\/\//.test(source[1])) return '';
+            return '<li><a href="' + esc(source[1]) + '" target="_blank" rel="noopener noreferrer">' + esc(source[0]) + '</a></li>';
+        }).join('');
+        return '<p class="evidence-note">Selected guidance · source check ' + esc(evidence.checked) + '. Links address specific teaching points; apply the full guideline and local protocol.</p><ul class="refs">' + links + '</ul>';
     }
     function toast(msg) {
         const t = document.getElementById('toast');
@@ -354,15 +400,15 @@
     /* ---------- sidebar ---------- */
     function buildSidebar() {
         const list = document.getElementById('sideList');
-        list.innerHTML = '<button type="button" class="side-item side-home" data-home="1"><i class="ico">⌂</i>All presentations</button>' +
-            (getEcg() ? '<button type="button" class="side-item" data-ecg="1"><i class="ico">📈</i>ECG from scratch</button>' : '') +
-            GROUPS.map(g => {
+        list.innerHTML = '<button type="button" class="side-item side-home" data-home="1"><i class="ico" aria-hidden="true">' + GROUP_SVG.home + '</i>All presentations</button>' +
+            (getEcg() ? '<button type="button" class="side-item" data-ecg="1"><i class="ico" aria-hidden="true">' + GROUP_SVG.ecg + '</i>ECG from scratch</button>' : '') +
+            GROUPS.map((g, groupIndex) => {
             const items = g.ids.map(id => BY_ID[id]).filter(Boolean);
             if (!items.length) return '';
-            return '<div class="side-group"><div class="side-label">' + esc(g.title) + '</div>' +
+            return '<details class="side-group"' + (groupIndex === 0 ? ' open' : '') + '><summary class="side-label">' + esc(g.title) + '</summary>' +
                 items.map(cp =>
-                    '<button type="button" class="side-item" data-id="' + cp.id + '"><i class="ico">' + esc(cp.icon) + '</i>' + esc(cp.name) + '</button>'
-                ).join('') + '</div>';
+                    '<button type="button" class="side-item" data-id="' + cp.id + '"><i class="ico" aria-hidden="true">' + iconFor(cp) + '</i>' + esc(cp.name) + '</button>'
+                ).join('') + '</details>';
         }).join('');
         list.addEventListener('click', (e) => {
             const btn = e.target.closest('.side-item');
@@ -376,6 +422,11 @@
         document.querySelectorAll('.side-item').forEach(b =>
             b.classList.toggle('active',
                 id === ECG_TOPIC_ID ? !!b.dataset.ecg : (id ? b.dataset.id === id : !!b.dataset.home)));
+        document.querySelectorAll('.side-group').forEach(group => {
+            const active = !!group.querySelector('.side-item.active');
+            group.classList.toggle('has-active', active);
+            if (active) group.open = true;
+        });
     }
     function sidebarIsMobile() {
         return window.matchMedia && window.matchMedia('(max-width: 920px)').matches;
@@ -392,7 +443,7 @@
         sidebar.setAttribute('aria-hidden', closedMobileMenu ? 'true' : 'false');
         // Fallback for browsers without native inert: remove from tab order when hidden on mobile
         try {
-            const focusables = sidebar.querySelectorAll('button, [href], input, select, textarea, [tabindex]');
+            const focusables = sidebar.querySelectorAll('button, summary, [href], input, select, textarea, [tabindex]');
             focusables.forEach(function (el) {
                 if (closedMobileMenu) {
                     if (el.dataset.prevTabindex === undefined) el.dataset.prevTabindex = el.getAttribute('tabindex') || '';
@@ -440,7 +491,7 @@
         const label = severityFilter === 'all' ? 'critical' : SEV_LABEL[severityFilter].toLowerCase();
         return '<button type="button" class="cp-card" data-id="' + cp.id + '">' +
             '<span class="cp-count">' + count + ' ' + label + '</span>' +
-            '<div class="cp-ico">' + esc(cp.icon) + '</div>' +
+            '<div class="cp-ico" aria-hidden="true">' + iconFor(cp) + '</div>' +
             '<h3>' + esc(cp.name) + '</h3><p>' + esc(cp.tag) + '</p>' +
             (isReviewed(cp.id) ? '<span class="cp-reviewed">✓ ' + esc(reviewLabel(cp.id)) + '</span>' : '') +
             (isSaved(cp.id) ? '<span class="cp-saved">★ Saved</span>' : '') + '</button>';
@@ -471,11 +522,10 @@
     function studyDashboardHtml() {
         const due = dueIds();
         const saved = savedIds();
-        return '<section class="study-dashboard" aria-label="Personal study tools">' +
-            '<div><span class="study-kicker">YOUR LEARNING SPACE</span><h2>Study with intent</h2><p>Save weak topics, add private notes, and let the review queue bring them back.</p></div>' +
+        return '<section class="study-dashboard study-dashboard-compact" aria-label="Personal study tools">' +
             '<div class="study-stats"><button type="button" class="study-stat" data-study="due"><strong>' + due.length + '</strong><span>due now</span></button>' +
             '<button type="button" class="study-stat" data-study="saved"><strong>' + saved.length + '</strong><span>saved topics</span></button>' +
-            '<button type="button" class="study-stat accent" data-study="case"><strong>▶</strong><span>practice case</span></button></div></section>';
+            '<button type="button" class="study-stat" data-study="case"><strong>Practice</strong><span>Work through a case</span></button></div></section>';
     }
 
     function patientFiltersHtml() {
@@ -499,30 +549,37 @@
             const items = g.ids.map(id => BY_ID[id]).filter(cp => cp && cpMatchesFilter(cp) && patientMatches(cp));
             if (!items.length) return '';
             return '<section class="home-group">' +
-                '<h2 class="group-title">' + esc(g.title) + ' <span>' + items.length + '</span></h2>' +
+                '<h3 class="group-title">' + esc(g.title) + ' <span>' + items.length + '</span></h3>' +
                 '<div class="cp-grid">' + items.map(cardHtml).join('') + '</div></section>';
         }).join('');
+        const visibleCount = DATA.filter(cp => cpMatchesFilter(cp) && patientMatches(cp)).length;
         stage.innerHTML =
-            '<section class="hero">' +
-            '<h1>Emergency medicine, in your pocket</h1>' +
-            '<div class="hero-badges">' +
-            '<span class="hbadge">📘 Rosen\u2019s 10th ed. (2023)</span>' +
-            '<span class="hbadge">📗 Tintinalli\u2019s 9th ed.</span>' +
-            '<span class="hbadge">⚡ Guidelines through 2026</span>' +
-            '<span class="hbadge">' + DATA.length + ' presentations</span>' +
-            '<span class="hbadge">✓ ' + reviewedIds().length + ' reviewed</span>' +
-            '<span class="hbadge" id="offlineStatus">' + esc(offlineStatus) + '</span></div></section>' +
-            (getEcg()
-                ? '<button type="button" class="ecg-entry" id="ecgEntryBtn"><span class="ecg-entry-ico" aria-hidden="true">📈</span><span><strong>ECG from scratch</strong><small>7-step method · OMI equivalents · toxic-metabolic killers</small></span><b>Open →</b></button>'
-                : '') +
-            studyDashboardHtml() + patientFiltersHtml() +
-            (groupsHtml || '<p class="empty-filter">No presentations have diagnoses in this severity tier.</p>');
+            '<section class="home-intro">' +
+            '<span class="study-kicker">EM POCKET · STUDENT LIBRARY</span>' +
+            '<h1>Build your clinical reasoning</h1>' +
+            '<p>Choose a presentation. Learn the approach, recognise the red flags, then test your recall.</p>' +
+            '<div class="home-actions"><button type="button" class="home-start" data-browse-library="1">Browse presentations <span aria-hidden="true">↓</span></button>' +
+            (getEcg() ? '<button type="button" class="home-ecg" id="ecgEntryBtn">Learn ECGs <span aria-hidden="true">→</span></button>' : '') +
+            '</div><div class="home-meta"><span>' + DATA.length + ' presentations</span><span>' + reviewedIds().length + ' reviewed</span><span id="offlineStatus">' + esc(offlineStatus) + '</span></div></section>' +
+            studyDashboardHtml() +
+            '<section class="presentation-library" id="presentationLibrary" aria-labelledby="presentationLibraryTitle" tabindex="-1">' +
+            '<div class="library-head"><div><h2 id="presentationLibraryTitle">Presentation library</h2><p>' + visibleCount + ' of ' + DATA.length + ' presentations · grouped by clinical system</p></div>' +
+            '<details class="library-filters"' + (libraryFiltersOpen ? ' open' : '') + '><summary>Filter by patient context' + (patientFilter !== 'all' ? ' · active' : '') + '</summary>' + patientFiltersHtml() + '</details></div>' +
+            (groupsHtml || '<p class="empty-filter">No presentations match these filters. Try another patient context or severity.</p>') + '</section>';
         bindCards(stage);
         const ecgEntry = document.getElementById('ecgEntryBtn');
         if (ecgEntry) ecgEntry.addEventListener('click', function () { showEcg(); });
+        stage.querySelector('[data-browse-library]').addEventListener('click', () => {
+            const library = document.getElementById('presentationLibrary');
+            library.focus({ preventScroll: true });
+            library.scrollIntoView({ block: 'start', behavior: 'smooth' });
+        });
+        stage.querySelector('.library-filters').addEventListener('toggle', function () { libraryFiltersOpen = this.open; });
         stage.querySelectorAll('.patient-chip').forEach(btn => btn.addEventListener('click', function () {
             patientFilter = btn.dataset.patient;
             renderHome();
+            const selected = stage.querySelector('[data-patient="' + patientFilter + '"]');
+            if (selected) selected.focus({ preventScroll: true });
         }));
         stage.querySelectorAll('[data-study]').forEach(btn => btn.addEventListener('click', function () {
             if (btn.dataset.study === 'case') showStudy('case');
@@ -545,7 +602,7 @@
         if (!unique.length) return '<p class="study-empty">' + esc(empty) + '</p>';
         return '<div class="study-topic-list">' + unique.map(function (id) {
             const cp = topicRecord(id);
-            return '<button type="button" class="study-topic" data-id="' + cp.id + '"' + (cp.id === ECG_TOPIC_ID ? ' data-ecg="1"' : '') + '><span>' + esc(cp.icon) + '</span><div><strong>' + esc(cp.name) + '</strong><small>' + esc(isReviewed(cp.id) ? reviewLabel(cp.id) : 'Not yet reviewed') + (noteFor(cp.id) ? ' · note saved' : '') + '</small></div><b>→</b></button>';
+            return '<button type="button" class="study-topic" data-id="' + cp.id + '"' + (cp.id === ECG_TOPIC_ID ? ' data-ecg="1"' : '') + '><span class="study-topic-ico" aria-hidden="true">' + iconFor(cp) + '</span><div><strong>' + esc(cp.name) + '</strong><small>' + esc(isReviewed(cp.id) ? reviewLabel(cp.id) : 'Not yet reviewed') + (noteFor(cp.id) ? ' · note saved' : '') + '</small></div><b>→</b></button>';
         }).join('') + '</div>';
     }
     function caseHtml() {
@@ -560,7 +617,7 @@
         const threat = critical[0] ? critical[0][0] : 'a time-critical diagnosis';
         const common = (cp.dontMiss.filter(d => d[1] === 'common')[0] || ['a benign diagnosis'])[0];
         const icu = (cp.disposition || [])[cp.disposition.length - 1] || ['Escalate', 'Use the local pathway.'];
-        return '<section class="case-practice"><div class="case-practice-head"><span>DAILY CLINICAL REASONING CASE</span><h2>' + esc(cp.icon) + ' ' + esc(cp.name) + '</h2><p>Start with the pattern, commit to an answer, then check your reasoning. This is educational practice, not a patient-specific decision tool.</p></div>' +
+        return '<section class="case-practice"><div class="case-practice-head"><span>DAILY CLINICAL REASONING CASE</span><h1>' + esc(cp.name) + '</h1><p>Start with the pattern, commit to an answer, then check your reasoning. This is educational practice, not a patient-specific decision tool.</p></div>' +
             '<div class="case-prompt"><strong>Handoff</strong><p>A patient presents with <em>' + esc(cp.tag) + '</em>. Before reading the pathway, choose the safest first priority.</p></div>' +
             quizQuestion('1', 'What is the strongest first move?', [first, (cp.approach || [])[1] || 'Order broad testing', 'Wait for a final diagnosis'], 0) +
             quizQuestion('2', 'Which diagnosis is the one you cannot afford to miss first?', [threat, common, 'A low-risk self-limited cause'], 0) +
@@ -581,7 +638,7 @@
         const body = chosen === 'case' ? caseHtml() :
             '<section class="study-page"><div class="study-page-head"><button type="button" class="back-btn" data-home="1">← All presentations</button><span class="study-kicker">PERSONAL STUDY SPACE</span><h1>' + (chosen === 'due' ? 'Review queue' : 'Saved topics') + '</h1><p>' + (chosen === 'due' ? 'Topics return after 1, 3, 7, and 14 days of review. Complete a review to move it to the next interval.' : 'Use saved topics for weak areas, upcoming rotations, or cases you want to discuss.') + '</p></div>' +
             topicListHtml(chosen === 'due' ? dueIds() : savedIds(), chosen === 'due' ? 'Nothing is due yet. Mark a topic reviewed to start its spaced-review schedule.' : 'No saved topics yet. Save one from any presentation.') + '</section>';
-        stage.innerHTML = '<div class="study-tabs"><button type="button" data-study="due" class="' + (chosen === 'due' ? 'active' : '') + '">Review queue <span>' + dueIds().length + '</span></button><button type="button" data-study="saved" class="' + (chosen === 'saved' ? 'active' : '') + '">Saved</button><button type="button" data-study="case" class="' + (chosen === 'case' ? 'active' : '') + '">Practice case</button></div>' + body;
+        stage.innerHTML = '<nav class="study-tabs" aria-label="Study views"><button type="button" data-study="due" aria-current="' + (chosen === 'due' ? 'page' : 'false') + '" class="' + (chosen === 'due' ? 'active' : '') + '">Review queue <span>' + dueIds().length + '</span></button><button type="button" data-study="saved" aria-current="' + (chosen === 'saved' ? 'page' : 'false') + '" class="' + (chosen === 'saved' ? 'active' : '') + '">Saved</button><button type="button" data-study="case" aria-current="' + (chosen === 'case' ? 'page' : 'false') + '" class="' + (chosen === 'case' ? 'active' : '') + '">Practice case</button></nav>' + body;
         stage.querySelectorAll('[data-home]').forEach(btn => btn.addEventListener('click', showHome));
         stage.querySelectorAll('[data-study]').forEach(btn => btn.addEventListener('click', () => showStudy(btn.dataset.study)));
         stage.querySelectorAll('[data-next-case]').forEach(btn => btn.addEventListener('click', () => { caseCursor += 1; renderStudy('case'); }));
@@ -597,6 +654,7 @@
             box.querySelector('.quiz-feedback').textContent = good ? 'Correct — that preserves safety and time-critical options.' : 'Not the safest choice here. Review the teaching point, then open the pathway.';
         }));
         window.scrollTo({ top: 0 });
+        stage.focus({ preventScroll: true });
     }
     function showStudy(view) {
         const route = 'study~' + (view || 'due');
@@ -609,7 +667,7 @@
         const immediateWorkup = (cp.workup && cp.workup[0]) ? cp.workup[0][1].slice(0, 4) : [];
         const critical = cp.dontMiss.filter(d => d[1] === 'critical').slice(0, 5);
         const escalation = (cp.disposition || []).slice(-2);
-        return '<section class="shift-sheet"><div class="shift-sheet-head"><div><span>FOCUSED SHIFT VIEW</span><h1>' + esc(cp.icon) + ' ' + esc(cp.name) + '</h1><p>' + esc(cp.tag) + '</p></div><button type="button" class="review-btn" data-full-id="' + cp.id + '">Open full pathway</button></div>' +
+        return '<section class="shift-sheet"><div class="shift-sheet-head"><div><span>FOCUSED SHIFT VIEW</span><h1>' + esc(cp.name) + '</h1><p>' + esc(cp.tag) + '</p></div><button type="button" class="review-btn" data-full-id="' + cp.id + '">Open full pathway</button></div>' +
             '<div class="shift-warning">Educational first-pass aid. Reassess the patient, confirm doses and use local protocols.</div>' +
             '<div class="shift-grid"><section><h2>1 · First minutes</h2><ol>' + (cp.approach || []).slice(0, 3).map(x => '<li>' + esc(x) + '</li>').join('') + '</ol></section>' +
             '<section class="shift-red"><h2>2 · Escalate now if</h2><ul>' + (cp.redFlags || []).slice(0, 6).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></section>' +
@@ -654,30 +712,16 @@
     function firstMinutesHtml(cp) {
         const steps = (cp.approach || []).slice(0, 3);
         return '<aside class="case-rail" aria-label="First five minutes">' +
-            '<div class="case-rail-title"><span>⚡</span><div><strong>First 5 minutes</strong><small>Start here, then work the case</small></div></div>' +
+            '<div class="case-rail-title"><span aria-hidden="true">' + GROUP_SVG.bolt + '</span><div><strong>First 5 minutes</strong><small>Start here, then work the case</small></div></div>' +
             '<ol class="case-steps">' + steps.map((step, i) =>
                 '<li><span>' + (i + 1) + '</span>' + esc(step) + '</li>').join('') + '</ol>' +
-            '<div class="case-actions"><button type="button" class="case-action primary" data-jump="red-flags">Review red flags</button>' +
-            '<button type="button" class="case-action" data-jump="workup">Targeted workup</button>' +
-            '<button type="button" class="case-action" data-jump="disposition">Disposition</button></div>' +
             '</aside>';
     }
 
-    function managementPivotsHtml(cp) {
-        const immediate = (cp.approach || []).slice(0, 2);
-        const red = (cp.redFlags || []).slice(0, 3);
-        const lanes = (cp.disposition || []).map(function (d) { return d[0]; }).join(' · ');
-        return '<section class="management-pivots" aria-label="What changes management"><div class="pivot-title"><span>↔</span><div><h2>What changes management?</h2><p>The decisions that should move this patient to a different lane.</p></div></div><div class="pivot-grid">' +
-            '<div><span>STABILIZE FIRST</span><p>' + esc(immediate.join(' ')) + '</p></div>' +
-            '<div><span>ESCALATE IF</span><p>' + esc(red.join(' · ')) + '</p></div>' +
-            '<div><span>DISPOSITION PIVOT</span><p>' + esc(lanes) + '. Use objective reassessment and the local pathway.</p></div>' +
-            '</div></section>';
-    }
-
-    function resusQuickCardHtml(cp) {
-        const first = (cp.approach || [])[0] || 'Stabilize and reassess.';
-        const critical = cp.dontMiss.filter(d => d[1] === 'critical').slice(0, 2).map(d => d[0]).join(' · ');
-        return '<section class="resus-card" aria-label="Resuscitation quick card"><div><span class="resus-kicker">SHIFT QUICK CARD</span><h2>Resuscitation & medication safety</h2><p>Use this as a first-pass prompt; verify all medications, doses, concentrations, contraindications, weight, pregnancy status, and local protocols before administration.</p></div><div class="resus-grid"><div><strong>First action</strong><p>' + esc(first) + '</p></div><div><strong>Do not miss</strong><p>' + esc(critical || 'Time-critical causes listed below.') + '</p></div><div><strong>Before giving a drug</strong><p>Check indication, allergy, route, renal/hepatic risk, interactions, monitoring, and local formulary.</p></div></div></section>';
+    function presentationTocHtml() {
+        const sections = [['how-to-think', 'Approach'], ['dont-miss', 'Don’t miss'], ['red-flags', 'Red flags'], ['history', 'Assessment'], ['workup', 'Workup'], ['disposition', 'Disposition'], ['study', 'Recall & notes']];
+        return '<nav class="presentation-toc" aria-label="Presentation sections">' + sections.map(item =>
+            '<button type="button" class="section-jump" data-jump="' + item[0] + '">' + esc(item[1]) + '</button>').join('') + '</nav>';
     }
 
     function personalPlanHtml(cp) {
@@ -689,7 +733,7 @@
         const firstAction = (cp.approach || [])[0] || 'Stabilize the patient, then use the local pathway.';
         const threats = cp.dontMiss.filter(d => d[1] === 'critical').slice(0, 3).map(d => d[0]);
         return '<section class="learning-loop" aria-label="Rapid recall practice">' +
-            '<div class="learning-head"><div><span class="learning-kicker">🧠 PRACTICE REFRESHER</span><h2>Rapid recall</h2><p>Test your first action and the dangerous diagnoses before revealing the answer.</p></div>' +
+            '<div class="learning-head"><div><span class="learning-kicker">PRACTICE REFRESHER</span><h2>Rapid recall</h2><p>Test your first action and the dangerous diagnoses before revealing the answer.</p></div>' +
             '<button type="button" class="review-btn" id="reviewBtn" aria-pressed="' + isReviewed(cp.id) + '">' + reviewActionLabel(cp.id) + '</button></div>' +
             '<div class="recall-grid">' +
             '<div class="recall-card"><span>01 · First move</span><p>Before you scroll, what needs to happen first?</p><button type="button" class="reveal-btn" data-reveal="action">Reveal answer</button><div class="reveal-answer" id="recall-action" hidden>' + esc(firstAction) + '</div></div>' +
@@ -699,11 +743,11 @@
 
     function overviewHtml(cp) {
         const steps = Array.isArray(cp.approach) ? cp.approach : [];
-        const parts = String(cp.overview || '').match(/[^.!?]+[.!?]+(?:\s+|$)|[^.!?]+$/g) || [];
-        // trim
-        parts.forEach(function (_, i) { parts[i] = parts[i].trim(); });
-        const lead = parts[0] || '';
-        const rest = parts.slice(1).join(' ');
+        const overview = String(cp.overview || '').trim();
+        const sentenceEnd = overview.search(/[.!?]\s/);
+        // Split once and preserve the remainder, including punctuation inside quotes or parentheses.
+        const lead = sentenceEnd < 0 ? overview : overview.slice(0, sentenceEnd + 1);
+        const rest = sentenceEnd < 0 ? '' : overview.slice(sentenceEnd + 1).trim();
         return '<div class="ov">' +
             '<p class="ov-job"><span class="ov-kicker">The job</span>' + esc(cp.tag) + '</p>' +
             (steps.length
@@ -733,7 +777,7 @@
         if (!items.length) return '<p style="font-size:.84rem;color:var(--ink-soft);padding:6px 0">No diagnoses in this severity tier.</p>';
         return '<div class="dx-grid">' + items.map(d => {
             const name = d[0], sev = d[1], key = d[2];
-            return '<div class="dx-card sev-' + sev + '"><h4>' + (SEV_ICON[sev] || '') + ' ' + esc(name) +
+            return '<div class="dx-card sev-' + sev + '"><h4>' + sevDot(sev) + esc(name) +
                 ' <span class="sev-tag">' + (SEV_LABEL[sev] || sev) + '</span></h4>' +
                 '<div class="dx-key"><strong>Key:</strong> ' + esc(key) + '</div></div>';
         }).join('') + '</div>';
@@ -742,13 +786,13 @@
     function relatedHtml(id, closed) {
         const ids = (RELATED[id] || []).filter(x => BY_ID[x]);
         const ecgChip = (getEcg() && ECG_FROM_PRESENTATIONS[id])
-            ? '<button type="button" class="related-chip" data-ecg="1">📈 ECG from scratch</button>'
+            ? '<button type="button" class="related-chip" data-ecg="1">' + GROUP_SVG.ecg + 'ECG from scratch</button>'
             : '';
         if (!ids.length && !ecgChip) return '';
         return sectionCard('🔗', 'See also',
             '<div class="related">' + ids.map(rid => {
                 const r = BY_ID[rid];
-                return '<button type="button" class="related-chip" data-id="' + r.id + '">' + esc(r.icon) + ' ' + esc(r.name) + '</button>';
+                return '<button type="button" class="related-chip" data-id="' + r.id + '">' + iconFor(r) + esc(r.name) + '</button>';
             }).join('') + ecgChip + '</div>', closed, 'see-also');
     }
 
@@ -787,20 +831,14 @@
         stage.innerHTML =
             '<div class="cp-hero">' +
             '<button type="button" class="back-btn" id="backBtn">← All presentations</button>' +
-            '<div class="cp-ico-lg">' + esc(cp.icon) + '</div>' +
+            '<div class="cp-ico-lg" aria-hidden="true">' + iconFor(cp) + '</div>' +
             '<h1 id="presentationTitle" tabindex="-1">' + esc(cp.name) + '</h1><p class="tag">' + esc(cp.tag) + '</p></div>' +
 
             firstMinutesHtml(cp) +
 
-            resusQuickCardHtml(cp) +
+            presentationTocHtml() +
 
-            managementPivotsHtml(cp) +
-
-            learningLoopHtml(cp) +
-
-            personalPlanHtml(cp) +
-
-            sectionCard('🧭', 'How to think', overviewHtml(cp), isClosed('how-to-think'), 'how-to-think') +
+            sectionCard('🧭', 'How to think', overviewHtml(cp), isClosed('how-to-think', true), 'how-to-think') +
 
             sectionCard('🚨', dxTitle, dxCards(cp), isClosed('dont-miss'), 'dont-miss') +
 
@@ -810,38 +848,40 @@
                 'Tick what your patient has — the banner updates as you go.</p><div class="rf-tools"><button type="button" class="rf-clear" id="clearRedFlags">Clear selected</button><button type="button" class="rf-clear" id="copyReview">Copy review</button></div>' + rfItems +
                 '<div class="rf-progress"><i id="rfBar"></i></div></div>', isClosed('red-flags'), 'red-flags') +
 
-            sectionCard('🗣️', 'Focused History', clusterGrid(cp.history), isClosed('history'), 'history') +
+            sectionCard('🗣️', 'Focused History', clusterGrid(cp.history), isClosed('history', true), 'history') +
 
-            sectionCard('🩺', 'Examination Clusters', clusterGrid(cp.exam), isClosed('exam'), 'exam') +
+            sectionCard('🩺', 'Examination Clusters', clusterGrid(cp.exam), isClosed('exam', true), 'exam') +
 
             sectionCard('🧪', 'Workup',
                 '<div class="wu-grid">' + cp.workup.map(w =>
                     '<div class="wu-col"><h4>' + esc(w[0]) + '</h4><ul>' +
-                    w[1].map(i => '<li>' + esc(i) + '</li>').join('') + '</ul></div>').join('') + '</div>', isClosed('workup'), 'workup') +
+                    w[1].map(i => '<li>' + esc(i) + '</li>').join('') + '</ul></div>').join('') + '</div>' +
+                '<details class="medication-safety"><summary>Medication safety reminder</summary><p>Use this as a first-pass prompt; verify all medications, doses, concentrations, contraindications, weight, pregnancy status, and local protocols before administration.</p><p>Check indication, allergy, route, renal/hepatic risk, interactions, monitoring, and local formulary.</p></details>', isClosed('workup'), 'workup') +
 
             sectionCard('🏥', 'Disposition Pathway',
                 '<div class="disp-grid">' + cp.disposition.map(d => {
                     const cls = dispClass(d[0]);
-                    const ico = cls === 'd-discharge' ? '✅' : cls === 'd-admit' ? '🛏️' : '🚑';
-                    return '<div class="disp-col ' + cls + '"><h4>' + ico + ' ' + esc(d[0]) +
+                    return '<div class="disp-col ' + cls + '"><h4>' + esc(d[0]) +
                         '</h4><ul><li>' + esc(d[1]) + '</li></ul></div>';
-                }).join('') + '</div>', isClosed('disposition'), 'disposition') +
+                }).join('') + '</div><p class="clinical-safety-note">Use objective reassessment and the local pathway.</p>', isClosed('disposition'), 'disposition') +
 
             sectionCard('💡', 'Pearls & Pitfalls',
-                '<div class="pp-grid"><div class="pp-box pearls"><h4>🎯 Clinical Pearls</h4><ul class="plain-list">' +
+                '<div class="pp-grid"><div class="pp-box pearls"><h4>Clinical Pearls</h4><ul class="plain-list">' +
                 (Array.isArray(cp.pearls) && cp.pearls.length
                     ? cp.pearls.map(p => '<li>' + esc(p) + '</li>')
                     : cp.dontMiss.filter(d => d[1] === 'critical').slice(0, 4).map(d =>
                         '<li><strong>' + esc(d[0]) + ':</strong> ' + esc(d[2]) + '</li>')
                 ).join('') +
-                '</ul></div><div class="pp-box pitfalls"><h4>⚠️ Pitfalls</h4><ul class="plain-list">' +
+                '</ul></div><div class="pp-box pitfalls"><h4>Pitfalls</h4><ul class="plain-list">' +
                 cp.pitfalls.map(p => '<li>' + esc(p) + '</li>').join('') +
-                '</ul></div></div>', isClosed('pearls-pitfalls'), 'pearls-pitfalls') +
+                '</ul></div></div>', isClosed('pearls-pitfalls', true), 'pearls-pitfalls') +
+
+            '<section class="presentation-study-group" id="section-study" aria-label="Recall and notes" tabindex="-1">' + learningLoopHtml(cp) + personalPlanHtml(cp) + '</section>' +
 
             relatedHtml(id, isClosed('see-also')) +
 
             sectionCard('📚', 'References',
-                '<ul class="refs">' + cp.refs.map(r => '<li>' + esc(r) + '</li>').join('') + '</ul>', isClosed('references', true), 'references') +
+                evidenceHtml(cp.id) + '<ul class="refs">' + cp.refs.map(r => '<li>' + esc(r) + '</li>').join('') + '</ul>', isClosed('references', true), 'references') +
 
             pagerHtml(id);
 
@@ -859,8 +899,8 @@
                 if (btn.dataset.ecg) showEcg();
                 else showPresentation(btn.dataset.id);
             }));
-        stage.querySelectorAll('.case-action').forEach(btn =>
-            btn.addEventListener('click', () => jumpToSection(btn.dataset.jump)));
+        stage.querySelectorAll('.case-action, .section-jump').forEach(btn =>
+            btn.addEventListener('click', () => jumpToSection(btn.dataset.jump, true)));
         stage.querySelectorAll('.reveal-btn').forEach(btn => btn.addEventListener('click', () => {
             const answer = document.getElementById('recall-' + btn.dataset.reveal);
             const hidden = answer.hidden;
@@ -945,45 +985,42 @@
         }
     }
 
-    var ECG_NORMAL_REF = '<g class="ecg-normal-ref"><rect x="226" y="6" width="86" height="32" rx="5" class="ecg-normal-box"/><path d="M230,30 H240 Q243,30 245,27 Q247,24 250,27 L252,30 H258 L260,30 L261,22 L262,34 L263,30 H270 Q275,30 278,26 Q281,22 285,24 L288,30 H308" class="ecg-normal-trace"/><text x="230" y="15" class="ecg-label">Normal ST-T</text></g>';
-    var ECG_NORMAL_REF_WIDE = '<g class="ecg-normal-ref"><rect x="534" y="148" width="84" height="32" rx="5" class="ecg-normal-box"/><path d="M538,174 H548 Q551,174 553,171 Q555,168 558,171 L560,174 H566 L568,174 L569,166 L570,180 L571,174 H578 Q583,174 586,170 Q589,166 593,168 L596,174 H612" class="ecg-normal-trace"/><text x="538" y="157" class="ecg-label">Normal ST-T</text></g>';
     function ecgSvgWithRef(svg, skipReference) {
-        try {
-            if (!svg || skipReference || svg.indexOf('ecg-normal-ref') !== -1) return svg;
-            var ref = (svg.indexOf('viewBox="0 0 640') !== -1) ? ECG_NORMAL_REF_WIDE : ECG_NORMAL_REF;
-            return String(svg).replace(/<\/svg>\s*$/, ref + '</svg>');
-        } catch (e) { return svg; }
+        // References are generated from the same lead/time geometry by the viewer.
+        // Interactive groups must remain exposed to assistive technology.
+        if (!svg) return '';
+        return svg.indexOf('ecg-hot') >= 0 ? svg.replace('aria-hidden="true"', 'role="group"') : svg;
     }
     var ECG_WAVE_INFO = {
-        p: ['P wave \u2014 atrial depolarisation; normal <120 ms, <2.5 mm limb', 'The P wave is the surface manifestation of atrial depolarisation as the sinus impulse spreads from right to left atrium via Bachmann\u2019s bundle. Normal contour is smooth with frontal axis 0\u2013+75\u00b0: upright in I and II, inverted in aVR, biphasic in V1 where the terminal negative deflection reflects left-atrial forces. Limits are under 120 ms duration, under 2.5 mm in limb leads and under 1.5 mm in precordial leads; here 80 ms. A broad notched P mitrale beyond 120 ms, or a terminal negative force in V1 deeper than 1 mm and wider than 40 ms, defines left-atrial enlargement; a tall peaked P pulmonale defines right-atrial enlargement; inverted or variable P waves define junctional, ectopic or multifocal origin.'],
-        pr: ['PR interval \u2014 AV conduction; normal 120\u2013200 ms', 'The PR interval spans P onset to QRS onset and comprises intra-atrial conduction plus AV-nodal (AH) and His-Purkinje (HV) conduction time; it shortens physiologically at faster rates. Here 160 ms. Persistent prolongation beyond 200 ms defines first-degree AV block (drugs, ischaemia, Lyme disease); a short interval with a slurred delta wave and widened QRS defines ventricular pre-excitation of Wolff-Parkinson-White type, whereas a short interval with a normal QRS and no delta suggests Lown-Ganong-Levine physiology or a junctional rhythm with retrograde P waves.'],
-        qrs: ['QRS complex \u2014 ventricular depolarisation; normal <110 ms (typically 70\u2013100)', 'The QRS complex records ventricular depolarisation through the His-Purkinje system; lower-case versus upper-case q/R/S lettering denotes the relative amplitude of successive deflections. Normal duration is under 110 ms in adults (here 85 ms, R 0.85 mV), and a narrow complex proves supraventricular origin. Durations of 120 ms or more define complete bundle-branch block \u2014 RBBB shows rSR\u2032 in V1 with broad slurred lateral S waves, LBBB shows broad notched R waves without q in I, aVL and V5\u2013V6 \u2014 while 110\u2013119 ms without BBB morphology is incomplete block or nonspecific intraventricular conduction delay. Other causes of widening include hyperkalaemia, sodium-channel blockade, pre-excitation, ventricular pacing and hypothermia.'],
-        st: ['ST segment \u2014 plateau phase 2; normally isoelectric', 'The ST segment extends from the J point (QRS offset) to T onset and corresponds to the plateau phase of the ventricular action potential; it is assessed 60\u201380 ms after the J point and measures about 90 ms here. Convex elevation with reciprocal depression indicates transmural infarction; concave diffuse elevation with PR depression and Spodick\u2019s sign indicates acute pericarditis; a notched J point in a young patient indicates benign early repolarisation; horizontal or downsloping depression of 0.5 mm or more in two contiguous leads indicates ischaemia; anterior precordial depression with dominant R waves and upright T waves indicates posterior occlusion.'],
-        t: ['T wave \u2014 transmural repolarisation gradient; normal <5 mm limb, <10 mm chest', 'The T wave reflects phase-3 repolarisation gradients across the ventricular wall; normal morphology is asymmetric with a slower upstroke, upright in all leads except aVR and V1 (isolated lead III inversion is a normal variant). Here 0.42 mV. Narrow-based symmetrically peaked tenting indicates hyperkalaemia; broad-based bulky waves dwarfing the QRS indicate hyperacute occlusion, distinguished from early-repolarisation mimics by T amplitude relative to QRS size and by a prolonged QTc; deep symmetric V2\u2013V3 inversion in a pain-free patient indicates a Wellens LAD lesion; positive-then-negative biphasic waves indicate ischaemia whereas negative-then-positive waves indicate hypokalaemia; a fused double peak represents a prominent U wave or a hidden P wave.'],
-        qt: ['QT interval \u2014 Q onset to T end; AHA prolonged \u2265450 men/\u2265460 women', 'The QT interval encompasses total ventricular depolarisation and repolarisation and is measured by the maximum-slope-intercept method in the lead showing the longest interval (usually V2/V3, or aVR/aVL when U waves superimpose), excluding discrete U waves and always validated visually against automated readings. Here about 345 ms with QTc about 385 ms by Bazett\u2019s formula (QT divided by the square root of RR, valid 60\u2013100 bpm; Fridericia or Framingham corrections outside that range). AHA limits define 450 ms or more in men and 460 ms or more in women as prolonged, 390 ms or less as short, and values above 500 ms as high risk for torsades de pointes; conduction defects require JT-interval adjustment. A long QU interval with prominent U waves suggests hypokalaemia or hypomagnesaemia, isolated ST prolongation with an unchanged T suggests hypocalcaemia, and short peaked intervals suggest hypercalcaemia or short-QT syndrome.'],
-        cal: ['Calibration \u2014 1 mV per 200 ms at 25 mm/s, 10 mm/mV', 'The calibration pulse is a rectangular 1 mV, 200 ms reference recorded at diagnostic bandwidth (0.05\u2013150 Hz); every amplitude and duration judgment on the tracing depends on it. Voltage alone never establishes hypertrophy: the Sokolow-Lyon criterion (S in V1 plus R in V5/V6 exceeding 35 mm) requires accompanying strain pattern or axis deviation, and athletic young chests commonly exceed voltage thresholds physiologically. Diffuse complexes under 5 mm in limb leads or under 10 mm in precordial leads define low voltage, seen with pericardial fluid, pulmonary disease, obesity or infiltrative processes; beat-to-beat QRS alternation indicates the heart swinging within a large effusion.'],
-        narrow: ['Narrow QRS \u2014 supraventricular origin; normal <110 ms', 'A narrow complex proves the impulse came from above the ventricles through a normally conducting His-Purkinje system; here 85 ms. Each narrow beat preceded by a normal P wave with a constant PR interval defines sinus rhythm. Narrow tachycardias therefore start as SVT until proven otherwise \u2014 whether sinus tachycardia, atrial flutter with fixed conduction, or atrial fibrillation with a normal QRS.'],
-        wide: ['Wide QRS \u2014 120 ms or more; ventricular vs aberrant conduction', 'A wide complex means ventricular origin or aberrant supraventricular conduction through bundle-branch block, hyperkalaemia, sodium-channel blockade, pre-excitation or pacing; here a regular 150 ms complex. Decide with morphology algorithms (Brugada/Vereckei): AV dissociation, fusion or capture beats, extreme axis, precordial concordance and a structural or post-infarct history all favour VT. Treat regular wide tachycardia as VT, cardiovert instability, and never give verapamil or diltiazem to an undifferentiated wide rhythm.'],
-        psinus: ['Sinus P wave \u2014 atrial origin criteria', 'A sinus P is upright in II, inverted in aVR, under 120 ms, with one constant PR before every QRS and a rate of 60\u2013100/min. Absent P waves with an irregular baseline mean atrial fibrillation; sawtooth deflections mean flutter; inverted short-PR P waves mean a junctional focus; three or more shapes mean multifocal rhythm; a P buried in the T (camel hump) betrays tachycardia or block.'],
-        axis: ['Frontal QRS axis \u2014 quadrant method with I and aVF; normal \u221230\u00b0 to +90\u00b0', 'Lead I views the heart horizontally and aVF vertically: positive in both is the normal quadrant. Left-axis deviation (\u221230\u00b0 to \u221290\u00b0) suggests left anterior fascicular block, right-axis deviation (+90\u00b0 to +180\u00b0) the posterior fascicle, and negativity in both an extreme axis. Shortcut: find the most isoelectric limb lead, and the axis lies roughly 90\u00b0 away from it.'],
-        reg: ['Regularity \u2014 even versus varying RR intervals', 'A regular rhythm keeps constant RR gaps and is measured with the large-box scale; an irregular rhythm needs a 6-second strip count multiplied by 10. Here gaps run 800, then 550, then 950 ms with no discrete P waves \u2014 irregularly irregular narrow complexes define atrial fibrillation until proven otherwise. Contrast fixed-pattern irregularity (bigeminy, flutter with fixed block) and breathing-phasic sinus arrhythmia, both of which repeat.'],
+        p: ["P wave — atrial depolarisation","Inspect P shape and its relationship to each QRS. Sinus P waves are usually upright in I and II and inverted in aVR. Adult P duration is normally <120 ms. Abnormal P-wave size or shape can suggest atrial abnormality, but does not measure chamber size or replace echocardiography."],
+        pr: ["PR interval — P onset to QRS onset","Adult PR is normally 120–200 ms. A consistently prolonged PR with 1:1 conduction is first-degree AV block. A short PR with a delta wave and widened QRS suggests ventricular pre-excitation. Interpret a short PR without a delta wave with P morphology and rhythm; it does not establish an accessory pathway."],
+        qrs: ["QRS complex — ventricular depolarisation","Measure QRS onset to end. Adult QRS is usually under 110 ms; at least 120 ms is wide. Bundle-branch block requires the appropriate lead morphology as well as duration. Ventricular rhythms, pacing, pre-excitation, electrolytes and drugs can also widen QRS. A narrow QRS usually reflects rapid His-Purkinje conduction but does not prove supraventricular origin."],
+        st: ["ST segment — measure acute STE at the J point","The J point is the end of QRS. Use it for acute ST-elevation thresholds, with the correct lead, age and sex criteria. Compare the baseline, adjacent leads, reciprocal changes and prior ECG. ST shape alone cannot distinguish occlusion, pericarditis or early repolarisation. New or dynamic ST-T changes require clinical assessment and serial ECGs."],
+        t: ["T wave — inspect shape and lead distribution","T-wave polarity and amplitude vary by lead. New regional, bulky T waves may be hyperacute; narrow peaked T waves may suggest hyperkalemia. Neither shape proves its cause. Deep symmetric or positive-then-negative T waves in V2–V3 after resolved ischemic pain suggest Wellens. Compare serial ECGs, symptoms, electrolytes, QRS and QT."],
+        qt: ["QT interval — QRS onset to T-wave end","Use a lead with a clear T-wave end and exclude a separate U wave. Read the selected diagram labels; examples differ. State the correction formula: Bazett uses QT/√RR in seconds, overcorrects at fast rates and undercorrects at slow rates. AHA practical prolonged-QTc thresholds are ≥450 ms in men and ≥460 ms in women; >500 ms raises torsades risk. Wide QRS requires adjusted QT or JT assessment."],
+        cal: ["Calibration — 1 mV / 200 ms reference","At 25 mm/s and 10 mm/mV, a small box represents 40 ms and 0.1 mV. Confirm speed and gain before measuring. Screen size and zoom change physical on-screen millimetres while preserving waveform-to-grid scale. Voltage alone does not establish anatomical hypertrophy; low voltage or alternans needs clinical correlation and, when indicated, echocardiography."],
+        narrow: ["Narrow QRS — usually supraventricular conduction","A narrow QRS usually reflects activation through the His-Purkinje system. Determine the rhythm from atrial activity, P-to-QRS relationships and RR regularity, not width alone. Sinus, atrial, AV-nodal and junctional rhythms may all be narrow."],
+        wide: ["Wide QRS — ≥120 ms","Consider ventricular rhythm, bundle-branch block, pacing, pre-excitation, electrolyte disturbance and sodium-channel blockade. AV dissociation, capture or fusion beats and suitable morphology favour VT. Treat an undifferentiated wide-complex tachycardia as VT; instability requires immediate emergency management."],
+        psinus: ["Sinus P — inspect atrial-to-ventricular timing","Look for P waves with sinus morphology, usually upright in II and inverted in aVR. Assess whether each P conducts and whether PR is stable. Sinus rhythm can be slow or fast, and sinus atrial activity can coexist with AV block. Absent obvious P waves alone does not diagnose AF."],
+        axis: ["Frontal QRS axis — I, aVF and II","Positive I and aVF indicate an axis between 0° and +90°. With positive I and negative aVF, use lead II: a positive II can still be normal (−30° to 0°); negative II supports left-axis deviation. Right or extreme axes have several causes and do not identify a fascicular block alone."],
+        reg: ["Regularity — compare successive RR intervals","Use several RR intervals. For irregular rhythms, count QRS complexes over a known duration: 6 seconds ×10 or 10 seconds ×6 estimates beats/min. Truly irregular RR with no organised P waves supports AF; exclude ectopy, variable atrial conduction and artifact."],
         v1: ['V1 deep S wave \u2014 7.5 mm displayed at 5 mm/mV = 15 mm standard equivalent', 'Lead V1 sits over the septum and right ventricle: the normal small septal r reflects left-to-right septal depolarisation, then the deep S reflects the left ventricle depolarising away. This tracing uses half gain (5 mm/mV), so the displayed 7.5 mm S equals 15 mm at standard 10 mm/mV gain. A tall R wave in V1 instead raises RVH, posterior infarction, right bundle-branch block, pre-excitation, or lead-placement concerns.'],
         v5: ['V5 tall R wave \u2014 11 mm displayed at 5 mm/mV = 22 mm standard equivalent', 'Lead V5 faces the lateral left ventricle: a tall R with downsloping ST depression and asymmetric T inversion is a pressure-overload strain pattern, not primary ischaemia by itself. At half gain, the displayed 11 mm R equals 22 mm standard; S in V1 plus R in V5 is therefore 15 + 22 = 37 mm, meeting Sokolow\u2013Lyon. Voltage remains a screening clue and must be interpreted with the patient, old ECG, and echo when needed.'],
         chambers: ['Chamber-pattern clues \u2014 supportive ECG findings, not chamber-size diagnoses', 'RAE pattern: a peaked P wave at least 2.5 mm in lead II. LAE pattern: a notched P wave at least 120 ms in II, or a terminal negative V1 P component at least 1 mm deep and 40 ms wide. RVH pattern: dominant R in V1 (R/S >1 and R >7 mm), right-axis deviation, and sometimes anterior/inferior strain. These patterns are neither sensitive nor specific enough to replace echocardiography.'],
         lowv: ['Low voltage \u2014 QRS under 5 mm in every limb lead, under 10 mm in every chest lead', 'Here 3 mm complexes with preserved timing \u2014 low voltage narrows nothing and widens nothing, it only shrinks. A single small complex does not make the diagnosis: assess every lead in the relevant set and confirm gain first. Causes include effusion/tamponade, emphysema, obesity, anasarca, infiltrative/restrictive disease, and hypothyroidism. Low voltage with new electrical alternans and sinus tachycardia warrants immediate POCUS/echo for pericardial effusion and tamponade physiology.'],
         ant: ['Anterior STE — V2–V3 are the only sex/age-specific standard leads', 'Fifth UDMI J-point thresholds in two contiguous leads: V2–V3 2.5 mm in men under 40, 2.0 mm in men 40 and over, 1.5 mm in women; every other standard lead uses 1.0 mm. Interpret with symptoms, reciprocal findings, prior ECG, and serial change.'],
         inf: ['Inferior STE — 1 mm standard-lead rule; add right-sided leads', 'Fifth UDMI uses 1.0 mm at the J point in all standard leads other than V2–V3, including II, III, aVF, I, aVL, and V4–V6. Inferior STE with reciprocal STD in aVL should prompt V3R–V6R, especially V4R, to assess RV involvement.'],
-        mirror: ['Mirror STD in aVL — reciprocal of inferior OMI, not a second ischaemia', 'ST depression in aVL that mirrors inferior STE is reciprocal change seen from the opposite wall. MIRROR mnemonic — inferior UP (II, III, aVF), aVL DOWN. Territorial STE plus mirror STD means OMI until proven otherwise and greatly increases specificity: pericarditis shows diffuse STE with no reciprocal STD except aVR/V1. Confirm inferior OMI with right-sided leads (V4R for RV involvement), an old tracing, and serial ECGs.'],
-        hyperacute: ['Hyperacute T — bulky and disproportionate to QRS; territorial earliest OMI sign', 'Minutes-old occlusion inflates the T wave: broad-based and bulky with a straightened ST takeoff, dwarfing the preceding QRS. There is no universal millimetre definition — what matters is T-area relative to QRS, not height, so even a normal-size T is hyperacute against a tiny QRS; research models add earlier T-peak symmetry with different cutoffs for precordial vs limb leads. Always territorial across two or more adjacent leads, never all leads: anterior face (V2–V3) or inferior face (II/aVF, with reciprocal T enlargement in aVL); high-lateral I/aVL behaves the same. Advanced signs are T invading the QRS (terminal QRS distortion) and added STD in the same lead (the de Winter subset). Contrast hyperkalaemia: narrow pointed Eiffel-tower tenting with small T-area, diffuse, with flat P waves and QRS widening as potassium rises — and the two can coexist. BER instead shows widespread STE where STE is under 25% of T height in V6. May precede any STE, so compare with an old ECG, repeat in 10–15 minutes, consider bedside echo, and escalate for OMI rather than waiting for STE.'],
-        hyperk: ['HyperK tenting — narrow, pointed, with flat P; check potassium now', 'Hyperkalaemia peaks the T into a narrow pointed Eiffel-tower tent with a narrow base — the geometric opposite of the inflated hyperacute T — often with flattened P waves, then PR prolongation and QRS widening as potassium rises. Usually diffuse across many leads rather than territorial. With weakness, bradycardia, renal failure, missed dialysis or potassium-raising drugs, check potassium now and treat the tracing (calcium if wide or unstable). HyperK and OMI can coexist, so never let one diagnosis stop the other workup.'],
-        wellens: ['Wellens — pain-free biphasic or deeply inverted V2–V3; critical LAD', 'Wellens marks a critical proximal LAD stenosis during a pain-free interval after resolved angina. Type A (~25%): biphasic T in V2–V3. Type B (~75%): deep symmetric inverted T in V2–V3. Both keep preserved R-wave progression with an isoelectric or minimally elevated ST and no pathologic Q waves. T waves may pseudo-normalize when pain returns — that is occlusion, not recovery. Urgent cardiology for catheterization; never send for an exercise stress test.'],
+        mirror: ['Mirror STD in aVL — reciprocal of inferior OMI, not a second ischaemia', 'ST depression in aVL that mirrors inferior STE is reciprocal change seen from the opposite wall. MIRROR mnemonic — inferior UP (II, III, aVF), aVL DOWN. Territorial STE plus mirror STD means OMI until proven otherwise and greatly increases specificity: pericarditis shows diffuse STE with no reciprocal STD except aVR/V1. Use right-sided leads to assess RV involvement; compare prior and serial ECGs. V4R does not independently confirm inferior occlusion.'],
+        hyperacute: ["Hyperacute T — regional, bulky and disproportionate","Look for broad T waves that are large relative to their QRS, especially when new in adjacent leads or changing over time. They may precede ST elevation. There is no universal height cutoff and morphology alone does not prove occlusion. Assess reciprocal changes, electrolytes and mimics; escalate promptly when symptoms and ECG suggest ongoing ischemia."],
+        hyperk: ["Hyperkalemia — inspect P, PR, QRS and T together","Possible findings include peaked T waves, diminished or absent P waves, PR prolongation and QRS widening. Changes do not follow a reliable sequence and a normal ECG does not exclude dangerous hyperkalemia. Check potassium and the clinical setting urgently; treat life-threatening changes under the local emergency protocol. Coronary ischemia may coexist."],
+        wellens: ["Wellens — anterior T changes after resolved ischemic pain","V2–V3 show positive-then-negative biphasic T waves or deep symmetric inversion, with preserved R waves, little STE and no pathological Q waves. This high-risk pattern is strongly associated with LAD disease; ECG does not prove the exact lesion or current artery patency. Arrange urgent cardiology assessment. Recurrent pain or T-wave pseudonormalisation needs immediate reassessment. Avoid exercise stress testing."],
         dewinter: ['de Winter — upsloping STD into tall T; anterior OMI without STE', 'de Winter shows 1–3 mm upsloping J-point ST depression in the precordial leads continuing into tall, prominent, symmetric T waves, with STE in aVR common but not required — about 2% of anterior LAD occlusions, with the mortality of anterior STEMI. The pattern can evolve into frank anterior STE or appear only on the first tracing. Immediate cath-lab activation; treat as anterior OMI, not nonspecific ischemia.'],
         ischa: ['Ischaemia without STE — contiguous STD, T-wave, or Q-wave change', 'Fifth UDMI ischemic findings include new horizontal or downsloping STD of at least 0.5 mm in two contiguous leads and new or dynamic T-wave inversion of at least 1 mm in two contiguous leads. Broad symmetric hyperacute T waves disproportionate to the QRS are also concerning. Serial ECGs and troponin are required; no STE does not rule out occlusion.'],
         post: ['Posterior ischemia — confirm the anterior mirror with V7–V9', 'Fifth UDMI flags STD of at least 1 mm in V1, V2, and/or V3, especially with a dominant R in V1/V2, as a posterior MI clue. Record V7–V9 in the V6 horizontal plane; STE of at least 0.5 mm supports posterior infarction (1 mm gives greater specificity in men under 40).'],
-        sgSte: ['Sgarbossa 1 — concordant STE ≥1 mm with positive QRS; LBBB/paced OMI', 'In LBBB or ventricular-paced rhythm with wide QRS at least 120 ms, ST elevation in the same direction as a predominantly positive QRS (for example lateral V5) is never normal discordance — it is concordant injury. Threshold is 1 mm at the J point in at least one lead. Here V5 shows a broad positive R without Q plus convex STE above 1 mm. Any 1 of the 3 Smith-modified criteria means OMI until proven otherwise; compare with an old tracing and repeat if symptoms evolve.'],
-        sgStd: ['Sgarbossa 2 — concordant STD ≥1 mm in V1–V3; LBBB/paced OMI', 'In LBBB or ventricular-paced rhythm, ST depression in the same direction as a predominantly negative QRS in V1, V2 or V3 is concordant ischaemia, not normal discordance. Threshold is 1 mm at the J point. Here V3 shows a negative rS complex with horizontal STD beyond 1 mm while R progression is otherwise preserved. Any 1 of the 3 Smith-modified criteria means OMI.'],
-        sgDis: ['Sgarbossa 3 — excessive discordant STE, ST/S ≤ −0.25; LBBB/paced OMI', 'Uncomplicated LBBB/paced rhythm already has discordant STE opposite a negative QRS (for example septal V1). It becomes pathological when disproportionate: ST elevation at least 25 percent of the preceding S-wave depth (ST divided by S at most −0.25). Here V1 shows a QS complex with STE about 3 mm against an S near 10 mm (ratio about −0.30). The original unmodified 5 mm absolute rule missed anterior occlusions and is obsolete.'],
-        rr: ['RR interval \u2014 sinus rhythm at 75/min; even 800 ms gaps', 'The RR interval defines cycle length and ventricular rate; sinus rhythm requires a morphologically normal P wave before every narrow QRS with a constant PR interval. Rate derives from the large-box scale (300/150/100/75/60/50) or, when irregular, from a 6-second strip count multiplied by 10; here even 800 ms intervals yield 75/min. An irregularly irregular baseline without discrete P waves defines atrial fibrillation, regular sawtooth baseline deflections define flutter, three or more P-wave morphologies define multifocal rhythm, and a regular wide complex with AV dissociation defines ventricular tachycardia.']
+        sgSte: ["Modified Sgarbossa 1 — concordant STE ≥1 mm","With LBBB or ventricular pacing, look for ≥1 mm J-point elevation in a lead with a predominantly positive QRS. This is a positive modified Sgarbossa finding. In a compatible ischemic presentation, use an urgent reperfusion pathway; the finding alone does not prove coronary occlusion."],
+        sgStd: ["Modified Sgarbossa 2 — STD ≥1 mm in V1–V3","ST depression ≥1 mm in V1, V2 or V3 with LBBB or ventricular pacing is a positive modified Sgarbossa finding. It warrants urgent evaluation for occlusion in a compatible presentation. A negative rule does not exclude acute coronary occlusion."],
+        sgDis: ["Modified Sgarbossa 3 — excessive discordant STE","With a predominantly negative QRS, look for ≥1 mm J-point elevation at least 25% of the preceding S-wave depth (signed ST/S ≤ −0.25). The proportional criterion improves on a fixed 5 mm threshold alone. Interpret with symptoms, prior ECGs and serial change."],
+        rr: ["RR interval — ventricular cycle length","For a regular rhythm, rate = 60,000/RR in milliseconds. At 25 mm/s, 300 divided by the number of large boxes is a shortcut. For irregular rhythms, count QRS complexes over a longer known strip duration. Determine rhythm from atrial activity and atrioventricular relationships as well as regularity."]
     };
     function ecgWaveText(w) {
         var info = ECG_WAVE_INFO[w];
@@ -994,16 +1031,18 @@
         try {
             var lib = window.ECG_SVG || {};
             var entry = lib[id];
-            if (!entry || (!entry.svg && !entry.png)) return '';
+            if (!entry || (!entry.svg && !entry.png)) return '<p class="empty-filter" role="status">ECG figure unavailable. Use the written criteria and a reviewed tracing.</p>';
             var title = String(entry.title || id);
+            var caption = String(entry.caption || 'Teaching diagram; not a patient recording.');
             var sourceHtml = Array.isArray(entry.sources) && entry.sources.length
                 ? '<figcaption><span class="ecg-schem">' + esc(entry.figureLabel || 'Evidence map') + '</span>' + esc(entry.sourceNote || 'Criteria shown are source-checked; this is not a patient ECG tracing.') + ' Sources: ' + entry.sources.map(function (source) {
                     return '<a href="' + esc(source.url) + '" target="_blank" rel="noopener">' + esc(source.label) + '</a>';
                 }).join(' · ') + '.</figcaption>'
-                : '';
+                : '<figcaption><span class="ecg-schem">' + esc(entry.figureLabel || 'Schematic · not to scale') + '</span>' + esc(caption) + '</figcaption>';
             var tools = '<div class="ecg-tools" role="group" aria-label="Diagram tools for ' + esc(title) + '">'
-                + '<button type="button" class="ecg-tool" data-ecg-tool="anno" data-ecg-fig-btn="' + esc(id) + '" aria-pressed="true" title="Show or hide measurement labels">Annotations</button>'
-                + (entry.noCompare ? '' : '<button type="button" class="ecg-tool" data-ecg-tool="compare" data-ecg-fig-btn="' + esc(id) + '" aria-pressed="false" title="Overlay a normal ST-T reference">Normal</button>')
+                + '<button type="button" class="ecg-tool"' + (id === 'normal-12lead' ? ' hidden' : '') + ' data-ecg-tool="anno" data-ecg-fig-btn="' + esc(id) + '" aria-pressed="true" title="Show or hide measurement labels">Annotations</button>'
+                + (entry.hasReference ? '<button type="button" class="ecg-tool" data-ecg-tool="compare" aria-pressed="false" title="Modeled same-lead normal reference at matching QRS onset times">Normal reference</button>' : '')
+                + '<button type="button" class="ecg-tool" data-ecg-tool="explain" data-ecg-fig-btn="' + esc(id) + '" title="Explore this ECG with red highlights and explanations">Explain this ECG</button>'
                 + '<button type="button" class="ecg-tool" data-ecg-tool="expand" data-ecg-fig-btn="' + esc(id) + '" title="Enlarge diagram">Enlarge</button>'
                 + '</div>';
             var hasHot = entry.svg && entry.svg.indexOf('ecg-hot') !== -1;
@@ -1012,7 +1051,7 @@
             var waves = [];
             try { waveOrder.forEach(function (w) { if ((entry.svg || '').indexOf('data-wave="' + w + '"') !== -1) waves.push(w); }); } catch (e1) {}
             var figHint = hasHot ? 'Hover or tap: ' + waves.map(function (w) { return waveNames[w] || w.toUpperCase(); }).join(' \u00b7 ') + '.' : '';
-            var inspector = hasHot ? '<div class="ecg-inspector" data-hint="' + esc(figHint) + '" aria-live="polite">' + esc(figHint) + '</div>' : '';
+            var inspector = waves.length ? '<div class="ecg-inspector" data-hint="' + esc(figHint) + '" aria-live="polite">' + esc(figHint || 'Select a wave to read its explanation.') + '</div>' : '';
             var waveBtns = waves.length ? '<div class="ecg-wavebtns" role="group" aria-label="Waves and intervals in ' + esc(title) + '">' + waves.map(function (w) { return '<button type="button" class="ecg-wavebtn" data-ecg-wavebtn="' + w + '" aria-pressed="false">' + esc(waveNames[w] || w.toUpperCase()) + '</button>'; }).join('') + '</div>' : '';
             if (entry.png) {
                 var pngSrc = String(entry.png).replace(/"/g, '%22');
@@ -1023,12 +1062,18 @@
                     + sourceHtml + tools
                     + waveBtns + inspector + '</figure>';
             }
-            return '<figure class="ecg-fig" data-ecg-fig="' + esc(id) + '"><div class="ecg-media"><div class="ecg-svg-wrap">' + ecgSvgWithRef(entry.svg, entry.noCompare) + '</div></div>'
+            var panelSelect = '', cardSvg = entry.svg;
+            if (entry.previewPanels && entry.previewPanels.length) {
+                var fullView = cardSvg.match(/viewBox="([^"]+)"/)[1];
+                panelSelect = '<label class="ecg-panel-select">Focus <select aria-label="Diagram focus" data-ecg-panel><option value="' + esc(fullView) + '" selected>Whole diagram</option>' + entry.previewPanels.map(function (p) { return '<option value="' + esc(p.viewBox) + '">' + esc(p.title) + '</option>'; }).join('') + '</select></label>';
+            }
+            return '<figure class="ecg-fig" data-ecg-fig="' + esc(id) + '">' + panelSelect + '<div class="ecg-media"' + ' tabindex="0" role="region" aria-label="ECG figure; scroll horizontally to inspect"' + '><div class="ecg-svg-wrap">' + ecgSvgWithRef(cardSvg, entry.noCompare) + '</div></div>'
                 + sourceHtml + tools
                 + waveBtns + inspector + '</figure>';
-        } catch (e) { return ''; }
+        } catch (e) { console.error('ECG figure failed:', id, e); return '<p class="empty-filter" role="status">ECG figure could not be rendered. Reload or use the written criteria.</p>'; }
     }
     function openEcgLightbox(figId, returnTo) {
+        if (window.ECG_INTERACTIVE) { window.ECG_INTERACTIVE.open(figId, returnTo); return; }
         try {
             closeEcgLightbox();
             var lib = window.ECG_SVG || {};
@@ -1056,6 +1101,7 @@
         } catch (e) {}
     }
     function closeEcgLightbox() {
+        if (window.ECG_INTERACTIVE) window.ECG_INTERACTIVE.close();
         try {
             var box = document.getElementById('ecgLightbox');
             if (!box) return;
@@ -1161,7 +1207,7 @@
             }).join('') +
             '<button type="button" class="ecg-step-chip" data-jump="ecg-patterns">Patterns</button></nav>';
         const firstPassHtml = '<aside class="case-rail" aria-label="First thirty seconds">' +
-            '<div class="case-rail-title"><span>⚡</span><div><strong>First 30 seconds</strong><small>Shift-first pass, then the 7-step method</small></div></div>' +
+            '<div class="case-rail-title"><span aria-hidden="true">' + GROUP_SVG.bolt + '</span><div><strong>First 30 seconds</strong><small>Shift-first pass, then the 7-step method</small></div></div>' +
             '<ol class="case-steps">' + ecg.firstPass.map(function (step, i) {
                 return '<li><span>' + (i + 1) + '</span>' + esc(step) + '</li>';
             }).join('') + '</ol>' +
@@ -1169,18 +1215,19 @@
             '<button type="button" class="case-action primary" data-jump="ecg-red-flags">Red flags</button>' +
             '<button type="button" class="case-action" data-jump="ecg-step-' + ecg.steps[0].id + '">Start 7-step</button>' +
             '<button type="button" class="case-action" data-jump="ecg-patterns">Pattern library</button>' +
+            '<button type="button" class="case-action" id="openDynamicEcg">Dynamic ECG</button>' +
             '</div></aside>';
-        const killerHtml = '<div class="ecg-killers" aria-label="Killer patterns">' +
+        const killerHtml = '<details class="ecg-pattern-index"><summary>Jump to a pattern</summary><div class="ecg-killers" aria-label="Killer patterns">' +
             ecg.patterns.filter(function (p) { return p.severity === 'critical'; }).map(function (p) {
                 return '<button type="button" class="ecg-killer" data-ecg-pattern="' + p.id + '"><strong>' + esc(p.name) + '</strong><small>' + esc(p.tag) + '</small></button>';
-            }).join('') + '</div>';
+            }).join('') + '</div></details>';
         const stepsHtml = ecg.steps.map(function (s) {
             return sectionCard(s.icon || '📈', 'Step ' + s.num + ' · ' + s.name,
                 '<p class="ecg-summary">' + esc(s.summary) + '</p>' +
-                ecgFigure(s.id) +
+                ecgFigure(s.id) + (s.id === 'rate-calibration' ? ecgFigure('normal-12lead') : '') +
                 ecgDetailList(s.details) +
-                '<div class="pp-grid ecg-pp"><div class="pp-box pearls"><h4>🎯 Pearl</h4><p>' + esc(s.pearl || '') + '</p></div>' +
-                '<div class="pp-box pitfalls"><h4>⚠️ Pitfall</h4><p>' + esc(s.pitfall || '') + '</p></div></div>',
+                '<div class="pp-grid ecg-pp"><div class="pp-box pearls"><h4>Pearl</h4><p>' + esc(s.pearl || '') + '</p></div>' +
+                '<div class="pp-box pitfalls"><h4>Pitfall</h4><p>' + esc(s.pitfall || '') + '</p></div></div>',
                 true, 'ecg-step-' + s.id);
         }).join('');
         const cats = [['all', 'All patterns']].concat(Object.keys(ECG_CAT_LABEL).map(function (k) { return [k, ECG_CAT_LABEL[k]]; }));
@@ -1191,11 +1238,12 @@
         const visible = ecg.patterns.filter(ecgPatternVisible);
         const patternsHtml = '<div class="ecg-pattern-grid">' + (visible.length ? visible.map(function (p) {
             return '<article class="ecg-pattern sev-' + p.severity + '" id="section-ecg-pattern-' + p.id + '" data-section="ecg-pattern-' + p.id + '" tabindex="-1">' +
-                '<header><span class="sev-tag">' + (SEV_ICON[p.severity] || '') + ' ' + esc(SEV_LABEL[p.severity] || '') + '</span>' +
+                '<header><span class="sev-tag">' + sevDot(p.severity) + esc(SEV_LABEL[p.severity] || '') + '</span>' +
                 '<span class="ecg-cat">' + esc(ECG_CAT_LABEL[p.category] || p.category) + '</span></header>' +
                 '<h3>' + esc(p.name) + '</h3>' +
                 '<p class="ecg-tagline">' + esc(p.tag) + '</p>' +
                 ecgFigure(p.id) +
+                (Array.isArray(p.comparison) ? '<div class="ecg-comparison"><h4>Distinguish the patterns</h4><dl>' + p.comparison.map(function (row) { return '<dt>' + esc(row[0]) + '</dt><dd>' + esc(row[1]) + '</dd>'; }).join('') + '</dl></div>' : '') +
                 (p.leads ? '<p class="ecg-leads"><strong>Leads:</strong> ' + rich(p.leads) + '</p>' : '') +
                 '<p><strong>Criteria:</strong> ' + rich(p.criteria) + '</p>' +
                 (p.significance ? '<p><strong>Why it matters:</strong> ' + rich(p.significance) + '</p>' : '') +
@@ -1204,7 +1252,7 @@
                 '</article>';
         }).join('') : '<p class="empty-filter">No patterns in this filter. Choose All, or another severity/category.</p>') + '</div>';
         const recallHtml = '<section class="learning-loop" aria-label="ECG rapid recall">' +
-            '<div class="learning-head"><div><span class="learning-kicker">🧠 PRACTICE REFRESHER</span><h2>Rapid recall</h2><p>Test your first action and the dangerous patterns before revealing the answer.</p></div>' +
+            '<div class="learning-head"><div><span class="learning-kicker">PRACTICE REFRESHER</span><h2>Rapid recall</h2><p>Test your first action and the dangerous patterns before revealing the answer.</p></div>' +
             '<button type="button" class="review-btn" id="reviewBtn" aria-pressed="' + isReviewed(ECG_TOPIC_ID) + '">' + reviewActionLabel(ECG_TOPIC_ID) + '</button></div>' +
             '<div class="recall-grid">' +
             '<div class="recall-card"><span>01 · First move</span><p>The patient is hypotensive with a wide-complex tachycardia. What happens before a prettier 12-lead?</p><button type="button" class="reveal-btn" data-reveal="ecg-action">Reveal answer</button><div class="reveal-answer" id="recall-ecg-action" hidden>' + esc(first) + '</div></div>' +
@@ -1214,51 +1262,62 @@
             ? sectionCard('🔗', 'See also',
                 '<div class="related">' + ecg.related.map(function (rid) {
                     const r = BY_ID[rid];
-                    return '<button type="button" class="related-chip" data-id="' + r.id + '">' + esc(r.icon) + ' ' + esc(r.name) + '</button>';
-                }).join('') + '</div>', false, 'ecg-related')
+                    return '<button type="button" class="related-chip" data-id="' + r.id + '">' + iconFor(r) + esc(r.name) + '</button>';
+                }).join('') + '</div>', true, 'ecg-related')
             : '';
 
         stage.innerHTML =
             '<div class="cp-hero">' +
             '<button type="button" class="back-btn" id="backBtn">← All presentations</button>' +
-            '<div class="cp-ico-lg" aria-hidden="true">📈</div>' +
-            '<h1 id="ecgTitle" tabindex="-1">' + esc(ecg.title) + '</h1>' +
+            '<div class="cp-ico-lg" aria-hidden="true">' + GROUP_SVG.ecg + '</div>' +
+            '<h1 id="ecgTitle" tabindex="-1">ECG interpretation</h1>' +
             '<p class="tag">' + esc(ecg.tag) + '</p>' +
             (ecg.subtitle ? '<p class="ecg-subhead">' + esc(ecg.subtitle) + '</p>' : '') +
             '</div>' +
             firstPassHtml +
             stepNav +
             stepsHtml +
-            '<p class="ecg-kicker">Killer patterns — jump to a card</p>' + killerHtml +
+            killerHtml +
             sectionCard('🗂️', 'Pattern library',
-                '<p class="ecg-summary">Filter by category here, or use the Critical / Emergent / Common chips in the header.</p>' +
-                filters + patternsHtml, false, 'ecg-patterns') +
-            recallHtml +
-            personalPlanHtml(fakeCp) +
+                '<p class="ecg-summary">Choose a category, or open reading tools above to filter by severity.</p>' +
+                filters + patternsHtml, true, 'ecg-patterns') +
             sectionCard('🧭', 'How to think',
                 '<div class="ov"><p class="ov-job"><span class="ov-kicker">The job</span>' + esc(ecg.tag) + '</p>' +
                 '<ol class="ov-steps">' + ecg.firstPass.map(function (s, i) {
                     return '<li><span class="ov-n" aria-hidden="true">' + (i + 1) + '</span><span class="ov-s">' + esc(s) + '</span></li>';
                 }).join('') + '</ol>' +
                 (ecg.overview ? '<div class="ov-prose"><p>' + esc(ecg.overview) + '</p></div>' : '') + '</div>',
-                false, 'ecg-how') +
+                true, 'ecg-how') +
             sectionCard('🚩', 'ECG red flags',
                 '<div class="rf-box"><p class="ecg-summary">These findings should move the patient to a different lane now.</p><ul class="plain-list">' +
                 ecg.redFlags.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul></div>',
                 false, 'ecg-red-flags') +
             sectionCard('💡', 'Pearls & Pitfalls',
-                '<div class="pp-grid"><div class="pp-box pearls"><h4>🎯 Clinical Pearls</h4><ul class="plain-list">' +
+                '<div class="pp-grid"><div class="pp-box pearls"><h4>Clinical Pearls</h4><ul class="plain-list">' +
                 ecg.pearls.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') +
-                '</ul></div><div class="pp-box pitfalls"><h4>⚠️ Pitfalls</h4><ul class="plain-list">' +
+                '</ul></div><div class="pp-box pitfalls"><h4>Pitfalls</h4><ul class="plain-list">' +
                 ecg.pitfalls.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') +
-                '</ul></div></div>', false, 'pearls-pitfalls') +
+                '</ul></div></div>', true, 'pearls-pitfalls') +
+            '<section class="presentation-study-group" id="section-study" aria-label="Recall and notes" tabindex="-1">' + recallHtml + personalPlanHtml(fakeCp) + '</section>' +
             related +
             sectionCard('📚', 'References',
-                '<ul class="refs">' + ecg.refs.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul>'
+                evidenceHtml('ecg') + '<ul class="refs">' + ecg.refs.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul>'
                 + '<p class="ecg-litfl">Diagrams above are original teaching drawings. For real 12-lead tracings see <a href="https://litfl.com/ecg-library/" target="_blank" rel="noopener">LITFL ECG Library</a> — free for non-profit education with credit to litfl.com (CC BY-NC-SA 4.0).</p>',
                 true, 'ecg-references');
 
         document.getElementById('backBtn').addEventListener('click', showHome);
+        document.getElementById('openDynamicEcg').addEventListener('click', function () { openEcgLightbox('stemi-criteria', this); });
+        stage.querySelectorAll('[data-ecg-panel]').forEach(function (select) {
+            function focusPanel() {
+                var svg = select.closest('.ecg-fig').querySelector('.ecg-media svg');
+                if (!svg) return;
+                svg.setAttribute('viewBox', select.value);
+                // Equivalent inspector buttons remain available below the crop.
+                svg.querySelectorAll('.ecg-hot').forEach(function (hot) { hot.setAttribute('tabindex', select.selectedIndex ? '-1' : '0'); });
+            }
+            select.addEventListener('change', focusPanel);
+            focusPanel();
+        });
         stage.querySelectorAll('.sec-head').forEach(function (h) {
             h.addEventListener('click', function () {
                 const card = h.closest('.section-card');
@@ -1268,7 +1327,7 @@
             });
         });
         stage.querySelectorAll('[data-jump]').forEach(function (btn) {
-            btn.addEventListener('click', function () { jumpToSection(btn.dataset.jump); });
+            btn.addEventListener('click', function () { jumpToSection(btn.dataset.jump, true); });
         });
         stage.querySelectorAll('.related-chip').forEach(function (btn) {
             btn.addEventListener('click', function () { showPresentation(btn.dataset.id); });
@@ -1279,7 +1338,7 @@
         stage.querySelectorAll('[data-ecg-cat]').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 ecgCategory = btn.dataset.ecgCat;
-                renderEcg();
+                showEcg('patterns');
             });
         });
         bindEcgLearning();
@@ -1373,7 +1432,7 @@
     function buildSearchIndex() {
         const idx = [];
         DATA.forEach(cp => {
-            idx.push({ cpId: cp.id, target: 'how-to-think', title: cp.name, sub: cp.icon + ' ' + cp.tag, kind: 'Presentation' });
+            idx.push({ cpId: cp.id, target: 'how-to-think', title: cp.name, sub: cp.tag, kind: 'Presentation' });
             (cp.approach || []).forEach(function (s) {
                 idx.push({ cpId: cp.id, target: 'how-to-think', title: s, sub: 'Approach — ' + cp.name, kind: 'Approach' });
             });
@@ -1464,6 +1523,7 @@
         const pop = ensureResultsPop();
         searchCursor = -1;
         const input = document.getElementById('searchInput');
+        if (input) input.removeAttribute('aria-activedescendant');
         const clearBtn = document.getElementById('searchClearBtn');
         if (clearBtn) clearBtn.hidden = !q;
         if (!q || q.length < 2) { hideSearchResults(pop); return; }
@@ -1501,14 +1561,6 @@
     const SCALE_STEPS = [0.85, 1, 1.12, 1.25, 1.4];
     const ACCENTS = ['emerald', 'ocean', 'violet', 'rose', 'amber', 'teal'];
     const ACCENT_LABELS = { emerald: 'Emerald green', ocean: 'Ocean blue', violet: 'Violet purple', rose: 'Rose red', amber: 'Amber orange', teal: 'Teal cyan' };
-    const ACCENT_META = {
-        emerald: { light: '#0b3d2e', dark: '#0c1613' },
-        ocean: { light: '#0b2e5e', dark: '#0a1a36' },
-        violet: { light: '#2e1a6b', dark: '#190f3d' },
-        rose: { light: '#5c0f22', dark: '#330913' },
-        amber: { light: '#4d2405', dark: '#261506' },
-        teal: { light: '#07333b', dark: '#052025' }
-    };
     function normalizeAccent(v) {
         return ACCENTS.indexOf(v) !== -1 ? v : 'emerald';
     }
@@ -1524,10 +1576,10 @@
     function normalizePrefs(value) {
         const prefs = isRecord(value) ? value : {};
         return {
-            theme: prefs.theme === 'light' ? 'light' : 'dark',
+            theme: prefs.theme === 'dark' ? 'dark' : 'light',
             accent: normalizeAccent(prefs.accent),
             scale: nearestScale(prefs.scale),
-            bold: typeof prefs.bold === 'boolean' ? prefs.bold : true
+            bold: typeof prefs.bold === 'boolean' ? prefs.bold : false
         };
     }
     let prefsMemory = normalizePrefs({});
@@ -1571,7 +1623,8 @@
         const label = document.getElementById('fontLabel');
         if (themeBtn) {
             themeBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
-            themeBtn.textContent = dark ? '☀️' : '🌙';
+            themeBtn.innerHTML = '<span class="theme-ico" aria-hidden="true">' + (dark ? THEME_SVG.sun : THEME_SVG.moon) + '</span>';
+            themeBtn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
             themeBtn.title = dark ? 'Light mode' : 'Dark mode';
         }
         if (boldBtn) boldBtn.setAttribute('aria-pressed', p.bold !== false ? 'true' : 'false');
@@ -1584,8 +1637,7 @@
         } catch (e) {}
         const meta = document.getElementById('themeColor');
         if (meta) {
-            const m = ACCENT_META[accent] || ACCENT_META.emerald;
-            meta.setAttribute('content', dark ? m.dark : m.light);
+            meta.setAttribute('content', dark ? '#151d27' : '#ffffff');
         }
     }
     function bindPrefs() {
@@ -1783,10 +1835,10 @@
                 btn.setAttribute('aria-pressed', String(!hide));
                 btn.textContent = hide ? 'Show labels' : 'Annotations';
             } else if (tool === 'compare') {
-                var on = !fig.classList.contains('show-compare');
-                fig.classList.toggle('show-compare', on);
+                var on = !fig.classList.contains('show-reference');
+                fig.classList.toggle('show-reference', on);
                 btn.setAttribute('aria-pressed', String(on));
-            } else if (tool === 'expand') {
+            } else if (tool === 'expand' || tool === 'explain') {
                 openEcgLightbox(fig.getAttribute('data-ecg-fig'), btn);
             }
         });
@@ -1799,6 +1851,37 @@
         function figBox(hot) { try { return hot.closest('.ecg-fig').querySelector('.ecg-inspector'); } catch (e) { return null; } }
         function showWave(hot) {
             if (!hot) return;
+            var figure = hot.closest('.ecg-fig');
+            if (!figure) return;
+            var svg = hot.ownerSVGElement;
+            var bounds = hot.getBBox(), matrix = svg.getCTM() && hot.getCTM();
+            if (matrix) {
+                matrix = svg.getCTM().inverse().multiply(matrix);
+                var corners = [[bounds.x, bounds.y], [bounds.x + bounds.width, bounds.y + bounds.height]].map(function (xy) {
+                    var point = svg.createSVGPoint(); point.x = xy[0]; point.y = xy[1]; return point.matrixTransform(matrix);
+                });
+                bounds = { x: corners[0].x, y: corners[0].y, width: corners[1].x - corners[0].x, height: corners[1].y - corners[0].y };
+            }
+            var focus = figure.querySelector('[data-ecg-panel]');
+            if (focus && focus.selectedIndex) {
+                function contains(value) {
+                    var v = value.split(/\s+/).map(Number);
+                    return bounds.x >= v[0] && bounds.y >= v[1] && bounds.x + bounds.width <= v[0] + v[2] && bounds.y + bounds.height <= v[1] + v[3];
+                }
+                if (!contains(focus.value)) {
+                    var match = Array.from(focus.options).slice(1).find(function (option) { return contains(option.value); });
+                    focus.value = (match || focus.options[0]).value;
+                    focus.dispatchEvent(new Event('change'));
+                }
+            }
+            figure.querySelectorAll('.ecg-inline-marks').forEach(function (mark) { mark.remove(); });
+            if (bounds.width > 0 && bounds.height > 0) {
+                var mark = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+                mark.setAttribute('class', 'ecg-inline-marks');
+                mark.setAttribute('cx', bounds.x + bounds.width / 2); mark.setAttribute('cy', bounds.y + bounds.height / 2);
+                mark.setAttribute('rx', bounds.width / 2); mark.setAttribute('ry', bounds.height / 2);
+                svg.appendChild(mark);
+            }
             var box = figBox(hot);
             var dh = null; try { dh = box ? box.getAttribute('data-hint') : null; } catch (e3) {}
             if (box) box.innerHTML = ecgWaveText(hot.getAttribute('data-wave')) || dh || HINT;
@@ -1808,9 +1891,10 @@
         }
         document.addEventListener('mouseover', function (e) { var h = e.target && e.target.closest ? e.target.closest('.ecg-hot') : null; if (h) showWave(h); });
         document.addEventListener('focusin', function (e) { var h = e.target && e.target.closest ? e.target.closest('.ecg-hot') : null; if (h) showWave(h); });
+        document.addEventListener('keydown', function (e) { var h = e.target && e.target.closest ? e.target.closest('.ecg-hot') : null; if (h && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showWave(h); } });
         document.addEventListener('click', function (e) { var h = e.target && e.target.closest ? e.target.closest('.ecg-hot') : null; if (h) showWave(h); });
-        document.addEventListener('click', function (e) { var wb = e.target && e.target.closest ? e.target.closest('[data-ecg-wavebtn]') : null; if (!wb) return; var fig = wb.closest('.ecg-fig'); if (!fig) return; var w = wb.getAttribute('data-ecg-wavebtn'); if (fig.getAttribute('data-sel') === w) { fig.removeAttribute('data-sel'); fig.querySelectorAll('.ecg-hot.on').forEach(function (x) { x.classList.remove('on'); }); wb.setAttribute('aria-pressed', 'false'); var bx = fig.querySelector('.ecg-inspector'); if (bx) bx.textContent = bx.getAttribute('data-hint') || HINT; return; } var hot = fig.querySelector('.ecg-hot[data-wave="' + w + '"]'); if (hot) showWave(hot); else { var bx2 = fig.querySelector('.ecg-inspector'); if (bx2) bx2.innerHTML = ecgWaveText(w) || HINT; try { fig.setAttribute('data-sel', w); } catch (ee) {} fig.querySelectorAll('[data-ecg-wavebtn]').forEach(function (b) { b.setAttribute('aria-pressed', String(b === wb)); }); } });
-        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { document.querySelectorAll('.ecg-hot.on').forEach(function (x) { x.classList.remove('on'); }); document.querySelectorAll('.ecg-inspector').forEach(function (b) { b.textContent = b.getAttribute('data-hint') || HINT; }); document.querySelectorAll('.ecg-fig[data-sel]').forEach(function (f) { f.removeAttribute('data-sel'); }); document.querySelectorAll('[data-ecg-wavebtn][aria-pressed="true"]').forEach(function (b) { b.setAttribute('aria-pressed', 'false'); }); } });
+        document.addEventListener('click', function (e) { var wb = e.target && e.target.closest ? e.target.closest('[data-ecg-wavebtn]') : null; if (!wb) return; var fig = wb.closest('.ecg-fig'); if (!fig) return; var w = wb.getAttribute('data-ecg-wavebtn'); if (fig.getAttribute('data-sel') === w) { fig.removeAttribute('data-sel'); fig.querySelectorAll('.ecg-inline-marks').forEach(function (mark) { mark.remove(); }); fig.querySelectorAll('.ecg-hot.on').forEach(function (x) { x.classList.remove('on'); }); wb.setAttribute('aria-pressed', 'false'); var bx = fig.querySelector('.ecg-inspector'); if (bx) bx.textContent = bx.getAttribute('data-hint') || HINT; return; } var hot = fig.querySelector('.ecg-hot[data-wave="' + w + '"]'); if (hot) showWave(hot); else { var bx2 = fig.querySelector('.ecg-inspector'); if (bx2) bx2.innerHTML = ecgWaveText(w) || HINT; try { fig.setAttribute('data-sel', w); } catch (ee) {} fig.querySelectorAll('[data-ecg-wavebtn]').forEach(function (b) { b.setAttribute('aria-pressed', String(b === wb)); }); } });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { document.querySelectorAll('.ecg-inline-marks').forEach(function (mark) { mark.remove(); }); document.querySelectorAll('.ecg-hot.on').forEach(function (x) { x.classList.remove('on'); }); document.querySelectorAll('.ecg-inspector').forEach(function (b) { b.textContent = b.getAttribute('data-hint') || HINT; }); document.querySelectorAll('.ecg-fig[data-sel]').forEach(function (f) { f.removeAttribute('data-sel'); }); document.querySelectorAll('[data-ecg-wavebtn][aria-pressed="true"]').forEach(function (b) { b.setAttribute('aria-pressed', 'false'); }); } });
     })();
     /* ---------- global wiring ---------- */
     // Global :has() fallback — keeps .is-checked in sync for all browsers
@@ -1828,6 +1912,12 @@
         syncSidebarAccessibility();
         bindFilters();
         bindPrefs();
+        const skipLink = document.querySelector('.skip-link');
+        if (skipLink) skipLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            stage.focus({ preventScroll: true });
+            stage.scrollIntoView({ block: 'start' });
+        });
         function goHome() { showHome(); closeSidebar(); }
         const brand = document.getElementById('brandBtn');
         if (brand) brand.addEventListener('click', goHome);
@@ -1857,8 +1947,8 @@
         document.addEventListener('keydown', (e) => {
             const sidebar = document.getElementById('sidebar');
             if (e.key !== 'Tab' || !sidebarIsMobile() || !sidebar.classList.contains('open')) return;
-            const focusable = sidebar.querySelectorAll('button:not([disabled]), [href], input:not([disabled])');
-            const items = Array.from(focusable);
+            const focusable = sidebar.querySelectorAll('button:not([disabled]), summary, [href], input:not([disabled])');
+            const items = Array.from(focusable).filter(el => el.getClientRects().length);
             if (!items.length) return;
             const first = items[0], last = items[items.length - 1];
             if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
@@ -1871,12 +1961,14 @@
                 e.stopPropagation();
                 const open = !topbarTools.classList.contains('open');
                 topbarTools.classList.toggle('open', open);
+                document.body.classList.toggle('tools-open', open);
                 toolsToggle.setAttribute('aria-expanded', String(open));
                 toolsToggle.setAttribute('aria-label', open ? 'Close filters and reading tools' : 'Open filters and reading tools');
             });
             document.addEventListener('click', (e) => {
                 if (topbarTools.classList.contains('open') && !topbarTools.contains(e.target) && e.target !== toolsToggle && !toolsToggle.contains(e.target)) {
                     topbarTools.classList.remove('open');
+                    document.body.classList.remove('tools-open');
                     toolsToggle.setAttribute('aria-expanded', 'false');
                     toolsToggle.setAttribute('aria-label', 'Open filters and reading tools');
                 }
@@ -1965,6 +2057,7 @@
             const overlay = document.getElementById('disclaimerOverlay');
             const sidebar = document.getElementById('sidebar');
             if (overlay && !overlay.hidden) return;
+            if (document.getElementById('ecgWorkbench') || document.getElementById('ecgLightbox')) return;
             if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
             if (sidebarIsMobile() && sidebar.classList.contains('open') && e.key !== 'Escape') return;
             if (e.key === '/') { e.preventDefault(); input.focus(); }
@@ -1980,6 +2073,7 @@
                 }
                 if (tools && tools.classList.contains('open')) {
                     tools.classList.remove('open');
+                    document.body.classList.remove('tools-open');
                     toolsToggle.setAttribute('aria-expanded', 'false');
                     toolsToggle.setAttribute('aria-label', 'Open filters and reading tools');
                     toolsToggle.focus();
@@ -2010,13 +2104,13 @@
             }
         });
 
-        window.addEventListener('hashchange', applyRoute);
+        window.addEventListener('hashchange', () => applyRoute());
         applyRoute();
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20260903-48').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20260907-interactive6').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
                     registration.addEventListener('updatefound', () => {

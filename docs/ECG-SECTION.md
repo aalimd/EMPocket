@@ -1,5 +1,9 @@
 # EM-CPs ECG section — programmer notes
 
+> **Interactive behavior:** [ECG-INTERACTIVITY-2026-09-07.md](ECG-INTERACTIVITY-2026-09-07.md) covers all 27 figures and 76 selectable explanations.
+
+> **Current audit:** read [CONTENT-AUDIT-2026-09-07.md](CONTENT-AUDIT-2026-09-07.md) first. The snapshot below is historical and contains superseded descriptions. The runtime has 27 SVG library entries, including ten dynamic diagnosis models, nine explicitly uncalibrated morphology schematics and a synthetic normal 12-lead. Run `node --test tests/*.test.js` for current checks.
+
 Investigation snapshot for anyone working on the ECG guide. **Read this before changing drawings, millimetre labels, or ACS wording.**
 
 - **App:** static PWA, no build step.

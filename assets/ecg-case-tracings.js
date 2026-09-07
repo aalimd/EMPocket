@@ -1,42 +1,53 @@
 /*
- * Pattern-library tracings — synthetic 12-lead ECG examples.
- *
- * These are deliberately generated teaching tracings, never patient records.
- * The layout is a conventional 3 × 4 + long-lead-II format at nominal
- * 25 mm/s and 10 mm/mV.  Each case encodes the clinically relevant lead
- * distribution; do not use it as a replacement for a real ECG or local
- * reperfusion/toxicology protocol.
+ * Pattern-library focused teaching leads, never patient recordings.
+ * Engine-backed cases are calibrated by ecg-interactive.js. Remaining
+ * sketches are explicitly schematic: drawn intervals/voltages are not
+ * measurements and require clinical review before use as diagnostic examples.
  */
 (function () {
   'use strict';
-
-  var LAYOUT = [
-    ['I', 'aVR', 'V1', 'V4'],
-    ['II', 'aVL', 'V2', 'V5'],
-    ['III', 'aVF', 'V3', 'V6']
-  ];
-  var X = [42, 216, 390, 564];
-  var Y = [64, 128, 192];
 
   function n(value, fallback) { return value === undefined ? fallback : value; }
   function esc(value) {
     return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  /* One repeatable beat. Values are SVG units (the paper grid is 8 units/mm). */
+  // Schematic cycles must contain their complete T/U wave before the next P.
+  // These are layout units, not calibrated intervals or heart rates.
+  function cycleLength(o) {
+    var tail = o.u ? 61 : (o.broadT ? 46 : (o.biphasic ? 44 : (o.symmetric ? 38 : (o.tented ? 24 : (o.st ? 58 : 42)))));
+    if (o.coved) tail = 56;
+    return Math.max(n(o.cycle, 62), 26 + n(o.qrs, 8) + tail + 14);
+  }
+  function wrapped(text, maxChars) {
+    var lines = [], line = '';
+    String(text || '').split(/\s+/).forEach(function (word) {
+      if (line && (line + ' ' + word).length > maxChars) { lines.push(line); line = word; }
+      else line += (line ? ' ' : '') + word;
+    });
+    if (line) lines.push(line);
+    return lines;
+  }
+  /* One repeatable schematic beat; do not infer mm or ms from its shape. */
   function beat(x, y, o, index) {
     var p = n(o.p, 3), q = n(o.q, 1.5), r = n(o.r, 16), s = n(o.s, 5);
-    var st = n(o.st, 0), t = n(o.t, 7), cycle = n(o.cycle, 62);
+    var st = n(o.st, 0), t = n(o.t, 7), cycle = cycleLength(o);
     var width = n(o.qrs, 8), j = x + 26 + width, t0 = j + 10;
     var amp = o.alternans && index % 2 ? 0.55 : 1;
     r *= amp; s *= amp; t *= amp;
     var d = 'M' + x + ',' + y + ' H' + (x + 5);
-    if (!o.noP) d += ' C' + (x + 8) + ',' + y + ' ' + (x + 9) + ',' + (y - p) + ' ' + (x + 12) + ',' + (y - p) + ' C' + (x + 15) + ',' + (y - p) + ' ' + (x + 16) + ',' + y + ' ' + (x + 19) + ',' + y;
+    if (o.delta) d += ' H' + (x + 13) + ' C' + (x + 15) + ',' + y + ' ' + (x + 16) + ',' + (y - p) + ' ' + (x + 17) + ',' + (y - p) + ' C' + (x + 18) + ',' + (y - p) + ' ' + (x + 19) + ',' + y + ' ' + (x + 20) + ',' + y;
+    else if (!o.noP) d += ' C' + (x + 8) + ',' + y + ' ' + (x + 9) + ',' + (y - p) + ' ' + (x + 12) + ',' + (y - p) + ' C' + (x + 15) + ',' + (y - p) + ' ' + (x + 16) + ',' + y + ' ' + (x + 19) + ',' + y;
     else d += ' H' + (x + 19);
-    if (o.delta) d += ' L' + (x + 23) + ',' + (y - r * 0.30);
-    d += ' L' + (x + 24) + ',' + (y + q) + ' L' + (x + 26 + width * 0.34) + ',' + (y - r) + ' L' + (x + 26 + width * 0.70) + ',' + (y + s) + ' L' + j + ',' + (y - st);
+    if (o.prDepression) d += ' L' + (x + 20) + ',' + (y + o.prDepression) + ' H' + (x + 23);
+    if (o.delta) d += ' C' + (x + 21) + ',' + y + ' ' + (x + 24) + ',' + (y - r * 0.15) + ' ' + (x + 26) + ',' + (y - r * 0.30);
+    else d += ' L' + (x + 24) + ',' + (y + q);
+    d += ' L' + (x + 26 + width * 0.34) + ',' + (o.terminalR ? y + s : y - r) + ' L' + (x + 26 + width * 0.70) + ',' + (o.terminalR ? y - r : y + s) + ' L' + j + ',' + (y - st);
     if (o.jWave) d += ' C' + (j + 2) + ',' + (y - st - o.jWave) + ' ' + (j + 6) + ',' + (y - st - o.jWave) + ' ' + (j + 8) + ',' + (y - st);
-    if (o.biphasic) {
+    if (o.coved) {
+      d += ' C' + (j + 12) + ',' + (y - st * 0.75) + ' ' + (j + 20) + ',' + (y - st * 0.15) + ' ' + (j + 28) + ',' + y;
+      d += ' C' + (j + 34) + ',' + (y + Math.abs(t)) + ' ' + (j + 42) + ',' + (y + Math.abs(t)) + ' ' + (j + 48) + ',' + y + ' H' + (j + 56);
+    } else if (o.biphasic) {
       var posPeak = n(o.biphasicPos, 6);
       var negNadir = n(o.biphasicNeg, 10);
       d += ' H' + (j + 6);
@@ -78,8 +89,11 @@
       return sine;
     }
     var d = '';
-    var cycle = n(o.cycle, 62);
-    for (var bx = x, i = 0; bx < x + width - cycle; bx += cycle, i++) d += beat(bx, y, o, i);
+    var cycle = cycleLength(o);
+    for (var bx = x, i = 0; bx <= x + width - cycle; bx += cycle, i++) {
+      var next = beat(bx, y, o, i);
+      d += i ? next.replace(/^M[^ ]+/, '') : next;
+    }
     return d;
   }
 
@@ -107,12 +121,17 @@
     /* A pattern library should show the diagnostic leads, not a shrunken 12-lead. */
     var shown = spec.display || ['II'];
     var laneH = spec.laneH || 58;
-    var height = 62 + shown.length * laneH + 30;
+    var notes = wrapped(spec.note2, 102).concat(wrapped(spec.note, 102));
+    var height = 62 + shown.length * laneH + 16 + notes.length * 14;
     var useEngine = !!(spec.useEngine && window.ECG_ENGINE && window.ECG_ENGINE.focusedTracePath);
     var enginePattern = spec.useEngine || specId;
-    var body = '<svg class="ecg-svg ecg-paper ecg-case-12lead" viewBox="0 0 720 ' + height + '" aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMid meet"><title>' + esc(spec.title) + ' — synthetic focused-lead teaching tracing</title><text class="ecg-lead ecg-case-header" x="18" y="18">SYNTHETIC FOCUSED ECG · 25 mm/s · 10 mm/mV · ' + esc(spec.header) + '</text>';
+    var body = '<svg class="ecg-svg ecg-paper ecg-case-12lead" viewBox="0 0 720 ' + height + '" aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMid meet"><title>' + esc(spec.title) + ' — synthetic focused-lead teaching tracing</title><text class="ecg-lead ecg-case-header" x="18" y="18">SCHEMATIC · NOT TO SCALE · ' + esc(spec.header) + '</text>';
+    if (useEngine) {
+      var grid = window.ECG_ENGINE.renderPaperGrid(720, height).replace(/ecgEngMinor/g, 'case-' + specId + '-minor').replace(/ecgEngMajor/g, 'case-' + specId + '-major');
+      body = body.replace(/(<\/title>)/, '$1' + grid);
+    }
     shown.forEach(function (leadName, index) {
-      var y = 58 + index * laneH;
+      var y = (useEngine ? 58 : 78) + index * laneH;
       var morphology = spec.leads[leadName] || spec.stripLead || spec.base;
       var wave = (spec.waves && spec.waves[leadName]) || null;
       var waveAttr = wave ? ' data-wave="' + wave + '"' : '';
@@ -129,14 +148,14 @@
           if (engCd.dissociated && engCd.dissociated.ventricularBeats.length) engQrs = engCd.dissociated.ventricularBeats[0].qrsMs;
           isWide = engQrs >= 120 || !!engCd.sine;
         } catch (e) {
-          traceD = trace(64, y, morphology, 610);
+          traceD = trace(64, y, morphology, useEngine ? 610 : 305);
           isWide = morphology.qrs > 11 || morphology.sine;
         }
       } else {
-        traceD = trace(64, y, morphology, 610);
+        traceD = trace(64, y, morphology, useEngine ? 610 : 305);
         isWide = morphology.qrs > 11 || morphology.sine;
       }
-      body += '<text class="ecg-lead" x="42" y="' + (y - 24) + '">' + esc(leadName) + '</text><path class="ecg-trace' + (isWide ? ' ecg-trace-wide' : '') + '" d="' + traceD + '"/>';
+      body += '<text class="ecg-lead" x="42" y="' + (y - (useEngine ? 24 : 36)) + '">' + esc(leadName) + '</text><path class="ecg-trace' + (isWide ? ' ecg-trace-wide' : '') + '" d="' + traceD + '"' + (useEngine ? '' : ' transform="translate(-64,' + (-y * .5) + ') scale(2,1.5)"') + '/>';
       // Overlay X positions: engine uses physiological first-beat J; schematic uses 64+26+w.
       function overlayJX() {
         if (useEngine) {
@@ -237,7 +256,7 @@
         // Schematic lanes keep the legacy slot (no behavior change there).
         var badgeX = useEngine ? 668 : 150;
         var badgeAnchor = useEngine ? ' text-anchor="end"' : '';
-        body += '<text class="ecg-label ecg-label-b" x="' + badgeX + '" y="' + (y - 26) + '"' + waveAttr + badgeAnchor + '>' + esc(spec.badges[leadName]) + '</text>';
+        body += '<text class="ecg-label ecg-label-b" x="' + badgeX + '" y="' + (y - (useEngine ? 26 : 36)) + '"' + waveAttr + badgeAnchor + '>' + esc(spec.badges[leadName]) + '</text>';
       }
       if (spec.calipers && spec.calipers[leadName]) {
         var cx, jy3;
@@ -323,8 +342,7 @@
         body += '<g class="ecg-hot" tabindex="0" role="button" data-wave="' + h.wave + '" aria-label="' + esc(h.label) + '"><rect x="' + hx + '" y="' + htop + '" width="' + hw + '" height="' + (hbot - htop) + '" rx="6" class="ecg-hotzone"/><title>' + esc(h.title) + '</title></g>';
       });
     }
-    body += '<text class="ecg-label ecg-label-b" x="42" y="' + (height - 10) + '">' + esc(spec.note) + '</text>';
-    if (spec.note2) body += '<text class="ecg-label ecg-label-b" x="42" y="' + (height - 26) + '">' + esc(spec.note2) + '</text>';
+    notes.forEach(function (line, i) { body += '<text class="ecg-label ecg-label-b" x="42" y="' + (62 + shown.length * laneH + 10 + i * 14) + '">' + esc(line) + '</text>'; });
     body += '</svg>';
     return body;
   }
@@ -346,7 +364,7 @@
      cycle 120 keeps every beat on one connected baseline (no T-into-next-P overlap). */
   each('II III aVF', { st: 16, t: 12, broadT: true, r: 14, s: 4, q: 2, cycle: 120, qrs: 8 }, a);
   a.aVL = options({ st: -8, t: 5, r: 12, s: 5, q: 1.5, cycle: 120, qrs: 8 });
-  add('stemi-criteria', 'Inferior STEMI pattern — II, III, aVF with aVL mirror', 'inferior injury with mirror change', 'Convex STE II + III + aVF with mirror STD in aVL — territorial STE + mirror STD = OMI.', { cycle: 120 }, a, { st: 16, t: 12, broadT: true, r: 14, s: 4, cycle: 120, qrs: 8 });
+  add('stemi-criteria', 'Inferior STEMI pattern — II, III, aVF with aVL mirror', 'inferior injury with mirror change', 'Convex STE II + III + aVF with mirror STD in aVL — territorial STE + mirror STD supports acute inferior occlusion.', { cycle: 120 }, a, { st: 16, t: 12, broadT: true, r: 14, s: 4, cycle: 120, qrs: 8 });
 
   var a = {};
   /* Hyperacute 3-shape comparator, one V3 viewpoint so only shape changes:
@@ -360,16 +378,16 @@
   a = {};
   a['Type A'] = options({ biphasic: true, r: 15, s: 5, st: 0, cycle: 120, qrs: 8 });
   a['Type B'] = options({ symmetric: true, t: -16, r: 15, s: 5, st: 0, cycle: 120, qrs: 8 });
-  add('wellens', 'Wellens syndrome — Type A vs Type B', 'pain-free post-angina pattern', 'Pain-free interval after resolved angina: Type A biphasic (+/−) vs Type B deep symmetric inversion in V2–V3. Critical proximal LAD stenosis.', { cycle: 120 }, a, { symmetric: true, t: -16, r: 15, s: 5, st: 0, cycle: 120, qrs: 8 });
+  add('wellens', 'Wellens syndrome — Type A vs Type B', 'pain-free post-angina pattern', 'Pain-free interval after resolved angina: Type A biphasic (+/−) vs Type B deep symmetric inversion in V2–V3. Strongly associated with critical LAD disease in the appropriate clinical setting.', { cycle: 120 }, a, { symmetric: true, t: -16, r: 15, s: 5, st: 0, cycle: 120, qrs: 8 });
 
   a = {}; each('V1 V2 V3 V4 V5 V6', { st: -8, t: 18, broadT: true, r: 12, cycle: 120 }, a); a.aVR = options({ st: 5, t: -4, r: -8, s: 13, cycle: 120 });
-  add('dewinter', 'de Winter pattern — V3 with reciprocal aVR STE', 'proximal LAD occlusion pattern', 'Upsloping J-point ST depression continuing into tall symmetric T waves across V1–V6; paired with reciprocal aVR STE.', { cycle: 120 }, a, { st: -8, t: 18, broadT: true, r: 12, cycle: 120 });
+  add('dewinter', 'de Winter pattern — precordial STD with tall T waves', 'proximal LAD occlusion pattern', 'Upsloping J-point ST depression with tall symmetric T waves across V2–V6. aVR elevation is supportive and may be absent.', { cycle: 120 }, a, { st: -8, t: 18, broadT: true, r: 12, cycle: 120 });
 
   a = {}; each('V1 V2 V3', { r: -5, s: 23, qrs: 15, st: -6, t: -4 }, a); each('I aVL V5 V6', { r: 21, s: 5, qrs: 15, st: 4, t: 5 }, a);
   add('sgarbossa', 'Smith-modified Sgarbossa positive', 'LBBB morphology with concordant change', 'LBBB-like wide complexes: concordant anterior ST depression and concordant lateral STE are abnormal.', { qrs: 15, r: 17, s: 9, t: -5 }, a, { qrs: 15, r: -5, s: 23, st: -6, t: -4 });
 
   a = {}; each('V1 V2 V3', { r: 18, s: 3, st: -7, t: 12, broadT: true, cycle: 120 }, a);
-  add('posterior-omi', 'Posterior OMI mirror pattern', 'posterior injury mirror in V1–V3', 'Horizontal V1–V3 ST depression with tall R and upright T is posterior injury until V7–V9 prove otherwise.', { cycle: 120 }, a, { r: 18, s: 3, st: -7, t: 12, broadT: true, cycle: 120 });
+  add('posterior-omi', 'Posterior OMI mirror pattern', 'posterior injury mirror in V1–V3', 'V1–V3 horizontal ST depression with dominant R and upright T raises concern for posterior occlusion. Record V7–V9 and interpret clinically.', { cycle: 120 }, a, { r: 18, s: 3, st: -7, t: 12, broadT: true, cycle: 120 });
 
   a = {}; each('I II III aVL aVF V4 V5 V6', { st: -5, t: -2 }, a); a.aVR = options({ r: -8, s: 14, st: 6, t: 4 });
   add('avr-lmca', 'aVR elevation with diffuse ST depression', 'global subendocardial ischaemia', 'aVR ST elevation with widespread horizontal ST depression: high-risk ACS or profound supply–demand mismatch.', {}, a, { st: -5, t: -2 });
@@ -383,16 +401,16 @@
   a = {}; each('II III aVF V3 V4 V5 V6', { cycle: 88, qrs: 11, jWave: 8, t: 4 }, a);
   add('hypothermia', 'Hypothermia with Osborn waves', 'bradycardic hypothermia pattern', 'Bradycardia with prominent J (Osborn) waves, particularly in inferior and lateral precordial leads.', { cycle: 88, qrs: 11, t: 4 }, a, { cycle: 88, qrs: 11, jWave: 8, t: 4 });
 
-  a = {}; each('V1 V2', { r: 7, s: 14, st: 12, t: -12 }, a); a.V3 = options({ r: 10, s: 9, st: 4, t: 1 });
-  add('brugada', 'Brugada type 1 pattern', 'right precordial coved ST elevation', 'Coved ST elevation ≥2 mm with T-wave inversion in V1–V2; position V1/V2 correctly before calling it.', {}, a, { r: 7, s: 14, st: 12, t: -12 });
+  a = {}; each('V1 V2', { r: 7, s: 14, st: 16, t: -12, coved: true }, a); a.V3 = options({ r: 10, s: 9, st: 4, t: 1 });
+  add('brugada', 'Brugada type 1 pattern', 'right precordial coved ST elevation', 'Coved ST elevation ≥2 mm with T-wave inversion in V1–V2; position V1/V2 correctly before calling it.', {}, a, { r: 7, s: 14, st: 16, t: -12, coved: true });
 
   a = {}; a.I = options({ r: 5, s: 15, t: 4, cycle: 46 }); a.III = options({ q: 7, r: 12, s: 4, t: -9, cycle: 46 }); each('V1 V2 V3 V4', { r: 12, s: 6, t: -12, cycle: 46 }, a);
   add('pe-strain', 'Pulmonary embolism strain pattern', 'sinus tachycardia with RV strain', 'Sinus tachycardia with S1Q3T3 and anterior T-wave inversion can support acute RV strain; it is not diagnostic alone.', { cycle: 46 }, a, { cycle: 46, t: -12 });
 
-  a = {}; each('I II III aVL aVF V2 V3 V4 V5 V6', { st: 5, t: 8 }, a); a.aVR = options({ r: -8, s: 14, st: -4, t: -5 });
+  a = {}; each('I II III aVL aVF V2 V3 V4 V5 V6', { st: 5, t: 8, prDepression: 3 }, a); a.aVR = options({ r: -8, s: 14, st: -4, t: -5, prDepression: -2 });
   add('pericarditis-ber', 'Acute pericarditis pattern', 'diffuse ST elevation / PR depression', 'Diffuse concave ST elevation with reciprocal ST depression in aVR; territorial reciprocal changes need an OMI work-up.', {}, a, { st: 5, t: 8 });
 
-  a = {}; each('I II III aVL aVF V1 V2 V3 V4 V5 V6', { cycle: 48, qrs: 15, r: 14, s: 8 }, a); a.aVR = options({ cycle: 48, qrs: 15, r: 17, s: 4, t: -4 });
+  a = {}; each('I II III aVL aVF V1 V2 V3 V4 V5 V6', { cycle: 48, qrs: 15, r: 14, s: 8 }, a); a.aVR = options({ cycle: 48, qrs: 15, q: 0, r: 9, s: 14, t: -4, terminalR: true });
   add('tca-toxicity', 'Tricyclic / sodium-channel blockade', 'sinus tachycardia with wide QRS', 'Wide QRS tachycardia with a terminal R wave in aVR: give sodium bicarbonate and manage as sodium-channel toxicity.', { cycle: 48, qrs: 15, r: 14, s: 8 }, a, { cycle: 48, qrs: 15, r: 14, s: 8 });
 
   a = {}; each('I II III aVL aVF V1 V2 V3 V4 V5 V6', { delta: true, qrs: 12, r: 15, s: 5, cycle: 56 }, a);
@@ -412,15 +430,15 @@
     'stemi-criteria': ['II', 'III', 'aVF', 'aVL'],
     'hyperacute-t': ['Normal', 'Hyperacute', 'HyperK?'],
     'wellens': ['Type A', 'Type B'],
-    'dewinter': ['V3', 'aVR'],
+    'dewinter': ['V2', 'V3', 'V4', 'V5', 'V6', 'aVR'],
     'sgarbossa': ['V5', 'V3', 'V1'],
     'posterior-omi': ['V1', 'V2', 'V3', 'V8'],
-    'avr-lmca': ['aVR', 'II'],
+    'avr-lmca': ['aVR', 'I', 'II', 'aVL', 'aVF', 'V4', 'V5', 'V6'],
     'hyperkalemia': ['II'],
     'hypokalemia': ['V3'],
     'hypothermia': ['V4'],
     'brugada': ['V1', 'V2'],
-    'pe-strain': ['I', 'III'],
+    'pe-strain': ['I', 'III', 'V1', 'V2', 'V3', 'V4'],
     'pericarditis-ber': ['II', 'aVR'],
     'tca-toxicity': ['aVR'],
     'wpw': ['II'],
@@ -449,7 +467,7 @@
     { lead: 'aVF', wave: 'inf', title: 'aVF · STE +2 mm', label: 'Lead a V F: convex ST elevation, plus 2 millimetres. Contiguous inferior injury.' },
     { lead: 'aVL', wave: 'mirror', title: 'aVL · mirror STD -1 mm', label: 'Lead a V L: mirror ST depression, minus 1 millimetre. Reciprocal of inferior OMI.' }
   ];
-  cases['stemi-criteria'].note2 = 'MIRROR mnemonic — inferior UP, aVL DOWN: territorial STE + mirror STD = OMI.';
+  cases['stemi-criteria'].note2 = 'MIRROR mnemonic — inferior UP, aVL DOWN: territorial STE + mirror STD supports acute inferior occlusion.';
   /* Hyperacute 3-shape comparator — one viewpoint, three diagnoses to separate. */
   cases['hyperacute-t'].laneH = 68;
   cases['hyperacute-t'].jDots = true;
@@ -479,23 +497,23 @@
     'Type B': 'TYPE B (~75%) · deep symmetric inverted T'
   };
   cases['wellens'].hotspots = [
-    { lead: 'Type A', wave: 'wellens', title: 'Wellens Type A: biphasic +/−', label: 'Wellens Type A: biphasic T wave with initial positivity and terminal negativity in V2–V3. Occurs in ~25% of cases. Critical proximal LAD stenosis.' },
-    { lead: 'Type B', wave: 'wellens', title: 'Wellens Type B: deep symmetric TWI', label: 'Wellens Type B: deeply inverted, symmetric T waves in V2–V3. Occurs in ~75% of cases. Critical proximal LAD stenosis.' }
+    { lead: 'Type A', wave: 'wellens', title: 'Wellens Type A: biphasic +/−', label: 'Wellens Type A: biphasic T wave with initial positivity and terminal negativity in V2–V3. Occurs in ~25% of cases. Strongly associated with critical LAD disease in the appropriate clinical setting.' },
+    { lead: 'Type B', wave: 'wellens', title: 'Wellens Type B: deep symmetric TWI', label: 'Wellens Type B: deeply inverted, symmetric T waves in V2–V3. Occurs in ~75% of cases. Strongly associated with critical LAD disease in the appropriate clinical setting.' }
   ];
-  cases['wellens'].note2 = 'Pain-free post-angina + preserved R waves + no Q waves: critical proximal LAD. Do NOT perform stress test.';
+  cases['wellens'].note2 = 'Pain-free post-angina + preserved R waves + no Q waves: suspect critical LAD disease. Avoid stress testing when Wellens syndrome is suspected.';
   /* de Winter paired comparator — Precordial J-point STD + tall T paired with aVR STE. */
   cases['dewinter'].laneH = 68;
   cases['dewinter'].jDots = true;
   cases['dewinter'].baseline = true;
   cases['dewinter'].stHighlight = true;
-  cases['dewinter'].waves = { 'V3': 'dewinter', 'aVR': 'dewinter' };
+  cases['dewinter'].waves = { 'V2': 'dewinter', 'V3': 'dewinter', 'V4': 'dewinter', 'V5': 'dewinter', 'V6': 'dewinter', 'aVR': 'dewinter' };
   cases['dewinter'].badges = {
     'V3': 'V3 · upsloping STD 1–3 mm → tall symmetric T',
-    'aVR': 'aVR · reciprocal STE +0.5–2 mm in >80%'
+    'aVR': 'aVR · supportive STE; not required'
   };
   cases['dewinter'].hotspots = [
     { lead: 'V3', wave: 'dewinter', title: 'de Winter: J-point STD → tall T', label: 'de Winter pattern: 1–3 mm upsloping ST depression at the J-point continuing into tall, prominent, symmetric T waves in precordial leads. Acute proximal LAD occlusion.' },
-    { lead: 'aVR', wave: 'dewinter', title: 'aVR: reciprocal STE', label: 'Lead aVR: 0.5–2 mm ST elevation seen in >80% of de Winter cases. Confirms acute proximal LAD occlusion.' }
+    { lead: 'aVR', wave: 'dewinter', title: 'aVR: reciprocal STE', label: 'Lead aVR elevation can accompany the precordial de Winter pattern; it is supportive and not required.' }
   ];
   cases['dewinter'].note2 = 'de Winter is an anterior OMI equivalent (~2% of LAD occlusions). Do NOT wait for millimetre STEMI — activate cath lab.';
   /* Smith-modified Sgarbossa in LBBB (paced uses same thresholds) — one lead
@@ -514,11 +532,11 @@
   };
   cases['sgarbossa'].calipers = { 'V1': 'STE 3 mm / S 10 mm = 0.30' };
   cases['sgarbossa'].hotspots = [
-    { lead: 'V5', wave: 'sgSte', title: 'V5 · concordant STE ≥1 mm', label: 'Criterion 1: ST elevation in the same direction as a positive QRS in a lateral lead. Any 1 of 3 is OMI.' },
-    { lead: 'V3', wave: 'sgStd', title: 'V3 · concordant STD ≥1 mm', label: 'Criterion 2: ST depression in the same direction as a negative QRS in V1–V3. Any 1 of 3 is OMI.' },
+    { lead: 'V5', wave: 'sgSte', title: 'V5 · concordant STE ≥1 mm', label: 'Criterion 1: ST elevation in the same direction as a positive QRS in a lateral lead. A positive criterion raises concern for acute occlusion in the appropriate clinical setting.' },
+    { lead: 'V3', wave: 'sgStd', title: 'V3 · concordant STD ≥1 mm', label: 'Criterion 2: ST depression in the same direction as a negative QRS in V1–V3. A positive criterion raises concern for acute occlusion in the appropriate clinical setting.' },
     { lead: 'V1', wave: 'sgDis', title: 'V1 · discordant STE/S ≥25%', label: 'Criterion 3: ST elevation opposite a negative QS with ST depth at least 25 percent of S depth. Original 5 mm rule is obsolete.' }
   ];
-  cases['sgarbossa'].note2 = 'LBBB + paced share thresholds. ANY 1 of 3 = OMI. Wide QRS ≥120 ms with LBBB shape (no Q lateral, QS V1).';
+  cases['sgarbossa'].note2 = 'LBBB + paced share thresholds. Any positive criterion warrants urgent clinical assessment for acute occlusion. Wide QRS ≥120 ms with LBBB shape (no Q lateral, QS V1).';
   /* Isolated posterior OMI — anterior mirror plus true posterior confirmation,
      like a real ECG: V1-V3 horizontal STD with tall R (R/S>1) and upright T,
      plus V8 posterior STE>=0.5mm. Flip shows the hidden STEMI. */
@@ -530,15 +548,31 @@
     'V1': 'MIRROR V1 · horizontal STD + tall R',
     'V2': 'MIRROR V2 · STD + R/S>1 + upright T',
     'V3': 'MIRROR V3 · STD + tall R/T',
-    'V8': 'POSTERIOR V8 · STE ≥0.5 mm confirms'
+    'V8': 'POSTERIOR V8 · posterior STE; inspect V7–V9'
   };
   cases['posterior-omi'].hotspots = [
     { lead: 'V1', wave: 'post', title: 'V1 · mirror STD + tall R', label: 'Anterior mirror: horizontal ST depression with tall R wave. Flip shows posterior ST elevation.' },
     { lead: 'V2', wave: 'post', title: 'V2 · STD + R/S>1 + upright T', label: 'Posterior mirror in V2: horizontal STD with prominent R (R/S above 1) and upright T. Do not label anterior ischemia.' },
-    { lead: 'V3', wave: 'post', title: 'V3 · mirror STD + tall T', label: 'Contiguous V1–V3 mirror change with upright T waves. Territorial posterior injury until V7–V9 prove otherwise.' },
-    { lead: 'V8', wave: 'post', title: 'V8 · posterior STE ≥0.5 mm', label: 'True posterior lead V8 (V7–V9 set): ST elevation at least 0.5 mm confirms posterior infarction. LCx or distal RCA.' }
+    { lead: 'V3', wave: 'post', title: 'V3 · mirror STD + tall T', label: 'Contiguous V1–V3 mirror change with upright T waves. Suspect posterior injury; record V7–V9 and assess clinically.' },
+    { lead: 'V8', wave: 'post', title: 'V8 · posterior STE ≥0.5 mm', label: 'True posterior lead V8 (V7–V9 set): Elevation supports posterior injury; confirm distribution in contiguous posterior leads, with clinical context and age-specific thresholds.' }
   ];
-  cases['posterior-omi'].note2 = 'Flip V1–V3 → posterior STE. Record V7–V9; STE ≥0.5 mm diagnostic. Digitalis scooped STD is not horizontal territorial mirror.';
+  cases['posterior-omi'].note2 = 'Flip V1–V3 → posterior STE. Record V7–V9; use contiguous leads and age-specific posterior STE thresholds. Digitalis scooped STD is not horizontal territorial mirror.';
+  var teachingLabels = {
+    'avr-lmca': { aVR: 'ST above baseline', I: 'ST below baseline', II: 'ST below baseline', aVL: 'ST below baseline', aVF: 'ST below baseline', V4: 'ST below baseline', V5: 'ST below baseline', V6: 'ST below baseline' },
+    hypokalemia: { V3: 'Small T followed by a separate larger U' },
+    hypothermia: { V4: 'J wave immediately after the QRS' },
+    brugada: { V1: 'Coved ST descending into negative T', V2: 'Coved ST descending into negative T' },
+    'pe-strain': { I: 'Deep S', III: 'Q wave and inverted T', V1: 'Anterior T inversion', V2: 'Anterior T inversion', V3: 'Anterior T inversion', V4: 'Anterior T inversion' },
+    'pericarditis-ber': { II: 'PR below baseline; ST above baseline', aVR: 'Opposite PR and ST displacement' },
+    'tca-toxicity': { aVR: 'Terminal positive R after the negative complex' },
+    wpw: { II: 'Shorter PR; slurred beginning of QRS (delta)' },
+    'electrical-alternans': { II: 'Alternating large and small QRS complexes' }
+  };
+  Object.keys(teachingLabels).forEach(function (id) {
+    cases[id].badges = teachingLabels[id];
+    cases[id].baseline = true;
+    cases[id].laneH = 100;
+  });
   /* Phase 2: engine-backed realistic traces for 9 representative patterns.
      Teaching text/badges/hotspots/notes above are preserved verbatim;
      only trace generation switches to ECG_ENGINE signals. Fallback to
@@ -558,7 +592,9 @@
     if (!window.ECG_SVG || !window.ECG_SVG[id]) return;
     var item = cases[id];
     window.ECG_SVG[id].title = item.title;
-    window.ECG_SVG[id].caption = 'Synthetic, de-identified 12-lead teaching tracing at nominal 25 mm/s and 10 mm/mV. It illustrates the stated pattern, not a patient ECG and not a substitute for serial ECGs, clinical context, or local protocol.';
+    window.ECG_SVG[id].caption = 'Schematic focused leads; not to scale and not a patient recording. ' + item.note;
+    window.ECG_SVG[id].figureLabel = 'Schematic · not to scale';
+    if (item.useEngine) window.ECG_SVG[id].traceSpec = { pattern: id, lanes: item.display, options: item.engineOpts || {}, waves: item.waves || {}, note: item.note };
     window.ECG_SVG[id].noCompare = true;
     window.ECG_SVG[id].svg = caseSvg(item, id);
   });

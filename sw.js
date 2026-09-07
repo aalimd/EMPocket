@@ -1,5 +1,5 @@
 /* EM Pocket service worker — resilient app-shell caching for offline clinical reference. */
-const CACHE_VERSION = 'v117';
+const CACHE_VERSION = 'v132';
 const SCOPE_KEY = new URL(self.registration.scope).pathname.toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '') || 'root';
@@ -8,33 +8,36 @@ const CACHE = CACHE_PREFIX + CACHE_VERSION;
 const CORE_ASSETS = [
     './',
     './index.html',
-    './assets/app.css?v=20260908-05',
-    './assets/app.js?v=20260908-04',
-    './assets/data.js?v=20260904-62',
-    './assets/ecg-svg.js?v=20260905-03',
-    './assets/ecg-engine.js?v=20260908-01',
-    './assets/ecg-case-tracings.js?v=20260908-01'
+    './assets/app.css?v=20260907-interactive6',
+    './assets/app.js?v=20260907-interactive6',
+    './assets/data.js?v=20260907-interactive6',
+    './assets/evidence.js?v=20260907-interactive6',
+    './assets/ecg-svg.js?v=20260907-interactive6',
+    './assets/ecg-engine.js?v=20260907-interactive6',
+    './assets/ecg-case-tracings.js?v=20260907-interactive6',
+    './assets/ecg-interactive.js?v=20260907-interactive6'
 ];
 const OPTIONAL_ASSETS = [
-    './manifest.json?v=20260908-02',
-    './assets/icon.svg?v=20260903-48',
-    './assets/icon-192.png?v=20260903-48',
-    './assets/icon-512.png?v=20260903-48',
-    './assets/icon-maskable-512.png?v=20260903-48',
-    './assets/apple-touch-icon.png?v=20260903-48'
+    './manifest.json?v=20260907-interactive6',
+    './assets/icon.svg?v=20260907-interactive6',
+    './assets/icon-192.png?v=20260907-interactive6',
+    './assets/icon-512.png?v=20260907-interactive6',
+    './assets/icon-maskable-512.png?v=20260907-interactive6',
+    './assets/apple-touch-icon.png?v=20260907-interactive6'
 ];
 
 const APP_SHELL = new URL('./index.html', self.registration.scope).href;
 
 function cacheResponse(request, response) {
     if (response && response.status === 200 && response.type === 'basic') {
-        return caches.open(CACHE).then((cache) => cache.put(request, response.clone()));
+        return caches.open(CACHE).then((cache) => cache.put(request, response.clone()))
+            .catch(() => undefined); // Storage failure must not discard a usable network response.
     }
     return Promise.resolve();
 }
 
 function matchCached(request) {
-    return caches.open(CACHE).then((cache) => cache.match(request));
+    return caches.open(CACHE).then((cache) => cache.match(request)).catch(() => undefined);
 }
 
 self.addEventListener('install', (event) => {
@@ -67,7 +70,7 @@ self.addEventListener('fetch', (event) => {
                 .then((response) => {
                     return cacheResponse(event.request, response).then(() => response);
                 })
-                .catch(() => matchCached(event.request).then((cached) => cached || matchCached(APP_SHELL)))
+                .catch(async () => (await matchCached(event.request)) || (await matchCached(APP_SHELL)) || Response.error())
         );
         return;
     }

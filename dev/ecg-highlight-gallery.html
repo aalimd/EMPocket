@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>ECG highlight QA</title><link rel="stylesheet" href="../assets/app.css?v=20260907-interactive6"><style>body{display:block;padding:12px}main{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}article{background:white;color:#111;padding:10px;min-width:0}h2{font:700 16px system-ui;margin:0 0 10px}svg{width:100%;height:auto;max-height:500px}p{font:13px/1.5 system-ui}.ecg-guided-target,.ecg-reference{display:none}</style></head><body><main></main><script src="../assets/ecg-svg.js?v=20260907-interactive6"></script><script src="../assets/ecg-engine.js?v=20260907-interactive6"></script><script src="../assets/ecg-case-tracings.js?v=20260907-interactive6"></script><script src="../assets/ecg-interactive.js?v=20260907-interactive6"></script><script>
+if(['localhost','127.0.0.1'].includes(location.hostname)){
+ const page=Number(new URLSearchParams(location.search).get('page'))||0;
+ for(const [id,entry] of Object.entries(window.ECG_SVG).slice(page*3,page*3+3)){
+  window.ECG_INTERACTIVE.open(id); const box=document.querySelector('#ecgWorkbench'), article=document.createElement('article');
+  const title=document.createElement('h2'); title.textContent=id; article.append(title);
+  const svg=box.querySelector('.ecg-workbench-canvas svg').cloneNode(true); svg.querySelectorAll('.ecg-finding-marks').forEach(e=>e.remove());
+  for(const b of box.querySelectorAll('button[data-finding]')) {b.click();const marks=box.querySelector('.ecg-finding-marks'); if(marks)svg.append(marks.cloneNode(true));}
+  article.append(svg); const note=document.createElement('p'); note.textContent=entry.findings.map(f=>f.title).join(' • '); article.append(note);
+  window.ECG_INTERACTIVE.close();document.querySelector('main').append(article);
+ }
+}
+</script></body></html>

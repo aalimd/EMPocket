@@ -155,7 +155,10 @@ function limbVectorAngles(axisDeg) {
 function cosDeg(d) { return Math.cos(d * Math.PI / 180); }
 /* Peak amplitude (mV) of one wave component in one limb lead. */
 function limbAmp(mag, compAng, lead) {
-  return mag * cosDeg(compAng - LEAD_ANGLES[lead]);
+  // Augmented axes have a shorter lead vector than bipolar limb leads.
+  // This factor preserves aVR=−(I+II)/2, aVL=I−II/2, aVF=II−I/2.
+  var length = lead.charAt(0) === 'a' ? Math.sqrt(3) / 2 : 1;
+  return mag * length * cosDeg(compAng - LEAD_ANGLES[lead]);
 }
 
 /*
@@ -181,6 +184,7 @@ var DEFAULTS = {
 
 function mergeNoise(over) {
   var base = DEFAULTS.noise, o = over || {};
+  if (o.disabled) return { baselineWander: 0, muscle: 0, beatVariation: 0, rsaMs: 0, disabled: true };
   return {
     baselineWander: o.baselineWander !== undefined ? o.baselineWander : base.baselineWander,
     muscle: o.muscle !== undefined ? o.muscle : base.muscle,
@@ -269,16 +273,27 @@ function tEnvelopeForShape(dtT, tAmp, tShape, ov) {
 }
 /* Convex ST bump (dome) centred J+30ms, normalised so bump(J) = stMv.
    Positive = STE, negative = STD. Tall T on top gives upsloping look. */
-function stBump(dt, J_MS, stMv) {
+function stBump(dt, J_MS, stMv, shape) {
   if (!stMv) return 0;
+  if (shape === 'upsloping' || shape === 'horizontal') {
+    var afterJ = dt - J_MS;
+    // Join the terminal QRS to the J level without altering the R/S peaks.
+    if (afterJ < 0) return stMv * Math.exp(-0.5 * Math.pow(afterJ / 8, 2));
+    if (shape === 'upsloping') return stMv * Math.max(0, 1 - afterJ / 160);
+    if (afterJ <= 65) return stMv;
+    var fade = Math.max(0, Math.min(1, (afterJ - 65) / 90));
+    return stMv * (1 - fade * fade * (3 - 2 * fade));
+  }
   var c = J_MS + 30, sig = 35;
   var atJ = Math.exp(-0.5 * Math.pow(30 / sig, 2)); // 0.692
   return (stMv / atJ) * gauss(dt, c, sig);
 }
 function baseTableForLead(lead) {
   if (PRECORDIAL_TABLE.hasOwnProperty(lead)) return PRECORDIAL_TABLE[lead];
-  // Comparator lanes (Normal, Hyperacute, Type A/B, ...) reuse V3 viewpoint.
-  return PRECORDIAL_TABLE.V3;
+  if (lead === 'V8') return { p: 0.04, pNeg: 0, q: -0.02, r: 0.30, s: -0.15, t: 0.25 };
+  // These explicitly named comparison scenarios all represent V3.
+  if (['Normal', 'Hyperacute', 'HyperK?', 'Type A', 'Type B'].indexOf(lead) >= 0) return PRECORDIAL_TABLE.V3;
+  throw new Error('Unsupported ECG lead: ' + lead);
 }
 
 /* Instantaneous voltage (mV) for one lead at global time tMs. */
@@ -290,7 +305,7 @@ function leadVoltageAt(lead, tMs, caseData, sampleIdx) {
   var ov = (caseData.leadOverrides && caseData.leadOverrides[lead]) || {};
   var stMv = ov.stMv || 0;
   var tShape = ov.tShape || 'normal';
-  var pMult = ov.pMult !== undefined ? ov.pMult : 1;
+  var pMult = caseData.fibrillatory ? 0 : (ov.pMult !== undefined ? ov.pMult : 1);
   var v = 0;
   // Scale template timing toward requested qrsMs/qtMs so interval params are
   // honoured instead of being label-only (uses outer NOMINAL_* constants).
@@ -307,10 +322,11 @@ function leadVoltageAt(lead, tMs, caseData, sampleIdx) {
     var dtP = dt + caseData.prShiftMs; // honour requested PR without reshaping
     var dtQ = dt / qrsScale;           // stretch/shrink QRS to qrsMs
     // Map T timing around J so QT end lands on qtMs: scale offset from J.
-    var dtT = J_MS + (dt - J_MS) / tScale;
+    var dtT = NOMINAL_QRS_MS + (dt - J_MS) / tScale;
     if (dtT < -260 || dtT > 600) continue;
     var envP = gauss(dtP, P_CENTER_MS, P_SIGMA_MS);
     var envQRS = beatEnvelopes(dtQ);
+    if (ov.rSigmaMs) envQRS.r = gauss(dtQ, R_CENTER_MS, ov.rSigmaMs);
     var scale = beatScale(b, caseData.seed, caseData.noise.beatVariation);
     // Slight per-beat timing jitter would blur intervals; keep timing exact.
     if (isLimb) {
@@ -323,7 +339,7 @@ function leadVoltageAt(lead, tMs, caseData, sampleIdx) {
         limbAmp(mags.rMag, angs.rAng, lead) * envQRS.r +
         limbAmp(mags.sMag, angs.sAng, lead) * envQRS.s +
         tEnvL
-      ) + stBump(dt, J_MS, stMv);
+      ) + stBump(dt, J_MS, stMv, ov.stShape);
     } else {
       var tab = baseTableForLead(lead);
       var pPos = gauss(dtP, -125, 10) * tab.p * pMult;
@@ -336,8 +352,15 @@ function leadVoltageAt(lead, tMs, caseData, sampleIdx) {
       v += scale * (
         pPos + pNeg +
         qA * envQRS.q + rA * envQRS.r + sA * envQRS.s + tEnvP
-      ) + stBump(dt, J_MS, stMv);
+      ) + stBump(dt, J_MS, stMv, ov.stShape);
     }
+  }
+  // Atrial fibrillation is signal, not optional display artifact. It remains
+  // present in the clean tracing and never becomes a regular sinus P train.
+  if (caseData.fibrillatory) {
+    var fAmp = lead === 'V1' ? 0.045 : (lead === 'II' ? 0.030 : 0.018);
+    v += fAmp * (0.65 * Math.sin(tMs * 2 * Math.PI / 151 + 0.7 * Math.sin(tMs / 419)) +
+      0.35 * Math.sin(tMs * 2 * Math.PI / 197 + 0.5));
   }
   // Sine-wave hyperkalemia: fused QRS-T oscillation, no discrete P.
   if (caseData.sine) {
@@ -389,7 +412,7 @@ function dissociatedVoltageAt(lead, tMs, caseData, sampleIdx) {
     var dtQ = dt / qrsScale;
     var envQRS = beatEnvelopes(dtQ);
     var tScaleV = ((vb.qtMs || caseData.qtMs) - vb.qrsMs) / (NOMINAL_QT_MS - NOMINAL_QRS_MS);
-    var dtT = J_MS + (dt - J_MS) / tScaleV;
+    var dtT = NOMINAL_QRS_MS + (dt - J_MS) / tScaleV;
     var tEnv = tEnvelopeForShape(dtT, vb.tAmp, vb.tShape || 'normal', vb);
     var vScale = beatScale(b, caseData.seed, caseData.noise.beatVariation);
     var stB = stBump(dt, J_MS, vb.stMv || 0);
@@ -398,7 +421,7 @@ function dissociatedVoltageAt(lead, tMs, caseData, sampleIdx) {
       var rA = vb.rMv !== undefined ? vb.rMv : limbAmp(1.10, caseData.axisDeg, lead);
       var sA = vb.sMv !== undefined ? vb.sMv : limbAmp(0.55, caseData.axisDeg + 195, lead);
       v += vScale * (rA * envQRS.r + sA * envQRS.s + (vb.qMv || 0) * envQRS.q + tEnv) + stB;
-      if (vb.conductedP) {
+      if (vb.conductedP && vb.atrialPeak === undefined) {
         var dtP = dt + 120; // conducted P peak 120ms before QRS onset
         v += limbAmp(0.12, 60, lead) * gauss(dtP, P_CENTER_MS + 120, P_SIGMA_MS);
       }
@@ -407,7 +430,7 @@ function dissociatedVoltageAt(lead, tMs, caseData, sampleIdx) {
       var useR = vb.rMvPrec !== undefined ? vb.rMvPrec : tab.r;
       var useS = vb.sMvPrec !== undefined ? vb.sMvPrec : tab.s;
       v += vScale * ((vb.qMv !== undefined ? vb.qMv : tab.q) * envQRS.q + useR * envQRS.r + useS * envQRS.s + tEnv) + stB;
-      if (vb.conductedP) {
+      if (vb.conductedP && vb.atrialPeak === undefined) {
         var dtP2 = dt + 120;
         v += 0.07 * gauss(dtP2, P_CENTER_MS + 120, P_SIGMA_MS);
       }
@@ -601,10 +624,12 @@ function createPatternCase(patternId, opts) {
         kind: 'inferior-stemi', rate: 78, prMs: 160, qrsMs: 90, qtMs: 410,
         axisDeg: 45, seed: 2001, noise: opts.noise,
         leadOverrides: {
+          I: { stMv: -0.04, tAmp: -0.02, tShape: 'broad' },
           II: { stMv: 0.20, tAmp: 0.50, tShape: 'broad' },
-          III: { stMv: 0.24, tAmp: 0.52, tShape: 'broad' }, // RCA: III > II
-          aVF: { stMv: 0.20, tAmp: 0.48, tShape: 'broad' },
-          aVL: { stMv: -0.10, tAmp: 0.12, tShape: 'normal' }
+          III: { stMv: 0.24, tAmp: 0.52, tShape: 'broad' },
+          aVF: { stMv: 0.22, tAmp: 0.51, tShape: 'broad' },
+          aVL: { stMv: -0.14, tAmp: -0.27, tShape: 'broad' },
+          aVR: { stMv: -0.08, tAmp: -0.24, tShape: 'broad' }
         }
       });
     case 'hyperacute-t': {
@@ -630,18 +655,18 @@ function createPatternCase(patternId, opts) {
       });
     }
     case 'wellens': {
-      var wlane = opts.lane || 'Type B';
+      var wlane = opts.variant === 'A' ? 'Type A' : (opts.variant === 'B' ? 'Type B' : (opts.lane || 'Type B'));
       if (wlane === 'Type A') {
         return basePatternCase({
           kind: 'wellens-A', rate: 68, prMs: 160, qrsMs: 88, qtMs: 410,
           axisDeg: 45, seed: 2005, noise: opts.noise,
-          leadOverrides: { 'Type A': { tShape: 'biphasic', biphasicPos: 0.22, biphasicNeg: -0.32 } }
+          leadOverrides: { 'Type A': { tShape: 'biphasic', biphasicPos: 0.22, biphasicNeg: -0.32 }, V2: { tShape: 'biphasic', biphasicPos: 0.18, biphasicNeg: -0.28 }, V3: { tShape: 'biphasic', biphasicPos: 0.22, biphasicNeg: -0.32 } }
         });
       }
       return basePatternCase({
         kind: 'wellens-B', rate: 68, prMs: 160, qrsMs: 88, qtMs: 430,
         axisDeg: 45, seed: 2006, noise: opts.noise,
-        leadOverrides: { 'Type B': { tAmp: -0.60, tShape: 'inverted' } }
+        leadOverrides: { 'Type B': { tAmp: -0.60, tShape: 'inverted' }, V2: { tAmp: -0.50, tShape: 'inverted' }, V3: { tAmp: -0.60, tShape: 'inverted' } }
       });
     }
     case 'dewinter':
@@ -649,7 +674,11 @@ function createPatternCase(patternId, opts) {
         kind: 'dewinter', rate: 78, prMs: 160, qrsMs: 88, qtMs: 400,
         axisDeg: 45, seed: 2007, noise: opts.noise,
         leadOverrides: {
-          V3: { stMv: -0.15, tAmp: 0.80, tShape: 'tallSym' },
+          V2: { stMv: -0.16, stShape: 'upsloping', tAmp: 0.75, tShape: 'tallSym' },
+          V3: { stMv: -0.18, stShape: 'upsloping', tAmp: 0.90, tShape: 'tallSym' },
+          V4: { stMv: -0.16, stShape: 'upsloping', tAmp: 1.10, tShape: 'tallSym' },
+          V5: { stMv: -0.13, stShape: 'upsloping', tAmp: 1.05, tShape: 'tallSym' },
+          V6: { stMv: -0.10, stShape: 'upsloping', tAmp: 0.85, tShape: 'tallSym' },
           aVR: { stMv: 0.10, tAmp: -0.10, tShape: 'normal' }
         }
       });
@@ -673,14 +702,14 @@ function createPatternCase(patternId, opts) {
       // Isolated posterior OMI mirror + true posterior confirmation (best teaching):
       // V1-V3 anterior horizontal STD with tall broad R (R/S>1, R~40ms) and
       // upright T = posterior injury seen from the front; V8 posterior STE>=0.5mm
-      // confirms. Flip (or V8) shows the STEMI hiding in the depression. LCx/RCA.
+      // supports posterior injury; V7–V9 and clinical assessment remain necessary.
       return basePatternCase({
         kind: 'posterior-omi', rate: 78, prMs: 160, qrsMs: 90, qtMs: 400,
         axisDeg: 45, seed: 2021, noise: opts.noise,
         leadOverrides: {
-          V1: { r: 0.50, s: -0.20, stMv: -0.10, tAmp: 0.35, tShape: 'normal' },
-          V2: { r: 0.70, s: -0.25, stMv: -0.12, tAmp: 0.45, tShape: 'normal' },
-          V3: { r: 0.90, s: -0.25, stMv: -0.12, tAmp: 0.50, tShape: 'normal' },
+          V1: { r: 0.50, rSigmaMs: 13, s: -0.20, stMv: -0.10, stShape: 'horizontal', tAmp: 0.35, tShape: 'normal' },
+          V2: { r: 0.70, rSigmaMs: 13, s: -0.25, stMv: -0.12, stShape: 'horizontal', tAmp: 0.45, tShape: 'normal' },
+          V3: { r: 0.90, rSigmaMs: 13, s: -0.25, stMv: -0.12, stShape: 'horizontal', tAmp: 0.50, tShape: 'normal' },
           V8: { r: 0.30, s: -0.15, stMv: 0.08, tAmp: 0.25, tShape: 'normal' }
         }
       });
@@ -702,9 +731,9 @@ function createPatternCase(patternId, opts) {
       }
       if (stage === 'severe') {
         return basePatternCase({
-          kind: 'hyperk-severe', rate: 60, prMs: 200, qrsMs: 160, qtMs: 420,
+          kind: 'hyperk-severe', rate: 60000 / 650, prMs: 200, qrsMs: 160, qtMs: 420,
           axisDeg: 45, seed: 2010,
-          noise: mergeNoise({ baselineWander: 0.02, muscle: 0.006, beatVariation: 0.01 }),
+          noise: opts.noise || { baselineWander: 0.02, muscle: 0.006, beatVariation: 0.01 },
           sine: true, sinePeriodMs: 650, sineAmpMv: 0.80
         });
       }
@@ -714,13 +743,36 @@ function createPatternCase(patternId, opts) {
         leadOverrides: { II: { tAmp: 0.90, tShape: 'peaked', pMult: 0.25 } }
       });
     }
+    case 'atrial-fibrillation':
+      return createAFCase(opts);
     case 'vt-vs-svt':
       return createVTCase(opts);
     case 'complete-heart-block':
       return createCHBCase(opts);
-    default:
+    case 'normal-sinus':
       return createNormalSinusCase(opts);
+    default:
+      throw new Error('Unsupported ECG pattern: ' + patternId);
   }
+}
+
+/* Seeded non-repeating ventricular intervals: AF irregularity is retained
+   when display artifact is disabled. No organized atrial P component. */
+function createAFCase(opts) {
+  var cd = basePatternCase({ kind: 'atrial-fibrillation', rate: 110, prMs: 0,
+    qrsMs: 88, qtMs: 340, axisDeg: 45, seed: 2022, noise: opts.noise });
+  var random = mulberry32(2022), qOn = 400, times = [], intervals = [];
+  while (qOn < DEFAULTS.recordMs + 600) {
+    times.push(qOn);
+    var rr = 390 + random() * 390;
+    intervals.push(rr); qOn += rr;
+  }
+  cd.beatTimes = times;
+  cd.baseRR = intervals.reduce(function (a, b) { return a + b; }, 0) / intervals.length;
+  cd.rate = Math.round(60000 / cd.baseRR);
+  cd.prMs = null;
+  cd.fibrillatory = true;
+  return cd;
 }
 
 function buildRegularBeats(rate, firstQOn, recordMs) {
@@ -733,40 +785,35 @@ function createVTCase(opts) {
   opts = opts || {};
   var seed = 2012;
   var noise = mergeNoise(opts.noise);
-  noise.beatVariation = 0.01; // monomorphic: minimal variation
+  noise.beatVariation = noise.disabled ? 0 : 0.01; // monomorphic: minimal variation
   noise.rsaMs = 0;            // regular
   var vRate = 170, aRate = 75;
   var vBeats = buildRegularBeats(vRate, 400, DEFAULTS.recordMs);
-  var aPeaks = buildRegularBeats(aRate, 200, DEFAULTS.recordMs);
-  // Capture (narrow) + fusion (intermediate) placed inside the 0-3050ms
-  // focused lane window (beats ~4 and ~6) so findings are actually visible
-  // in the teaching card, not only in a 10 s strip.
-  var capIdx = 0, fusIdx = 0, bestCap = 1e9, bestFus = 1e9;
-  vBeats.forEach(function (t, i) {
-    if (t > 3050) return; // focused card shows t=0..3050ms
-    var dC = Math.abs(t - 1800), dF = Math.abs(t - 2600);
-    if (dC < bestCap) { bestCap = dC; capIdx = i; }
-    if (dF < bestFus) { bestFus = dF; fusIdx = i; }
-  });
-  if (fusIdx === capIdx) fusIdx = Math.min(vBeats.length - 1, capIdx + 7);
+  var aPeaks = buildRegularBeats(aRate, 260, DEFAULTS.recordMs);
+  // Two selected teaching events are tied to the existing regular P train.
+  // Fusion: atrial impulse reaches the ventricle near the first VT beat.
+  // Capture: P at 2660 ms conducts at 2780 ms, before the next VT beat.
+  // These are scripted examples; the simulator does not model refractory tissue.
+  var capIdx = 7, fusIdx = 0;
   var ventricularBeats = vBeats.map(function (t, i) {
-    if (i === capIdx) { // capture: narrow sinus-conducted
-      return { qOn: t, qrsMs: 88, qtMs: 380, rMv: 0.85, sMv: -0.15, tAmp: 0.35, tShape: 'normal', conductedP: true };
+    if (i === capIdx) {
+      return { qOn: aPeaks[3] + 120, qrsMs: 88, qtMs: 300, rMv: 0.85,
+        sMv: -0.15, tAmp: 0.35, tShape: 'normal', conductedP: true, atrialPeak: aPeaks[3] };
     }
-    if (i === fusIdx) { // fusion: intermediate width
-      return { qOn: t, qrsMs: 115, qtMs: 400, rMv: 1.00, sMv: -0.35, tAmp: -0.10, tShape: 'normal', conductedP: true };
+    if (i === fusIdx) {
+      return { qOn: t, qrsMs: 115, qtMs: 320, rMv: 1.00,
+        sMv: -0.35, tAmp: -0.10, tShape: 'normal', conductedP: true, atrialPeak: aPeaks[0] };
     }
-    return { qOn: t, qrsMs: 150, qtMs: 420, rMv: 1.10, sMv: -0.45, tAmp: -0.30, tShape: 'normal' };
+    return { qOn: t, qrsMs: 150, qtMs: 320, rMv: 1.10, sMv: -0.45, tAmp: -0.30, tShape: 'normal' };
   });
-  var skipNear = [ventricularBeats[capIdx].qOn - 120, ventricularBeats[fusIdx].qOn - 120];
   return {
-    kind: 'vt-monomorphic', rate: vRate, prMs: 160, qrsMs: 150, qtMs: 420,
+    kind: 'vt-monomorphic', rate: vRate, prMs: null, qrsMs: 150, qtMs: 320,
     axisDeg: 45, seed: seed, noise: noise, prShiftMs: -2,
-    beatTimes: vBeats, baseRR: rateToRRms(vRate), recordMs: DEFAULTS.recordMs,
-    leadOverrides: {},
+    beatTimes: ventricularBeats.map(function (b) { return b.qOn; }), baseRR: rateToRRms(vRate), recordMs: DEFAULTS.recordMs,
+    leadOverrides: {}, supportedLeads: ['II'],
     dissociated: {
       atrialTimes: aPeaks, atrialPampMv: 0.09,
-      ventricularBeats: ventricularBeats, skipAtrialNear: skipNear,
+      ventricularBeats: ventricularBeats, skipAtrialNear: [],
       captureIdx: capIdx, fusionIdx: fusIdx
     }
   };
@@ -784,10 +831,10 @@ function createCHBCase(opts) {
     return { qOn: t, qrsMs: 120, qtMs: 440, rMv: 0.90, sMv: -0.50, tAmp: -0.25, tShape: 'normal' };
   });
   return {
-    kind: 'complete-heart-block', rate: vRate, prMs: 160, qrsMs: 120, qtMs: 440,
+    kind: 'complete-heart-block', rate: vRate, prMs: null, qrsMs: 120, qtMs: 440,
     axisDeg: 45, seed: seed, noise: noise, prShiftMs: -2,
     beatTimes: vBeats, baseRR: rateToRRms(vRate), recordMs: DEFAULTS.recordMs,
-    leadOverrides: {},
+    leadOverrides: {}, supportedLeads: ['II'],
     dissociated: {
       atrialTimes: aPeaks, atrialPampMv: 0.10,
       ventricularBeats: ventricularBeats, skipAtrialNear: []
@@ -879,18 +926,21 @@ function renderOmiLegend() {
     }
     return '<path class="ecg-trace" d="' + d + '" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
   }
-  var s = '<svg class="ecg-svg ecg-paper" viewBox="0 0 640 304" role="img" aria-labelledby="ecgOmiTitle" preserveAspectRatio="xMidYMid meet">';
+  var s = '<svg class="ecg-svg ecg-paper" viewBox="0 0 640 400" role="img" aria-labelledby="ecgOmiTitle" preserveAspectRatio="xMidYMid meet">';
   s += '<title id="ecgOmiTitle">OMI equivalents at a glance — synthetic teaching ladder: hyperacute, de Winter, Wellens</title>';
-  s += '<text class="ecg-lead" x="10" y="26">V2–V4 ladder</text>';
-  s += '<text class="ecg-lead ecg-lead-rhy" x="10" y="228">II rhythm</text>';
-  s += '<line class="ecg-sep" x1="0" y1="208" x2="640" y2="208"/>';
-  s += miniTrace('Hyperacute', 'hyperacute-t', 70, 120, 150, 230, 2);
-  s += '<text class="ecg-label" x="70" y="186">hyperacute broad</text>';
-  s += miniTrace('V3', 'dewinter', 240, 120, 150, 230, 2);
-  s += '<text class="ecg-label" x="240" y="186">de Winter STD→T</text>';
-  s += miniTrace('Type B', 'wellens', 410, 120, 150, 230, 2);
-  s += '<text class="ecg-label" x="430" y="186">Wellens B ↓</text>';
-  s += miniTrace('II', 'normal-sinus', 70, 258, 360, 0, 4);
+  s += renderPaperGrid(640, 400).replace(/ecgEngMinor/g, 'omiLegendMinor').replace(/ecgEngMajor/g, 'omiLegendMajor');
+  s += '<text class="ecg-lead" x="18" y="26">Synthetic focused leads · 25 mm/s · 10 mm/mV</text>';
+  s += '<text class="ecg-label" x="70" y="50">V3</text><text class="ecg-label" x="240" y="50">V3</text><text class="ecg-label" x="410" y="50">V2 · Wellens B</text>';
+  s += '<text class="ecg-lead ecg-lead-rhy" x="90" y="268">II rhythm</text>';
+  s += '<line class="ecg-sep" x1="0" y1="248" x2="640" y2="248"/>';
+  s += miniTrace('Hyperacute', 'hyperacute-t', 70, 156, 150, 230, 2);
+  s += '<text class="ecg-label" x="70" y="236">hyperacute broad</text>';
+  s += miniTrace('V3', 'dewinter', 240, 156, 150, 230, 2);
+  s += '<text class="ecg-label" x="240" y="236">de Winter STD→T</text>';
+  s += miniTrace('V2', 'wellens', 410, 156, 150, 230, 2, { variant: 'B' });
+  s += '<text class="ecg-label" x="430" y="236">Wellens B ↓</text>';
+  s += miniTrace('II', 'normal-sinus', 70, 350, 540, 0, 4);
+  s += '<path class="ecg-trace" d="M10,350 H20 V270 H60 V350 H68"/><text class="ecg-label" x="18" y="386">1 mV · 200 ms calibration</text>';
   s += '</svg>';
   return s;
 }
@@ -1116,12 +1166,14 @@ function validatePatterns() {
   var vtCd = createPatternCase('vt-vs-svt', { noise: { disabled: true } });
   var vBeats = vtCd.dissociated.ventricularBeats;
   var rrsV = [];
-  for (var vi = 1; vi < Math.min(8, vBeats.length); vi++) rrsV.push(vBeats[vi].qOn - vBeats[vi - 1].qOn);
+  for (var vi = 1; vi < vBeats.length; vi++) {
+    if (!vBeats[vi].conductedP && !vBeats[vi - 1].conductedP) rrsV.push(vBeats[vi].qOn - vBeats[vi - 1].qOn);
+  }
   var regV = Math.max.apply(null, rrsV) - Math.min.apply(null, rrsV) < 5;
   var hasCap = vBeats.some(function (b) { return b.qrsMs === 88 && b.conductedP; });
   var hasFus = vBeats.some(function (b) { return b.qrsMs === 115 && b.conductedP; });
-  push('VT regular (RR var <5ms)', regV, rrsV.slice(0, 3).map(function (x) { return x.toFixed(0); }).join('/'));
-  push('VT wide QRS 150', vBeats[0].qrsMs === 150, 'QRS=' + vBeats[0].qrsMs);
+  push('Underlying VT regular outside capture/fusion (RR var <5ms)', regV, rrsV.slice(0, 3).map(function (x) { return x.toFixed(0); }).join('/'));
+  push('VT wide QRS 150', vBeats.some(function (b) { return b.qrsMs === 150; }), 'underlying QRS=' + vtCd.qrsMs);
   push('VT capture narrow + fusion intermediate', hasCap && hasFus, 'capture88+fusion115');
   push('VT AV dissociation (atrial 75 vs vent 170)', vtCd.dissociated.atrialTimes.length >= 10 && vBeats.length >= 10, 'A=' + vtCd.dissociated.atrialTimes.length + ' V=' + vBeats.length);
   // CHB: independent P 75 + escape 35, no fixed PR.
@@ -1131,7 +1183,7 @@ function validatePatterns() {
   chb.dissociated.ventricularBeats.slice(0, 4).forEach(function (vb) {
     var bestPR = 1e9;
     chb.dissociated.atrialTimes.forEach(function (ap) {
-      var pr = vb.qOn - (ap + 42); // P onset ~42ms before P peak
+      var pr = vb.qOn - (ap - 42); // P onset ~42ms before P peak
       if (pr >= 0 && pr < bestPR) bestPR = pr;
     });
     prs.push(bestPR);
@@ -1141,7 +1193,7 @@ function validatePatterns() {
   push('CHB no fixed PR (var >200ms)', prVar > 200, 'PRs=' + prs.map(function (x) { return x.toFixed(0); }).join('/'));
   // Smith-modified Sgarbossa in LBBB (paced uses same thresholds):
   // 1 concordant STE>=1mm with positive QRS, 2 concordant STD>=1mm V1-V3,
-  // 3 discordant STE>=1mm with ST/S<=-0.25. ANY 1 = OMI.
+  // 3 discordant STE>=1mm with ST/S<=-0.25. Positive criteria raise concern for OMI.
   var sgCd = createPatternCase('sgarbossa', { noise: { disabled: true } });
   var sgQ = sgCd.beatTimes[2];
   function sgST(lead) { return leadVoltageAt(lead, sgQ + sgCd.qrsMs, sgCd, undefined); } // J-point (Smith measures at J)
@@ -1165,7 +1217,7 @@ function validatePatterns() {
   var sgRatio = sgStV1 / sgV1.mn; // ST positive / S negative => negative ratio
   push('Sgarbossa 3 discordant ST/S<=-0.25 (V1)', sgStV1 >= 0.10 && sgRatio <= -0.25, 'V1 ST=' + sgStV1.toFixed(2) + ' S=' + sgV1.mn.toFixed(2) + ' ratio=' + sgRatio.toFixed(2));
   // Isolated posterior OMI: V1-V3 horizontal STD + tall R (R/S>1) + upright T;
-  // V8 posterior STE>=0.5mm confirms. Flip shows hidden STEMI.
+  // V8 posterior STE shown; posterior lead distribution needs clinical review.
   var poCd = createPatternCase('posterior-omi', { noise: { disabled: true } });
   var poQ = poCd.beatTimes[2];
   function poST(lead) { return leadVoltageAt(lead, poQ + poCd.qrsMs, poCd, undefined); } // J-point
@@ -1193,7 +1245,7 @@ function validatePatterns() {
   push('Posterior R/S>1 V1-V3 (tall R)', (poV1.mx / Math.abs(poV1.mn)) > 1 && (poV2.mx / Math.abs(poV2.mn)) > 1,
     'V1 R/S=' + (poV1.mx / Math.abs(poV1.mn)).toFixed(2) + ' V2=' + (poV2.mx / Math.abs(poV2.mn)).toFixed(2));
   push('Posterior upright T V2-V3', poT('V2') > 0.25 && poT('V3') > 0.25, 'V2 T=' + poT('V2').toFixed(2) + ' V3=' + poT('V3').toFixed(2));
-  push('Posterior V8 STE>=0.05 confirms', poStV8 >= 0.05, 'V8 ST=' + poStV8.toFixed(2));
+  push('Posterior V8 STE>=0.05 shown', poStV8 >= 0.05, 'V8 ST=' + poStV8.toFixed(2));
   return checks;
 }
 
