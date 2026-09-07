@@ -1,6 +1,10 @@
 # EM-CPs deployment
 
+Student learning improvements: [implementation and verification](docs/STUDENT-UX-IMPLEMENTATION-2026-09-07.md), including authored cases, mobile ECG detail, search, progress and reading controls.
+
 This is a self-contained static PWA: there is no build step, database, PHP runtime, or environment file.
+
+New main section: [ECG Explorer](docs/ECG-EXPLORER.md), with 43 teaching examples, 125 guided findings, grouped navigation, zoom and practice mode. All ECGs now use pink paper backgrounds.
 
 ECG interaction coverage: [27-figure interactive audit](docs/ECG-INTERACTIVITY-2026-09-07.md), including guided explanations, red circles and regression checks.
 
@@ -13,7 +17,7 @@ ECG guide (route `#ecg`): the current [clinical, ECG and code audit](docs/CONTEN
 3. Enable SSL / **Force HTTPS** in hPanel before testing. Service workers and installable PWAs require HTTPS in production.
 4. If Hostinger caching is enabled, flush it once after upload. Then test the site in a private window, including a direct presentation link such as `https://your-domain.example/#dyspnea`.
 
-The release token `20260907-interactive6` is present in the HTML, manifest, and service-worker URLs to bypass Hostinger's asset cache after a deployment. When changing any app asset, update that token everywhere it appears and increment `CACHE_VERSION` (currently `v132`) in `sw.js` so installed copies receive the new offline bundle promptly. Cache names include the service-worker scope, preventing parallel deployments on one origin from deleting each other's offline data.
+The release token `20260907-header2` is present in the HTML, manifest, and service-worker URLs to bypass Hostinger's asset cache after a deployment. When changing any app asset, update that token everywhere it appears and increment `CACHE_VERSION` (currently `v149`) in `sw.js` so installed copies receive the new offline bundle promptly. Cache names include the service-worker scope, preventing parallel deployments on one origin from deleting each other's offline data.
 
 ## Release checklist
 

@@ -222,6 +222,15 @@
   lessons['toxic-metabolic-mimics'] = lessons.hyperkalemia;
   Object.keys(lib).forEach(function (id) { lib[id].findings = lessons[id] || []; });
 
+  Object.keys(lib).forEach(function (id) {
+    var entry = lib[id];
+    if (!entry.svg || entry.svg.includes('<pattern')) return;
+    var vb = entry.svg.match(/viewBox="([^"]+)"/)[1].split(/\s+/).map(Number);
+    var grid = E.renderPaperGrid(vb[2], vb[3]).replace(/ecgEngMinor/g, id + '-decorativeMinor').replace(/ecgEngMajor/g, id + '-decorativeMajor');
+    entry.svg = entry.svg.replace(/(<svg[^>]*>)/, '$1' + '<g class="ecg-decorative-paper" aria-hidden="true">' + grid + '</g>');
+    entry.caption += ' Background grid is decorative; do not measure this schematic with its boxes.';
+  });
+
   function addFindingEllipse(group, bounds) {
     var ellipse = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
     ellipse.setAttribute('cx', bounds[0] + bounds[2] / 2); ellipse.setAttribute('cy', bounds[1] + bounds[3] / 2);

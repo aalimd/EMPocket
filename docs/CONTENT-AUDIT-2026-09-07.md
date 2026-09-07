@@ -1,5 +1,7 @@
 # Clinical content, ECG and code review — 7 September 2026
 
+> Subsequent approved UI update: [ECG Explorer](ECG-EXPLORER.md) adds a main full-paper section and restores decorative pink grids to the nine schematics, with explicit no-measurement labels. The grid-removal description below records the earlier audit state.
+
 ## Scope and outcome
 
 Reviewed the teaching application, its 45 presentation records, seven ECG teaching steps, 18 ECG pattern cards, and 27 SVG library entries. The work combined source checks of high-risk and potentially outdated statements, correction of inconsistent advice, visual review, numerical ECG tests and browser regression checks. This is a targeted evidence review, not independent clinical certification of every sentence or drug dose. Existing work in the checkout was preserved.

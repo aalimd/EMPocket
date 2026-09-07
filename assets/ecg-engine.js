@@ -458,7 +458,7 @@ function renderPaperGrid(w, h) {
     '<path d="M' + major + ' 0H0V' + major + '" fill="none" stroke="rgba(225,60,80,0.45)" stroke-width="1.2"/>' +
     '</pattern>' +
     '</defs>' +
-    '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="#ffffff"/>' +
+    '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="#fff1f2"/>' +
     '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="url(#ecgEngMinor)"/>' +
     '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="url(#ecgEngMajor)"/>' +
     '<rect x="1" y="1" width="' + (w - 2) + '" height="' + (h - 2) + '" fill="none" stroke="#d98a92" stroke-width="2"/>';
@@ -546,18 +546,30 @@ function layoutMetrics() {
 }
 
 function renderNormal12Lead(opts) {
-  var caseData = createNormalSinusCase(opts);
+  return render12Lead(Object.assign({}, opts, { caseData: createNormalSinusCase(opts) }));
+}
+
+function render12Lead(opts) {
+  opts = opts || {};
+  var caseData = opts.caseData || createNormalSinusCase(opts);
+  if (caseData.supportedLeads && caseData.supportedLeads.length < 12) throw new Error('This model supports focused leads only');
+  var title = opts.title || 'Normal sinus rhythm — 12-lead';
+  var description = opts.description || 'Sinus rhythm about ' + caseData.rate + ' per minute with normal PR, QRS and QT intervals.';
+  var subtitle = opts.subtitle === undefined ? caseData.rate + '/min · sinus' : opts.subtitle;
+  var teaching = opts.teaching === undefined ? 'P upright I/II, negative aVR · V1 rS → R growth → dominant R V5/V6 · T concordant, asymmetric' : opts.teaching;
+  var rhythmLabel = opts.rhythmLabel || 'II rhythm · 10 s · ' + caseData.rate + '/min regular';
+  var footer = opts.footer === undefined ? 'PR ~' + caseData.prMs + ' ms · QRS ~' + caseData.qrsMs + ' ms · QT ~' + caseData.qtMs + ' ms.' : opts.footer;
   var m = layoutMetrics();
   var W = Math.round(m.w), H = Math.round(m.h);
   var s = '';
   s += '<svg class="ecg-svg ecg-paper ecg-engine-12lead" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-labelledby="ecgEngTitle ecgEngDesc" preserveAspectRatio="xMidYMid meet">';
-  s += '<title id="ecgEngTitle">Normal sinus rhythm 12-lead — synthetic educational ECG</title>';
-  s += '<desc id="ecgEngDesc">Synthetic educational 12-lead ECG at 25 mm per second and 10 mm per millivolt. Sinus rhythm about ' + caseData.rate + ' per minute with normal PR, QRS and QT intervals. Not a patient recording.</desc>';
+  s += '<title id="ecgEngTitle">' + esc(title) + ' — synthetic educational ECG</title>';
+  s += '<desc id="ecgEngDesc">Synthetic educational 12-lead ECG at 25 mm per second and 10 mm per millivolt. ' + esc(description) + ' Not a patient recording.</desc>';
   s += renderPaperGrid(W, H);
   // Header: title + speed/gain + synthetic badge (calibration sits in the left gutter).
-  s += '<text x="' + m.gutL + '" y="38" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="30" font-weight="800" fill="#111111">Normal sinus rhythm — 12-lead</text>';
-  s += '<text x="' + m.gutL + '" y="68" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="22" font-weight="700" fill="#374151">SYNTHETIC EDUCATIONAL ECG · 25 mm/s · 10 mm/mV · ' + caseData.rate + '/min · sinus</text>';
-  s += '<text x="' + m.gutL + '" y="96" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="20" fill="#6b7280">P upright I/II, negative aVR · V1 rS → R growth → dominant R V5/V6 · T concordant, asymmetric</text>';
+  s += '<text x="' + m.gutL + '" y="38" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="30" font-weight="800" fill="#111111">' + esc(title) + '</text>';
+  s += '<text x="' + m.gutL + '" y="68" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="22" font-weight="700" fill="#374151">SYNTHETIC EDUCATIONAL ECG · 25 mm/s · 10 mm/mV · ' + esc(subtitle) + '</text>';
+  s += '<text x="' + m.gutL + '" y="96" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="20" fill="#6b7280">' + esc(teaching) + '</text>';
   s += renderSecondMarks(m.gutL, m.marT - 14, 10000);
   // 12 lead cells.
   for (var r = 0; r < 3; r++) {
@@ -579,14 +591,14 @@ function renderNormal12Lead(opts) {
   var rhyX = m.gutL;
   var rhyW = 4 * m.colW + 3 * m.gapX;
   s += '<line x1="' + r1(m.gutL - 20) + '" y1="' + r1(rhyTop) + '" x2="' + r1(m.gutL + rhyW + 10) + '" y2="' + r1(rhyTop) + '" stroke="#e5a0a7" stroke-width="1.5" stroke-dasharray="8 5"/>';
-  s += leadLabel(rhyX + 8, rhyTop + 32, 'II rhythm · 10 s · ' + caseData.rate + '/min regular');
+  s += leadLabel(rhyX + 8, rhyTop + 32, rhythmLabel);
   s += renderLeadPath('II', rhyX, rhyBase, 0, 10000, caseData);
   s += '<rect x="' + r1(rhyX) + '" y="' + r1(rhyTop) + '" width="' + r1(rhyW) + '" height="' + r1(m.rhyH) + '" fill="none" stroke="#e5b8bd" stroke-width="1.5"/>';
   // Calibration pulse in the left gutter at rhythm baseline: no lead lane
   // starts left of x=gutL, so the 40x80 pulse and its label obscure nothing.
   s += renderCalibrationPulse(24, rhyBase);
   // Footer safety note (always visible, inside the paper).
-  s += '<text x="' + m.gutL + '" y="' + r1(H - 14) + '" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="21" font-weight="700" fill="#374151">Synthetic educational tracing — not a patient recording. PR ~' + caseData.prMs + ' ms · QRS ~' + caseData.qrsMs + ' ms · QT ~' + caseData.qtMs + ' ms.</text>';
+  s += '<text x="' + m.gutL + '" y="' + r1(H - 14) + '" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="21" font-weight="700" fill="#374151">Synthetic educational tracing — not a patient recording. ' + esc(footer) + '</text>';
   s += '</svg>';
   return { svg: s, caseData: caseData, width: W, height: H };
 }
@@ -1257,6 +1269,8 @@ window.ECG_ENGINE = {
   createPatternCase: createPatternCase,
   leadVoltageAt: leadVoltageAt,
   renderNormal12Lead: renderNormal12Lead,
+  render12Lead: render12Lead,
+  layoutMetrics: layoutMetrics,
   renderOmiLegend: renderOmiLegend,
   renderPaperGrid: renderPaperGrid,
   renderCalibrationPulse: renderCalibrationPulse,

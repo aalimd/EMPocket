@@ -3,7 +3,7 @@
   'use strict';
   if (!['localhost', '127.0.0.1'].includes(location.hostname)) { document.body.textContent = 'Local audit only.'; return; }
   const output = document.querySelector('#result'), gallery = document.querySelector('#gallery');
-  const source = await (await fetch('../assets/app.js?v=20260907-interactive6')).text();
+  const source = await (await fetch('../assets/app.js?v=20260907-header2')).text();
   function extract(name) {
     const start = source.indexOf('\n    function ' + name + '(');
     const end = source.indexOf('\n    function ', start + 1);
@@ -19,8 +19,8 @@
   gallery.addEventListener('click', event => { const b = event.target.closest('[data-ecg-tool]'); if (!b) return; if (['expand', 'explain'].includes(b.dataset.ecgTool)) window.ECG_INTERACTIVE.open(select.value, b); else gallery.querySelector('figure').classList.toggle(b.dataset.ecgTool === 'compare' ? 'show-reference' : 'hide-labels'); });
   gallery.addEventListener('change', event => { if (event.target.matches('[data-ecg-panel]')) gallery.querySelector('svg').setAttribute('viewBox', event.target.value); });
   const frame = document.querySelector('#app'), route = document.querySelector('#route');
-  ['home', 'ecg', 'study', 'shift', ...window.CP_DATA.map(cp => cp.id)].forEach(id => route.add(new Option(id, id)));
-  const parsed = new DOMParser().parseFromString(await (await fetch('../index.html?audit=20260907-interactive6')).text(), 'text/html');
+  ['home', 'ecg', 'ecg-explorer', 'study', 'shift', ...window.CP_DATA.map(cp => cp.id)].forEach(id => route.add(new Option(id, id)));
+  const parsed = new DOMParser().parseFromString(await (await fetch('../index.html?audit=20260907-header2')).text(), 'text/html');
   parsed.querySelector('#disclaimerOverlay').remove();
   const base = parsed.createElement('base'); base.href = new URL('../', location.href).href; parsed.head.prepend(base);
   frame.srcdoc = '<!doctype html>' + parsed.documentElement.outerHTML;
@@ -51,7 +51,7 @@
     await ready;
     for (const width of [320, 390, 768, 1280]) {
       frame.style.width = width + 'px';
-      for (const id of ['home', 'ecg', 'study', 'shift', ...window.CP_DATA.map(cp => cp.id)]) {
+      for (const id of ['home', 'ecg', 'ecg-explorer', 'study', 'shift', ...window.CP_DATA.map(cp => cp.id)]) {
         frame.contentWindow.location.hash = id === 'home' ? '' : id;
         await new Promise(resolve => setTimeout(resolve, 35));
         check('Route ' + id + ' at ' + width + 'px', () => {
@@ -60,6 +60,7 @@
           assert(doc.querySelector('#stage').textContent.trim().length > 100, 'Blank stage');
           assert(!/undefined|NaN|Could not load/.test(doc.querySelector('#stage').textContent), 'Invalid rendered content');
           assert(doc.documentElement.scrollWidth <= doc.documentElement.clientWidth + 2, 'Page overflow');
+          if(id==='ecg-explorer') {assert(!!doc.querySelector('.explorer-findings h2')&&!!doc.querySelector('[data-control="case"]').value,'Explorer route failed');assert(doc.querySelector('#explorerBtn').getAttribute('aria-current')==='page','Explorer navigation not active');}
         });
       }
     }

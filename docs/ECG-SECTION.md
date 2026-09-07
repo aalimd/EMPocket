@@ -1,5 +1,7 @@
 # EM-CPs ECG section — programmer notes
 
+> **New main section:** [ECG-EXPLORER.md](ECG-EXPLORER.md) documents 43 teaching examples, 125 findings and the pink-paper update. Existing Step 1 content is preserved.
+
 > **Interactive behavior:** [ECG-INTERACTIVITY-2026-09-07.md](ECG-INTERACTIVITY-2026-09-07.md) covers all 27 figures and 76 selectable explanations.
 
 > **Current audit:** read [CONTENT-AUDIT-2026-09-07.md](CONTENT-AUDIT-2026-09-07.md) first. The snapshot below is historical and contains superseded descriptions. The runtime has 27 SVG library entries, including ten dynamic diagnosis models, nine explicitly uncalibrated morphology schematics and a synthetic normal 12-lead. Run `node --test tests/*.test.js` for current checks.

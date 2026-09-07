@@ -32,7 +32,8 @@ test('schematics cannot be mistaken for box-calibrated paper', () => {
   for (const id of ids) {
     const figure = W.ECG_SVG[id];
     assert.match(figure.caption, /no box-counting/);
-    assert.doesNotMatch(figure.svg, /<pattern/);
+    assert.match(figure.svg, /ecg-decorative-paper/);
+    assert.match(figure.caption, /grid is decorative/);
     assert.match(figure.svg, /ecg-label-b/);
     assert.ok(!figure.traceSpec && !figure.hasReference, id);
   }

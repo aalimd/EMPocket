@@ -1,5 +1,5 @@
 /* EM Pocket service worker — resilient app-shell caching for offline clinical reference. */
-const CACHE_VERSION = 'v132';
+const CACHE_VERSION = 'v149';
 const SCOPE_KEY = new URL(self.registration.scope).pathname.toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '') || 'root';
@@ -8,22 +8,25 @@ const CACHE = CACHE_PREFIX + CACHE_VERSION;
 const CORE_ASSETS = [
     './',
     './index.html',
-    './assets/app.css?v=20260907-interactive6',
-    './assets/app.js?v=20260907-interactive6',
-    './assets/data.js?v=20260907-interactive6',
-    './assets/evidence.js?v=20260907-interactive6',
-    './assets/ecg-svg.js?v=20260907-interactive6',
-    './assets/ecg-engine.js?v=20260907-interactive6',
-    './assets/ecg-case-tracings.js?v=20260907-interactive6',
-    './assets/ecg-interactive.js?v=20260907-interactive6'
+    './assets/app.css?v=20260907-header2',
+    './assets/student-learning.js?v=20260907-header2',
+    './assets/app.js?v=20260907-header2',
+    './assets/data.js?v=20260907-header2',
+    './assets/evidence.js?v=20260907-header2',
+    './assets/ecg-svg.js?v=20260907-header2',
+    './assets/ecg-engine.js?v=20260907-header2',
+    './assets/ecg-case-tracings.js?v=20260907-header2',
+    './assets/ecg-interactive.js?v=20260907-header2',
+    './assets/ecg-curriculum.js?v=20260907-header2',
+  './assets/ecg-explorer.js?v=20260907-header2'
 ];
 const OPTIONAL_ASSETS = [
-    './manifest.json?v=20260907-interactive6',
-    './assets/icon.svg?v=20260907-interactive6',
-    './assets/icon-192.png?v=20260907-interactive6',
-    './assets/icon-512.png?v=20260907-interactive6',
-    './assets/icon-maskable-512.png?v=20260907-interactive6',
-    './assets/apple-touch-icon.png?v=20260907-interactive6'
+    './manifest.json?v=20260907-header2',
+    './assets/icon.svg?v=20260907-header2',
+    './assets/icon-192.png?v=20260907-header2',
+    './assets/icon-512.png?v=20260907-header2',
+    './assets/icon-maskable-512.png?v=20260907-header2',
+    './assets/apple-touch-icon.png?v=20260907-header2'
 ];
 
 const APP_SHELL = new URL('./index.html', self.registration.scope).href;

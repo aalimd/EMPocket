@@ -230,7 +230,7 @@
         return _ecgCache;
     }
     function topicRecord(id) {
-        if (id === ECG_TOPIC_ID) return { id: ECG_TOPIC_ID, name: 'Emergency ECG from scratch', icon: '📈', tag: 'Systematic ECG interpretation' };
+        if (id === ECG_TOPIC_ID) return { id: ECG_TOPIC_ID, name: 'Emergency ECG Guide', icon: '📈', tag: 'Systematic ECG interpretation' };
         return BY_ID[id] || null;
     }
     function stripTags(s) {
@@ -401,7 +401,8 @@
     function buildSidebar() {
         const list = document.getElementById('sideList');
         list.innerHTML = '<button type="button" class="side-item side-home" data-home="1"><i class="ico" aria-hidden="true">' + GROUP_SVG.home + '</i>All presentations</button>' +
-            (getEcg() ? '<button type="button" class="side-item" data-ecg="1"><i class="ico" aria-hidden="true">' + GROUP_SVG.ecg + '</i>ECG from scratch</button>' : '') +
+            (getEcg() ? '<button type="button" class="side-item" data-ecg="1"><i class="ico" aria-hidden="true">' + GROUP_SVG.ecg + '</i>ECG Guide</button>' : '') +
+            '<button type="button" class="side-item" data-explorer="1"><i class="ico" aria-hidden="true">' + GROUP_SVG.ecg + '</i>ECG Explorer</button>' +
             GROUPS.map((g, groupIndex) => {
             const items = g.ids.map(id => BY_ID[id]).filter(Boolean);
             if (!items.length) return '';
@@ -415,13 +416,14 @@
             if (!btn) return;
             if (btn.dataset.home) { showHome(); closeSidebar(); }
             else if (btn.dataset.ecg) { showEcg(); closeSidebar(); }
+            else if (btn.dataset.explorer) { showExplorer(); closeSidebar(); }
             else { showPresentation(btn.dataset.id); closeSidebar(); }
         });
     }
     function markActive(id) {
         document.querySelectorAll('.side-item').forEach(b =>
             b.classList.toggle('active',
-                id === ECG_TOPIC_ID ? !!b.dataset.ecg : (id ? b.dataset.id === id : !!b.dataset.home)));
+                id === 'ecg-explorer' ? !!b.dataset.explorer : id === ECG_TOPIC_ID ? !!b.dataset.ecg : (id ? b.dataset.id === id : !!b.dataset.home)));
         document.querySelectorAll('.side-group').forEach(group => {
             const active = !!group.querySelector('.side-item.active');
             group.classList.toggle('has-active', active);
@@ -509,7 +511,7 @@
             homeBtn.classList.toggle('active-nav', view === 'home');
             homeBtn.setAttribute('aria-current', view === 'home' ? 'page' : 'false');
         }
-        [['studyBtn', 'study'], ['shiftBtn', 'shift'], ['ecgBtn', 'ecg']].forEach(function (pair) {
+        [['studyBtn', 'study'], ['shiftBtn', 'shift'], ['ecgBtn', 'ecg'], ['explorerBtn', 'explorer']].forEach(function (pair) {
             const el = document.getElementById(pair[0]);
             if (!el) return;
             const on = view === pair[1];
@@ -606,25 +608,9 @@
         }).join('') + '</div>';
     }
     function caseHtml() {
-        const ids = orderedIds();
-        if (!ids.length) {
-            return '<section class="study-page"><div class="study-page-head"><button type="button" class="back-btn" data-home="1">← All presentations</button><h1>Practice case unavailable</h1><p>Presentation data could not be loaded. Confirm <code>assets/data.js</code> is available, then refresh.</p></div></section>';
-        }
-        const day = Math.floor(Date.now() / 86400000);
-        const cp = BY_ID[ids[(day + caseCursor) % ids.length]] || DATA[0];
-        const critical = cp.dontMiss.filter(d => d[1] === 'critical');
-        const first = (cp.approach || [])[0] || 'Stabilize the patient and begin a focused assessment.';
-        const threat = critical[0] ? critical[0][0] : 'a time-critical diagnosis';
-        const common = (cp.dontMiss.filter(d => d[1] === 'common')[0] || ['a benign diagnosis'])[0];
-        const icu = (cp.disposition || [])[cp.disposition.length - 1] || ['Escalate', 'Use the local pathway.'];
-        return '<section class="case-practice"><div class="case-practice-head"><span>DAILY CLINICAL REASONING CASE</span><h1>' + esc(cp.name) + '</h1><p>Start with the pattern, commit to an answer, then check your reasoning. This is educational practice, not a patient-specific decision tool.</p></div>' +
-            '<div class="case-prompt"><strong>Handoff</strong><p>A patient presents with <em>' + esc(cp.tag) + '</em>. Before reading the pathway, choose the safest first priority.</p></div>' +
-            quizQuestion('1', 'What is the strongest first move?', [first, (cp.approach || [])[1] || 'Order broad testing', 'Wait for a final diagnosis'], 0) +
-            quizQuestion('2', 'Which diagnosis is the one you cannot afford to miss first?', [threat, common, 'A low-risk self-limited cause'], 0) +
-            quizQuestion('3', 'If instability or the listed escalation signs are present, what disposition lane fits?', [icu[0], (cp.disposition || [])[0] ? cp.disposition[0][0] : 'Discharge', 'Routine outpatient follow-up'], 0) +
-            '<div class="case-answer"><strong>Teaching point</strong><p>' + esc(first) + ' Then actively look for ' + esc(threat) + '. When instability is present, follow the ' + esc(icu[0]) + ' pathway and local escalation protocol.</p></div>' +
-            '<div class="study-actions"><button type="button" class="back-btn" data-home="1">← All presentations</button><button type="button" class="rf-clear" data-next-case="1">Next case →</button><button type="button" class="review-btn" data-id="' + cp.id + '">Open full pathway</button></div></section>';
+        return window.STUDENT_LEARNING.render(caseCursor);
     }
+
     function quizQuestion(number, question, options, correct) {
         return '<fieldset class="quiz-question"><legend><span>' + number + '</span>' + esc(question) + '</legend><div class="quiz-options">' + options.map(function (option, i) {
             return '<button type="button" class="quiz-option" data-correct="' + (i === correct) + '">' + esc(option) + '</button>';
@@ -634,6 +620,7 @@
         currentId = null;
         markActive('study'); syncNav('study'); setTitle('Study');
         setStageContext('Personal study space');
+        if(view&&view.indexOf('case-')===0){const i=window.STUDENT_LEARNING.cases.findIndex(c=>c.id===view.slice(5));if(i>=0)caseCursor=i;view='case';}
         const chosen = view === 'saved' ? 'saved' : view === 'case' ? 'case' : 'due';
         const body = chosen === 'case' ? caseHtml() :
             '<section class="study-page"><div class="study-page-head"><button type="button" class="back-btn" data-home="1">← All presentations</button><span class="study-kicker">PERSONAL STUDY SPACE</span><h1>' + (chosen === 'due' ? 'Review queue' : 'Saved topics') + '</h1><p>' + (chosen === 'due' ? 'Topics return after 1, 3, 7, and 14 days of review. Complete a review to move it to the next interval.' : 'Use saved topics for weak areas, upcoming rotations, or cases you want to discuss.') + '</p></div>' +
@@ -646,13 +633,12 @@
             if (btn.dataset.ecg || btn.dataset.id === ECG_TOPIC_ID) showEcg();
             else showPresentation(btn.dataset.id);
         }));
-        stage.querySelectorAll('.quiz-option').forEach(btn => btn.addEventListener('click', function () {
-            const box = btn.closest('.quiz-question');
-            box.querySelectorAll('.quiz-option').forEach(x => { x.disabled = true; x.classList.toggle('correct', x.dataset.correct === 'true'); });
-            const good = btn.dataset.correct === 'true';
-            if (!good) btn.classList.add('incorrect');
-            box.querySelector('.quiz-feedback').textContent = good ? 'Correct — that preserves safety and time-critical options.' : 'Not the safest choice here. Review the teaching point, then open the pathway.';
-        }));
+        window.STUDENT_LEARNING.bindPractice(stage);
+        const chooseCase=stage.querySelector('[data-practice-case]');
+        if(chooseCase)chooseCase.addEventListener('change',()=>{caseCursor=Number(chooseCase.value);renderStudy('case');});
+        const retryCase=stage.querySelector('[data-retry-case]');
+        if(retryCase)retryCase.addEventListener('click',()=>renderStudy('case'));
+        announce('Study: '+chosen);
         window.scrollTo({ top: 0 });
         stage.focus({ preventScroll: true });
     }
@@ -786,7 +772,7 @@
     function relatedHtml(id, closed) {
         const ids = (RELATED[id] || []).filter(x => BY_ID[x]);
         const ecgChip = (getEcg() && ECG_FROM_PRESENTATIONS[id])
-            ? '<button type="button" class="related-chip" data-ecg="1">' + GROUP_SVG.ecg + 'ECG from scratch</button>'
+            ? '<button type="button" class="related-chip" data-ecg="1">' + GROUP_SVG.ecg + 'ECG Guide</button>'
             : '';
         if (!ids.length && !ecgChip) return '';
         return sectionCard('🔗', 'See also',
@@ -834,11 +820,9 @@
             '<div class="cp-ico-lg" aria-hidden="true">' + iconFor(cp) + '</div>' +
             '<h1 id="presentationTitle" tabindex="-1">' + esc(cp.name) + '</h1><p class="tag">' + esc(cp.tag) + '</p></div>' +
 
-            firstMinutesHtml(cp) +
-
             presentationTocHtml() +
-
-            sectionCard('🧭', 'How to think', overviewHtml(cp), isClosed('how-to-think', true), 'how-to-think') +
+            sectionCard('🧭', 'How to think', overviewHtml(cp), isClosed('how-to-think', false), 'how-to-think') +
+            firstMinutesHtml(cp) +
 
             sectionCard('🚨', dxTitle, dxCards(cp), isClosed('dont-miss'), 'dont-miss') +
 
@@ -1196,7 +1180,7 @@
         }
         const patternTarget = (ecg.patterns.filter(function (p) { return p.id === target; })[0] || {}).id || null;
         ecgFocusId = patternTarget || null;
-        setTitle('ECG from scratch');
+        setTitle('ECG Guide');
         setStageContext(null, 'ecgTitle');
         const first = ecg.firstPass[0] || 'Treat the unstable patient before decorating the 12-lead.';
         const killers = ecg.patterns.filter(function (p) { return p.severity === 'critical'; }).slice(0, 5).map(function (p) { return p.name; });
@@ -1215,7 +1199,7 @@
             '<button type="button" class="case-action primary" data-jump="ecg-red-flags">Red flags</button>' +
             '<button type="button" class="case-action" data-jump="ecg-step-' + ecg.steps[0].id + '">Start 7-step</button>' +
             '<button type="button" class="case-action" data-jump="ecg-patterns">Pattern library</button>' +
-            '<button type="button" class="case-action" id="openDynamicEcg">Dynamic ECG</button>' +
+            '<button type="button" class="case-action" id="openDynamicEcg">ECG workbench</button>' +
             '</div></aside>';
         const killerHtml = '<details class="ecg-pattern-index"><summary>Jump to a pattern</summary><div class="ecg-killers" aria-label="Killer patterns">' +
             ecg.patterns.filter(function (p) { return p.severity === 'critical'; }).map(function (p) {
@@ -1228,7 +1212,7 @@
                 ecgDetailList(s.details) +
                 '<div class="pp-grid ecg-pp"><div class="pp-box pearls"><h4>Pearl</h4><p>' + esc(s.pearl || '') + '</p></div>' +
                 '<div class="pp-box pitfalls"><h4>Pitfall</h4><p>' + esc(s.pitfall || '') + '</p></div></div>',
-                true, 'ecg-step-' + s.id);
+                s.num !== 1, 'ecg-step-' + s.id);
         }).join('');
         const cats = [['all', 'All patterns']].concat(Object.keys(ECG_CAT_LABEL).map(function (k) { return [k, ECG_CAT_LABEL[k]]; }));
         const filters = '<div class="ecg-filters" role="group" aria-label="ECG pattern category">' +
@@ -1274,12 +1258,12 @@
             '<p class="tag">' + esc(ecg.tag) + '</p>' +
             (ecg.subtitle ? '<p class="ecg-subhead">' + esc(ecg.subtitle) + '</p>' : '') +
             '</div>' +
-            firstPassHtml +
             stepNav +
+            '<p class="student-safety">'+esc(ecg.firstPass[0])+'</p><details class="reference-firstpass"><summary>Urgent ECG assessment · reference checklist</summary>'+firstPassHtml+'</details>'+
             stepsHtml +
             killerHtml +
             sectionCard('🗂️', 'Pattern library',
-                '<p class="ecg-summary">Choose a category, or open reading tools above to filter by severity.</p>' +
+                '<p class="ecg-summary">Choose a category, or use the severity filter above.</p>' +
                 filters + patternsHtml, true, 'ecg-patterns') +
             sectionCard('🧭', 'How to think',
                 '<div class="ov"><p class="ov-job"><span class="ov-kicker">The job</span>' + esc(ecg.tag) + '</p>' +
@@ -1345,7 +1329,7 @@
         if (!target) {
             window.scrollTo({ top: 0 });
             stage.focus({ preventScroll: true });
-            announce('Viewing emergency ECG from scratch');
+            announce('Viewing emergency ECG Guide');
         } else {
             announce('Viewing emergency ECG — ' + stripTags(target));
             requestAnimationFrame(function () { jumpToSection(resolveEcgJump(ecg, target), true); });
@@ -1357,11 +1341,27 @@
         else location.hash = route;
     }
 
+    function showExplorer(id) {
+        const route='ecg-explorer'+(typeof id==='string'?'~'+id:'');
+        if (location.hash === '#'+route) renderExplorer(typeof id==='string'?id:undefined);
+        else location.hash = route;
+    }
+    function renderExplorer(id) {
+        currentId = null;
+        markActive('ecg-explorer'); syncNav('explorer'); setTitle('ECG Explorer');
+        setStageContext('ECG Explorer');
+        stage.innerHTML = '<section class="ecg-explorer"></section>';
+        window.ECG_EXPLORER.mount(stage.firstElementChild,{id});
+        window.scrollTo({ top: 0 });
+        stage.focus({ preventScroll: true }); announce('Viewing ECG Explorer');
+    }
+
     function applyRoute(preservePosition) {
         const route = (location.hash || '').replace('#', '').split('~');
         const id = route[0], target = route[1];
         if (id === 'study') renderStudy(target || 'due');
         else if (id === 'shift') renderShift(target);
+        else if (id === 'ecg-explorer') renderExplorer(target);
         else if (id === ECG_TOPIC_ID) renderEcg(target);
         else if (id && BY_ID[id]) renderPresentation(id, target, preservePosition);
         else renderHome();
@@ -1447,7 +1447,7 @@
         });
         const ecg = getEcg();
         if (ecg) {
-            idx.push({ cpId: ECG_TOPIC_ID, target: '', title: 'ECG from scratch', sub: ecg.tag, kind: 'ECG' });
+            idx.push({ cpId: ECG_TOPIC_ID, target: '', title: 'ECG Guide', sub: ecg.tag, kind: 'ECG' });
             idx.push({ cpId: ECG_TOPIC_ID, target: '', title: ecg.title, sub: ecg.subtitle || ecg.tag, kind: 'ECG' });
             ecg.firstPass.forEach(function (s) {
                 idx.push({ cpId: ECG_TOPIC_ID, target: 'ecg-how', title: s, sub: 'ECG first-pass', kind: 'ECG' });
@@ -1471,6 +1471,7 @@
                 idx.push({ cpId: ECG_TOPIC_ID, target: 'pearls-pitfalls', title: p, sub: 'ECG pitfall', kind: 'ECG' });
             });
         }
+        if(window.ECG_EXPLORER)window.ECG_EXPLORER.cases.forEach(c=>idx.unshift({cpId:'ecg-explorer',target:c.id,title:c.name,sub:c.category+' · '+c.id.replace(/-/g,' ')+' · '+c.summary,kind:'Interactive ECG'}));
         return idx;
     }
     const SEARCH_INDEX = buildSearchIndex();
@@ -1531,7 +1532,7 @@
         const hits = SEARCH_INDEX.filter(x =>
             x.title.toLowerCase().indexOf(ql) !== -1 ||
             (x.sub && x.sub.toLowerCase().indexOf(ql) !== -1)
-        ).slice(0, 12);
+        ).sort((a,b)=>{const score=x=>{const title=x.title.toLowerCase();return title===ql?100:title.startsWith(ql)&&(!title[ql.length]||/[^a-z0-9]/.test(title[ql.length]))?80:title.includes(ql)?40:20;};return score(b)-score(a);}).slice(0, 12);
         pop.innerHTML = hits.length
             ? hits.map((h, i) =>
                 '<button type="button" class="res-item" id="search-result-' + i + '" data-id="' + h.cpId + '" data-target="' + h.target + '" role="option" aria-selected="false">' +
@@ -1553,7 +1554,8 @@
             }));
     }
     function openSearchHit(id, target) {
-        if (id === ECG_TOPIC_ID) showEcg(target || '');
+        if (id === 'ecg-explorer') showExplorer(target);
+        else if (id === ECG_TOPIC_ID) showEcg(target || '');
         else showPresentation(id, target);
     }
 
@@ -1732,7 +1734,9 @@
         }
 
         requestAnimationFrame(() => {
-            if (check) check.focus();
+            const title=document.getElementById('disclaimerTitle');
+            if(title){title.tabIndex=-1;title.focus({preventScroll:true});}
+            const body=overlay.querySelector('.disclaimer-body');if(body)body.scrollTop=0;
         });
     }
     function hideDisclaimer() {
@@ -1780,7 +1784,7 @@
             const items = Array.from(focusable);
             if (e.key === 'Tab' && items.length) {
                 const first = items[0], last = items[items.length - 1];
-                if (e.shiftKey && document.activeElement === first) {
+                if (e.shiftKey && (document.activeElement === first || document.activeElement.id === 'disclaimerTitle')) {
                     e.preventDefault(); last.focus();
                 } else if (!e.shiftKey && document.activeElement === last) {
                     e.preventDefault(); first.focus();
@@ -1927,6 +1931,7 @@
         if (studyBtn) studyBtn.addEventListener('click', () => showStudy('due'));
         const shiftBtn = document.getElementById('shiftBtn');
         if (shiftBtn) shiftBtn.addEventListener('click', () => showShift(currentId));
+        document.getElementById('explorerBtn').addEventListener('click', showExplorer);
         const ecgBtn = document.getElementById('ecgBtn');
         if (ecgBtn) {
             if (!getEcg()) ecgBtn.hidden = true;
@@ -1951,7 +1956,7 @@
             const items = Array.from(focusable).filter(el => el.getClientRects().length);
             if (!items.length) return;
             const first = items[0], last = items[items.length - 1];
-            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+            if (e.shiftKey && (document.activeElement === first || document.activeElement.id === 'disclaimerTitle')) { e.preventDefault(); last.focus(); }
             else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
         });
         const toolsToggle = document.getElementById('toolsToggle');
@@ -1963,14 +1968,14 @@
                 topbarTools.classList.toggle('open', open);
                 document.body.classList.toggle('tools-open', open);
                 toolsToggle.setAttribute('aria-expanded', String(open));
-                toolsToggle.setAttribute('aria-label', open ? 'Close filters and reading tools' : 'Open filters and reading tools');
+                toolsToggle.setAttribute('aria-label', open ? 'Close reading settings' : 'Open reading settings');
             });
             document.addEventListener('click', (e) => {
                 if (topbarTools.classList.contains('open') && !topbarTools.contains(e.target) && e.target !== toolsToggle && !toolsToggle.contains(e.target)) {
                     topbarTools.classList.remove('open');
                     document.body.classList.remove('tools-open');
                     toolsToggle.setAttribute('aria-expanded', 'false');
-                    toolsToggle.setAttribute('aria-label', 'Open filters and reading tools');
+                    toolsToggle.setAttribute('aria-label', 'Open reading settings');
                 }
             });
         }
@@ -2075,7 +2080,7 @@
                     tools.classList.remove('open');
                     document.body.classList.remove('tools-open');
                     toolsToggle.setAttribute('aria-expanded', 'false');
-                    toolsToggle.setAttribute('aria-label', 'Open filters and reading tools');
+                    toolsToggle.setAttribute('aria-label', 'Open reading settings');
                     toolsToggle.focus();
                     return;
                 }
@@ -2110,7 +2115,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20260907-interactive6').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20260907-header2').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
                     registration.addEventListener('updatefound', () => {
