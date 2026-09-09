@@ -1718,10 +1718,10 @@ const ECG_DATA = {
             category: 'mimics',
             severity: 'emergent',
             leads: 'Diffuse limb + precordial; aVR; V4 for BER notch',
-            criteria: 'Pericarditis: diffuse concave STE, PR depression, aVR PR elevation/STD, Spodick sign, no reciprocal STD except aVR/V1. BER: fish-hook J-point notching (often V4), ST/T amplitude ratio in V6 &lt; 0.25, stable vs old ECG.',
+            criteria: 'Pericarditis: diffuse concave STE, PR depression, aVR PR elevation/STD, Spodick sign, no reciprocal STD except aVR/V1. BER: fish-hook J-point notching (often V4), ST/T amplitude ratio in V6 &lt; 0.25 may support BER, particularly when stable versus an old ECG; neither feature alone excludes ACS.',
             significance: 'The dangerous error is labelling OMI as pericarditis because the STE is concave.',
-            action: 'If STE is territorial and any reciprocal STD exists (except aVR/V1): treat as OMI. Pericarditis: echo (effusion/tamponade), NSAID + colchicine per local practice, review anticoagulation indications and bleeding/tamponade risk with cardiology; an effusion alone is not an absolute contraindication.',
-            caution: 'Pericarditis almost never causes reciprocal STD in III or aVL. That pattern is inferior or high-lateral OMI. Myopericarditis exists — when uncertain, take the OMI path.'
+            action: 'Territorial STE with reciprocal STD outside aVR/V1 strongly raises concern for coronary occlusion: arrange urgent ACS assessment. Pericarditis: echo (effusion/tamponade), NSAID + colchicine per local practice, review anticoagulation indications and bleeding/tamponade risk with cardiology; an effusion alone is not an absolute contraindication.',
+            caution: 'Reciprocal depression outside aVR/V1 is atypical for uncomplicated pericarditis. Read it with territorial ST elevation and symptoms; myocardial inflammation can also mimic ACS. When occlusion remains a concern, seek urgent cardiology assessment.'
         },
         {
             id: 'tca-toxicity',
@@ -1745,7 +1745,7 @@ const ECG_DATA = {
             criteria: 'Sinus: short PR (&lt;120 ms) + delta wave + wide QRS. Pre-excited AF: irregular, wide, bizarre, often &gt;200–250 bpm with changing QRS morphology.',
             significance: 'Rapid accessory-pathway conduction during AF can provoke VF. AV-nodal-blocking drugs can accelerate the ventricular response and are harmful in pre-excited AF.',
             action: 'Unstable: immediate cardioversion. Stable pre-excited AF: IV procainamide or ibutilide with expert monitoring, or electrical cardioversion. <strong>Avoid adenosine, beta-blockers, diltiazem, verapamil, digoxin and IV amiodarone in pre-excited AF.</strong>',
-            caution: 'Delta waves fake Q waves (pseudo-infarct) and fake bundle-branch block. An irregular wide tachycardia that is very fast is pre-excited AF until proven otherwise — not “fast AF with RBBB.”'
+            caution: 'Delta waves fake Q waves (pseudo-infarct) and fake bundle-branch block. A very fast irregular wide tachycardia must raise concern for pre-excited AF. Consider AF with aberrancy and polymorphic VT as well; do not assume ordinary AF before assessing for pre-excitation.'
         },
         {
             id: 'vt-vs-svt',
@@ -1778,10 +1778,10 @@ const ECG_DATA = {
             category: 'mimics',
             severity: 'critical',
             leads: 'All leads; QRS amplitude beat-to-beat',
-            criteria: 'Low voltage: QRS &lt; 5 mm in every limb lead or &lt; 10 mm in every precordial lead. Electrical alternans: beat-to-beat QRS (sometimes P/T) amplitude change. The triad of low voltage + alternans + sinus tachycardia is tamponade until echo.',
+            criteria: 'Low voltage: QRS &lt; 5 mm in every limb lead or &lt; 10 mm in every precordial lead. Electrical alternans: beat-to-beat QRS (sometimes P/T) amplitude change. Low voltage + alternans + sinus tachycardia raises concern for a large effusion and warrants prompt assessment for tamponade.',
             significance: 'A large effusion can cause alternans through cardiac motion; alternans also occurs with tachyarrhythmias and other mechanisms and does not prove tamponade. Low voltage alone has a wide differential (COPD, obesity, infiltrative disease, anasarca).',
             action: 'Bedside echo now. If tamponade physiology: IV fluid while arranging pericardiocentesis (or the local surgical pathway if type A dissection / post-op). Do not delay for a formal lab ECG repeat.',
-            caution: 'Total electrical alternans is specific but insensitive — tamponade can have a “normal” ECG. Shock plus a quiet heart on ultrasound beats any millimetre rule.'
+            caution: 'Electrical alternans is an insensitive clue and is not exclusive to tamponade. A normal ECG does not exclude tamponade; integrate hemodynamics and echocardiographic findings.'
         }
     ],
     pearls: [

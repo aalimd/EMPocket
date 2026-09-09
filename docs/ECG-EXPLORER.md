@@ -1,3 +1,5 @@
+> Current waveform review: [9 September accuracy update](ECG-ACCURACY-2026-09-09.md) — 47 examples, 143 findings, nine calibrated replacements. Counts and limitations below describe the earlier snapshot.
+
 # ECG Explorer — 7 September 2026
 
 The main navigation and sidebar now open `#ecg-explorer`. The existing ECG guide and Step 1 full-paper reference remain available.
@@ -63,3 +65,5 @@ The full-paper renderer rejects models that only support focused leads rather th
 - All six full-paper examples were visually inspected, along with the actual application on desktop and mobile.
 
 Local fixtures omit onboarding only in their isolated test DOM; they do not accept or persist an agreement. Keep `dev/`, `tests/` and audit documents out of production uploads.
+
+The September learning update adds persistent case completion and finding-level review, keyboard/touch location practice, and synchronized normal comparison for all 47 cases. See [the implementation and verification notes](ECG-LEARNING-2026-09-09.md).

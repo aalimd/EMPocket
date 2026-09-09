@@ -4139,19 +4139,10 @@ html[data-theme="dark"] .ecg-tool[aria-pressed="true"] { background: var(--accen
 /* v4.7 wave inspector (Step 1 pilot) */
 .ecg-hotzone { fill: transparent; stroke: none; pointer-events: all; }
 .ecg-hot { cursor: pointer; outline: none; }
-.ecg-hot:hover .ecg-hotzone { fill: rgba(var(--accent-rgb),0.20); stroke: var(--accent); stroke-width: 1.5; }
-.ecg-hot:focus .ecg-hotzone, .ecg-hot:focus-visible .ecg-hotzone { fill: rgba(var(--accent-rgb),0.26); stroke: var(--accent); stroke-width: 2; }
-.ecg-hot.on .ecg-hotzone { fill: rgba(var(--accent-rgb),0.30); stroke: var(--accent); stroke-width: 2; }
-.ecg-paper .ecg-hot:hover .ecg-hotzone { fill: rgba(220,38,38,0.12); stroke: #dc2626; }
-.ecg-paper .ecg-hot:focus .ecg-hotzone, .ecg-paper .ecg-hot.on .ecg-hotzone { fill: rgba(220,38,38,0.16); stroke: #dc2626; }
-/* Step 4 uses invisible hit areas so selected teaching points never cover the ECG trace. */
-.ecg-hot:hover .ecg-hotzone-quiet,
-.ecg-hot:focus .ecg-hotzone-quiet,
-.ecg-hot:focus-visible .ecg-hotzone-quiet,
-.ecg-hot.on .ecg-hotzone-quiet,
-.ecg-paper .ecg-hot:hover .ecg-hotzone-quiet,
-.ecg-paper .ecg-hot:focus .ecg-hotzone-quiet,
-.ecg-paper .ecg-hot.on .ecg-hotzone-quiet { fill: transparent; stroke: none; }
+/* Hit areas remain interactive but never paint a second selection outline.
+   Hover/focus/click all drive the single SVG finding ellipse. */
+.ecg-hot:is(:hover, :focus, :focus-visible, .on) .ecg-hotzone,
+.ecg-paper .ecg-hot:is(:hover, :focus, :focus-visible, .on) .ecg-hotzone { fill: transparent; stroke: none; }
 .ecg-inspector {
   padding: 9px 14px;
   border-top: 1px solid var(--line-subtle);
@@ -4164,7 +4155,7 @@ html[data-theme="dark"] .ecg-tool[aria-pressed="true"] { background: var(--accen
 .ecg-inspector strong { color: var(--brand-2); }
 html[data-theme="dark"] .ecg-inspector strong { color: var(--accent); }
 @media print { .ecg-inspector { display: none !important; } .ecg-hotzone { display: none !important; } }
-@media (forced-colors: active) { .ecg-hot:hover .ecg-hotzone, .ecg-hot.on .ecg-hotzone { fill: Highlight; stroke: HighlightText; } }
+
 .ecg-legend-ring { fill: none; stroke: var(--accent); stroke-width: 2; }
 .ecg-paper .ecg-legend-ring { stroke: #059669; }
 .ecg-lightbox .ecg-hotzone { pointer-events: none; }
@@ -4421,8 +4412,8 @@ html[data-theme="dark"] .ecg-wavebtn[aria-pressed="true"] { background: var(--ac
 .ecg-finding-marks, .ecg-inline-marks { pointer-events: none; }
 .ecg-finding-marks ellipse, .ecg-inline-marks { fill: rgba(220,38,38,.035); stroke: #dc2626; stroke-width: 2.5; vector-effect: non-scaling-stroke; }
 .ecg-guided-target { fill: transparent; stroke: none; cursor: pointer; pointer-events: all; }
-.ecg-guided-target:focus-visible { stroke: #dc2626; stroke-width: 2; vector-effect: non-scaling-stroke; }
-@media (forced-colors: active) { .ecg-finding-marks ellipse { stroke: Highlight; } }
+.ecg-guided-target:focus-visible { outline: none; stroke: none; }
+@media (forced-colors: active) { .ecg-finding-marks ellipse, .ecg-inline-marks { stroke: Highlight; fill: none; forced-color-adjust: none; } }
 .ecg-settings { border-bottom: 1px solid var(--line); }
 .ecg-settings summary { min-height: 44px; padding: 12px 16px; font-size: .8rem; cursor: pointer; }
 .ecg-calipers .ecg-caliper-hit { fill: transparent; stroke: none; }
@@ -4940,3 +4931,68 @@ html[data-theme="light"] .disp-col.d-icu h4 { color: #b91c1c; }
   .topbar > .tools-toggle { grid-column: 2; grid-row: 1; }
   .topbar > .primary-nav { grid-column: 1 / -1; grid-row: 2; justify-content: space-between; }
 }
+
+/* ECG learning workspace: readable paper, connected feedback and restrained motion. */
+.ecg-hero { padding-block: 22px; }
+.ecg-fig { border-color: var(--line); box-shadow: 0 3px 16px rgba(20,60,50,.04); }
+.ecg-fig .ecg-toolbar { padding: 10px 12px; }
+.ecg-fig .ecg-inspector { line-height: 1.65; }
+.explorer-heading { margin-bottom: 16px; }
+.explorer-heading h1 { letter-spacing: -.035em; }
+.explorer-heading > div > p:last-child { max-width: 55ch; }
+.explorer-progress { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 14px 18px; margin-bottom: 14px; background: var(--ov-job-bg); border: 1px solid var(--line); border-radius: 14px; }
+.explorer-progress > div { flex: 1; min-width: 160px; display: grid; gap: 6px; }
+.explorer-progress strong { font-size: .86rem; }
+.explorer-progress small { color: var(--ink-soft); font-size: .73rem; }
+.explorer-progress progress { width: min(100%,320px); height: 6px; accent-color: var(--brand); }
+.explorer-controls { border: 0; padding: 12px 0; background: transparent; gap: 10px; }
+.explorer-layout { grid-template-columns: minmax(0,1fr) 320px; gap: 20px; }
+.explorer-findings { max-height: calc(100dvh - 110px); overflow: auto; position: sticky; top: 95px; padding: 18px; }
+.explorer-findings h2 { font-size: 1.12rem; }
+.explorer-explanation { background: var(--ov-job-bg); margin: 16px 0; }
+.explorer-detail svg { height: 195px; max-height: 195px !important; }
+.explorer-finding-list button { transition: background .16s ease, border-color .16s ease; }
+.explorer-finding-list button:hover { background: var(--ov-job-bg); }
+.explorer-learning-actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 16px; margin-top: 16px; border-top: 1px solid var(--line); }
+.explorer-learning-actions .ex-button { flex: 1 1 140px; font-size: .77rem; }
+.explorer-learning-actions [aria-pressed="true"] { color: var(--on-fill); background: var(--brand); }
+.explorer-layout.has-comparison { grid-template-columns: minmax(0,1fr) minmax(0,1fr) 300px; }
+.explorer-comparison { min-width: 0; padding: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.explorer-comparison h3 { margin: 0 0 8px; font-size: 1rem; }
+.explorer-comparison p { font-size: .78rem; line-height: 1.6; color: var(--ink-soft); }
+.explorer-reference-paper { overflow: auto; background: #fff1f2; border: 1px solid #e9bbc1; border-radius: 6px; }
+.explorer-reference-canvas svg { display: block; width: 100%; height: auto; max-height: none !important; }
+.explorer-cursor { stroke: #176c9c; stroke-width: 2; vector-effect: non-scaling-stroke; fill: none; pointer-events: none; }
+.explorer-location-feedback { min-height: 2em; font-weight: 600; }
+.explorer-practice-feedback { padding: 12px; border-radius: 8px; background: var(--ov-job-bg); font-size: .8rem; }
+.explorer-explanation, .ecg-inline-marks { animation: ecg-selection-in .18s ease-out; }
+@keyframes ecg-selection-in { from { opacity: .4; } to { opacity: 1; } }
+@media(max-width:1400px){.explorer-layout.has-comparison { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }.has-comparison .explorer-findings { grid-column: 1 / -1; position: static; max-height: none; }}
+@media(max-width:1100px){.explorer-layout { grid-template-columns: minmax(0,1fr); }.explorer-findings { position: static; max-height: none; }.explorer-explanation { scroll-margin-top: 90px; }}
+@media(max-width:700px){.explorer-layout.has-comparison { grid-template-columns: minmax(0,1fr); }.explorer-progress { padding: 12px; gap: 8px; }.explorer-progress .ex-button { flex: 1; font-size: .78rem; }.explorer-progress > div { flex-basis: 100%; }.explorer-controls { padding-block: 8px; }.explorer-detail svg { height: 175px; }.explorer-comparison { padding: 10px; }.ecg-hero { padding-block: 18px; }}
+@media(prefers-reduced-motion:reduce){.explorer-explanation,.ecg-inline-marks { animation: none; }.explorer-finding-list button { transition: none; }}
+@media print {.explorer-progress,.explorer-learning-actions,.explorer-cursor { display: none; }.explorer-findings { position: static; max-height: none; overflow: visible; }}
+/* Keep the overview above the fold; comparison papers share equal column widths. */
+.explorer-heading h1 { font-size: 1.8rem; margin-block: 4px; }
+.explorer-heading .explorer-kicker { margin-bottom: 4px; }
+.explorer-heading > div > p:last-child { margin-block: 6px; font-size: .86rem; }
+.explorer-progress { padding: 10px 14px; margin-bottom: 8px; }
+.explorer-progress > div { grid-template-columns: auto minmax(70px,150px); align-items: center; gap: 5px 12px; }
+.explorer-progress small { grid-column: 1 / -1; }
+.explorer-comparison { padding: 0; overflow: hidden; }
+.explorer-comparison h3,.explorer-comparison > p { padding-inline: 14px; }
+.explorer-comparison h3 { padding-top: 12px; }
+.explorer-reference-paper { border-inline: 0; border-radius: 0; }
+@media(max-width:700px){.explorer-heading h1 { font-size: 1.4rem; }.explorer-progress > div { grid-template-columns: auto minmax(60px,1fr); }.explorer-progress strong { font-size: .78rem; }}
+.main .stage:has(> .ecg-explorer) { max-width: 1600px; padding: 20px 24px 36px; }
+.explorer-heading { margin-block: 0 12px; }
+.explorer-heading .explorer-kicker { display: none; }
+.explorer-heading h1 { font-size: 1.6rem; }
+.explorer-progress > div { grid-template-columns: max-content minmax(70px,150px); justify-content: start; }
+.explorer-controls { margin-bottom: 12px; }
+@media(max-width:700px){.main .stage:has(> .ecg-explorer) { padding: 14px 10px 24px; }.explorer-progress > div { grid-template-columns: auto minmax(50px,1fr); justify-content: stretch; }}
+@media(min-width:1101px){.explorer-findings .explorer-explanation { position: sticky; top: 0; z-index: 1; background: var(--card); box-shadow: 0 5px 12px rgba(20,60,50,.05); }.has-comparison .explorer-findings .explorer-explanation { position: static; }}
+.explorer-sheet > .explorer-explanation { margin: 0; padding: 14px; background: var(--card); border-left: 3px solid var(--brand); border-radius: 0; }
+.explorer-sheet { scroll-margin-top: 90px; }
+.has-comparison .explorer-paper-hint { min-height: 44px; align-items: center; }
+.has-comparison .explorer-paper-hint span { display: none; }

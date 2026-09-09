@@ -3,7 +3,7 @@
   'use strict';
   if (!['localhost', '127.0.0.1'].includes(location.hostname)) { document.body.textContent = 'Local audit only.'; return; }
   const output = document.querySelector('#result'), gallery = document.querySelector('#gallery');
-  const source = await (await fetch('../assets/app.js?v=20260907-header2')).text();
+  const source = await (await fetch('../assets/app.js?v=20260910-icon1')).text();
   function extract(name) {
     const start = source.indexOf('\n    function ' + name + '(');
     const end = source.indexOf('\n    function ', start + 1);
@@ -20,7 +20,7 @@
   gallery.addEventListener('change', event => { if (event.target.matches('[data-ecg-panel]')) gallery.querySelector('svg').setAttribute('viewBox', event.target.value); });
   const frame = document.querySelector('#app'), route = document.querySelector('#route');
   ['home', 'ecg', 'ecg-explorer', 'study', 'shift', ...window.CP_DATA.map(cp => cp.id)].forEach(id => route.add(new Option(id, id)));
-  const parsed = new DOMParser().parseFromString(await (await fetch('../index.html?audit=20260907-header2')).text(), 'text/html');
+  const parsed = new DOMParser().parseFromString(await (await fetch('../index.html?audit=20260910-icon1')).text(), 'text/html');
   parsed.querySelector('#disclaimerOverlay').remove();
   const base = parsed.createElement('base'); base.href = new URL('../', location.href).href; parsed.head.prepend(base);
   frame.srcdoc = '<!doctype html>' + parsed.documentElement.outerHTML;

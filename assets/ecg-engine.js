@@ -288,9 +288,21 @@ function stBump(dt, J_MS, stMv, shape) {
   var atJ = Math.exp(-0.5 * Math.pow(30 / sig, 2)); // 0.692
   return (stMv / atJ) * gauss(dt, c, sig);
 }
+// Broad LBBB depolarization, with two lateral R peaks rather than a
+// stretched narrow-QRS template. Points are fractions of the QRS interval.
+function lbbbQrsAt(dt, width, positive) {
+  var points = positive ? [[0,0],[.30,1.2],[.50,.92],[.73,1.15],[1,0]]
+    : [[0,0],[.18,0],[.58,-1],[.80,-.78],[1,0]];
+  var u = dt / width;
+  if (u < 0 || u > 1) return 0;
+  for (var i=1;i<points.length;i++) if (u <= points[i][0]) {
+    var a=points[i-1],b=points[i];return a[1]+(b[1]-a[1])*(u-a[0])/(b[0]-a[0]);
+  }
+  return 0;
+}
 function baseTableForLead(lead) {
   if (PRECORDIAL_TABLE.hasOwnProperty(lead)) return PRECORDIAL_TABLE[lead];
-  if (lead === 'V8') return { p: 0.04, pNeg: 0, q: -0.02, r: 0.30, s: -0.15, t: 0.25 };
+  if (['V7', 'V8', 'V9'].indexOf(lead) >= 0) return { p: 0.04, pNeg: 0, q: -0.02, r: 0.30, s: -0.15, t: 0.25 };
   // These explicitly named comparison scenarios all represent V3.
   if (['Normal', 'Hyperacute', 'HyperK?', 'Type A', 'Type B'].indexOf(lead) >= 0) return PRECORDIAL_TABLE.V3;
   throw new Error('Unsupported ECG lead: ' + lead);
@@ -351,7 +363,7 @@ function leadVoltageAt(lead, tMs, caseData, sampleIdx) {
       var sA = ov.s !== undefined ? ov.s : tab.s;
       v += scale * (
         pPos + pNeg +
-        qA * envQRS.q + rA * envQRS.r + sA * envQRS.s + tEnvP
+        (ov.qrsShape ? lbbbQrsAt(dt, J_MS, ov.qrsShape === 'lbbb-positive') * (ov.qrsScale || 1) : qA * envQRS.q + rA * envQRS.r + sA * envQRS.s) + tEnvP
       ) + stBump(dt, J_MS, stMv, ov.stShape);
     }
   }
@@ -705,9 +717,9 @@ function createPatternCase(patternId, opts) {
         kind: 'sgarbossa-lbbb', rate: 78, prMs: 160, qrsMs: 150, qtMs: 480,
         axisDeg: 45, seed: 2020, noise: opts.noise,
         leadOverrides: {
-          V5: { q: 0.00, r: 1.20, s: -0.10, stMv: 0.12, tAmp: 0.35, tShape: 'normal' },
-          V3: { r: 0.25, s: -0.90, stMv: -0.12, tAmp: 0.30, tShape: 'normal' },
-          V1: { r: 0.00, s: -1.00, stMv: 0.30, tAmp: 0.40, tShape: 'normal' }
+          V5: { qrsShape: 'lbbb-positive', q: 0.00, r: 1.20, s: -0.10, stMv: 0.12, tAmp: 0.35, tShape: 'normal' },
+          V3: { qrsShape: 'lbbb-negative', qrsScale: 0.9, r: 0.25, s: -0.90, stMv: -0.12, tAmp: 0.30, tShape: 'normal' },
+          V1: { qrsShape: 'lbbb-negative', r: 0.00, s: -1.00, stMv: 0.30, tAmp: 0.40, tShape: 'normal' }
         }
       });
     case 'posterior-omi':
@@ -722,6 +734,8 @@ function createPatternCase(patternId, opts) {
           V1: { r: 0.50, rSigmaMs: 13, s: -0.20, stMv: -0.10, stShape: 'horizontal', tAmp: 0.35, tShape: 'normal' },
           V2: { r: 0.70, rSigmaMs: 13, s: -0.25, stMv: -0.12, stShape: 'horizontal', tAmp: 0.45, tShape: 'normal' },
           V3: { r: 0.90, rSigmaMs: 13, s: -0.25, stMv: -0.12, stShape: 'horizontal', tAmp: 0.50, tShape: 'normal' },
+          V7: { r: 0.40, s: -0.15, stMv: 0.10, tAmp: 0.28, tShape: 'normal' },
+          V9: { r: 0.22, s: -0.10, stMv: 0.06, tAmp: 0.20, tShape: 'normal' },
           V8: { r: 0.30, s: -0.15, stMv: 0.08, tAmp: 0.25, tShape: 'normal' }
         }
       });

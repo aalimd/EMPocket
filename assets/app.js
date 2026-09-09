@@ -1026,8 +1026,7 @@
             var tools = '<div class="ecg-tools" role="group" aria-label="Diagram tools for ' + esc(title) + '">'
                 + '<button type="button" class="ecg-tool"' + (id === 'normal-12lead' ? ' hidden' : '') + ' data-ecg-tool="anno" data-ecg-fig-btn="' + esc(id) + '" aria-pressed="true" title="Show or hide measurement labels">Annotations</button>'
                 + (entry.hasReference ? '<button type="button" class="ecg-tool" data-ecg-tool="compare" aria-pressed="false" title="Modeled same-lead normal reference at matching QRS onset times">Normal reference</button>' : '')
-                + '<button type="button" class="ecg-tool" data-ecg-tool="explain" data-ecg-fig-btn="' + esc(id) + '" title="Explore this ECG with red highlights and explanations">Explain this ECG</button>'
-                + '<button type="button" class="ecg-tool" data-ecg-tool="expand" data-ecg-fig-btn="' + esc(id) + '" title="Enlarge diagram">Enlarge</button>'
+                + '<button type="button" class="ecg-tool" data-ecg-tool="expand" data-ecg-fig-btn="' + esc(id) + '" title="Enlarge the ECG, inspect findings and use available measurement tools">Explore ECG</button>'
                 + '</div>';
             var hasHot = entry.svg && entry.svg.indexOf('ecg-hot') !== -1;
             var waveOrder = ['cal','p','pr','qrs','st','t','qt','rr','narrow','wide','psinus','axis','reg','v1','v5','chambers','lowv','ant','inf','mirror','hyperacute','hyperk','wellens','dewinter','sgSte','sgStd','sgDis','post','ischa'];
@@ -1057,7 +1056,11 @@
         } catch (e) { console.error('ECG figure failed:', id, e); return '<p class="empty-filter" role="status">ECG figure could not be rendered. Reload or use the written criteria.</p>'; }
     }
     function openEcgLightbox(figId, returnTo) {
-        if (window.ECG_INTERACTIVE) { window.ECG_INTERACTIVE.open(figId, returnTo); return; }
+        if (window.ECG_INTERACTIVE) {
+            var figure = returnTo && returnTo.closest('.ecg-fig');
+            window.ECG_INTERACTIVE.open(figId, returnTo, { wave: figure && figure.getAttribute('data-sel') });
+            return;
+        }
         try {
             closeEcgLightbox();
             var lib = window.ECG_SVG || {};
@@ -1842,7 +1845,7 @@
                 var on = !fig.classList.contains('show-reference');
                 fig.classList.toggle('show-reference', on);
                 btn.setAttribute('aria-pressed', String(on));
-            } else if (tool === 'expand' || tool === 'explain') {
+            } else if (tool === 'expand') {
                 openEcgLightbox(fig.getAttribute('data-ecg-fig'), btn);
             }
         });
@@ -1852,19 +1855,32 @@
     } catch (e) {}
     (function () {
         var HINT = 'Hover or tap a wave \u2014 P \u00b7 PR \u00b7 QRS \u00b7 ST \u00b7 T \u00b7 QT \u00b7 CAL \u00b7 RR.';
+        function clearSelection(figure) {
+            figure.removeAttribute('data-sel');
+            figure.querySelectorAll('.ecg-inline-marks').forEach(function (mark) { mark.remove(); });
+            figure.querySelectorAll('.ecg-hot').forEach(function (hot) { hot.classList.remove('on'); hot.setAttribute('aria-pressed', 'false'); });
+            figure.querySelectorAll('[data-ecg-wavebtn]').forEach(function (button) { button.setAttribute('aria-pressed', 'false'); });
+            var inspector = figure.querySelector('.ecg-inspector');
+            if (inspector) inspector.textContent = inspector.getAttribute('data-hint') || HINT;
+        }
         function figBox(hot) { try { return hot.closest('.ecg-fig').querySelector('.ecg-inspector'); } catch (e) { return null; } }
         function showWave(hot) {
             if (!hot) return;
             var figure = hot.closest('.ecg-fig');
             if (!figure) return;
             var svg = hot.ownerSVGElement;
-            var bounds = hot.getBBox(), matrix = svg.getCTM() && hot.getCTM();
+            var bounds = (hot.querySelector('.ecg-hotzone') || hot).getBBox(), matrix = svg.getCTM() && hot.getCTM();
+            var authored = (hot.getAttribute('data-marker-bounds') || '').trim().split(/\s+/).map(Number);
+            if (authored.length === 4 && authored.every(Number.isFinite) && authored[2] > 0 && authored[3] > 0) {
+                bounds = { x: authored[0], y: authored[1], width: authored[2], height: authored[3] };
+            }
             if (matrix) {
                 matrix = svg.getCTM().inverse().multiply(matrix);
-                var corners = [[bounds.x, bounds.y], [bounds.x + bounds.width, bounds.y + bounds.height]].map(function (xy) {
+                var corners = [[bounds.x, bounds.y], [bounds.x + bounds.width, bounds.y], [bounds.x, bounds.y + bounds.height], [bounds.x + bounds.width, bounds.y + bounds.height]].map(function (xy) {
                     var point = svg.createSVGPoint(); point.x = xy[0]; point.y = xy[1]; return point.matrixTransform(matrix);
                 });
-                bounds = { x: corners[0].x, y: corners[0].y, width: corners[1].x - corners[0].x, height: corners[1].y - corners[0].y };
+                var xs = corners.map(function (p) { return p.x; }), ys = corners.map(function (p) { return p.y; });
+                bounds = { x: Math.min.apply(null, xs), y: Math.min.apply(null, ys), width: Math.max.apply(null, xs) - Math.min.apply(null, xs), height: Math.max.apply(null, ys) - Math.min.apply(null, ys) };
             }
             var focus = figure.querySelector('[data-ecg-panel]');
             if (focus && focus.selectedIndex) {
@@ -1890,15 +1906,33 @@
             var dh = null; try { dh = box ? box.getAttribute('data-hint') : null; } catch (e3) {}
             if (box) box.innerHTML = ecgWaveText(hot.getAttribute('data-wave')) || dh || HINT;
             try { hot.closest('.ecg-fig').setAttribute('data-sel', hot.getAttribute('data-wave')); } catch (e0) {}
-            try { hot.closest('.ecg-fig').querySelectorAll('.ecg-hot').forEach(function (h) { h.classList.toggle('on', h === hot); }); } catch (e) {}
+            try { hot.closest('.ecg-fig').querySelectorAll('.ecg-hot').forEach(function (h) { h.classList.toggle('on', h === hot); h.setAttribute('aria-pressed', String(h === hot)); }); } catch (e) {}
             try { var wv = hot.getAttribute('data-wave'); hot.closest('.ecg-fig').querySelectorAll('[data-ecg-wavebtn]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-ecg-wavebtn') === wv)); }); } catch (e2) {}
         }
         document.addEventListener('mouseover', function (e) { var h = e.target && e.target.closest ? e.target.closest('.ecg-hot') : null; if (h) showWave(h); });
         document.addEventListener('focusin', function (e) { var h = e.target && e.target.closest ? e.target.closest('.ecg-hot') : null; if (h) showWave(h); });
         document.addEventListener('keydown', function (e) { var h = e.target && e.target.closest ? e.target.closest('.ecg-hot') : null; if (h && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showWave(h); } });
         document.addEventListener('click', function (e) { var h = e.target && e.target.closest ? e.target.closest('.ecg-hot') : null; if (h) showWave(h); });
-        document.addEventListener('click', function (e) { var wb = e.target && e.target.closest ? e.target.closest('[data-ecg-wavebtn]') : null; if (!wb) return; var fig = wb.closest('.ecg-fig'); if (!fig) return; var w = wb.getAttribute('data-ecg-wavebtn'); if (fig.getAttribute('data-sel') === w) { fig.removeAttribute('data-sel'); fig.querySelectorAll('.ecg-inline-marks').forEach(function (mark) { mark.remove(); }); fig.querySelectorAll('.ecg-hot.on').forEach(function (x) { x.classList.remove('on'); }); wb.setAttribute('aria-pressed', 'false'); var bx = fig.querySelector('.ecg-inspector'); if (bx) bx.textContent = bx.getAttribute('data-hint') || HINT; return; } var hot = fig.querySelector('.ecg-hot[data-wave="' + w + '"]'); if (hot) showWave(hot); else { var bx2 = fig.querySelector('.ecg-inspector'); if (bx2) bx2.innerHTML = ecgWaveText(w) || HINT; try { fig.setAttribute('data-sel', w); } catch (ee) {} fig.querySelectorAll('[data-ecg-wavebtn]').forEach(function (b) { b.setAttribute('aria-pressed', String(b === wb)); }); } });
-        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { document.querySelectorAll('.ecg-inline-marks').forEach(function (mark) { mark.remove(); }); document.querySelectorAll('.ecg-hot.on').forEach(function (x) { x.classList.remove('on'); }); document.querySelectorAll('.ecg-inspector').forEach(function (b) { b.textContent = b.getAttribute('data-hint') || HINT; }); document.querySelectorAll('.ecg-fig[data-sel]').forEach(function (f) { f.removeAttribute('data-sel'); }); document.querySelectorAll('[data-ecg-wavebtn][aria-pressed="true"]').forEach(function (b) { b.setAttribute('aria-pressed', 'false'); }); } });
+        document.addEventListener('click', function (e) {
+            var button = e.target.closest && e.target.closest('[data-ecg-wavebtn]');
+            if (!button) return;
+            var figure = button.closest('.ecg-fig'), wave = button.getAttribute('data-ecg-wavebtn');
+            if (!figure) return;
+            if (figure.getAttribute('data-sel') === wave) { clearSelection(figure); return; }
+            // Always clear the previous visual, including when the next item is text-only.
+            clearSelection(figure);
+            var hot = figure.querySelector('.ecg-hot[data-wave="' + wave + '"]');
+            if (hot) showWave(hot);
+            else {
+                figure.setAttribute('data-sel', wave);
+                button.setAttribute('aria-pressed', 'true');
+                var inspector = figure.querySelector('.ecg-inspector');
+                if (inspector) inspector.innerHTML = ecgWaveText(wave) || HINT;
+            }
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') document.querySelectorAll('.ecg-fig[data-sel]').forEach(clearSelection);
+        });
     })();
     /* ---------- global wiring ---------- */
     // Global :has() fallback — keeps .is-checked in sync for all browsers
@@ -2115,7 +2149,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20260907-header2').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20260910-icon1').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
                     registration.addEventListener('updatefound', () => {

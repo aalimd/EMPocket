@@ -17,7 +17,7 @@
     wellens: [finding('Anterior T-wave abnormality', 'V2 V3', 't', 'Type A is initially positive then negative; Type B is deeply inverted. Interpret after recent angina, often while pain-free. The ECG pattern alone does not prove a specific coronary lesion.'), finding('Preserved anterior R waves', 'V2 V3', 'qrs', 'Preserved R waves and little ST displacement accompany this synthetic example. Clinical Wellens assessment also requires the history and exclusion of mimics.')],
     dewinter: [finding('Upsloping ST depression', 'V2 V3 V4 V5 V6', 'st', 'The depressed J point rises toward tall T waves across the precordial leads. This is a high-risk occlusion pattern in the right clinical context.'), finding('Tall symmetric T waves', 'V2 V3 V4 V5 V6', 't', 'Inspect the ST segment together with the prominent T wave; tall T amplitude alone is nonspecific.'), finding('Associated aVR elevation', 'aVR', 'st', 'aVR elevation can accompany de Winter morphology; it is neither required nor independently diagnostic.')],
     sgarbossa: [finding('Concordant elevation', 'V5', 'st', 'ST elevation follows the positive QRS direction.'), finding('Concordant depression', 'V3', 'st', 'ST depression follows a negative QRS in an anterior lead.'), finding('Excessive discordance', 'V1', 'qrs-st', 'Compare J-point elevation with S-wave depth. Modified Sgarbossa supports occlusion assessment in LBBB or ventricular pacing; clinical context remains essential.')],
-    'posterior-omi': [finding('Anterior mirror depression', 'V1 V2 V3', 'st', 'Horizontal ST depression in V1–V3 raises concern for posterior injury.'), finding('Prominent R and upright T', 'V1 V2 V3', 'qrs-t', 'These accompanying features support the posterior mirror pattern but may be absent early.'), finding('Posterior lead elevation', 'V8', 'st', 'V8 illustrates the posterior view. Acquire the complete V7–V9 set in practice; this one lead does not independently confirm infarction.')],
+    'posterior-omi': [finding('Anterior mirror depression', 'V1 V2 V3', 'st', 'Horizontal ST depression in V1–V3 raises concern for posterior injury.'), finding('Prominent R and upright T', 'V1 V2 V3', 'qrs-t', 'These accompanying features support the posterior mirror pattern but may be absent early.'), finding('Posterior lead elevation', 'V7 V8 V9', 'st', 'V7–V9 show contiguous posterior elevation of 1.0, 0.8 and 0.6 mm. The usual posterior threshold is 0.5 mm; 1 mm is used for greater specificity in men under 40. Interpret with symptoms and serial changes; negative posterior leads do not exclude occlusion.')],
     hyperkalemia: [finding('Peaked T appearance', 'Early', 't', 'A narrow peaked T wave may occur with hyperkalemia. A normal ECG does not exclude dangerous hyperkalemia.'), finding('P / PR / QRS changes', 'Advanced', 'p-qrs', 'This example combines attenuated P waves, delayed AV conduction and QRS widening. These changes need not occur in a fixed sequence.'), finding('Fused QRS–T appearance', 'Severe', 'rhythm', 'The sine-wave example has no discrete P, QRS or T endpoints to measure. These variants do not predict a potassium concentration.')],
     'atrial-fibrillation': [finding('Irregular RR intervals', 'II', 'rhythm', 'Successive ventricular intervals genuinely vary in this model; the irregularity is not merely baseline noise.'), finding('No organized P waves', 'II', 'baseline', 'Inspect the changing fibrillatory baseline between QRS complexes. There is no repeating sinus P wave or measurable PR interval.')],
     'complete-heart-block': [finding('Independent atrial activity', 'II', 'atrial', 'P waves continue at their own regular rate, without a fixed relationship to QRS complexes.'), finding('Slow ventricular escape', 'II', 'qrs', 'The ventricular rhythm is slower than the atrial rhythm. Inspect the 10-second strip to appreciate AV dissociation.')],
@@ -165,6 +165,41 @@
   lessons['hyperacute-t'].unshift(finding('Normal T comparison', 'Normal', 't', 'The normal V3 comparison has an asymmetric T wave with a smaller amplitude than R. Compare it with the two abnormal shapes below.'));
 
   // Static targets use the source SVG coordinate system, never screen pixels.
+  // Shared by the guide viewer and Explorer: derive regions from the rendered signal.
+  function findingTargets(drawing, f) {
+    var targets = [];
+      drawing.rows.forEach(function (row) {
+        if (f.leads.indexOf(row.lane) < 0) return;
+        var data = row.data, windows = [];
+        if (f.segment === 'rhythm') windows = [[0, drawing.duration]];
+        else if (f.segment === 'baseline') windows = data.beatTimes.map(function (q, i) { return [i ? data.beatTimes[i - 1] + data.qtMs + 15 : 0, q - 25]; });
+        else if (f.segment === 'atrial') windows = (data.dissociated && data.dissociated.atrialTimes || []).map(function (p) { return [p - 55, p + 55]; });
+        else data.beatTimes.forEach(function (q, i) {
+          var beat = data.dissociated && data.dissociated.ventricularBeats[i];
+          var j = beat ? beat.qrsMs : data.qrsMs, end = beat ? beat.qtMs : data.qtMs;
+          if (f.segment === 'capture' && (!data.dissociated || (i !== data.dissociated.captureIdx && i !== data.dissociated.fusionIdx))) return;
+          var a = q, b = q + j;
+          if (f.segment === 'st') { a += j; b = a + 100; }
+          if (f.segment === 't') { a += j + 80; b = q + end; }
+          if (f.segment === 'qrs-st') b += 100;
+          if (f.segment === 'qrs-t') b = q + end;
+          if (f.segment === 'p-qrs') a -= data.prMs || 220;
+          windows.push([a, b]);
+        });
+        // Mark representative complete segments, avoiding a wall of circles on long strips.
+        windows.filter(function (w) { return w[0] >= 0 && w[1] <= drawing.duration; }).slice(0, 3).forEach(function (w) {
+          var a = Math.max(0, w[0]), b = Math.min(drawing.duration, w[1]); if (b <= a) return;
+          var low = 0, high = 0;
+          for (var t = a; t <= b; t += 2) {
+            var voltage = E.leadVoltageAt(row.lead, t, data, t / 2); low = Math.min(low, voltage); high = Math.max(high, voltage);
+          }
+          var top = Math.max(row.top + 28, row.baseline - high * drawing.uy - 10);
+          var bottom = Math.min(row.bottom, row.baseline - low * drawing.uy + 10);
+          targets.push([drawing.x + a * drawing.ux, top, (b - a) * drawing.ux, bottom - top]);
+        });
+      });
+    return targets;
+  }
   function diagramFinding(title, explanation, targets, wave) {
     return { title: title, explanation: explanation, targets: targets, wave: wave };
   }
@@ -174,7 +209,7 @@
       D('Calibration pulse', 'The pulse is 1 mV tall and 200 ms wide. Check speed and gain before counting boxes.', [[80,24,52,112]], 'cal'),
       D('P wave and PR interval', 'P is atrial depolarization. Measure PR from the beginning of P to the beginning of QRS, including the P wave.', [[334,80,53,50]], 'pr'),
       D('QRS and ST segment', 'QRS is ventricular depolarization. The ST segment begins at the end of QRS (the J point); compare it with the isoelectric baseline.', [[366,34,39,96]], 'qrs'),
-      D('T wave and QT interval', 'T is ventricular repolarization. QT runs from QRS onset to T end; QTc also accounts for heart rate.', [[405,68,42,56],[370,168,80,24]], 'qt'),
+      D('T wave and QT interval', 'T is ventricular repolarization. QT runs from QRS onset to T end; QTc also accounts for heart rate.', [[356,20,96,126]], 'qt'),
       D('R–R and rate', 'In this regular rhythm, four large boxes between R peaks gives 300 ÷ 4 = 75/min at 25 mm/s. Use a longer strip for irregular rhythms.', [[215,8,170,26]], 'rr')],
     'rhythm-axis': [
       D('Sinus P and narrow QRS', 'The upper strip has a P before each QRS with a consistent PR. Inspect P-wave direction in the appropriate leads before naming sinus rhythm.', [[252,98,24,30],[284,46,25,102]], 'psinus'),
@@ -184,7 +219,7 @@
     intervals: [
       D('P and PR', 'PR starts at P onset, not P end. The drawn PR is 160 ms; the P itself is 80 ms.', [[116,82,40,82]], 'pr'),
       D('QRS duration', 'Measure from the earliest QRS onset to its end. The example is narrow at 85 ms.', [[148,24,25,98]], 'qrs'),
-      D('QT to T end', 'Include ventricular depolarization and repolarization. This example shows QT 380 ms; do not include a separate U wave.', [[148,56,84,78]], 'qt'),
+      D('QT to T end', 'Include ventricular depolarization and repolarization. This example shows QT 380 ms; do not include a separate U wave.', [[148,24,84,110]], 'qt'),
       D('R–R for correction', 'Use the R–R interval when interpreting QTc. The example is regular with an R–R of 800 ms.', [[88,214,180,112]], 'rr')],
     hypertrophy: [
       D('Deep S in V1', 'This voltage panel is drawn at half gain (5 mm/mV). The displayed S depth corresponds to 15 mm at standard gain.', [[120,130,42,92]], 'v1'),
@@ -212,7 +247,7 @@
       D('Other ischemic changes', 'The bottom examples locate ST depression, inverted T and a broad/deep Q. Interpret new changes with prior and serial ECGs.', [[16,600,608,106]], 'ischa')],
     'normal-12lead': [
       D('Sinus rhythm in lead II', 'Follow P–QRS–T in lead II. P precedes each QRS with a consistent PR in this synthetic normal rhythm.', [[112,500,500,290]]),
-      D('Compare precordial R progression', 'Compare V1 through V6: an initially dominant S gives way to larger R waves. The columns show sequential time windows, not simultaneous beats.', [[1176,140,500,300],[1708,140,500,300]]),
+      D('Compare precordial R progression', 'Compare V1 through V6: an initially dominant S gives way to larger R waves. The columns show sequential time windows, not simultaneous beats.', [[1176,136,500,320],[1176,504,500,320],[1176,872,500,320],[1708,136,500,320],[1708,504,500,320],[1708,872,500,320]]),
       D('Ten-second rhythm strip', 'Use the continuous bottom lead II to assess regularity over time. The upper columns each cover 2.5 seconds.', [[112,1210,2096,290]]),
       D('Calibration pulse', 'The pulse at the left of the rhythm strip represents 1 mV and 200 ms. Check gain and speed before making measurements.', [[16,1260,80,150]])]
   });
@@ -250,6 +285,10 @@
     var model = lib[entry.viewerAlias] || entry;
     var spec = model.traceSpec && viewerSpec(entry.viewerAlias || id, model.traceSpec, settings.variant), box = document.createElement('div');
     var lesson = lessons[id] || [], selectedFinding = 0, showFindings = settings.findings !== false;
+    if (settings.wave) {
+      var matching = lesson.findIndex(function (f) { return f.wave === settings.wave || (f.leads && spec && f.leads.some(function (lead) { return (spec.waves || {})[lead] === settings.wave; })); });
+      if (matching >= 0) selectedFinding = matching;
+    }
     box.className = 'ecg-lightbox ecg-workbench';
     box.id = 'ecgWorkbench';
     box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', entry.title);
@@ -295,6 +334,12 @@
     if (spec) box.querySelector('[data-view="duration"]').value = String(state.duration);
     var canvas = box.querySelector('.ecg-workbench-canvas'), readout = box.querySelector('.ecg-measurement');
     var result, points = [], measuring = false, dragging = -1;
+    // Keyboard focus uses the same finding marker as mouse/touch selection.
+    box.addEventListener('focusin', function (event) {
+      if (!event.target.matches('.ecg-guided-target')) return;
+      selectedFinding = Number(event.target.dataset.finding); showFindings = true;
+      paintFindings();
+    });
     function paintFindings() {
       var old = canvas.querySelector('.ecg-finding-marks'); if (old) old.remove();
       var detail = box.querySelector('.ecg-finding-detail'); if (!detail) return;
@@ -312,36 +357,7 @@
       }
       detail.textContent = 'Leads: ' + f.leads.map(function (lead) { return laneLabels[lead] || lead; }).join(', ') + '. ' + f.explanation;
       var ns = 'http://www.w3.org/2000/svg', g = document.createElementNS(ns, 'g'); g.setAttribute('class', 'ecg-finding-marks');
-      result.rows.forEach(function (row) {
-        if (f.leads.indexOf(row.lane) < 0) return;
-        var data = row.data, windows = [];
-        if (f.segment === 'rhythm') windows = [[0, result.duration]];
-        else if (f.segment === 'baseline') windows = data.beatTimes.map(function (q, i) { return [i ? data.beatTimes[i - 1] + data.qtMs + 15 : 0, q - 25]; });
-        else if (f.segment === 'atrial') windows = (data.dissociated && data.dissociated.atrialTimes || []).map(function (p) { return [p - 55, p + 55]; });
-        else data.beatTimes.forEach(function (q, i) {
-          var beat = data.dissociated && data.dissociated.ventricularBeats[i];
-          var j = beat ? beat.qrsMs : data.qrsMs, end = beat ? beat.qtMs : data.qtMs;
-          if (f.segment === 'capture' && (!data.dissociated || (i !== data.dissociated.captureIdx && i !== data.dissociated.fusionIdx))) return;
-          var a = q, b = q + j;
-          if (f.segment === 'st') { a += j; b = a + 100; }
-          if (f.segment === 't') { a += j + 80; b = q + end; }
-          if (f.segment === 'qrs-st') b += 100;
-          if (f.segment === 'qrs-t') b = q + end;
-          if (f.segment === 'p-qrs') a -= data.prMs || 220;
-          windows.push([a, b]);
-        });
-        // Mark representative complete segments, avoiding a wall of circles on long strips.
-        windows.filter(function (w) { return w[0] >= 0 && w[1] <= result.duration; }).slice(0, 3).forEach(function (w) {
-          var a = Math.max(0, w[0]), b = Math.min(result.duration, w[1]); if (b <= a) return;
-          var low = 0, high = 0;
-          for (var t = a; t <= b; t += 2) {
-            var voltage = E.leadVoltageAt(row.lead, t, data, t / 2); low = Math.min(low, voltage); high = Math.max(high, voltage);
-          }
-          var top = Math.max(row.top + 28, row.baseline - high * result.uy - 10);
-          var bottom = Math.min(row.bottom, row.baseline - low * result.uy + 10);
-          addFindingEllipse(g, [result.x + a * result.ux, top, (b - a) * result.ux, bottom - top]);
-        });
-      });
+      findingTargets(result, f).forEach(function (r) { addFindingEllipse(g, r); });
       canvas.querySelector('svg').appendChild(g);
     }
     function updateCalipers() {
@@ -513,5 +529,5 @@
     if (a.returnTo && a.returnTo.isConnected) a.returnTo.focus();
   }
   window.addEventListener('hashchange', close);
-  window.ECG_INTERACTIVE = { open: open, close: close, render: render, measure: measure, signal: signal };
+  window.ECG_INTERACTIVE = { open: open, close: close, render: render, measure: measure, signal: signal, findingTargets: findingTargets };
 }());

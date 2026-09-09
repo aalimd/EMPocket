@@ -1,3 +1,5 @@
+> Current waveform review: [9 September accuracy update](ECG-ACCURACY-2026-09-09.md) — 47 examples, 143 findings, nine calibrated replacements. Counts and limitations below describe the earlier snapshot.
+
 # EM-CPs ECG section — programmer notes
 
 > **New main section:** [ECG-EXPLORER.md](ECG-EXPLORER.md) documents 43 teaching examples, 125 findings and the pink-paper update. Existing Step 1 content is preserved.

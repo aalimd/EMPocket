@@ -29,3 +29,9 @@ Release: `20260907-theme2`, offline cache v145.
 ## Limits
 
 Responsive browser verification is not a physical iOS/Android device matrix. Native emoji artwork and availability depend on the installed OS fonts. Contrast scanning is a regression aid, not complete WCAG certification: it excludes gradient backgrounds, SVG text, translucent compositing and interaction states not rendered in the route scan. Existing ECG interaction audits remain available separately. No clinical content changed in this update.
+
+## Header follow-up — 8 September 2026
+
+Release `20260907-header2`, cache v149. Phone navigation now uses equal buttons with enough height for an icon plus two label lines, a 12 px gap below search, and rows that can grow with their content. Explicit destination selectors override older fixed-height ID rules that clipped the first four buttons. Between 921 and 1160 px, search and navigation occupy separate rows to prevent the Explorer button overflowing.
+
+`dev/audit.html` → **Check header visibility**: 1,100 geometry assertions passed with zero failures, covering 11 widths from 320 to 1280 px, both themes, bold text, and text scales 1 and 1.3. Checks require every icon and label to fit its button, every button to fit the header, and no overlap with search or adjacent buttons. Visually checked the 400 × 675 layout matching the supplied screenshot. Syntax and diff checks passed.

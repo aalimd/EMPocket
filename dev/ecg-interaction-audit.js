@@ -100,11 +100,49 @@
     api.close();
     try {
       const frame=document.querySelector('#app'); frame.contentWindow.location.hash='ecg'; await tick();
-      const doc=frame.contentDocument, triggers=[...doc.querySelectorAll('[data-ecg-tool="explain"]')];
-      assert(triggers.length>=25,'Actual app missing Explain this ECG buttons');
+      const doc=frame.contentDocument, triggers=[...doc.querySelectorAll('[data-ecg-tool="expand"]')];
+      assert(triggers.length>=25,'Actual app missing unified Explore ECG buttons');
       doc.querySelectorAll('.section-card.closed .sec-head').forEach(h=>h.click());
       for(const trigger of triggers) {trigger.click(); const box=doc.querySelector('#ecgWorkbench');assert(!!box,'Actual app button did not open viewer');assert(box.querySelectorAll('button[data-finding]').length>=2,'Actual app missing lessons');assert(box.querySelector('.ecg-finding-marks ellipse'),'Actual app missing red circle');box.querySelector('.ecg-lightbox-close').click();}
-      for(const wave of doc.querySelectorAll('[data-ecg-wavebtn]')){const figure=wave.closest('figure');const hot=figure.querySelector('.ecg-hot[data-wave="'+wave.dataset.ecgWavebtn+'"]');if(!hot)continue;wave.click();assert(figure.querySelector('.ecg-inline-marks'),'Inline wave missing red circle: '+figure.dataset.ecgFig+' '+wave.dataset.ecgWavebtn);wave.click();assert(!figure.querySelector('.ecg-inline-marks'),'Inline red circle did not clear');}
+      assert(!doc.querySelector('[data-ecg-tool="explain"]'),'Duplicate viewer action remains');
+      for(const figure of doc.querySelectorAll('.ecg-fig'))assert(figure.querySelectorAll('[data-ecg-tool="expand"]').length===1,'Figure needs exactly one viewer action');
+      for(const wave of doc.querySelectorAll('[data-ecg-wavebtn]')){
+        const figure=wave.closest('figure'),hot=figure.querySelector('.ecg-hot[data-wave="'+wave.dataset.ecgWavebtn+'"]');
+        wave.click();
+        if(hot){
+          const assertSingle=()=>{
+            assert(figure.querySelectorAll('.ecg-inline-marks').length===1,'Selection must have one marker');
+            assert(hot.getAttribute('aria-pressed')==='true','Hotspot selection is not accessible');
+            const zone=hot.querySelector('.ecg-hotzone'),style=frame.contentWindow.getComputedStyle(zone);
+            assert(style.stroke==='none','Duplicate hotspot stroke is visible');
+            assert(style.fill==='rgba(0, 0, 0, 0)'||style.fill==='transparent','Duplicate hotspot fill is visible');
+            assert(style.pointerEvents==='all','Invisible hotspot must remain clickable');
+            const svg=hot.ownerSVGElement,raw=hot.getAttribute('data-marker-bounds'),b=zone.getBBox();
+            const [x,y,w,h]=raw?raw.split(/\s+/).map(Number):[b.x,b.y,b.width,b.height];
+            const matrix=svg.getCTM().inverse().multiply(hot.getCTM());
+            const points=[[x,y],[x+w,y],[x,y+h],[x+w,y+h]].map(([x,y])=>{const p=svg.createSVGPoint();p.x=x;p.y=y;return p.matrixTransform(matrix);});
+            const xs=points.map(p=>p.x),ys=points.map(p=>p.y),left=Math.min(...xs),top=Math.min(...ys),right=Math.max(...xs),bottom=Math.max(...ys);
+            const mark=figure.querySelector('.ecg-inline-marks');
+            for(const [key,value] of Object.entries({cx:(left+right)/2,cy:(top+bottom)/2,rx:(right-left)/2,ry:(bottom-top)/2}))assert(Math.abs(Number(mark.getAttribute(key))-value)<.01,'Marker is displaced: '+figure.dataset.ecgFig+' '+wave.dataset.ecgWavebtn+' '+key);
+
+          };
+          assertSingle();hot.focus();assertSingle();
+          hot.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));assertSingle();
+          hot.dispatchEvent(new MouseEvent('mouseover',{bubbles:true}));assertSingle();
+          const entry=frame.contentWindow.ECG_SVG[figure.dataset.ecgFig],expected=entry.findings.findIndex(f=>f.wave===wave.dataset.ecgWavebtn);
+          if(expected>=0){
+            const trigger=figure.querySelector('[data-ecg-tool="expand"]');trigger.click();
+            const box=doc.querySelector('#ecgWorkbench');
+            assert(box.querySelector('button[data-finding="'+expected+'"]').getAttribute('aria-pressed')==='true','Selected finding lost when opening viewer');
+            const target=box.querySelector('.ecg-guided-target[data-finding="'+expected+'"]');
+            if(target){target.focus();assert(frame.contentWindow.getComputedStyle(target).stroke==='none','Viewer focus draws duplicate rectangle');assert(box.querySelector('.ecg-finding-marks ellipse'),'Viewer keyboard focus has no marker');}
+            box.querySelector('.ecg-lightbox-close').click();
+            assert(doc.activeElement===trigger,'Unified viewer did not restore focus');
+          }
+        }else assert(!figure.querySelector('.ecg-inline-marks'),'Text-only finding kept a stale marker');
+        wave.click();assert(!figure.querySelector('.ecg-inline-marks'),'Inline red circle did not clear');
+        assert(!figure.querySelector('.ecg-hot.on'),'Hotspot selection did not clear');
+      }
     } catch(error){failures.push('Actual app entry points: '+error.message);}
     window.removeEventListener('error', onError);
     out.textContent=checks+' interaction assertions; '+Object.keys(counts).length+'/27 ECGs passed; '+failures.length+' failed.\n'+failures.join('\n')+'\n'+Object.entries(counts).map(([id,n])=>id+': '+n+' checks').join('\n');

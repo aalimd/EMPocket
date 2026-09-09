@@ -432,7 +432,7 @@
     'wellens': ['Type A', 'Type B'],
     'dewinter': ['V2', 'V3', 'V4', 'V5', 'V6', 'aVR'],
     'sgarbossa': ['V5', 'V3', 'V1'],
-    'posterior-omi': ['V1', 'V2', 'V3', 'V8'],
+    'posterior-omi': ['V1', 'V2', 'V3', 'V7', 'V8', 'V9'],
     'avr-lmca': ['aVR', 'I', 'II', 'aVL', 'aVF', 'V4', 'V5', 'V6'],
     'hyperkalemia': ['II'],
     'hypokalemia': ['V3'],
@@ -543,12 +543,14 @@
   cases['posterior-omi'].jDots = true;
   cases['posterior-omi'].baseline = true;
   cases['posterior-omi'].stHighlight = true;
-  cases['posterior-omi'].waves = { 'V1': 'post', 'V2': 'post', 'V3': 'post', 'V8': 'post' };
+  cases['posterior-omi'].waves = { 'V1': 'post', 'V2': 'post', 'V3': 'post', 'V7': 'post', 'V8': 'post', 'V9': 'post' };
   cases['posterior-omi'].badges = {
     'V1': 'MIRROR V1 · horizontal STD + tall R',
     'V2': 'MIRROR V2 · STD + R/S>1 + upright T',
     'V3': 'MIRROR V3 · STD + tall R/T',
-    'V8': 'POSTERIOR V8 · posterior STE; inspect V7–V9'
+    'V7': 'POSTERIOR V7 · 1.0 mm STE',
+    'V8': 'POSTERIOR V8 · 0.8 mm STE',
+    'V9': 'POSTERIOR V9 · 0.6 mm STE'
   };
   cases['posterior-omi'].hotspots = [
     { lead: 'V1', wave: 'post', title: 'V1 · mirror STD + tall R', label: 'Anterior mirror: horizontal ST depression with tall R wave. Flip shows posterior ST elevation.' },
