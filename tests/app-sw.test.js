@@ -56,3 +56,23 @@ test('offline navigation without an installed shell returns a valid error respon
     assert.equal((await w.fetch('./', 'navigate')).type, 'error');
   }
 });
+
+test('free worker does not intercept paid, sibling or external requests even when offline', async () => {
+  for (const offline of [false, true]) {
+    const w = worker({ offline, cached: {'http://localhost/EM-CPs/index.html': {body:'free shell'}} });
+    for (const url of ['/EM-P/', '/EM-P/api/content.php?bundle=ecg_explorer', '/EM-CPs-copy/assets/app.js', '/account.html', 'https://example.com/EM-CPs/']) {
+      for (const mode of ['navigate', 'cors']) assert.equal(await w.fetch(url, mode), undefined, url);
+    }
+  }
+});
+
+test('activation deletes only obsolete caches belonging to this free app', async () => {
+  const handlers={},deleted=[];
+  const keys=['em-cps-em-cps-v1','em-cps-em-cps-v159','em-p-em-p-v1','em-cps-other-v1','unrelated'];
+  vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../sw.js'),'utf8'),{
+    URL,Promise,self:{registration:{scope:'https://zahrani.net/EM-CPs/'},addEventListener:(type,fn)=>handlers[type]=fn,clients:{claim:async()=>{}}},
+    caches:{keys:async()=>keys,delete:async key=>deleted.push(key)}
+  });
+  let pending;handlers.activate({waitUntil:p=>pending=p});await pending;
+  assert.deepEqual(deleted,['em-cps-em-cps-v1']);
+});

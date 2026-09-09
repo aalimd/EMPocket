@@ -144,7 +144,27 @@
     let saved={};try{saved=JSON.parse(localStorage.getItem(progressKey)||'{}')||{};}catch(e){}
     const valid=id=>cases.some(c=>c.id===id),ids=v=>Array.isArray(v)?[...new Set(v.filter(valid))]:[];
     const finding=Number.isInteger(saved.finding)&&saved.finding>=0?saved.finding:0;
-    const review=Array.isArray(saved.review)?[...new Set(saved.review.filter(key=>{if(typeof key!=='string')return false;const [id,n]=key.split(':');return valid(id)&&/^\d+$/.test(n)&&Number(n)<build(id,false).findings.length;}))]:[];
+    // Validate saved findings without rendering entire SVG tracings during startup.
+    const counts=new Map();
+    function findingCount(id){
+      if(!counts.has(id)){
+        const record=cases.find(c=>c.id===id);
+        let count=0;
+        if(record.kind)count=record.lessons.length;
+        else if(record.library)count=window.ECG_SVG[record.library].findings.length;
+        else {
+          const data=record.overrides?Object.assign(E.createNormalSinusCase({noise:{disabled:true}}),{leadOverrides:record.overrides}):E.createPatternCase(record.pattern,{variant:record.variant,noise:{disabled:true}});
+          count=findingsFor(record,data).length;
+        }
+        counts.set(id,count);
+      }
+      return counts.get(id);
+    }
+    const review=Array.isArray(saved.review)?[...new Set(saved.review)].filter(key=>{
+      if(typeof key!=='string')return false;
+      const parts=key.split(':'),[id,n]=parts;
+      return parts.length===2&&valid(id)&&/^\d+$/.test(n)&&Number(n)<findingCount(id);
+    }):[];
     return {last:valid(saved.last)?saved.last:'normal',finding,completed:ids(saved.completed),review};
   }
   function saveProgress(value){try{localStorage.setItem(progressKey,JSON.stringify(value));return true;}catch(e){return false;}}

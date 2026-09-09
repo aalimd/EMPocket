@@ -19,3 +19,14 @@ test('saved ECG progress rejects unknown IDs, duplicates and invalid selection i
  storage.set('em-ecg-learning-v1',JSON.stringify({last:'bad',finding:-1,completed:['normal','normal','bad'],review:['af:0','af:999','bad:0']}));const p=X.readProgress();assert.equal(p.last,'normal');assert.equal(p.finding,0);assert.equal(p.completed.join(','),'normal');assert.equal(p.review.join(','),'af:0');
  storage.set('em-ecg-learning-v1','broken');assert.equal(X.readProgress().completed.length,0);
 });
+
+test('loading every saved finding never renders ECGs or reads paid storage',()=>{
+ const review=X.cases.flatMap(c=>X.build(c.id,false).findings.map((_,i)=>c.id+':'+i));
+ storage.set('em-ecg-learning-v1',JSON.stringify({review:review.concat(review,'af:0:extra')}));
+ storage.set('em-p-ecg-learning-v1',JSON.stringify({last:'af'}));
+ const engine=ctx.window.ECG_ENGINE,curriculum=ctx.window.ECG_CURRICULUM;
+ const render=engine.render12Lead,build=curriculum.build;
+ engine.render12Lead=curriculum.build=()=>{throw Error('Must not render while restoring progress');};
+ try{const progress=X.readProgress();assert.equal(progress.review.length,review.length);assert.equal(progress.last,'normal');}
+ finally{engine.render12Lead=render;curriculum.build=build;}
+});

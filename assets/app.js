@@ -1354,7 +1354,14 @@
         markActive('ecg-explorer'); syncNav('explorer'); setTitle('ECG Explorer');
         setStageContext('ECG Explorer');
         stage.innerHTML = '<section class="ecg-explorer"></section>';
-        window.ECG_EXPLORER.mount(stage.firstElementChild,{id});
+        try {
+            window.ECG_EXPLORER.mount(stage.firstElementChild,{id});
+        } catch (error) {
+            console.error('ECG Explorer could not open', error);
+            stage.innerHTML = '<section role="alert"><h1>ECG Explorer could not open</h1><p>Reload to try again. Your saved progress will be kept.</p><button type="button" data-explorer-reload>Reload Explorer</button><button type="button" data-explorer-home>Back to library</button></section>';
+            stage.querySelector('[data-explorer-reload]').onclick = () => location.reload();
+            stage.querySelector('[data-explorer-home]').onclick = showHome;
+        }
         window.scrollTo({ top: 0 });
         stage.focus({ preventScroll: true }); announce('Viewing ECG Explorer');
     }
@@ -2149,7 +2156,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20260910-icon1').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20260910-free-r1').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
                     registration.addEventListener('updatefound', () => {
