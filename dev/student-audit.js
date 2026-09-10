@@ -4,8 +4,8 @@
  const run=document.createElement('button');run.id='runStudent';run.textContent='Run student journeys';document.querySelector('.qa-row').append(run);
  run.onclick=async()=>{
   const frame=document.querySelector('#app'),w=frame.contentWindow,d=frame.contentDocument,out=document.querySelector('#result');let count=0;const failures=[];
-  const check=(v,label)=>{count++;if(!v)throw Error(label);};const tick=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-  const route=async s=>{w.location.hash=s;await tick();};
+  const check=(v,label)=>{count++;if(!v)throw Error(label);};const tick=()=>new Promise(r=>w.requestAnimationFrame(()=>w.requestAnimationFrame(r)));
+  const route=async s=>{if(w.location.hash.replace(/^#/,'')!==s)await new Promise(resolve=>{w.addEventListener('hashchange',resolve,{once:true});w.location.hash=s;});await tick();};
   const storage=['em-student-progress','em-cps-learning'].map(k=>[k,w.localStorage.getItem(k)]);
   const session=w.sessionStorage.getItem('ecg-explorer-view');
   try{

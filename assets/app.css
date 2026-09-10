@@ -5067,3 +5067,35 @@ a.side-btn { text-decoration: none; }
   html.sidebar-collapsed .main { margin-left: 0; }
 }
 .has-comparison .explorer-paper-hint span { display: none; }
+
+/* ECG learning flow: optional guidance, one page scroll, and controls near the tracing. */
+.explorer-path { margin-bottom: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); padding: 12px 16px; }
+.explorer-path summary, .explorer-checklist summary { cursor: pointer; font-size: .88rem; font-weight: 650; min-height: 28px; }
+.explorer-path summary span { display: inline-block; margin-left: 8px; color: var(--ink-soft); font-size: .76rem; font-weight: 400; }
+.explorer-path > p, .explorer-path li p, .explorer-path-current, .explorer-practice-status, .explorer-checklist > p, .explorer-hint p { font-size: .82rem; line-height: 1.6; color: var(--ink-soft); }
+.explorer-path ol { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 12px; padding: 0; list-style-position: inside; }
+.explorer-path li { padding: 14px; border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.explorer-path li strong { font-size: .88rem; }.explorer-path li p { margin-block: 8px; }
+.explorer-path li small { display: block; font-size: .73rem; line-height: 1.5; color: var(--ink-soft); }
+.explorer-path li .ex-button { margin-top: 12px; width: 100%; }
+.explorer-path-current { border-left: 3px solid var(--brand); padding: 10px 14px; background: var(--card); border-radius: 8px; }
+.explorer-path-current .ex-button { margin: 8px 0 0 10px; }
+.explorer-controls { scroll-margin-top: 150px; }
+.explorer-findings { position: static; max-height: none; overflow: visible; }
+.explorer-findings .explorer-explanation { position: static; box-shadow: none; }
+.explorer-finding-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 16px; }
+.explorer-finding-nav .ex-button { font-size: .78rem; padding-inline: 9px; }.explorer-finding-nav span { white-space: nowrap; color: var(--ink-soft); font-size: .75rem; }
+.explorer-checklist { border: 1px solid var(--line); padding: 12px; border-radius: 10px; margin-block: 14px; }
+.explorer-checklist label { display: grid; gap: 6px; font-size: .8rem; margin-block: 12px; }
+.explorer-checklist textarea { box-sizing: border-box; width: 100%; min-width: 0; resize: vertical; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); font: inherit; line-height: 1.5; }
+.explorer-hint { margin-block: 14px; }.explorer-hint p { padding: 10px; background: var(--ov-job-bg); border-radius: 8px; }
+.explorer-whole { min-height: 44px; font-size: .78rem; padding: 8px 12px; }
+.explorer-canvas .ecg-finding-marks [data-region] { pointer-events: all; cursor: pointer; }
+.explorer-canvas .ecg-finding-marks [data-region]:focus-visible { outline: none; stroke: var(--brand); stroke-width: 4; fill: rgba(20,100,80,.12); }
+@media(max-width:700px){.explorer-path { padding: 12px; }.explorer-path summary span { display: block; margin: 6px 0 0; }.explorer-path ol { grid-template-columns: minmax(0,1fr); }.explorer-path-current .ex-button { display: block; margin-left: 0; }.explorer-findings { padding: 14px; }}
+@media print{.explorer-path,.explorer-path-current,.explorer-finding-nav,.explorer-hint,.explorer-whole { display: none; }}
+.explorer-canvas .ecg-finding-marks [aria-pressed="true"] { stroke-width: 4; fill: rgba(220,38,38,.09); }
+.explorer-finding-chooser { margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+.explorer-finding-chooser summary { cursor: pointer; min-height: 28px; font-size: .82rem; font-weight: 600; }
+.explorer-finding-chooser .explorer-finding-list { margin-top: 8px; }
+.explorer-path summary, .explorer-checklist summary, .explorer-finding-chooser summary { box-sizing: border-box; min-height: 44px; padding-block: 8px; }

@@ -13,7 +13,8 @@
     try{
       for(const width of [320,390,400,600,700,701,768,920,921,1024,1280])for(const theme of ['light','dark'])for(const scale of [1,1.3]){
         frame.style.width=width+'px';html.dataset.theme=theme;html.dataset.weight='bold';html.style.setProperty('--type-scale',scale);
-        await new Promise(r=>setTimeout(r,35));
+        for(let n=0;win.innerWidth!==width&&n<120;n++)await new Promise(r=>requestAnimationFrame(r));
+        await new Promise(r=>win.requestAnimationFrame(()=>win.requestAnimationFrame(r)));
         const tag=`${width}px ${theme} ${scale}`,head=doc.querySelector('.topbar').getBoundingClientRect(),search=doc.querySelector('.searchwrap').getBoundingClientRect();
         const buttons=[...doc.querySelectorAll('.primary-nav > button')];check(buttons.length===5,tag+' five destinations');
         for(const b of buttons){

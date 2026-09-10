@@ -45,7 +45,7 @@ test('offline navigation falls back to the installed app shell; cached assets st
   } });
   assert.equal(await w.fetch('./?launch=pwa', 'navigate'), shell);
   assert.equal(await w.fetch('./assets/app.js', 'cors'), asset);
-  assert.equal((await w.fetch('./missing.js', 'cors')).type, 'error');
+  assert.equal((await w.fetch('./assets/data.js', 'cors')).type, 'error');
 });
 
 
@@ -69,13 +69,14 @@ test('activation deletes only obsolete caches belonging to this free app', async
   const handlers={},deleted=[];
   const source=fs.readFileSync(require('node:path').join(__dirname,'../sw.js'),'utf8');
   const version=source.match(/const CACHE_VERSION = '([^']+)'/)[1];
-  const keys=['em-cps-em-cps-v1','em-cps-em-cps-'+version,'em-p-em-p-v1','em-cps-other-v1','unrelated'];
+  const prefix='em-cps-scope-'+encodeURIComponent('/EM-CPs/')+'-';
+  const keys=[prefix+'v1',prefix+version,'em-p-em-p-v1','em-cps-em-cps-v1','em-cps-other-v1','unrelated'];
   vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../sw.js'),'utf8'),{
     URL,Promise,self:{registration:{scope:'https://zahrani.net/EM-CPs/'},addEventListener:(type,fn)=>handlers[type]=fn,clients:{claim:async()=>{}}},
     caches:{keys:async()=>keys,delete:async key=>deleted.push(key)}
   });
   let pending;handlers.activate({waitUntil:p=>pending=p});await pending;
-  assert.deepEqual(deleted,['em-cps-em-cps-v1']);
+  assert.deepEqual(deleted,[prefix+'v1']);
 });
 
 test('root and nested deployments restore direct hash links and index URLs offline', async () => {
@@ -93,11 +94,47 @@ test('install caches a nonredirecting shell; optional icon failure does not bloc
     const handlers={},added=[];let skipped=false;
     vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../sw.js'),'utf8'),{
       URL,Promise,self:{registration:{scope:'https://example.test/'},addEventListener:(type,fn)=>handlers[type]=fn,skipWaiting:async()=>{skipped=true;}},
-      caches:{open:async()=>({addAll:async urls=>{added.push(...urls);if(failCore)throw Error('core failed');},add:async()=>{throw Error('optional icon unavailable');}})}
+      caches:{open:async()=>({addAll:async urls=>{added.push(...urls);if(failCore)throw Error('core failed');},add:async()=>{throw Error('optional icon unavailable');},match:async url=>({headers:{get:()=>url.includes('.js')?'text/javascript':url.includes('.css')?'text/css':'text/html'}})})}
     });
     let pending;handlers.install({waitUntil:p=>pending=p});
     if(failCore)await assert.rejects(pending,/core failed/);else await pending;
     assert.equal(skipped,!failCore);
     assert.ok(added.includes('./'));assert.ok(!added.includes('./index.html'));
   }
+});
+
+
+test('root and nested workers intercept only their own entry points and shipped assets', async()=>{
+ for(const scope of ['http://localhost/','http://localhost/EM-CPs/'])for(const offline of [false,true]){
+  const w=worker({scope,offline});
+  for(const url of ['./other/','./other/index.html','./assets/unrelated.js','./api/content','./EM-P/','./EM-P/assets/app.js','./sw.js']){
+   for(const mode of ['navigate','cors'])assert.equal(await w.fetch(url,mode),undefined,scope+url+' '+mode);
+  }
+  assert.equal(await w.fetch('./assets/app.js','navigate'),undefined);
+  assert.equal(await w.fetch('./','cors'),undefined);
+ }
+});
+
+test('cache cleanup preserves case-sensitive, punctuation, parent and child installations',async()=>{
+ const source=fs.readFileSync(require('node:path').join(__dirname,'../sw.js'),'utf8');
+ const version=source.match(/const CACHE_VERSION = '([^']+)'/)[1];
+ const paths=['/','/root/','/EM-CPs/','/em-cps/','/EM_CPs/','/EM/CPs/','/EM-CPs/child/'];
+ const prefix=path=>'em-cps-scope-'+encodeURIComponent(path)+'-';
+ const keys=paths.flatMap(path=>[prefix(path)+'v1',prefix(path)+version]).concat('em-cps-root-v162','em-cps-em-cps-v162');
+ for(const path of paths){
+  const handlers={},deleted=[];
+  vm.runInNewContext(source,{URL,Promise,self:{registration:{scope:'https://example.test'+path},addEventListener:(type,fn)=>handlers[type]=fn,clients:{claim:async()=>{}}},caches:{keys:async()=>keys,delete:async key=>deleted.push(key)}});
+  let pending;handlers.activate({waitUntil:p=>pending=p});await pending;
+  assert.deepEqual(deleted,[prefix(path)+'v1'],path);
+ }
+});
+
+
+test('HTML fallback for a missing required script never activates an offline bundle',async()=>{
+ const handlers={};let skipped=false;
+ vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../sw.js'),'utf8'),{
+  URL,Promise,self:{registration:{scope:'https://example.test/'},addEventListener:(type,fn)=>handlers[type]=fn,skipWaiting:async()=>{skipped=true;}},
+  caches:{open:async()=>({addAll:async()=>{},match:async()=>({headers:{get:()=> 'text/html; charset=utf-8'}}),add:async()=>{}})}
+ });
+ let pending;handlers.install({waitUntil:p=>pending=p});await assert.rejects(pending,/Invalid offline asset type/);assert.equal(skipped,false);
 });
