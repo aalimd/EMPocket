@@ -1,3 +1,5 @@
+Latest learning update: [complete experience, verification and rollback](docs/COMPLETE-LEARNING-EXPERIENCE-2026-09-10.md).
+
 Latest code and hosting verification: [10 September release audit](docs/RELEASE-VERIFICATION-2026-09-10.md).
 
 ECG controls: [single selection marker and consolidated viewer](docs/ECG-CONTROLS-2026-09-09.md).
@@ -50,7 +52,7 @@ See Cloudflare's official [static HTML settings](https://developers.cloudflare.c
 
 ## Release and offline updates
 
-The current asset token is `20260910-verified-r4`; `CACHE_VERSION` is `v163` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
+The current asset token is `20260910-complete-r11`; `CACHE_VERSION` is `v170` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
 
 The worker precaches the canonical `./` shell because Pages redirects `/index.html` to `/`. Direct hash routes and offline `/index.html` requests fall back to that shell. Required asset failure or an HTML fallback returned instead of required JavaScript/CSS prevents a new worker from activating; optional icon failure does not prevent core offline use. A new worker claims the app and notifies users to refresh. The worker handles only this app's entry points and shipped asset paths, including at the domain root. New cache names encode the exact installation path, preserving case and punctuation. Cleanup touches only that exact namespace; it does not clear saved progress or other apps' caches. Ambiguous legacy cache names are intentionally retained during this one-time naming change.
 
@@ -69,3 +71,5 @@ Do not change the installation origin/path when replacing an existing Hostinger 
 ## Local verification
 
 Run `node --test tests/*.test.js`. Deployment tests check local references, PNG dimensions, release-token consistency, header parity and worker offline/install behavior. The rule matcher is a local model, not Cloudflare’s production parser. Serve `dev/explorer.html` locally for ECG interaction checks. The older `dev/audit.html` uses `new Function` and is blocked by the production CSP; do not weaken CSP to run it. See [deployment verification](docs/DEPLOYMENT-VERIFICATION-2026-09-10.md) for results and manual checks.
+
+The latest seven-area learning and UI review, recorded-ECG attribution, verification scope and reversible source patch are documented in [UI/UX completion](docs/UI-UX-COMPLETION-2026-09-10.md).

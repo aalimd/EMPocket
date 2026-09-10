@@ -1,0 +1,1504 @@
+--- a/README.md
++++ b/README.md
+@@ -1,5 +1,3 @@
+-Latest learning update: [complete experience, verification and rollback](docs/COMPLETE-LEARNING-EXPERIENCE-2026-09-10.md).
+-
+ Latest code and hosting verification: [10 September release audit](docs/RELEASE-VERIFICATION-2026-09-10.md).
+ 
+ ECG controls: [single selection marker and consolidated viewer](docs/ECG-CONTROLS-2026-09-09.md).
+@@ -52,7 +50,7 @@
+ 
+ ## Release and offline updates
+ 
+-The current asset token is `20260910-complete-r7`; `CACHE_VERSION` is `v166` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
++The current asset token is `20260910-verified-r5`; `CACHE_VERSION` is `v164` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
+ 
+ The worker precaches the canonical `./` shell because Pages redirects `/index.html` to `/`. Direct hash routes and offline `/index.html` requests fall back to that shell. Required asset failure or an HTML fallback returned instead of required JavaScript/CSS prevents a new worker from activating; optional icon failure does not prevent core offline use. A new worker claims the app and notifies users to refresh. The worker handles only this app's entry points and shipped asset paths, including at the domain root. New cache names encode the exact installation path, preserving case and punctuation. Cleanup touches only that exact namespace; it does not clear saved progress or other apps' caches. Ambiguous legacy cache names are intentionally retained during this one-time naming change.
+ 
+--- a/assets/app.css
++++ b/assets/app.css
+@@ -4957,8 +4957,6 @@
+   .topbar > .searchwrap { grid-column: 1; grid-row: 1; max-width: none; }
+   .topbar > .tools-toggle { grid-column: 2; grid-row: 1; }
+   .topbar > .primary-nav { grid-column: 1 / -1; grid-row: 2; justify-content: space-between; }
+-  .topbar > .primary-nav > :is(#homeBtn,#studyBtn,#shiftBtn,#ecgBtn,#explorerBtn) { width: auto; padding: 8px; min-height: 44px; height: auto; }
+-  .topbar > .primary-nav > :is(#homeBtn,#studyBtn,#shiftBtn,#ecgBtn,#explorerBtn) .header-label { display: inline; }
+ }
+ 
+ /* ECG learning workspace: readable paper, connected feedback and restrained motion. */
+@@ -5121,69 +5119,3 @@
+ .explorer-finding-chooser summary { cursor: pointer; min-height: 28px; font-size: .82rem; font-weight: 600; }
+ .explorer-finding-chooser .explorer-finding-list { margin-top: 8px; }
+ .explorer-path summary, .explorer-checklist summary, .explorer-finding-chooser summary { box-sizing: border-box; min-height: 44px; padding-block: 8px; }
+-
+-/* Optional learning depth: compact disclosure, no hidden clinical sections. */
+-.guided-reasoning{margin-top:16px;border:1px solid var(--line,#ccd3dc);border-radius:12px;background:var(--card,#fff);color:var(--ink,#172536)}
+-.guided-reasoning>summary{padding:14px 16px;cursor:pointer;font-weight:700;min-height:44px}
+-.guided-inner{padding:0 16px 16px}
+-.guided-levels{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+-.guided-levels button{font:inherit;min-height:44px;padding:8px 16px;border:1px solid currentColor;border-radius:8px;background:transparent;color:inherit;cursor:pointer}
+-.guided-levels button[aria-pressed="true"]{background:var(--ink,#172536);color:var(--card,#fff)}
+-.guided-prompts{padding-left:24px;margin:12px 0}
+-.guided-prompts li{padding:8px 0 12px}
+-.guided-prompts li p{margin:0 0 6px}
+-.guided-prompts a{display:inline-block;padding:8px 0;text-underline-offset:3px}
+-.guided-footnote,.guided-save{font-size:.85rem;line-height:1.5}
+-.guided-save:empty{display:none}
+-.guided-reasoning :focus-visible{outline:3px solid var(--accent,#2563eb);outline-offset:3px}
+-
+-/* Learning workspace: shared layouts for cases, visual interpretation and team preparation. */
+-.workspace-entry,.workspace-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px;margin:24px 0}
+-.workspace-entry>a,.workspace-card{display:block;padding:22px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);min-width:0}
+-.workspace-entry>a{text-decoration:none}
+-.workspace-entry>a:hover,.workspace-card[href]:hover{border-color:var(--accent);box-shadow:var(--shadow-sm)}
+-.workspace-entry span{display:block;color:var(--ink-soft);font-size:.85rem;margin-bottom:10px}
+-.workspace-entry strong{display:block;font-size:1.15rem;line-height:1.35}
+-.workspace-entry p{margin-top:10px;color:var(--ink-soft);line-height:1.55}
+-.learning-workspace{max-width:1120px;margin:0 auto;color:var(--ink)}
+-.learning-workspace h1{font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.2;margin:12px 0}
+-.workspace-lead{color:var(--ink-soft);line-height:1.6;max-width:70ch}
+-.workspace-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0;border-bottom:1px solid var(--line);padding-bottom:12px}
+-.workspace-tabs a,.workspace-actions a,.workspace-actions button,.learning-workspace button,.backup-label{font:inherit;display:inline-flex;align-items:center;min-height:44px;padding:10px 14px;border:1px solid var(--line);border-radius:9px;color:var(--ink);background:var(--card);text-decoration:none;cursor:pointer}
+-.workspace-tabs a[aria-current="page"],.learning-workspace .workspace-primary{background:var(--ink);color:var(--card);border-color:var(--ink)}
+-.workspace-body h2{font-size:1.35rem;line-height:1.4;margin:0 0 12px}
+-.workspace-body h3{font-size:1.05rem;line-height:1.4;margin:10px 0}
+-.workspace-body p{line-height:1.65;margin:10px 0}
+-.workspace-body ul,.workspace-body ol{padding-left:24px}
+-.workspace-body li{line-height:1.6;margin:10px 0}
+-.workspace-card[href]{text-decoration:none}
+-.workspace-card>span:last-child{display:block;margin-top:16px;text-decoration:underline;text-underline-offset:4px}
+-.workspace-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:18px 0}
+-.workspace-callout,.case-update,.workspace-feedback,.workspace-result{border:1px solid var(--line);border-radius:12px;padding:20px;background:var(--card);margin:20px 0}
+-.workspace-feedback{border-inline-start:4px solid var(--accent)}
+-.workspace-step,.workspace-media-label{font-size:.82rem;font-weight:700;color:var(--ink-soft)}
+-.learning-workspace .quiz-options{display:grid;gap:10px;margin:16px 0}
+-.learning-workspace .quiz-option{text-align:left;line-height:1.5;white-space:normal;width:100%}
+-.learning-workspace .quiz-option:disabled{opacity:1;cursor:default}
+-.learning-workspace summary,.reassessment-guide summary{cursor:pointer;min-height:44px;padding:10px 0;font-weight:650}
+-.workspace-source{margin-top:24px;border-top:1px solid var(--line);padding-top:8px;font-size:.88rem;overflow-wrap:anywhere}
+-.workspace-source p{color:var(--ink-soft)}
+-.workspace-source a,.workspace-body a:not(.workspace-card):not(.workspace-tabs a){text-underline-offset:4px}
+-.workspace-card svg{display:block;width:100%;height:auto;margin:16px 0}
+-.workspace-card figcaption{font-size:.92rem;line-height:1.5}
+-.workspace-ecg svg{background:#fff4f5}
+-.gas-values>div{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
+-.gas-values dd{font-weight:700}
+-.learning-workspace select{font:inherit;display:block;max-width:100%;width:100%;padding:12px;margin:12px 0;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px}
+-.workspace-progress-list{list-style:none;padding:0!important}
+-.workspace-progress-list li{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:14px 0;border-bottom:1px solid var(--line)}
+-.workspace-progress-list span{font-size:.85rem;color:var(--ink-soft)}
+-.backup-label{display:flex;flex-direction:column;align-items:flex-start;gap:10px;max-width:100%}
+-.backup-label input{max-width:100%;width:100%;font:inherit}
+-.reassessment-guide{margin-top:18px;border-top:1px solid var(--line);padding-top:8px}
+-.reassessment-guide ol{padding-left:24px}
+-.reassessment-guide li{margin:12px 0;line-height:1.6}
+-.reassessment-guide a{display:inline-block;margin:8px 18px 8px 0;min-height:44px;padding:10px 0}
+-.learning-workspace :focus-visible,.workspace-entry a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+-@media(max-width:600px){.workspace-card,.workspace-entry>a,.workspace-callout,.workspace-result,.workspace-feedback,.case-update{padding:16px}.workspace-tabs a{flex:1 1 42%;justify-content:center;font-size:.9rem}.learning-workspace .quiz-question{padding:0}.workspace-grid{gap:12px}.study-workspace-links a{flex:1 1 45%}}
+-@media print{.workspace-tabs,.workspace-actions,.workspace-entry{display:none}.workspace-card,.workspace-callout{break-inside:avoid}.workspace-card svg{max-height:350px}}
+--- a/assets/app.js
++++ b/assets/app.js
+@@ -239,13 +239,13 @@
+     function evidenceHtml(id) {
+         const evidence = window.CLINICAL_EVIDENCE;
+         const keys = evidence && evidence.topics[id];
+-        if (!Array.isArray(keys)) return '<p class="evidence-note">Foundational references below. No separate topic-specific guideline check is recorded here.</p>';
++        if (!Array.isArray(keys)) return '';
+         const links = keys.map(function (key) {
+             const source = evidence.sources[key];
+             if (!source || !/^https:\/\//.test(source[1])) return '';
+             return '<li><a href="' + esc(source[1]) + '" target="_blank" rel="noopener noreferrer">' + esc(source[0]) + '</a></li>';
+         }).join('');
+-        return '<p class="evidence-note">Selected guidance · source check ' + esc(evidence.checked) + '. These '+keys.length+' source links support selected teaching points, not a complete review of this topic. Check population, setting and local protocol before applying a recommendation.</p><ul class="refs">' + links + '</ul>';
++        return '<p class="evidence-note">Selected guidance · source check ' + esc(evidence.checked) + '. Links address specific teaching points; apply the full guideline and local protocol.</p><ul class="refs">' + links + '</ul>';
+     }
+     function toast(msg) {
+         const t = document.getElementById('toast');
+@@ -583,13 +583,12 @@
+         const visibleCount = DATA.filter(cp => cpMatchesFilter(cp) && patientMatches(cp)).length;
+         stage.innerHTML =
+             '<section class="home-intro">' +
+-            '<span class="study-kicker">EM POCKET · EMERGENCY MEDICINE</span>' +
++            '<span class="study-kicker">EM POCKET · STUDENT LIBRARY</span>' +
+             '<h1>Build your clinical reasoning</h1>' +
+             '<p>Choose a presentation. Learn the approach, recognise the red flags, then test your recall.</p>' +
+             '<div class="home-actions"><button type="button" class="home-start" data-browse-library="1">Browse presentations <span aria-hidden="true">↓</span></button>' +
+             (getEcg() ? '<button type="button" class="home-ecg" id="ecgEntryBtn">Learn ECGs <span aria-hidden="true">→</span></button>' : '') +
+             '</div><div class="home-meta"><span>' + DATA.length + ' presentations</span><span>' + reviewedIds().length + ' reviewed</span><span id="offlineStatus">' + esc(offlineStatus) + '</span></div></section>' +
+-            (window.EM_LEARNING ? window.EM_LEARNING.homeHtml() : '') +
+             studyDashboardHtml() +
+             '<section class="presentation-library" id="presentationLibrary" aria-labelledby="presentationLibraryTitle" tabindex="-1">' +
+             '<div class="library-head"><div><h2 id="presentationLibraryTitle">Presentation library</h2><p>' + visibleCount + ' of ' + DATA.length + ' presentations · grouped by clinical system</p></div>' +
+@@ -652,7 +651,7 @@
+         const body = chosen === 'case' ? caseHtml() :
+             '<section class="study-page"><div class="study-page-head"><button type="button" class="back-btn" data-home="1">← All presentations</button><span class="study-kicker">PERSONAL STUDY SPACE</span><h1>' + (chosen === 'due' ? 'Review queue' : 'Saved topics') + '</h1><p>' + (chosen === 'due' ? 'Topics return after 1, 3, 7, and 14 days of review. Complete a review to move it to the next interval.' : 'Use saved topics for weak areas, upcoming rotations, or cases you want to discuss.') + '</p></div>' +
+             topicListHtml(chosen === 'due' ? dueIds() : savedIds(), chosen === 'due' ? 'Nothing is due yet. Mark a topic reviewed to start its spaced-review schedule.' : 'No saved topics yet. Save one from any presentation.') + '</section>';
+-        stage.innerHTML = '<div class="workspace-actions study-workspace-links"><a href="#learn~practice">Evolving cases →</a><a href="#learn~progress">Progress & backup →</a><a href="#learn~skills">Procedures & teams →</a></div><nav class="study-tabs" aria-label="Study views"><button type="button" data-study="due" aria-current="' + (chosen === 'due' ? 'page' : 'false') + '" class="' + (chosen === 'due' ? 'active' : '') + '">Review queue <span>' + dueIds().length + '</span></button><button type="button" data-study="saved" aria-current="' + (chosen === 'saved' ? 'page' : 'false') + '" class="' + (chosen === 'saved' ? 'active' : '') + '">Saved</button><button type="button" data-study="case" aria-current="' + (chosen === 'case' ? 'page' : 'false') + '" class="' + (chosen === 'case' ? 'active' : '') + '">Practice case</button></nav>' + body;
++        stage.innerHTML = '<nav class="study-tabs" aria-label="Study views"><button type="button" data-study="due" aria-current="' + (chosen === 'due' ? 'page' : 'false') + '" class="' + (chosen === 'due' ? 'active' : '') + '">Review queue <span>' + dueIds().length + '</span></button><button type="button" data-study="saved" aria-current="' + (chosen === 'saved' ? 'page' : 'false') + '" class="' + (chosen === 'saved' ? 'active' : '') + '">Saved</button><button type="button" data-study="case" aria-current="' + (chosen === 'case' ? 'page' : 'false') + '" class="' + (chosen === 'case' ? 'active' : '') + '">Practice case</button></nav>' + body;
+         stage.querySelectorAll('[data-home]').forEach(btn => btn.addEventListener('click', showHome));
+         stage.querySelectorAll('[data-study]').forEach(btn => btn.addEventListener('click', () => showStudy(btn.dataset.study)));
+         stage.querySelectorAll('[data-next-case]').forEach(btn => btn.addEventListener('click', () => { caseCursor += 1; renderStudy('case'); }));
+@@ -874,7 +873,7 @@
+                     const cls = dispClass(d[0]);
+                     return '<div class="disp-col ' + cls + '"><h4>' + esc(d[0]) +
+                         '</h4><ul><li>' + esc(d[1]) + '</li></ul></div>';
+-                }).join('') + '</div><p class="clinical-safety-note">Use objective reassessment and the local pathway.</p>' + (window.EM_LEARNING ? window.EM_LEARNING.reassessmentHtml(cp) : ''), isClosed('disposition'), 'disposition') +
++                }).join('') + '</div><p class="clinical-safety-note">Use objective reassessment and the local pathway.</p>', isClosed('disposition'), 'disposition') +
+ 
+             sectionCard('💡', 'Pearls & Pitfalls',
+                 '<div class="pp-grid"><div class="pp-box pearls"><h4>Clinical Pearls</h4><ul class="plain-list">' +
+@@ -892,7 +891,7 @@
+             relatedHtml(id, isClosed('see-also')) +
+ 
+             sectionCard('📚', 'References',
+-                evidenceHtml(cp.id) + (window.EM_LEARNING ? window.EM_LEARNING.evidenceContext(cp.id) : '') + '<ul class="refs">' + cp.refs.map(r => '<li>' + esc(r) + '</li>').join('') + '</ul>', isClosed('references', true), 'references') +
++                evidenceHtml(cp.id) + '<ul class="refs">' + cp.refs.map(r => '<li>' + esc(r) + '</li>').join('') + '</ul>', isClosed('references', true), 'references') +
+ 
+             pagerHtml(id);
+ 
+@@ -1396,8 +1395,7 @@
+     function applyRoute(preservePosition) {
+         const route = (location.hash || '').replace('#', '').split('~');
+         const id = route[0], target = route[1];
+-        if (id === 'learn' && window.EM_LEARNING) { currentId=null; markActive('study'); syncNav('study'); setTitle('Learning workspace'); setStageContext('Learning workspace'); window.EM_LEARNING.mount(stage,target||'practice'); announce('Learning workspace'); }
+-        else if (id === 'study') renderStudy(target || 'due');
++        if (id === 'study') renderStudy(target || 'due');
+         else if (id === 'shift') renderShift(target);
+         else if (id === 'ecg-explorer') renderExplorer(target);
+         else if (id === ECG_TOPIC_ID) renderEcg(target);
+@@ -1427,12 +1425,16 @@
+                 });
+             } catch (e) {}
+             if (bar) bar.style.width = (checked / total * 100) + '%';
+-            if (checked > 0) {
++            if (checked >= 3) {
++                banner.className = 'rf-banner show level-high';
++                banner.textContent = '🚨 ' + checked + ' red flags — ' + cp.name +
++                    ': this patient needs immediate escalation. Time-critical workup; consider senior/consultant involvement.';
++            } else if (checked > 0) {
+                 banner.className = 'rf-banner show level-mid';
+-                banner.textContent = checked + ' warning sign' + (checked > 1 ? 's' : '') + ' selected. Assess each finding and the patient’s condition; a single serious finding may need immediate escalation. The count is not a severity score.';
++                banner.textContent = '⚠️ ' + checked + ' red flag' + (checked > 1 ? 's' : '') +
++                    ' present — proceed with the workup pathway above and re-assess.';
+             } else {
+                 banner.className = 'rf-banner';
+-                banner.textContent = '';
+             }
+         }
+         boxes.forEach(b => b.addEventListener('change', () => {
+@@ -1506,7 +1508,6 @@
+             });
+         }
+         if(window.ECG_EXPLORER)window.ECG_EXPLORER.cases.forEach(c=>idx.unshift({cpId:'ecg-explorer',target:c.id,title:c.name,sub:c.category+' · '+c.id.replace(/-/g,' ')+' · '+c.summary,kind:'Interactive ECG'}));
+-        if(window.EM_LEARNING) idx.unshift(...window.EM_LEARNING.searchItems());
+         return idx;
+     }
+     const SEARCH_INDEX = buildSearchIndex();
+@@ -1589,8 +1590,7 @@
+             }));
+     }
+     function openSearchHit(id, target) {
+-        if (id === 'learn') location.hash='learn~'+target;
+-        else if (id === 'ecg-explorer') showExplorer(target);
++        if (id === 'ecg-explorer') showExplorer(target);
+         else if (id === ECG_TOPIC_ID) showEcg(target || '');
+         else showPresentation(id, target);
+     }
+@@ -1998,7 +1998,7 @@
+         const homeBtn = document.getElementById('homeBtn');
+         if (homeBtn) homeBtn.addEventListener('click', goHome);
+         const studyBtn = document.getElementById('studyBtn');
+-        if (studyBtn) studyBtn.addEventListener('click', () => { location.hash='learn~practice'; });
++        if (studyBtn) studyBtn.addEventListener('click', () => showStudy('due'));
+         const shiftBtn = document.getElementById('shiftBtn');
+         if (shiftBtn) shiftBtn.addEventListener('click', () => showShift(currentId));
+         document.getElementById('explorerBtn').addEventListener('click', showExplorer);
+@@ -2172,7 +2172,7 @@
+                 return;
+             }
+             if (e.key === 'h' || e.key === 'H') { e.preventDefault(); showHome(); }
+-            if (e.key === 's' || e.key === 'S') { e.preventDefault(); location.hash='learn~practice'; }
++            if (e.key === 's' || e.key === 'S') { e.preventDefault(); showStudy('due'); }
+             if (e.key === 'v' || e.key === 'V') { e.preventDefault(); showShift(currentId); }
+             if ((e.key === 'e' || e.key === 'E') && getEcg()) { e.preventDefault(); showEcg(); }
+             const routeName = (location.hash || '').replace('#', '').split('~')[0];
+@@ -2199,7 +2199,7 @@
+         if ('serviceWorker' in navigator) {
+             window.addEventListener('load', () => {
+                 const hadController = !!navigator.serviceWorker.controller;
+-                navigator.serviceWorker.register('./sw.js?v=20260910-complete-r7').then((registration) => {
++                navigator.serviceWorker.register('./sw.js?v=20260910-verified-r5').then((registration) => {
+                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
+                     if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
+                     registration.addEventListener('updatefound', () => {
+--- a/assets/em-learning-data.js
++++ /dev/null
+@@ -1,782 +0,0 @@
+-/* Original fictional teaching cases and educational preparation modules. */
+-window.EM_LEARNING_DATA = {
+-  "sources": {
+-    "als": [
+-      "AHA adult advanced life support (2025)",
+-      "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support"
+-    ],
+-    "opioid": [
+-      "AHA special circumstances: opioid poisoning (2025)",
+-      "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation"
+-    ],
+-    "trauma": [
+-      "NICE NG39: major trauma",
+-      "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations"
+-    ],
+-    "pediatric": [
+-      "NICE NG9: bronchiolitis",
+-      "https://www.nice.org.uk/guidance/ng9/chapter/Recommendations"
+-    ],
+-    "pregnancy": [
+-      "NICE NG126: early pregnancy assessment",
+-      "https://www.nice.org.uk/guidance/NG126/chapter/symptoms-and-signs-of-ectopic-pregnancy-and-initial-assessment"
+-    ],
+-    "mental": [
+-      "NICE NG225: self-harm assessment and care",
+-      "https://www.nice.org.uk/guidance/ng225/chapter/Recommendations"
+-    ],
+-    "lung": [
+-      "ACEP Sonoguide: lung ultrasound",
+-      "https://www.acep.org/sonoguide/basic/lung"
+-    ],
+-    "sedation": [
+-      "ACEP: procedural sedation and analgesia policy",
+-      "https://www.acep.org/siteassets/new-pdfs/clinical-policies/clinical-policy-procedural-sedation-and-analgesia-in-the-emergency-department.pdf"
+-    ],
+-    "sbar": [
+-      "AHRQ TeamSTEPPS: SBAR",
+-      "https://www.ahrq.gov/teamstepps-program/curriculum/communication/tools/sbar.html"
+-    ],
+-    "debrief": [
+-      "AHRQ TeamSTEPPS: debrief",
+-      "https://www.ahrq.gov/teamstepps-program/curriculum/team/tools/debrief.html"
+-    ],
+-    "abg": [
+-      "French expert panel: metabolic acidosis (2019)",
+-      "https://annalsofintensivecare.springeropen.com/articles/10.1186/s13613-019-0563-2"
+-    ],
+-    "chest-image": [
+-      "Radiology Assistant: chest X-ray interpretation",
+-      "https://radiologyassistant.nl/chest/chest-x-ray/basic-interpretation"
+-    ],
+-    "acs": [
+-      "ESC acute coronary syndromes guideline (2023)",
+-      "https://www.escardio.org/guidelines/clinical-practice-guidelines/all-esc-practice-guidelines/acute-coronary-syndromes/"
+-    ]
+-  },
+-  "cases": [
+-    {
+-      "id": "resus",
+-      "title": "A fast rhythm, then a change",
+-      "domain": "Resuscitation",
+-      "topic": "palpitations",
+-      "source": "als",
+-      "stem": "A 64-year-old has a regular broad-complex tachycardia at 190/min, BP 72/40, confusion and a palpable pulse. The team is at the bedside.",
+-      "steps": [
+-        {
+-          "update": "Initial assessment",
+-          "prompt": "Which immediate plan best matches these findings?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Prepare urgent synchronized cardioversion with the resuscitation team.",
+-              "why": "Poor perfusion with this regular tachycardia and a pulse calls for urgent synchronized treatment.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Wait for a formal cardiology report.",
+-              "why": "The patient is unstable; waiting delays time-critical care.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Use the pulse rate alone to decide on discharge.",
+-              "why": "Rate does not establish stability; hypotension and confusion are major concerns.",
+-              "correct": false
+-            }
+-          ]
+-        },
+-        {
+-          "update": "The team prepares cardioversion. Before it is delivered, the patient becomes unresponsive; no definite pulse is found promptly, and the monitor shows ventricular fibrillation.",
+-          "prompt": "How must the plan change?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Start the shockable cardiac-arrest pathway: CPR and unsynchronized defibrillation.",
+-              "why": "The patient now has a different clinical state. VF arrest requires defibrillation and CPR.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Continue trying to synchronize to the fibrillatory rhythm.",
+-              "why": "Synchronization is inappropriate for ventricular fibrillation.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Obtain a 12-lead ECG before starting CPR.",
+-              "why": "Diagnostic recording must not postpone resuscitation.",
+-              "correct": false
+-            }
+-          ]
+-        },
+-        {
+-          "update": "Following resuscitation, a pulse returns. BP remains low and the patient is not following commands.",
+-          "prompt": "What is the appropriate next destination?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Monitored post-arrest care with stabilization and investigation of the cause.",
+-              "why": "Return of a pulse does not end the need for critical care.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Discharge after the monitor shows sinus rhythm.",
+-              "why": "A normal rhythm does not establish recovery.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Remove monitoring to avoid alarms.",
+-              "why": "Ongoing instability requires monitoring and reassessment.",
+-              "correct": false
+-            }
+-          ]
+-        }
+-      ],
+-      "debrief": [
+-        "What observation changed the treatment pathway?",
+-        "Explain the difference between treating a rhythm with a pulse and treating cardiac arrest.",
+-        "Hand over the arrest rhythm, interventions, response and remaining instability."
+-      ]
+-    },
+-    {
+-      "id": "trauma",
+-      "title": "Deterioration after chest trauma",
+-      "domain": "Trauma",
+-      "topic": "multiple-trauma",
+-      "source": "trauma",
+-      "stem": "A 31-year-old arrives after blunt chest trauma. During initial assessment, BP falls to 78/46, respiratory distress worsens and breath sounds are markedly reduced on the left.",
+-      "steps": [
+-        {
+-          "update": "Initial assessment",
+-          "prompt": "What should the team prioritize?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Assess and treat immediate thoracic threats during resuscitation.",
+-              "why": "This combination warrants urgent assessment for tension pneumothorax and other life threats.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Finish a routine history before reassessment.",
+-              "why": "The new deterioration changes the priority.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Assume anxiety explains the respiratory distress.",
+-              "why": "Shock and asymmetric examination need an urgent physical explanation.",
+-              "correct": false
+-            }
+-          ]
+-        },
+-        {
+-          "update": "The treating team finds a compelling clinical picture of tension pneumothorax with severe compromise. CT is available on another floor.",
+-          "prompt": "What principle applies?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Arrange immediate decompression by a trained clinician without waiting for CT.",
+-              "why": "Severe compromise with suspected tension physiology requires treatment before imaging.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Transfer to CT before treatment in every case.",
+-              "why": "Transfer would delay care in this unstable patient.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Wait for tracheal deviation to appear.",
+-              "why": "An absent late sign does not make the patient stable.",
+-              "correct": false
+-            }
+-          ]
+-        },
+-        {
+-          "update": "After decompression, breathing improves but hypotension persists.",
+-          "prompt": "What is the next reasoning step?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Repeat the primary survey and look for additional causes of shock.",
+-              "why": "An initial improvement does not explain persistent shock or exclude other injuries.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Stop investigating because one problem was treated.",
+-              "why": "Trauma can cause more than one life-threatening injury.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Use the improved breath sounds alone to discharge.",
+-              "why": "Persistent hypotension is incompatible with that conclusion.",
+-              "correct": false
+-            }
+-          ]
+-        }
+-      ],
+-      "debrief": [
+-        "Which findings supported treatment before imaging?",
+-        "What other injuries could explain persistent shock?",
+-        "Assign roles for reassessment, communication and definitive trauma care."
+-      ]
+-    },
+-    {
+-      "id": "infant",
+-      "title": "An infant who becomes quieter",
+-      "domain": "Pediatric",
+-      "topic": "pediatric-respiratory-distress",
+-      "source": "pediatric",
+-      "stem": "A 7-week-old with coryza has worsening work of breathing and is taking less than half the usual feeds. A parent reports a pause in breathing at home.",
+-      "steps": [
+-        {
+-          "update": "Initial assessment",
+-          "prompt": "Which feature most strongly supports urgent escalation?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "The reported apnea, alongside the current respiratory difficulty.",
+-              "why": "A breathing pause in this infant warrants urgent assessment.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "The presence of coryza alone.",
+-              "why": "Coryza is common and does not capture the immediate concern.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "The family having no thermometer.",
+-              "why": "Equipment at home does not determine the severity of illness.",
+-              "correct": false
+-            }
+-          ]
+-        },
+-        {
+-          "update": "While monitored, the infant develops a further apneic episode and becomes less responsive.",
+-          "prompt": "What should happen now?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Call pediatric resuscitation support and support airway and breathing.",
+-              "why": "Apnea with reduced responsiveness requires immediate support.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Wait to see whether the next feed is easier.",
+-              "why": "Feeding is not the priority during apnea.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Assume reduced noise means improvement.",
+-              "why": "Becoming quieter can reflect exhaustion or deterioration.",
+-              "correct": false
+-            }
+-          ]
+-        },
+-        {
+-          "update": "The infant improves with the team’s support but remains unable to feed adequately.",
+-          "prompt": "Which disposition best fits the course?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Hospital care with ongoing respiratory and hydration assessment.",
+-              "why": "Apnea and inadequate feeding require continued assessment and support.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Discharge solely because one saturation reading improved.",
+-              "why": "A single number does not account for the apnea and feeding problem.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Offer a routine appointment several weeks later.",
+-              "why": "The immediate problems have not resolved.",
+-              "correct": false
+-            }
+-          ]
+-        }
+-      ],
+-      "debrief": [
+-        "How can a child appear quieter while becoming sicker?",
+-        "What would you include in the parent’s explanation?",
+-        "Discuss how age and comorbidity affect local thresholds."
+-      ]
+-    },
+-    {
+-      "id": "pregnancy",
+-      "title": "Pain and collapse in early pregnancy",
+-      "domain": "Obstetric",
+-      "topic": "pregnancy-emergency",
+-      "source": "pregnancy",
+-      "stem": "A 28-year-old with a positive pregnancy test has lower abdominal pain, vaginal spotting and a fainting episode. BP is 84/48 and pulse is 124/min.",
+-      "steps": [
+-        {
+-          "update": "Initial assessment",
+-          "prompt": "What is the safest initial approach?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Resuscitate and obtain urgent obstetric/gynecologic assessment for possible internal bleeding.",
+-              "why": "Instability in early pregnancy needs emergency assessment; ectopic pregnancy is a concern.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Book routine outpatient follow-up as the only plan.",
+-              "why": "That does not address current shock.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Assume light external bleeding excludes major hemorrhage.",
+-              "why": "External bleeding does not quantify internal blood loss.",
+-              "correct": false
+-            }
+-          ]
+-        },
+-        {
+-          "update": "The team starts resuscitation. No intrauterine pregnancy has yet been confirmed; a laboratory result is pending.",
+-          "prompt": "What should not be delayed?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Urgent specialist assessment and management of the unstable patient.",
+-              "why": "Pending tests must not defer the response to hemodynamic instability.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Wait for a single hormone result before seeking help.",
+-              "why": "One laboratory value cannot make this clinical state safe.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Require the patient to walk to another clinic.",
+-              "why": "An unstable patient needs supported care and appropriate transfer.",
+-              "correct": false
+-            }
+-          ]
+-        },
+-        {
+-          "update": "BP improves transiently, but pain and tachycardia continue.",
+-          "prompt": "How should that response affect disposition?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Continue emergency assessment and definitive planning with the specialist team.",
+-              "why": "A temporary response does not establish resolution of the cause.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Discharge because the last BP was better.",
+-              "why": "A transient improvement is not sufficient.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Stop observations to reduce anxiety.",
+-              "why": "The unresolved presentation needs continued reassessment.",
+-              "correct": false
+-            }
+-          ]
+-        }
+-      ],
+-      "debrief": [
+-        "Why can visible bleeding underestimate the problem?",
+-        "What information belongs in the urgent referral?",
+-        "How would you explain uncertainty while resuscitation continues?"
+-      ]
+-    },
+-    {
+-      "id": "opioid",
+-      "title": "Awake, then drowsy again",
+-      "domain": "Toxicology",
+-      "topic": "overdose",
+-      "source": "opioid",
+-      "stem": "A 40-year-old is found drowsy with very slow breathing and a palpable pulse. Opioid exposure is suspected; the amount and timing are unknown.",
+-      "steps": [
+-        {
+-          "update": "Initial assessment",
+-          "prompt": "Which priority best addresses the immediate threat?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Support breathing and give an opioid antagonist according to the local pathway.",
+-              "why": "Respiratory depression is the immediate concern; antidote treatment accompanies support.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Wait for a toxicology screen before helping ventilation.",
+-              "why": "Testing must not delay breathing support.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Focus only on making the person fully alert.",
+-              "why": "Adequate ventilation is the critical physiological goal.",
+-              "correct": false
+-            }
+-          ]
+-        },
+-        {
+-          "update": "After treatment, breathing improves. Later the respiratory rate falls again and the patient becomes difficult to wake.",
+-          "prompt": "What does this change require?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Reassess and support ventilation; obtain further treatment and toxicology advice.",
+-              "why": "Recurrent respiratory depression can outlast an initial antagonist response.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Assume the first response guarantees recovery.",
+-              "why": "The new respiratory findings contradict that assumption.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Leave the patient unmonitored because the cause is known.",
+-              "why": "Knowing a likely cause does not remove the need for monitoring.",
+-              "correct": false
+-            }
+-          ]
+-        },
+-        {
+-          "update": "Repeated support has been required; the substance may be long acting.",
+-          "prompt": "What is the appropriate disposition principle?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Continue monitored care and tailor observation/treatment with expert advice.",
+-              "why": "Recurrence and uncertain exposure make a fixed brief observation rule unsuitable.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Use a universal short discharge time for every opioid.",
+-              "why": "Duration and recurrence vary with the exposure and clinical course.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Base discharge only on pupil size.",
+-              "why": "Pupil size is not an adequate assessment of recovery.",
+-              "correct": false
+-            }
+-          ]
+-        }
+-      ],
+-      "debrief": [
+-        "What endpoint matters more than wakefulness alone?",
+-        "How do recurrent symptoms change your plan?",
+-        "Include harm-reduction and follow-up needs after acute stabilization."
+-      ]
+-    },
+-    {
+-      "id": "self-harm",
+-      "title": "A reassuring score is not the whole story",
+-      "domain": "Behavioral emergency",
+-      "topic": "suicidal",
+-      "source": "mental",
+-      "stem": "A 22-year-old presents after self-harm. Physical care is underway. The person is distressed and says they do not feel safe returning home.",
+-      "steps": [
+-        {
+-          "update": "Initial assessment",
+-          "prompt": "What should the team arrange alongside physical care?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "A compassionate assessment of immediate safety and psychosocial needs.",
+-              "why": "The person’s concerns and needs require direct assessment.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Dismiss the concern because observations are normal.",
+-              "why": "Normal physical observations do not resolve psychological safety.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Delay all conversation until physical care has ended.",
+-              "why": "Support and assessment can occur alongside physical treatment.",
+-              "correct": false
+-            }
+-          ]
+-        },
+-        {
+-          "update": "A checklist score is described as low, but the person still reports feeling unsafe and has little support.",
+-          "prompt": "How should the score be used?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "It must not determine discharge; assess the individual situation and safety needs.",
+-              "why": "Risk categories cannot substitute for a psychosocial assessment.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Use the low score as an automatic discharge rule.",
+-              "why": "This ignores the person’s reported concerns and circumstances.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Use the score to guarantee there will be no further self-harm.",
+-              "why": "Such tools cannot provide that guarantee.",
+-              "correct": false
+-            }
+-          ]
+-        },
+-        {
+-          "update": "The team is developing a care plan with the person.",
+-          "prompt": "What is an important part of planning any transition?",
+-          "options": [
+-            {
+-              "id": "a",
+-              "text": "Agree support, follow-up and a collaborative safety plan with the appropriate team.",
+-              "why": "A transition needs a practical plan addressing identified needs.",
+-              "correct": true
+-            },
+-            {
+-              "id": "b",
+-              "text": "Give generic reassurance without checking the plan is workable.",
+-              "why": "A plan must fit the person’s circumstances.",
+-              "correct": false
+-            },
+-            {
+-              "id": "c",
+-              "text": "Assume agreement means every concern has disappeared.",
+-              "why": "Agreement does not replace checking understanding and remaining concerns.",
+-              "correct": false
+-            }
+-          ]
+-        }
+-      ],
+-      "debrief": [
+-        "What might a numeric score conceal?",
+-        "How can you explore immediate safety without judgment?",
+-        "Discuss capacity, safeguarding and local legal requirements with the supervising team."
+-      ]
+-    }
+-  ],
+-  "modules": [
+-    {
+-      "id": "sedation",
+-      "title": "Procedural sedation preparation",
+-      "kind": "Procedure preparation",
+-      "source": "sedation",
+-      "topic": "multiple-trauma",
+-      "intro": "Rehearse the preparation and recovery discussion with your supervisor.",
+-      "sections": [
+-        [
+-          "Before",
+-          [
+-            "Clarify the procedure, alternatives, consent and patient-specific risks.",
+-            "Assign a qualified person to monitor the patient continuously, in addition to the procedural clinician.",
+-            "Check oxygen, suction, airway rescue equipment, monitoring and the recovery plan."
+-          ]
+-        ],
+-        [
+-          "During",
+-          [
+-            "Monitor ventilation as well as oxygenation; capnography can identify respiratory depression earlier.",
+-            "Agree who pauses the procedure and manages a complication."
+-          ]
+-        ],
+-        [
+-          "After",
+-          [
+-            "Reassess airway, breathing, circulation and recovery before transition.",
+-            "Explain aftercare, supervision and return advice using the local discharge criteria."
+-          ]
+-        ]
+-      ],
+-      "question": "Who will monitor the patient while the procedure is performed?",
+-      "answer": "A designated qualified team member with continuous monitoring responsibility, separate from the clinician performing the procedure."
+-    },
+-    {
+-      "id": "cardioversion",
+-      "title": "Cardioversion team preparation",
+-      "kind": "Procedure preparation",
+-      "source": "als",
+-      "topic": "palpitations",
+-      "intro": "A preparation exercise for a supervised team; use the actual device and local protocol in training.",
+-      "sections": [
+-        [
+-          "Prepare",
+-          [
+-            "Confirm rhythm, pulse and evidence of instability.",
+-            "Identify team roles, pads, monitoring and airway support; consider sedation where feasible without delaying urgent treatment."
+-          ]
+-        ],
+-        [
+-          "Verify",
+-          [
+-            "For synchronized cardioversion, verify synchronization markers on the actual device.",
+-            "If the rhythm or pulse changes, reassess the pathway rather than continuing the original plan."
+-          ]
+-        ],
+-        [
+-          "Reassess",
+-          [
+-            "Check rhythm, pulse and perfusion after treatment.",
+-            "Anticipate recurrence and communicate the cause and next plan."
+-          ]
+-        ]
+-      ],
+-      "question": "What change would make the original synchronized plan inappropriate?",
+-      "answer": "Cardiac arrest with ventricular fibrillation requires the shockable-arrest pathway and unsynchronized defibrillation."
+-    },
+-    {
+-      "id": "thoracic",
+-      "title": "Chest emergency preparation",
+-      "kind": "Procedure preparation",
+-      "source": "trauma",
+-      "topic": "multiple-trauma",
+-      "intro": "Prepare the team and equipment; technical insertion steps require supervised practical training.",
+-      "sections": [
+-        [
+-          "Recognize",
+-          [
+-            "Assess respiratory and circulatory compromise in the context of chest injury.",
+-            "Escalate suspected tension physiology urgently when severely compromised."
+-          ]
+-        ],
+-        [
+-          "Prepare",
+-          [
+-            "Identify the trained operator and local decompression equipment.",
+-            "Allocate monitoring, analgesia support and definitive drainage roles."
+-          ]
+-        ],
+-        [
+-          "Reassess",
+-          [
+-            "Repeat the primary survey after intervention.",
+-            "Continue assessment for hemorrhage and additional injuries if shock persists."
+-          ]
+-        ]
+-      ],
+-      "question": "Does improved breathing after an intervention explain persistent hypotension?",
+-      "answer": "No. Repeat the primary survey and investigate additional causes while continuing resuscitation."
+-    },
+-    {
+-      "id": "handover",
+-      "title": "A focused SBAR handover",
+-      "kind": "Team skills",
+-      "source": "sbar",
+-      "topic": "shock",
+-      "intro": "Practice aloud using a fictional case. No patient-identifiable information is needed.",
+-      "sections": [
+-        [
+-          "Situation",
+-          [
+-            "State who you are, who you are calling about and what requires attention now."
+-          ]
+-        ],
+-        [
+-          "Background and assessment",
+-          [
+-            "Give relevant context, the current findings and the trend.",
+-            "Explain your concern and what remains uncertain."
+-          ]
+-        ],
+-        [
+-          "Recommendation",
+-          [
+-            "Make a clear request and agree who will do what, and when.",
+-            "Check that the receiver understood the action and contingency plan."
+-          ]
+-        ]
+-      ],
+-      "question": "A colleague says “Please review when free” about an unstable patient. What would you improve?",
+-      "answer": "State the instability, request immediate bedside review and agree the immediate actions and escalation plan."
+-    },
+-    {
+-      "id": "leadership",
+-      "title": "Leading a resuscitation huddle",
+-      "kind": "Team skills",
+-      "source": "debrief",
+-      "topic": "shock",
+-      "intro": "Use this short simulation to practice shared priorities and explicit roles.",
+-      "sections": [
+-        [
+-          "Brief",
+-          [
+-            "Summarize the current problem and immediate priorities.",
+-            "Assign roles by name and identify the next reassessment point."
+-          ]
+-        ],
+-        [
+-          "Respond",
+-          [
+-            "Invite concerns when the patient or workload changes.",
+-            "State decisions clearly and confirm that tasks have an owner."
+-          ]
+-        ],
+-        [
+-          "Debrief",
+-          [
+-            "Ask what worked and what made care difficult.",
+-            "Agree one specific improvement, an owner and a follow-up point."
+-          ]
+-        ]
+-      ],
+-      "question": "Two clinicians assume the other has called for help. What team habit could prevent this?",
+-      "answer": "Assign the task to a named person and confirm completion; make the next escalation step explicit."
+-    },
+-    {
+-      "id": "teaching",
+-      "title": "Teach and review a difficult decision",
+-      "kind": "Team skills",
+-      "source": "debrief",
+-      "topic": "chest-pain",
+-      "intro": "For residents, fellows and specialists: turn a case discussion into a practical learning point.",
+-      "sections": [
+-        [
+-          "Elicit reasoning",
+-          [
+-            "Ask the learner for their leading explanation and strongest alternative.",
+-            "Ask what finding would change their plan."
+-          ]
+-        ],
+-        [
+-          "Explore uncertainty",
+-          [
+-            "Separate what was known at the time from what became clear later.",
+-            "Identify a source or local policy that would help resolve the uncertainty."
+-          ]
+-        ],
+-        [
+-          "Improve",
+-          [
+-            "Give one specific observation and a next practice task.",
+-            "For a recurring system problem, choose a measurable improvement and revisit it."
+-          ]
+-        ]
+-      ],
+-      "question": "How can a debrief avoid hindsight bias?",
+-      "answer": "Reconstruct the information available at the decision point before discussing the eventual outcome."
+-    }
+-  ],
+-  "checked": "2026-09-10"
+-};
+--- a/assets/em-learning.js
++++ /dev/null
+@@ -1,186 +0,0 @@
+-/* EM Pocket learning workspace. Local content, local progress, no accounts. */
+-(function () {
+-    'use strict';
+-    const D = window.EM_LEARNING_DATA;
+-    if (!D) return;
+-    const esc = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+-    const progressKey = 'em-workspace-progress-v1';
+-    const backupKeys = ['em-cps-learning','em-cps-prefs','em-student-progress','em-ecg-learning-v1','em-ecg-practice-v1','em-learning-focus-v1',progressKey];
+-    const object = v => !!v && typeof v === 'object' && !Array.isArray(v);
+-    const own = (o,k) => Object.prototype.hasOwnProperty.call(o,k);
+-    let memory = {cases:{},viewed:[]}, volatile = false;
+-    const sessions = new Map();
+-    function progress() {
+-        if (!volatile) { try { const v=JSON.parse(localStorage.getItem(progressKey)||'{}'); memory=normalizeProgress(v); } catch (_) {} }
+-        return memory;
+-    }
+-    function normalizeProgress(v) {
+-        const result={cases:{},viewed:[]};
+-        if (!object(v)) return result;
+-        for (const c of D.cases) {
+-            const x=object(v.cases)&&v.cases[c.id];
+-            if (object(x)&&Number.isInteger(x.correct)&&x.correct>=0&&x.correct<=c.steps.length&&x.total===c.steps.length&&Number.isInteger(x.runs)&&x.runs>0&&Number.isFinite(x.last)) result.cases[c.id]={correct:x.correct,total:x.total,runs:x.runs,last:x.last};
+-        }
+-        result.viewed=Array.isArray(v.viewed)?[...new Set(v.viewed.filter(id=>D.modules.some(m=>m.id===id)||['abg','lung','chest','ecg-pairs'].includes(id)))]:[];
+-        return result;
+-    }
+-    function saveProgress(value) {
+-        memory=normalizeProgress(value);
+-        try { localStorage.setItem(progressKey,JSON.stringify(memory)); volatile=false; return true; }
+-        catch (_) { volatile=true; return false; }
+-    }
+-    function sourceHtml(key) {
+-        const source=D.sources[key];
+-        return source?'<details class="workspace-source"><summary>Source and scope</summary><p>Supporting teaching points checked '+D.checked+'. This is an educational synthesis, not an independently peer-reviewed protocol.</p><a href="'+esc(source[1])+'" target="_blank" rel="noopener noreferrer">'+esc(source[0])+'</a><p>Confirm patient context, full recommendations and local policy. External sources need an internet connection.</p></details>':'';
+-    }
+-    function shell(title,description,active) {
+-        return '<section class="learning-workspace"><a class="back-btn" href="#">← Presentation library</a><p class="study-kicker">EM POCKET · LEARNING WORKSPACE</p><h1 tabindex="-1">'+esc(title)+'</h1><p class="workspace-lead">'+esc(description)+'</p><nav class="workspace-tabs" aria-label="Learning workspace">'+[['practice','Practice'],['visuals','Visual learning'],['skills','Procedures & teams'],['progress','My progress']].map(([id,label])=>'<a href="#learn~'+id+'"'+(id===active?' aria-current="page"':'')+'>'+label+'</a>').join('')+'</nav><div class="workspace-body"></div></section>';
+-    }
+-    function homeHtml() {
+-        return '<section class="workspace-entry" aria-label="Choose how to use EM Pocket"><a href="#learn~practice"><span>01 · Practice</span><strong>Work through a changing patient</strong><p>Make a decision, reassess, then plan the next step.</p></a><a href="#learn~visuals"><span>02 · Learn</span><strong>Build interpretation and team skills</strong><p>Explore diagrams, prepare a procedure or rehearse a handover.</p></a><a href="#shift"><span>03 · Reference</span><strong>Find a focused pathway</strong><p>Review immediate priorities, warning signs and disposition.</p></a></section>';
+-    }
+-    function caseCards() {
+-        const p=progress();
+-        return '<div class="workspace-grid">'+D.cases.map(c=>{const done=p.cases[c.id];return '<a class="workspace-card" href="#learn~case-'+c.id+'"><span class="study-kicker">'+esc(c.domain)+'</span><h2>'+esc(c.title)+'</h2><p>3 decisions · evolving fictional case</p><span>'+(sessions.has(c.id)&&!sessions.get(c.id).done?'Continue this session':done?'Latest attempt: '+done.correct+'/'+done.total+' correct':'Start case')+' →</span></a>';}).join('')+'</div><div class="workspace-callout"><h2>Prefer a short question set?</h2><p>The original 12 clinical cases and the ECG practice library are still available.</p><div class="workspace-actions"><a href="#study~case">Short clinical cases →</a><a href="#ecg-explorer~practice">ECG practice →</a><a href="#study~due">Review queue →</a></div></div>';
+-    }
+-    function newSession() { return {index:0,answers:[],done:false,seed:Math.floor(Math.random()*100000)}; }
+-    function mountCase(body,id) {
+-        const c=D.cases.find(c=>c.id===id);
+-        if(!c){body.innerHTML='<p>Case not found. <a href="#learn~practice">Choose a case</a>.</p>';return;}
+-        let s=sessions.get(id);if(!s){s=newSession();sessions.set(id,s);}
+-        function draw(focus=false) {
+-            const q=c.steps[s.index], selected=s.answers[s.index], complete=s.done;
+-            body.innerHTML='<article class="evolving-case"><p class="study-kicker">'+esc(c.domain)+' · FICTIONAL TEACHING CASE</p><h2 tabindex="-1">'+esc(c.title)+'</h2><p class="case-prompt">'+esc(c.stem)+'</p>'+(complete?'<section class="workspace-result"><h3>Case debrief</h3><p>'+s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length+' / '+c.steps.length+' first choices correct in this attempt. This is a learning result, not a competency score.</p><ol>'+c.steps.map((x,i)=>'<li><strong>'+esc(x.prompt)+'</strong><p>Your choice: '+esc(x.options.find(o=>o.id===s.answers[i]).text)+'</p><p>'+esc(x.options.find(o=>o.correct).why)+'</p></li>').join('')+'</ol><h3>Discuss with a colleague</h3><ul>'+c.debrief.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul><p role="status">'+(s.saved?'Attempt saved on this device.':'Attempt available for this session only; storage is unavailable.')+'</p></section>':'<p class="workspace-step">Decision '+(s.index+1)+' of '+c.steps.length+'</p><div class="case-update"><strong>Teaching update</strong><p>'+esc(q.update)+'</p></div><fieldset class="quiz-question"><legend>'+esc(q.prompt)+'</legend><div class="quiz-options">'+window.STUDENT_LEARNING.shuffled(q.options,s.seed+s.index*97).map(o=>'<button type="button" data-evolving-choice="'+o.id+'"'+(selected?' disabled':'')+' class="quiz-option'+(selected&&o.id===selected?(o.correct?' correct':' incorrect'):'')+'">'+esc(o.text)+'</button>').join('')+'</div></fieldset>'+(selected?'<div class="workspace-feedback" role="status"><h3>'+(q.options.find(o=>o.id===selected).correct?'Correct for this scenario':'Review this decision')+'</h3><p>'+esc(q.options.find(o=>o.id===selected).why)+'</p><details><summary>Compare all options</summary>'+q.options.map(o=>'<p><strong>'+esc(o.text)+'</strong> '+esc(o.why)+'</p>').join('')+'</details><p>Each next update describes the teaching team’s actions, independently of your choice.</p><button class="workspace-primary" type="button" data-case-next>'+(s.index===c.steps.length-1?'Open debrief':'Continue case')+'</button></div>':''))+'<div class="workspace-actions">'+(complete?'<button type="button" data-case-retry>Start a new attempt</button>':'')+'<a href="#'+esc(c.topic)+'">Full presentation →</a><a href="#learn~practice">All evolving cases →</a></div>'+sourceHtml(c.source)+'</article>';
+-            body.querySelectorAll('[data-evolving-choice]').forEach(b=>b.addEventListener('click',()=>{if(s.answers[s.index])return;s.answers[s.index]=b.dataset.evolvingChoice;draw();body.querySelector('[data-case-next]').focus();}));
+-            body.querySelector('[data-case-next]')?.addEventListener('click',()=>{if(!s.answers[s.index])return;if(s.index<c.steps.length-1)s.index++;else if(!s.done){s.done=true;const p=progress();p.cases[id]={correct:s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length,total:c.steps.length,runs:(p.cases[id]?.runs||0)+1,last:Date.now()};s.saved=saveProgress(p);}draw(true);});
+-            body.querySelector('[data-case-retry]')?.addEventListener('click',()=>{s=newSession();sessions.set(id,s);draw(true);});
+-            if(focus)body.querySelector('h2').focus();
+-        }
+-        draw();
+-    }
+-    function moduleCards() {
+-        return '<p>Preparation and discussion exercises. Practical skills still require supervised training and local credentialing.</p><div class="workspace-grid">'+D.modules.map(m=>'<a class="workspace-card" href="#learn~module-'+m.id+'"><span class="study-kicker">'+esc(m.kind)+'</span><h2>'+esc(m.title)+'</h2><p>'+esc(m.intro)+'</p><span>Open exercise →</span></a>').join('')+'</div>';
+-    }
+-    function readButton(id) {return '<button type="button" data-module-read="'+esc(id)+'">'+(progress().viewed.includes(id)?'✓ Read on this device':'Mark as read')+'</button><p class="module-save" role="status"></p>';}
+-    function bindRead(body) {body.querySelector('[data-module-read]')?.addEventListener('click',e=>{const p=progress();p.viewed.push(e.target.dataset.moduleRead);const ok=saveProgress(p);e.target.textContent='✓ Read';body.querySelector('.module-save').textContent=ok?'Reading activity saved. This does not certify a skill.':'Reading activity remembered for this session only.';});}
+-    function mountModule(body,id) {
+-        const m=D.modules.find(m=>m.id===id);if(!m){body.innerHTML='<p>Module not found.</p>';return;}
+-        body.innerHTML='<article><p class="study-kicker">'+esc(m.kind)+'</p><h2>'+esc(m.title)+'</h2><p>'+esc(m.intro)+'</p><div class="workspace-grid">'+m.sections.map(([title,points])=>'<section class="workspace-card"><h3>'+esc(title)+'</h3><ul>'+points.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul></section>').join('')+'</div><section class="workspace-callout"><h3>Pause and explain</h3><p>'+esc(m.question)+'</p><details><summary>Compare your explanation</summary><p>'+esc(m.answer)+'</p></details></section><div class="workspace-actions">'+readButton(id)+'<a href="#'+esc(m.topic)+'">Related presentation →</a></div>'+sourceHtml(m.source)+'</article>';bindRead(body);
+-    }
+-    const visuals=[['abg','Blood gases: primary and mixed processes','Compare two fictional arterial samples and their expected compensation.'],['lung','Lung ultrasound: artifacts and limits','Compare schematic A-lines and B-lines; discuss what a static picture cannot establish.'],['chest','Chest imaging: look beyond the obvious','Compare diagrammed peripheral markings with a pleural-line pattern.'],['ecg-pairs','ECG: compare related patterns','Inspect existing examples together and explain similarities and differences.']];
+-    function visualCards(){return '<p>Original teaching diagrams and synthetic tracings. They are not patient images or diagnostic tests.</p><div class="workspace-grid">'+visuals.map(([id,title,text])=>'<a class="workspace-card" href="#learn~visual-'+id+'"><h2>'+title+'</h2><p>'+text+'</p><span>Explore →</span></a>').join('')+'</div>';}
+-    function diagram(type,variant) {
+-        const frame='<svg viewBox="0 0 440 270" role="img" aria-label="'+(type==='lung'?'Schematic ultrasound artifacts':'Schematic chest markings')+'"><rect width="440" height="270" rx="10" fill="#111b28"/>';
+-        if(type==='lung')return frame+'<path d="M20 48H420" stroke="#fff" stroke-width="4"/>'+[98,148,198,248].map(y=>'<path d="M20 '+y+'H420" stroke="#94a3b8" stroke-width="2"/>').join('')+(variant?[105,220,335].map(x=>'<path d="M'+x+' 48V268" stroke="#fff" stroke-width="12"/>').join(''):'')+'<text x="22" y="32" fill="white" font-size="18">Pleural interface (schematic)</text></svg>';
+-        const lungs='<path d="M206 50C135 10 65 85 62 215Q120 250 197 225Z M234 50C305 10 375 85 378 215Q320 250 243 225Z" fill="none" stroke="#94a3b8" stroke-width="3"/>';
+-        const marks=[80,110,140,170,200].map(y=>'<path d="M180 100L90 '+y+' M180 115L150 '+(y+30)+' M260 100L'+(variant?285:350)+' '+y+'" stroke="#8494a8" stroke-width="2"/>').join('');
+-        return frame+lungs+marks+(variant?'<path d="M290 49Q334 115 320 221" fill="none" stroke="#fff" stroke-width="3"/>':'')+'<text x="24" y="28" fill="white" font-size="16">Anatomy simplified · not a radiograph</text></svg>';
+-    }
+-    function mountVisual(body,id) {
+-        const v=visuals.find(v=>v[0]===id);if(!v){body.innerHTML='<p>Visual lesson not found.</p>';return;}
+-        let source='lung',content='';
+-        if(id==='abg') {
+-            source='abg';content='<p>Both fictional arterial samples have bicarbonate 12 mmol/L. Decide whether the respiratory response fits before revealing the interpretation.</p><div class="workspace-grid">'+[['A','7.29','26'],['B','7.10','40']].map(([label,ph,co2])=>'<section class="workspace-card"><h3>Sample '+label+'</h3><dl class="gas-values"><div><dt>pH</dt><dd>'+ph+'</dd></div><div><dt>PaCO₂</dt><dd>'+co2+' mmHg</dd></div><div><dt>HCO₃⁻</dt><dd>12 mmol/L</dd></div></dl></section>').join('')+'</div><details class="workspace-callout"><summary>Reveal the interpretation</summary><p>Both show acidemia with a metabolic acidosis. Expected PaCO₂ ≈ 1.5 × 12 + 8 ± 2 = 24–28 mmHg.</p><p>A fits the expected respiratory compensation. B has a higher PaCO₂ than expected, suggesting an additional respiratory acidosis.</p><p>This comparison does not establish the cause. Assess the clinical context, electrolytes, albumin-adjusted anion gap and relevant investigations. Approximate values are rounded for teaching; this is not a patient calculator.</p></details>';
+-        } else if(id==='lung') {
+-            content='<div class="workspace-grid"><figure class="workspace-card">'+diagram('lung',false)+'<figcaption>Horizontal reverberation pattern</figcaption></figure><figure class="workspace-card">'+diagram('lung',true)+'<figcaption>Vertical artifacts crossing the field</figcaption></figure></div><details class="workspace-callout"><summary>What should you notice?</summary><p>A-lines are horizontal artifacts. B-lines arise at the pleural interface, extend to depth and erase crossing A-lines.</p><p>B-lines alone do not identify the cause. Distribution and clinical context matter. This static diagram cannot demonstrate lung sliding; absent sliding alone is not specific for pneumothorax.</p><p>In supervised scanning, identify the rib shadows and pleural line, scan multiple sites, and distinguish true pleural motion from probe movement.</p></details>';
+-        } else if(id==='chest') {
+-            source='chest-image';content='<div class="workspace-grid"><figure class="workspace-card">'+diagram('chest',false)+'<figcaption>Diagram A: markings extend toward the periphery</figcaption></figure><figure class="workspace-card">'+diagram('chest',true)+'<figcaption>Diagram B: a pleural line with absent markings beyond it</figcaption></figure></div><details class="workspace-callout"><summary>Interpret the pattern and its limits</summary><p>The second diagram illustrates a pneumothorax pattern. This simplified drawing cannot teach all radiographic appearances, exclude a small pneumothorax or establish tension physiology.</p><p>Use the patient’s condition and the full image. Severe compromise with clinically suspected tension pneumothorax may require treatment before imaging.</p><p>Before interpreting a real image, check identity, side, projection, exposure and the rest of the chest. Obtain appropriate review when uncertain.</p></details>';
+-        } else {
+-            source='acs';content='<label for="ecgPair">Choose a comparison</label><select id="ecgPair"><option value="wellens-a,wellens-b">Wellens: two existing variants</option><option value="normal,af">Normal sinus and atrial fibrillation</option><option value="inferior-stemi,anterior-stemi">Inferior and anterior ST-elevation distributions</option></select><p>Compare morphology and distribution. These are separate synthetic teaching examples, not serial patient recordings. Open Explorer for full-size findings and each pattern’s limitations.</p><div class="workspace-grid" data-pair-images></div>';
+-        }
+-        body.innerHTML='<article><h2>'+esc(v[1])+'</h2><p class="workspace-media-label">SCHEMATIC / SYNTHETIC TEACHING MATERIAL</p>'+content+'<div class="workspace-actions">'+readButton(id)+'</div>'+sourceHtml(source)+(id==='chest'?sourceHtml('trauma'):id==='ecg-pairs'?sourceHtml('als'):'')+'</article>';
+-        if(id==='ecg-pairs') { const select=body.querySelector('#ecgPair');const draw=()=>{body.querySelector('[data-pair-images]').innerHTML=select.value.split(',').map(id=>{const item=window.ECG_EXPLORER.build(id);return '<figure class="workspace-card workspace-ecg"><figcaption>'+esc(item.record.name)+'</figcaption>'+item.svg+'<a href="#ecg-explorer~'+id+'">Inspect this tracing →</a></figure>';}).join('');};select.addEventListener('change',draw);draw(); }
+-        bindRead(body);
+-    }
+-    function safeTree(value,depth=0) {
+-        if(depth>12)throw Error('Backup nesting is too deep.');
+-        if(value===null||typeof value==='boolean')return;
+-        if(typeof value==='number'){if(!Number.isFinite(value))throw Error('Invalid number.');return;}
+-        if(typeof value==='string'){if(value.length>100000)throw Error('A backup field is too long.');return;}
+-        if(Array.isArray(value)){if(value.length>5000)throw Error('Too many backup entries.');value.forEach(v=>safeTree(v,depth+1));return;}
+-        if(!object(value))throw Error('Invalid backup value.');
+-        for(const [k,v] of Object.entries(value)){if(['__proto__','prototype','constructor'].includes(k))throw Error('Unsafe backup property.');safeTree(v,depth+1);}
+-    }
+-    function validateBackup(text) {
+-        if(typeof text!=='string'||text.length>2000000)throw Error('Choose an EM Pocket JSON backup smaller than 2 MB.');
+-        const data=JSON.parse(text);safeTree(data);
+-        if(!object(data)||data.app!=='EM Pocket free'||data.version!==1||!object(data.values))throw Error('This is not a supported EM Pocket backup.');
+-        const fields=(v,allowed)=>Object.keys(v).every(k=>allowed.includes(k));
+-        const timestamp=v=>Number.isFinite(v)&&v>=0;
+-        for(const [key,value] of Object.entries(data.values)) {
+-            if(!backupKeys.includes(key))throw Error('Backup contains an unsupported storage key.');
+-            if(key==='em-learning-focus-v1'){if(!['core','applied','advanced'].includes(value))throw Error('Invalid learning depth.');}
+-            else if(key==='em-ecg-practice-v1'){if(!Array.isArray(value)||!value.every(x=>typeof x==='string'))throw Error('Invalid ECG attempts.');}
+-            else if(!object(value))throw Error('Invalid progress record.');
+-            if(key==='em-cps-learning') {
+-                if(!Object.keys(value).every(k=>['reviewed','reviewPlan','saved','notes'].includes(k))||!Object.values(value).every(object))throw Error('Invalid learning fields.');
+-                if(value.notes&&!Object.values(value.notes).every(v=>typeof v==='string'))throw Error('Invalid notes.');
+-                for(const k of ['reviewed','saved'])if(value[k]&&!Object.values(value[k]).every(v=>typeof v==='boolean'||timestamp(v)))throw Error('Invalid topic activity.');
+-                if(value.reviewPlan&&!Object.values(value.reviewPlan).every(v=>object(v)&&fields(v,['stage','dueAt'])&&Number.isInteger(v.stage)&&v.stage>=0&&v.stage<=4&&timestamp(v.dueAt)))throw Error('Invalid review schedule.');
+-            }
+-            if(key==='em-cps-prefs' && (!fields(value,['theme','accent','scale','bold','sidebar'])||(value.theme!==undefined&&!['light','dark'].includes(value.theme))||(value.accent!==undefined&&!['emerald','ocean','violet','rose','amber','teal'].includes(value.accent))||(value.scale!==undefined&&![.85,1,1.12,1.25,1.4].includes(value.scale))||['bold','sidebar'].some(k=>value[k]!==undefined&&typeof value[k]!=='boolean')))throw Error('Invalid reading preferences.');
+-            if(key==='em-student-progress' && (!fields(value,['ratings','last'])||(value.ratings&&(!object(value.ratings)||!Object.values(value.ratings).every(v=>object(v)&&fields(v,['value','at'])&&['got','partly','again'].includes(v.value)&&timestamp(v.at))))||(value.last!==undefined&&typeof value.last!=='string')))throw Error('Invalid self-assessment record.');
+-            if(key==='em-ecg-learning-v1' && (!fields(value,['last','finding','completed','review'])||(value.last!==undefined&&typeof value.last!=='string')||(value.finding!==undefined&&(!Number.isInteger(value.finding)||value.finding<0))))throw Error('Invalid ECG location.');
+-            if(key==='em-ecg-learning-v1' && ['completed','review'].some(k=>value[k]!==undefined&&(!Array.isArray(value[k])||!value[k].every(x=>typeof x==='string'))))throw Error('Invalid ECG learning record.');
+-            if(key===progressKey && (!fields(value,['cases','viewed'])||!object(value.cases)||!Array.isArray(value.viewed)||Object.keys(normalizeProgress(value).cases).length!==Object.keys(value.cases).length||normalizeProgress(value).viewed.length!==value.viewed.length))throw Error('Invalid workspace progress.');
+-        }
+-        return data;
+-    }
+-    function exportBackup() {
+-        const values={};
+-        for(const key of backupKeys){const raw=localStorage.getItem(key);if(raw!==null)values[key]=key==='em-learning-focus-v1'?raw:JSON.parse(raw);}
+-        const data={app:'EM Pocket free',version:1,created:new Date().toISOString(),values};
+-        validateBackup(JSON.stringify(data));return data;
+-    }
+-    // Existing values win conflicts. Arrays add missing entries; no whole-origin enumeration.
+-    function mergeExisting(existing,incoming) {
+-        if(existing===undefined)return incoming;
+-        if(Array.isArray(existing)&&Array.isArray(incoming))return [...new Set([...existing,...incoming])];
+-        if(object(existing)&&object(incoming)){const result={...existing};for(const [k,v]of Object.entries(incoming))result[k]=mergeExisting(own(existing,k)?existing[k]:undefined,v);return result;}
+-        return existing;
+-    }
+-    function importBackup(data) {
+-        const checked=validateBackup(JSON.stringify(data)),writes=[],originals=[];
+-        for(const [key,value] of Object.entries(checked.values)) {
+-            const raw=localStorage.getItem(key);const old=raw===null?undefined:key==='em-learning-focus-v1'?raw:JSON.parse(raw);
+-            const merged=mergeExisting(old,value);writes.push([key,key==='em-learning-focus-v1'?merged:JSON.stringify(merged)]);originals.push([key,raw]);
+-        }
+-        let count=0;
+-        try{for(const [key,value]of writes){localStorage.setItem(key,value);count++;}}
+-        catch(error){let failed=false;for(const [key,raw]of originals.slice(0,count)){try{if(raw===null)localStorage.removeItem(key);else localStorage.setItem(key,raw);}catch(_){failed=true;}}throw Error(failed?'Import interrupted; restoration was incomplete. Keep your backup and check saved progress.':'Import could not be saved. Original stored data was restored.');}
+-        return writes.length;
+-    }
+-    function download(data,name) {const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+-    function mountProgress(body) {
+-        const p=progress(),done=Object.keys(p.cases),review=done.filter(id=>p.cases[id].correct<p.cases[id].total);
+-        body.innerHTML='<h2>Your learning record</h2><p>Reading, attempted decisions and self-confidence describe different activities. None is a certification of clinical competence.</p><div class="workspace-grid"><section class="workspace-card"><h3>'+done.length+' / '+D.cases.length+' evolving cases attempted</h3><p>Results below show the latest completed attempt.</p></section><section class="workspace-card"><h3>'+p.viewed.length+' modules marked read</h3><p>Reading is recorded separately from correct answers.</p></section><section class="workspace-card"><h3>'+review.length+' cases to revisit</h3><p>Suggested from incorrect first choices.</p></section></div><ul class="workspace-progress-list">'+D.cases.map(c=>'<li><a href="#learn~case-'+c.id+'">'+esc(c.title)+'</a><span>'+(p.cases[c.id]?p.cases[c.id].correct+'/'+p.cases[c.id].total+' correct · '+p.cases[c.id].runs+' completed attempt(s)':'Not yet attempted')+'</span></li>').join('')+'</ul><div class="workspace-actions"><a href="#study~due">Scheduled topic reviews →</a><a href="#study~saved">Saved topics & notes →</a><a href="#ecg-explorer">ECG learning record →</a></div><section class="workspace-callout"><h2>Back up your learning</h2><p>Export saved progress, reading preferences and notes to a local JSON file. Session-only activity is not included. The file may contain your personal study notes; keep it private and avoid patient details.</p><div class="workspace-actions"><button type="button" data-backup-export>Export backup</button><label class="backup-label">Choose a backup to import<input type="file" accept=".json,application/json" data-backup-file></label></div><p>Import adds missing records and keeps existing values when they conflict. It does not transfer an agreement or clear existing progress.</p><div data-backup-preview></div><p data-backup-status role="status"></p></section>';
+-        const status=body.querySelector('[data-backup-status]'),preview=body.querySelector('[data-backup-preview]');let pending=null;
+-        body.querySelector('[data-backup-export]').addEventListener('click',()=>{try{download(exportBackup(),'em-pocket-learning-'+new Date().toISOString().slice(0,10)+'.json');status.textContent='Backup prepared for download.';}catch(_){status.textContent='Backup could not be read. Storage may be unavailable or contain an invalid record. Nothing was changed.';}});
+-        let selection=0;
+-        body.querySelector('[data-backup-file]').addEventListener('change',async e=>{const ticket=++selection;pending=null;preview.innerHTML='';const file=e.target.files[0];if(!file)return;try{if(file.size>2000000)throw Error('Choose a backup smaller than 2 MB.');const parsed=validateBackup(await file.text());if(ticket!==selection)return;pending=parsed;preview.innerHTML='<p>Valid EM Pocket backup · '+Object.keys(parsed.values).length+' storage groups. Existing values will be kept.</p><button type="button" data-backup-apply>Add missing records</button>';preview.querySelector('button').addEventListener('click',()=>{try{const count=importBackup(pending);preview.innerHTML='<button type="button" data-backup-reload>Reload to use imported data</button>';preview.querySelector('button').onclick=()=>location.reload();status.textContent=count+' storage groups processed. Reload after finishing any session-only work.';pending=null;}catch(error){status.textContent=error.message;}});status.textContent='Review the import above before applying it.';}catch(error){if(ticket===selection)status.textContent=error.message;}});
+-    }
+-    function mount(stage,target='practice') {
+-        const active=target.startsWith('case-')?'practice':target.startsWith('module-')?'skills':target.startsWith('visual-')?'visuals':['practice','visuals','skills','progress'].includes(target)?target:'practice';
+-        const titles={practice:['Practice decisions that evolve','From first assessment to reassessment, disposition and debrief.'],visuals:['Learn to interpret, then explain','Use visual comparisons to connect findings with their limitations.'],skills:['Prepare the procedure. Prepare the team.','Short exercises for supervised practice, handover and teaching.'],progress:['Keep your learning connected','Review your attempts and keep a portable copy of your saved learning.']};
+-        stage.innerHTML=shell(...titles[active],active);const body=stage.querySelector('.workspace-body');
+-        if(target.startsWith('case-'))mountCase(body,target.slice(5));else if(target.startsWith('module-'))mountModule(body,target.slice(7));else if(target.startsWith('visual-'))mountVisual(body,target.slice(7));else if(active==='progress')mountProgress(body);else body.innerHTML=active==='practice'?caseCards():active==='skills'?moduleCards():visualCards();
+-        stage.querySelector('h1').focus({preventScroll:true});window.scrollTo({top:0});
+-    }
+-    function reassessmentHtml(cp) {
+-        return '<details class="reassessment-guide"><summary>Before the next decision · reassess and hand over</summary><div><p>Use these learning prompts with the presentation’s pathway. They are not discharge criteria.</p><ol><li><strong>Reassess:</strong> compare symptoms, observations and examination with the initial assessment and response to treatment.</li><li><strong>Reconsider:</strong> check unresolved findings and alternative explanations, including the pitfalls below.</li><li><strong>Escalate:</strong> communicate deterioration, uncertainty or needs beyond the current setting.</li><li><strong>Plan the transition:</strong> identify outstanding results, responsibility for follow-up, patient understanding and specific return advice.</li></ol><a href="#'+esc(cp.id)+'~disposition">Review this presentation’s disposition pathway →</a><a href="#learn~module-handover">Practice a handover →</a></div></details>';
+-    }
+-    function evidenceContext(id) {
+-        const contexts={
+-            'chest-pain':['Troponin pathways','Identify the assay, symptom timing and the validated pathway used locally. A result inside the reference range is not automatically a complete rule-out.','acs'],
+-            'multiple-trauma':['Resources and definitive care','Check the local trauma activation, trained procedural team and transfer arrangements. Imaging availability does not remove the need to respond to instability.','trauma'],
+-            'pediatric-respiratory-distress':['Age and clinical course','Check age, underlying conditions, feeding and episodes of apnea against the full pediatric pathway. One improved observation does not describe the whole course.','pediatric'],
+-            'pregnancy-emergency':['Escalation and access','Know the local route to urgent obstetric/gynecologic assessment and supported transfer. Clinical instability must guide the urgency while tests are pending.','pregnancy'],
+-            'overdose':['Exposure and observation','The substance, recurrence and clinical course affect treatment and monitoring needs. Use substance-specific guidance and toxicology advice rather than one fixed observation period.','opioid'],
+-            'suicidal':['Assessment and safety planning','A numeric risk category must not determine discharge after self-harm. Use an individual psychosocial assessment and a collaborative plan, alongside local legal and safeguarding requirements.','mental']
+-        };
+-        const item=contexts[id];if(!item)return '';
+-        return '<div class="workspace-callout evidence-context"><h3>'+esc(item[0])+'</h3><p>'+esc(item[1])+'</p>'+sourceHtml(item[2])+'</div>';
+-    }
+-    function searchItems(){return [...D.cases.map(c=>({cpId:'learn',target:'case-'+c.id,title:c.title,sub:c.domain+' evolving case',kind:'Practice'})),...D.modules.map(m=>({cpId:'learn',target:'module-'+m.id,title:m.title,sub:m.kind,kind:'Skills'})),...visuals.map(([id,title,text])=>({cpId:'learn',target:'visual-'+id,title,sub:text,kind:'Visual learning'})),{cpId:'learn',target:'progress',title:'Export or import learning backup',sub:'Progress, saved notes and preferences',kind:'My progress'}];}
+-    window.EM_LEARNING={mount,homeHtml,reassessmentHtml,evidenceContext,searchItems,progress,saveProgress,normalizeProgress,validateBackup,exportBackup,importBackup,mergeExisting,backupKeys,visuals};
+-}());
+--- a/assets/student-learning.js
++++ b/assets/student-learning.js
+@@ -55,24 +55,12 @@
+  const glossary={ACS:'Acute coronary syndrome',OMI:'Occlusion myocardial infarction',ECG:'Electrocardiogram',PE:'Pulmonary embolism',POCUS:'Point-of-care ultrasound',QTc:'QT interval corrected for heart rate',LBBB:'Left bundle branch block',RBBB:'Right bundle branch block','hs-cTn':'High-sensitivity cardiac troponin',CTA:'Computed tomography angiography',ICU:'Intensive care unit'};
+  function glossaryHtml(){return '<details class="student-glossary"><summary>Abbreviations explained</summary><dl>'+Object.entries(glossary).map(([a,b])=>'<div><dt>'+a+'</dt><dd>'+b+'</dd></div>').join('')+'</dl></details>';}
+  function starterHtml(){const p=read();const last=/^(?:ecg(?:-explorer)?|[a-z-]+)(?:~[a-z0-9-]+)?$/.test(p.last)?p.last:'';const weak=Object.entries(p.ratings).filter(([k,v])=>v&&v.value!=='got').sort((a,b)=>b[1].at-a[1].at);return '<section class="student-start"><p class="study-kicker">YOUR NEXT STEP</p><h2>'+(last?'Continue your learning':'Start a 10-minute learning session')+'</h2><p>Learn an approach, inspect a tracing, then test yourself.</p><div class="student-actions">'+(last?'<a href="#'+esc(last)+'">Continue where you left off →</a>':'')+'<a href="#chest-pain">1 · Learn the first approach</a><a href="#ecg-explorer~normal">2 · Read a normal ECG</a><a href="#study~case">3 · Try a clinical case</a></div>'+(weak.length?'<details class="weak-areas"><summary>Revisit your weak areas ('+weak.length+')</summary><ul>'+weak.map(([key,v])=>{const id=key.split(':')[1];let route=key.startsWith('ecg:')?'ecg-explorer~'+id:key.startsWith('case:')?'study~case-'+id:id+'~study';const name=key.startsWith('ecg:')?(window.ECG_EXPLORER.cases.find(c=>c.id===id)||{}).name:(window.CP_DATA.find(c=>c.id===id)||{}).name;return name?'<li><a href="#'+esc(route)+'">'+esc(name)+'</a> · '+(v.value==='again'?'Review again':'Partly confident')+'</li>':'';}).join('')+'</ul></details>':'')+'</section>';}
+- // Learning depth changes prompts only; clinical content and progress stay available.
+- const focusLevels={
+-  core:{label:'Core',description:'Build a structured approach. Useful when a presentation is new to you.',prompts:[['What needs attention first, and why?','how-to-think','Review the approach'],['Which immediate threats must you consider?','dont-miss','Review important diagnoses'],['Which history and examination findings would you seek?','history','Review assessment']]},
+-  applied:{label:'Applied',description:'Practice decisions, reassessment and disposition. Useful for supervised clinical work.',prompts:[['Which investigation could change your next decision?','workup','Review the workup'],['What would you reassess, and what change would prompt escalation?','red-flags','Review warning signs'],['What supports admission, observation or discharge in this presentation?','disposition','Review disposition']]},
+-  advanced:{label:'Advanced',description:'Challenge your reasoning and prepare to teach it. These are discussion prompts, not a competency assessment.',prompts:[['Which plausible alternative could you be overlooking? What evidence would change your mind?','pearls-pitfalls','Review pitfalls'],['What uncertainty remains before disposition? How would you explain it in a handover?','disposition','Review disposition'],['Which recommendation depends on patient context, source limitations or local practice?','references','Examine the references']]}
+- };
+- let focusMemory='core',focusVolatile=false;
+- function getFocus(){if(!focusVolatile){try{const value=localStorage.getItem('em-learning-focus-v1');if(Object.hasOwn(focusLevels,value))focusMemory=value;}catch(e){}}return focusMemory;}
+- function setFocus(value){if(!Object.hasOwn(focusLevels,value))return false;focusMemory=value;try{localStorage.setItem('em-learning-focus-v1',value);focusVolatile=false;return true;}catch(e){focusVolatile=true;return false;}}
+- function focusBody(id,value){const level=focusLevels[value];return '<p>'+esc(level.description)+'</p><ol class="guided-prompts">'+level.prompts.map(([prompt,target,label])=>'<li><p>'+esc(prompt)+'</p><a href="#'+esc(id)+'~'+target+'">'+esc(label)+' →</a></li>').join('')+'</ol><p class="guided-footnote">Think through each question before opening the reference. All topic sections remain available at every level.</p>';}
+- function guidedHtml(id){const value=getFocus();return '<details class="guided-reasoning"><summary>Guided reasoning · <span data-focus-label>'+focusLevels[value].label+'</span></summary><div class="guided-inner"><div class="guided-levels" role="group" aria-label="Learning depth">'+Object.entries(focusLevels).map(([key,level])=>'<button type="button" data-learning-focus="'+key+'" aria-pressed="'+(key===value)+'">'+level.label+'</button>').join('')+'</div><div data-focus-body>'+focusBody(id,value)+'</div><p class="guided-save" role="status"></p></div></details>';}
+- function bindGuided(panel,id){panel.addEventListener('click',e=>{const button=e.target.closest('[data-learning-focus]');if(!button)return;const value=button.dataset.learningFocus,ok=setFocus(value);panel.querySelectorAll('[data-learning-focus]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));panel.querySelector('[data-focus-label]').textContent=focusLevels[value].label;panel.querySelector('[data-focus-body]').innerHTML=focusBody(id,value);panel.querySelector('.guided-save').textContent=ok?'Learning depth remembered on this device.':'Learning depth remembered for this session only.';});}
+  let contextFilters;
+  function enhance(stage){
+   if(stage.querySelector('.student-enhanced'))return;
+   const marker=document.createElement('span');marker.className='student-enhanced';marker.hidden=true;stage.append(marker);
+   const route=location.hash.slice(1),hero=stage.querySelector('.cp-hero');
+-  if(hero){const id=route.split('~')[0];if(id)remember(route);const intro=document.createElement('section');intro.className='student-intro';intro.innerHTML='<div class="student-actions"><strong>Learn</strong><a href="#'+(id==='ecg'?'ecg-explorer':'shift~'+esc(id))+'">'+(id==='ecg'?'Explore ECGs':'Quick reference')+'</a><a href="#learn~practice">Clinical practice</a></div><p><strong>Your objective:</strong> explain the approach, recognize important warning signs, then test your recall.</p>'+glossaryHtml();hero.after(intro);if(id!=='ecg'&&Array.isArray(window.CP_DATA)&&window.CP_DATA.some(c=>c.id===id)){const learningArea=stage.querySelector('#section-study')||intro;learningArea.insertAdjacentHTML('beforeend',guidedHtml(id));bindGuided(learningArea.querySelector('.guided-reasoning'),id);}}
++  if(hero){const id=route.split('~')[0];if(id)remember(route);const intro=document.createElement('section');intro.className='student-intro';intro.innerHTML='<div class="student-actions"><strong>Learn</strong><a href="#'+(id==='ecg'?'ecg-explorer':'shift~'+esc(id))+'">'+(id==='ecg'?'Explore ECGs':'Quick reference')+'</a><a href="#study~case">Clinical practice</a></div><p><strong>Your objective:</strong> explain the approach, recognize important warning signs, then test your recall.</p>'+glossaryHtml();hero.after(intro);}
+   if(stage.querySelector('.home-intro')||stage.querySelector('.study-page')){const holder=document.createElement('div');holder.innerHTML=starterHtml();const at=stage.querySelector('.study-dashboard')||stage.querySelector('.home-intro')||stage.querySelector('.study-page');at.after(holder.firstElementChild);if(stage.querySelector('.home-intro')&&!Object.keys(read().ratings).length){const stats=stage.querySelector('.study-dashboard');if(stats)stats.hidden=true;}}
+   if(!contextFilters)contextFilters=document.querySelector('.context-filters');
+   if(contextFilters){const target=stage.querySelector('.library-head')||stage.querySelector('.student-intro');if(target){contextFilters.hidden=false;target.append(contextFilters);}else contextFilters.remove();}
+@@ -83,6 +71,6 @@
+  // A single delegated listener survives route rendering; enhancement observes only root replacement.
+  function rememberJump(e){const b=e.target.closest('[data-jump]');if(b){const id=location.hash.slice(1).split('~')[0];if(id)remember(id+'~'+b.dataset.jump);}}
+  function start(){const stage=document.getElementById('stage');if(!stage)return;stage.addEventListener('click',rememberJump);new MutationObserver(()=>enhance(stage)).observe(stage,{childList:true});enhance(stage);}
+- window.STUDENT_LEARNING={cases,render,bindPractice,shuffled,read,rate,remember,ratingHtml,getFocus,setFocus,guidedHtml};
++ window.STUDENT_LEARNING={cases,render,bindPractice,shuffled,read,rate,remember,ratingHtml};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+ }());
+--- a/dev/audit.html
++++ b/dev/audit.html
+@@ -1 +1 @@
+-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EM Pocket local audit</title><link rel="stylesheet" href="../assets/app.css?v=20260910-complete-r7"><style>body{display:block;padding:20px;overflow:auto}main{max-width:1000px;margin:auto}#gallery{max-width:900px}.qa-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}select,button{font:inherit;padding:10px}iframe{box-sizing:content-box;height:850px;max-width:none;border:1px solid #aaa;background:white}#result{white-space:pre-wrap}#gallery h2{margin:12px 0}</style></head><body><main><h1>Local regression & visual audit</h1><p>This isolated test fixture omits the onboarding notice without accepting or recording any agreement.</p><div class="qa-row"><button id="run">Run browser checks</button><label>Figure <select id="figure"></select></label><button id="enlarge">Enlarge</button></div><pre id="result" role="status">Loading…</pre><section id="gallery"></section><h2>Application fixture</h2><label>Route <select id="route"></select></label><iframe title="Application test fixture" id="app"></iframe></main><script src="../assets/ecg-svg.js?v=20260910-complete-r7"></script><script src="../assets/ecg-engine.js?v=20260910-complete-r7"></script><script src="../assets/ecg-case-tracings.js?v=20260910-complete-r7"></script><script src="../assets/ecg-interactive.js?v=20260910-complete-r7"></script><script src="../assets/ecg-curriculum.js?v=20260910-complete-r7"></script><script src="../assets/ecg-explorer.js?v=20260910-complete-r7"></script><script src="../assets/data.js?v=20260910-complete-r7"></script><script src="../assets/evidence.js?v=20260910-complete-r7"></script><script src="audit.js?v=20260910-complete-r7"></script><script src="ecg-interaction-audit.js?v=7"></script><script src="student-audit.js?v=2"></script><script src="theme-audit.js?v=3"></script><script src="header-audit.js?v=2"></script></body></html>
++<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EM Pocket local audit</title><link rel="stylesheet" href="../assets/app.css?v=20260910-verified-r5"><style>body{display:block;padding:20px;overflow:auto}main{max-width:1000px;margin:auto}#gallery{max-width:900px}.qa-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}select,button{font:inherit;padding:10px}iframe{box-sizing:content-box;height:850px;max-width:none;border:1px solid #aaa;background:white}#result{white-space:pre-wrap}#gallery h2{margin:12px 0}</style></head><body><main><h1>Local regression & visual audit</h1><p>This isolated test fixture omits the onboarding notice without accepting or recording any agreement.</p><div class="qa-row"><button id="run">Run browser checks</button><label>Figure <select id="figure"></select></label><button id="enlarge">Enlarge</button></div><pre id="result" role="status">Loading…</pre><section id="gallery"></section><h2>Application fixture</h2><label>Route <select id="route"></select></label><iframe title="Application test fixture" id="app"></iframe></main><script src="../assets/ecg-svg.js?v=20260910-verified-r5"></script><script src="../assets/ecg-engine.js?v=20260910-verified-r5"></script><script src="../assets/ecg-case-tracings.js?v=20260910-verified-r5"></script><script src="../assets/ecg-interactive.js?v=20260910-verified-r5"></script><script src="../assets/ecg-curriculum.js?v=20260910-verified-r5"></script><script src="../assets/ecg-explorer.js?v=20260910-verified-r5"></script><script src="../assets/data.js?v=20260910-verified-r5"></script><script src="../assets/evidence.js?v=20260910-verified-r5"></script><script src="audit.js?v=20260910-verified-r5"></script><script src="ecg-interaction-audit.js?v=7"></script><script src="student-audit.js?v=2"></script><script src="theme-audit.js?v=3"></script><script src="header-audit.js?v=2"></script></body></html>
+--- a/dev/audit.js
++++ b/dev/audit.js
+@@ -3,7 +3,7 @@
+   'use strict';
+   if (!['localhost', '127.0.0.1'].includes(location.hostname)) { document.body.textContent = 'Local audit only.'; return; }
+   const output = document.querySelector('#result'), gallery = document.querySelector('#gallery');
+-  const source = await (await fetch('../assets/app.js?v=20260910-complete-r7')).text();
++  const source = await (await fetch('../assets/app.js?v=20260910-verified-r5')).text();
+   function extract(name) {
+     const start = source.indexOf('\n    function ' + name + '(');
+     const end = source.indexOf('\n    function ', start + 1);
+@@ -20,7 +20,7 @@
+   gallery.addEventListener('change', event => { if (event.target.matches('[data-ecg-panel]')) gallery.querySelector('svg').setAttribute('viewBox', event.target.value); });
+   const frame = document.querySelector('#app'), route = document.querySelector('#route');
+   ['home', 'ecg', 'ecg-explorer', 'study', 'shift', ...window.CP_DATA.map(cp => cp.id)].forEach(id => route.add(new Option(id, id)));
+-  const parsed = new DOMParser().parseFromString(await (await fetch('../index.html?audit=20260910-complete-r7')).text(), 'text/html');
++  const parsed = new DOMParser().parseFromString(await (await fetch('../index.html?audit=20260910-verified-r5')).text(), 'text/html');
+   parsed.querySelector('#disclaimerOverlay').remove();
+   const base = parsed.createElement('base'); base.href = new URL('../', location.href).href; parsed.head.prepend(base);
+   frame.srcdoc = '<!doctype html>' + parsed.documentElement.outerHTML;
+--- a/dev/ecg-highlight-gallery.html
++++ b/dev/ecg-highlight-gallery.html
+@@ -1,4 +1,4 @@
+-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ECG highlight QA</title><link rel="stylesheet" href="../assets/app.css?v=20260910-complete-r7"><style>body{display:block;padding:12px}main{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}article{background:white;color:#111;padding:10px;min-width:0}h2{font:700 16px system-ui;margin:0 0 10px}svg{width:100%;height:auto;max-height:500px}p{font:13px/1.5 system-ui}.ecg-guided-target,.ecg-reference{display:none}</style></head><body><main></main><script src="../assets/ecg-svg.js?v=20260910-complete-r7"></script><script src="../assets/ecg-engine.js?v=20260910-complete-r7"></script><script src="../assets/ecg-case-tracings.js?v=20260910-complete-r7"></script><script src="../assets/ecg-interactive.js?v=20260910-complete-r7"></script><script src="../assets/ecg-curriculum.js?v=20260910-complete-r7"></script><script>
++<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ECG highlight QA</title><link rel="stylesheet" href="../assets/app.css?v=20260910-verified-r5"><style>body{display:block;padding:12px}main{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}article{background:white;color:#111;padding:10px;min-width:0}h2{font:700 16px system-ui;margin:0 0 10px}svg{width:100%;height:auto;max-height:500px}p{font:13px/1.5 system-ui}.ecg-guided-target,.ecg-reference{display:none}</style></head><body><main></main><script src="../assets/ecg-svg.js?v=20260910-verified-r5"></script><script src="../assets/ecg-engine.js?v=20260910-verified-r5"></script><script src="../assets/ecg-case-tracings.js?v=20260910-verified-r5"></script><script src="../assets/ecg-interactive.js?v=20260910-verified-r5"></script><script src="../assets/ecg-curriculum.js?v=20260910-verified-r5"></script><script>
+ if(['localhost','127.0.0.1'].includes(location.hostname)){
+  const page=Number(new URLSearchParams(location.search).get('page'))||0;
+  for(const [id,entry] of Object.entries(window.ECG_SVG).slice(page*3,page*3+3)){
+--- a/dev/experience-browser.cjs
++++ /dev/null
+@@ -1,25 +0,0 @@
+-/* Run against a local preview: PLAYWRIGHT_MODULE=/path/to/playwright node dev/experience-browser.cjs */
+-const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+-const assert=require('node:assert/strict');
+-const base=process.env.EM_PREVIEW_URL||'http://127.0.0.1:8876/';
+-(async()=>{const browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});try{for(const width of (process.env.EM_WIDTHS||"1280,390,320").split(",").map(Number)){
+-const context=await browser.newContext({viewport:{width,height:900},isMobile:width<700,hasTouch:width<700,reducedMotion:'reduce',acceptDownloads:true});const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>document.addEventListener('DOMContentLoaded',()=>document.getElementById('disclaimerOverlay')?.remove(),{once:true}));
+-await page.goto(base);await page.waitForSelector('.workspace-entry');assert.equal(await page.locator('.workspace-entry>a').count(),3);
+-const route=async target=>{await page.evaluate(target=>new Promise(resolve=>{if(location.hash==='#'+target)return resolve();addEventListener('hashchange',()=>requestAnimationFrame(()=>resolve()),{once:true});location.hash=target;}),target);};
+-const check=async()=>{assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2),false,'Overflow at '+width+' '+page.url());};
+-await check();const data=await page.evaluate(()=>({cases:EM_LEARNING_DATA.cases,modules:EM_LEARNING_DATA.modules,visuals:EM_LEARNING.visuals}));
+-for(const c of data.cases){for(const choice of ['b','a']){await route('learn~case-'+c.id);if(await page.locator('[data-case-retry]').count())await page.locator('[data-case-retry]').click();for(let i=0;i<c.steps.length;i++){assert.equal(await page.locator('[data-case-next]').count(),0);assert.ok(!(await page.locator('.workspace-body').innerText()).includes(c.steps[i].options[0].why));await page.locator('[data-evolving-choice='+choice+']').click();assert.ok((await page.locator('.workspace-feedback').innerText()).includes(c.steps[i].options.find(o=>o.id===choice).why));if(c.id==='resus'&&i===0&&choice==='b'){await route('learn~progress');await route('learn~case-resus');assert.equal(await page.locator('[data-case-next]').count(),1);}await check();await page.locator('[data-case-next]').click();}assert.equal(await page.locator('.workspace-result').count(),1);assert.match(await page.locator('.workspace-result').innerText(),choice==='a'?/3 \/ 3 first choices/:/0 \/ 3 first choices/);}}
+-console.log(width+': all 6 cases, correct/incorrect choices, sequential disclosure and resume passed');
+-for(const m of data.modules){await route('learn~module-'+m.id);assert.equal(await page.locator('[data-module-read]').count(),1);await page.locator('.workspace-callout summary').click();await page.locator('[data-module-read]').click();await check();}
+-for(const [id]of data.visuals){await route('learn~visual-'+id);await check();if(id==='ecg-pairs'){for(const value of ['wellens-a,wellens-b','normal,af','inferior-stemi,anterior-stemi']){await page.locator('#ecgPair').selectOption(value);assert.equal(await page.locator('.workspace-ecg svg').count(),2);await check();}}else await page.locator('.workspace-callout summary').click();await page.locator('[data-module-read]').click();}
+-await route('learn~practice');await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));await page.screenshot({path:'/tmp/em-complete-practice-'+width+'.png',fullPage:true});
+-await page.evaluate(()=>document.documentElement.dataset.theme='dark');await route('learn~visual-abg');await page.locator('.workspace-callout summary').click();await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));await page.screenshot({path:'/tmp/em-complete-visual-'+width+'.png',fullPage:true});await check();
+-await page.locator('#searchInput').fill('SBAR');await page.waitForSelector('.res-item[data-id="learn"]');await page.locator('.res-item[data-id="learn"]').first().click();await page.waitForSelector('[data-module-read="handover"]');
+-await route('chest-pain');assert.equal(await page.locator('#section-study .guided-reasoning').count(),1);assert.equal(await page.locator('.reassessment-guide').count(),1);await page.locator('input[data-rf]').first().check();assert.match(await page.locator('#rfBanner').innerText(),/not a severity score/);
+-await route('learn~progress');assert.ok((await page.locator('.workspace-body').innerText()).includes('6 / 6 evolving cases attempted'));
+-await page.evaluate(()=>localStorage.setItem('em-cps-learning',JSON.stringify({reviewed:{},reviewPlan:{},saved:{},notes:{'chest-pain':'Keep this synthetic note'}})));
+-const downloaded=page.waitForEvent('download');await page.locator('[data-backup-export]').click();const download=await downloaded;assert.ok(download.suggestedFilename().endsWith('.json'));
+-const values={'em-cps-learning':{reviewed:{},reviewPlan:{},saved:{},notes:{'chest-pain':'Do not overwrite',shock:'Imported synthetic note'}}};await page.locator('[data-backup-file]').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({app:'EM Pocket free',version:1,values}))});await page.waitForSelector('[data-backup-apply]');assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('em-cps-learning')).notes.shock),undefined);await page.locator('[data-backup-apply]').click();assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('em-cps-learning')).notes['chest-pain']),'Keep this synthetic note');assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('em-cps-learning')).notes.shock),'Imported synthetic note');
+-await page.evaluate(()=>navigator.serviceWorker.ready);await page.waitForFunction(()=>!!navigator.serviceWorker.controller);await context.setOffline(true);for(const path of ['learn~practice','learn~visual-lung','learn~module-handover','learn~progress','ecg-explorer~normal']){await page.goto(base+'#'+path);await page.waitForSelector(path.startsWith('learn')?'.learning-workspace':'.explorer-findings');await check();}await context.setOffline(false);
+-await route('learn~module-handover');await page.evaluate(()=>{Storage.prototype.setItem=function(){throw Error('blocked')}});await page.locator('[data-module-read]').click();assert.match(await page.locator('.module-save').innerText(),/session/);await route('learn~progress');assert.ok((await page.locator('.workspace-body').innerText()).includes('modules marked read'));assert.deepEqual(errors,[]);console.log(width+': modules, visuals, search, backup preview/merge, offline and storage-failure checks passed');await context.close();
+-}}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
+--- a/dev/explorer-contact.html
++++ b/dev/explorer-contact.html
+@@ -1 +1 @@
+-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ECG curriculum visual QA</title><link rel="stylesheet" href="../assets/app.css?v=20260910-complete-r7"><style>body{display:block;padding:12px}main{display:grid;grid-template-columns:1fr 1fr;gap:12px}article{min-width:0}h2{font:700 18px system-ui}svg{width:100%;height:auto;max-height:none!important}p{font:14px/1.5 system-ui}</style></head><body><main></main><script src="../assets/ecg-svg.js?v=20260910-complete-r7"></script><script src="../assets/ecg-engine.js?v=20260910-complete-r7"></script><script src="../assets/ecg-case-tracings.js?v=20260910-complete-r7"></script><script src="../assets/ecg-interactive.js?v=20260910-complete-r7"></script><script src="../assets/ecg-curriculum.js?v=20260910-complete-r7"></script><script src="../assets/ecg-explorer.js?v=20260910-complete-r7"></script><script>if(['localhost','127.0.0.1'].includes(location.hostname)){const page=Number(new URLSearchParams(location.search).get('page'))||0;for(const c of ECG_EXPLORER.cases.filter(c=>new URLSearchParams(location.search).get('mode')==='full'?c.overrides:c.kind).slice(page*6,page*6+6)){const v=ECG_EXPLORER.build(c.id,false),a=document.createElement('article'),h=document.createElement('h2');h.textContent=c.name;a.append(h);a.insertAdjacentHTML('beforeend',v.svg);const p=document.createElement('p');p.textContent=c.summary;a.append(p);document.querySelector('main').append(a);}}</script></body></html>
++<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ECG curriculum visual QA</title><link rel="stylesheet" href="../assets/app.css?v=20260910-verified-r5"><style>body{display:block;padding:12px}main{display:grid;grid-template-columns:1fr 1fr;gap:12px}article{min-width:0}h2{font:700 18px system-ui}svg{width:100%;height:auto;max-height:none!important}p{font:14px/1.5 system-ui}</style></head><body><main></main><script src="../assets/ecg-svg.js?v=20260910-verified-r5"></script><script src="../assets/ecg-engine.js?v=20260910-verified-r5"></script><script src="../assets/ecg-case-tracings.js?v=20260910-verified-r5"></script><script src="../assets/ecg-interactive.js?v=20260910-verified-r5"></script><script src="../assets/ecg-curriculum.js?v=20260910-verified-r5"></script><script src="../assets/ecg-explorer.js?v=20260910-verified-r5"></script><script>if(['localhost','127.0.0.1'].includes(location.hostname)){const page=Number(new URLSearchParams(location.search).get('page'))||0;for(const c of ECG_EXPLORER.cases.filter(c=>new URLSearchParams(location.search).get('mode')==='full'?c.overrides:c.kind).slice(page*6,page*6+6)){const v=ECG_EXPLORER.build(c.id,false),a=document.createElement('article'),h=document.createElement('h2');h.textContent=c.name;a.append(h);a.insertAdjacentHTML('beforeend',v.svg);const p=document.createElement('p');p.textContent=c.summary;a.append(p);document.querySelector('main').append(a);}}</script></body></html>
+--- a/dev/explorer.html
++++ b/dev/explorer.html
+@@ -1 +1 @@
+-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ECG Explorer local preview</title><link rel="stylesheet" href="../assets/app.css?v=20260910-complete-r7"><style>body{display:block;padding:24px}#preview{max-width:1450px;margin:auto}#qa{margin:16px 0}#qaResult,#learningResult,#studentExplorerResult{white-space:pre-wrap;overflow-wrap:anywhere}#qa button{max-width:100%}@media(max-width:600px){body{padding:12px}}</style></head><body><div id="preview" class="ecg-explorer"></div><div id="qa"><button id="runExplorer">Run Explorer checks</button><pre id="qaResult"></pre></div><script src="../assets/ecg-svg.js?v=20260910-complete-r7"></script><script src="../assets/ecg-engine.js?v=20260910-complete-r7"></script><script src="../assets/ecg-case-tracings.js?v=20260910-complete-r7"></script><script src="../assets/ecg-interactive.js?v=20260910-complete-r7"></script><script src="../assets/ecg-curriculum.js?v=20260910-complete-r7"></script><script src="../assets/ecg-explorer.js?v=20260910-complete-r7"></script><script>if(['localhost','127.0.0.1'].includes(location.hostname))window.ECG_EXPLORER.mount(document.querySelector('#preview'));</script><script src="explorer-audit.js?v=3"></script><script src="ecg-learning-audit.js?v=3"></script><script src="explorer-student-audit.js"></script></body></html>
++<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ECG Explorer local preview</title><link rel="stylesheet" href="../assets/app.css?v=20260910-verified-r5"><style>body{display:block;padding:24px}#preview{max-width:1450px;margin:auto}#qa{margin:16px 0}#qaResult,#learningResult,#studentExplorerResult{white-space:pre-wrap;overflow-wrap:anywhere}#qa button{max-width:100%}@media(max-width:600px){body{padding:12px}}</style></head><body><div id="preview" class="ecg-explorer"></div><div id="qa"><button id="runExplorer">Run Explorer checks</button><pre id="qaResult"></pre></div><script src="../assets/ecg-svg.js?v=20260910-verified-r5"></script><script src="../assets/ecg-engine.js?v=20260910-verified-r5"></script><script src="../assets/ecg-case-tracings.js?v=20260910-verified-r5"></script><script src="../assets/ecg-interactive.js?v=20260910-verified-r5"></script><script src="../assets/ecg-curriculum.js?v=20260910-verified-r5"></script><script src="../assets/ecg-explorer.js?v=20260910-verified-r5"></script><script>if(['localhost','127.0.0.1'].includes(location.hostname))window.ECG_EXPLORER.mount(document.querySelector('#preview'));</script><script src="explorer-audit.js?v=3"></script><script src="ecg-learning-audit.js?v=3"></script><script src="explorer-student-audit.js"></script></body></html>
+--- a/index.html
++++ b/index.html
+@@ -9,14 +9,14 @@
+ <title>EM Pocket — Emergency Medicine Reference</title>
+ <meta name="description" content="A focused emergency medicine reference for chest pain, dyspnea, abdominal pain, and more. Rosen's-based frameworks for clinical learning and review.">
+ <meta name="theme-color" content="#f6f7f9" id="themeColor">
+-<link rel="manifest" href="manifest.json?v=20260910-complete-r7">
+-<link rel="icon" href="assets/icon.svg?v=20260910-complete-r7" type="image/svg+xml">
+-<link rel="icon" href="assets/icon-192.png?v=20260910-complete-r7" type="image/png" sizes="192x192">
+-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260910-complete-r7" sizes="180x180">
++<link rel="manifest" href="manifest.json?v=20260910-verified-r5">
++<link rel="icon" href="assets/icon.svg?v=20260910-verified-r5" type="image/svg+xml">
++<link rel="icon" href="assets/icon-192.png?v=20260910-verified-r5" type="image/png" sizes="192x192">
++<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260910-verified-r5" sizes="180x180">
+ <meta name="mobile-web-app-capable" content="yes">
+ <meta name="apple-mobile-web-app-capable" content="yes">
+ <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+-<link rel="stylesheet" href="assets/app.css?v=20260910-complete-r7">
++<link rel="stylesheet" href="assets/app.css?v=20260910-verified-r5">
+ <script>
+ (function () {
+     try {
+@@ -46,7 +46,7 @@
+ <nav class="sidebar" id="sidebar" aria-label="Presentations">
+     <div class="side-head">
+     <button class="brand" id="brandBtn" type="button" title="All presentations">
+-        <span class="brand-mark" aria-hidden="true"><img src="assets/icon-192.png?v=20260910-complete-r7" alt="" width="44" height="44"></span>
++        <span class="brand-mark" aria-hidden="true"><img src="assets/icon-192.png?v=20260910-verified-r5" alt="" width="44" height="44"></span>
+         <span class="brand-text">
+             <strong>EM Pocket</strong>
+             <span>Emergency medicine</span>
+@@ -70,8 +70,8 @@
+     <header class="topbar">
+         <button class="icon-btn burger" id="burgerBtn" type="button" aria-label="Open presentations menu" aria-controls="sidebar" aria-expanded="false"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+         <nav class="primary-nav" aria-label="Primary navigation">
+-        <button class="home-btn" id="homeBtn" type="button" title="All presentations (H)" aria-label="All presentations" data-nav="home"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-8H9v8H4a1 1 0 0 1-1-1z"/></svg><span class="header-label">Learn</span></button>
+-        <button class="home-btn utility-btn" id="studyBtn" type="button" title="Practice and learning workspace (S)" aria-label="Open practice workspace" data-nav="study"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v16M3 3h4a5 5 0 0 1 5 2 5 5 0 0 1 5-2h4v16h-4a5 5 0 0 0-5 2 5 5 0 0 0-5-2H3z"/></svg><span class="header-label">Practice</span></button>
++        <button class="home-btn" id="homeBtn" type="button" title="All presentations (H)" aria-label="All presentations" data-nav="home"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-8H9v8H4a1 1 0 0 1-1-1z"/></svg><span class="header-label">Library</span></button>
++        <button class="home-btn utility-btn" id="studyBtn" type="button" title="Personal study queue (S)" aria-label="Open study queue" data-nav="study"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v16M3 3h4a5 5 0 0 1 5 2 5 5 0 0 1 5-2h4v16h-4a5 5 0 0 0-5 2 5 5 0 0 0-5-2H3z"/></svg><span class="header-label">Study</span></button>
+         <button class="home-btn utility-btn" id="shiftBtn" type="button" title="Focused shift-ready view (V)" aria-label="Open focused shift view" data-nav="shift"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-9 12h7l-1 8 10-12h-7z"/></svg><span class="header-label">Reference</span></button>
+         <button class="home-btn utility-btn" id="ecgBtn" type="button" title="ECG Interpretation from scratch (E)" aria-label="Open ECG Guide" data-nav="ecg"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h5l3-8 4 16 3-8h5"/></svg><span class="header-label">ECG Guide</span></button>
+         <button class="home-btn utility-btn" id="explorerBtn" type="button" aria-label="Open ECG Explorer" data-nav="explorer"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M4 12h4l2-4 3 8 2-4h5"/></svg><span class="header-label">ECG Explorer</span></button>
+@@ -182,13 +182,13 @@
+ <div class="toast" id="toast" role="status"></div>
+ <noscript><p class="noscript">EM Pocket needs JavaScript enabled to show presentations.</p></noscript>
+ 
+-<script src="assets/ecg-svg.js?v=20260910-complete-r7"></script>
+-<script src="assets/ecg-engine.js?v=20260910-complete-r7"></script>
+-<script src="assets/ecg-case-tracings.js?v=20260910-complete-r7"></script>
+-<script src="assets/ecg-interactive.js?v=20260910-complete-r7"></script>
+-<script src="assets/ecg-curriculum.js?v=20260910-complete-r7"></script><script src="assets/ecg-explorer.js?v=20260910-complete-r7"></script>
+-<script src="assets/data.js?v=20260910-complete-r7"></script>
+-<script src="assets/evidence.js?v=20260910-complete-r7"></script>
+-<script src="assets/student-learning.js?v=20260910-complete-r7"></script><script src="assets/em-learning-data.js?v=20260910-complete-r7"></script><script src="assets/em-learning.js?v=20260910-complete-r7"></script><script src="assets/app.js?v=20260910-complete-r7"></script>
++<script src="assets/ecg-svg.js?v=20260910-verified-r5"></script>
++<script src="assets/ecg-engine.js?v=20260910-verified-r5"></script>
++<script src="assets/ecg-case-tracings.js?v=20260910-verified-r5"></script>
++<script src="assets/ecg-interactive.js?v=20260910-verified-r5"></script>
++<script src="assets/ecg-curriculum.js?v=20260910-verified-r5"></script><script src="assets/ecg-explorer.js?v=20260910-verified-r5"></script>
++<script src="assets/data.js?v=20260910-verified-r5"></script>
++<script src="assets/evidence.js?v=20260910-verified-r5"></script>
++<script src="assets/student-learning.js?v=20260910-verified-r5"></script><script src="assets/app.js?v=20260910-verified-r5"></script>
+ </body>
+ </html>
+--- a/manifest.json
++++ b/manifest.json
+@@ -15,42 +15,42 @@
+             "name": "Chest Pain",
+             "short_name": "Chest Pain",
+             "url": "./#chest-pain",
+-            "icons": [{"src": "assets/icon-192.png?v=20260910-complete-r7", "sizes": "192x192"}]
++            "icons": [{"src": "assets/icon-192.png?v=20260910-verified-r5", "sizes": "192x192"}]
+         },
+         {
+             "name": "Shortness of Breath",
+             "short_name": "Dyspnea",
+             "url": "./#dyspnea",
+-            "icons": [{"src": "assets/icon-192.png?v=20260910-complete-r7", "sizes": "192x192"}]
++            "icons": [{"src": "assets/icon-192.png?v=20260910-verified-r5", "sizes": "192x192"}]
+         },
+         {
+             "name": "Suspected Stroke",
+             "short_name": "Stroke",
+             "url": "./#focal-neurologic-deficit",
+-            "icons": [{"src": "assets/icon-192.png?v=20260910-complete-r7", "sizes": "192x192"}]
++            "icons": [{"src": "assets/icon-192.png?v=20260910-verified-r5", "sizes": "192x192"}]
+         },
+         {
+             "name": "ECG from scratch",
+             "short_name": "ECG",
+             "url": "./#ecg",
+-            "icons": [{"src": "assets/icon-192.png?v=20260910-complete-r7", "sizes": "192x192"}]
++            "icons": [{"src": "assets/icon-192.png?v=20260910-verified-r5", "sizes": "192x192"}]
+         }
+     ],
+     "icons": [
+         {
+-            "src": "assets/icon-192.png?v=20260910-complete-r7",
++            "src": "assets/icon-192.png?v=20260910-verified-r5",
+             "sizes": "192x192",
+             "type": "image/png",
+             "purpose": "any"
+         },
+         {
+-            "src": "assets/icon-512.png?v=20260910-complete-r7",
++            "src": "assets/icon-512.png?v=20260910-verified-r5",
+             "sizes": "512x512",
+             "type": "image/png",
+             "purpose": "any"
+         },
+         {
+-            "src": "assets/icon-maskable-512.png?v=20260910-complete-r7",
++            "src": "assets/icon-maskable-512.png?v=20260910-verified-r5",
+             "sizes": "512x512",
+             "type": "image/png",
+             "purpose": "maskable"
+--- a/sw.js
++++ b/sw.js
+@@ -1,32 +1,30 @@
+ /* EM Pocket service worker — resilient app-shell caching for offline clinical reference. */
+-const CACHE_VERSION = 'v166';
++const CACHE_VERSION = 'v164';
+ // Preserve case, separators and the full path: sibling installations must never share caches.
+ const SCOPE_KEY = encodeURIComponent(new URL(self.registration.scope).pathname);
+ const CACHE_PREFIX = 'em-cps-scope-' + SCOPE_KEY + '-';
+ const CACHE = CACHE_PREFIX + CACHE_VERSION;
+ const CORE_ASSETS = [
+     './',
+-    './assets/app.css?v=20260910-complete-r7',
+-    './assets/em-learning-data.js?v=20260910-complete-r7',
+-    './assets/em-learning.js?v=20260910-complete-r7',
+-    './assets/student-learning.js?v=20260910-complete-r7',
+-    './assets/app.js?v=20260910-complete-r7',
+-    './assets/data.js?v=20260910-complete-r7',
+-    './assets/evidence.js?v=20260910-complete-r7',
+-    './assets/ecg-svg.js?v=20260910-complete-r7',
+-    './assets/ecg-engine.js?v=20260910-complete-r7',
+-    './assets/ecg-case-tracings.js?v=20260910-complete-r7',
+-    './assets/ecg-interactive.js?v=20260910-complete-r7',
+-    './assets/ecg-curriculum.js?v=20260910-complete-r7',
+-  './assets/ecg-explorer.js?v=20260910-complete-r7'
++    './assets/app.css?v=20260910-verified-r5',
++    './assets/student-learning.js?v=20260910-verified-r5',
++    './assets/app.js?v=20260910-verified-r5',
++    './assets/data.js?v=20260910-verified-r5',
++    './assets/evidence.js?v=20260910-verified-r5',
++    './assets/ecg-svg.js?v=20260910-verified-r5',
++    './assets/ecg-engine.js?v=20260910-verified-r5',
++    './assets/ecg-case-tracings.js?v=20260910-verified-r5',
++    './assets/ecg-interactive.js?v=20260910-verified-r5',
++    './assets/ecg-curriculum.js?v=20260910-verified-r5',
++  './assets/ecg-explorer.js?v=20260910-verified-r5'
+ ];
+ const OPTIONAL_ASSETS = [
+-    './manifest.json?v=20260910-complete-r7',
+-    './assets/icon.svg?v=20260910-complete-r7',
+-    './assets/icon-192.png?v=20260910-complete-r7',
+-    './assets/icon-512.png?v=20260910-complete-r7',
+-    './assets/icon-maskable-512.png?v=20260910-complete-r7',
+-    './assets/apple-touch-icon.png?v=20260910-complete-r7'
++    './manifest.json?v=20260910-verified-r5',
++    './assets/icon.svg?v=20260910-verified-r5',
++    './assets/icon-192.png?v=20260910-verified-r5',
++    './assets/icon-512.png?v=20260910-verified-r5',
++    './assets/icon-maskable-512.png?v=20260910-verified-r5',
++    './assets/apple-touch-icon.png?v=20260910-verified-r5'
+ ];
+ 
+ // Cache the canonical directory URL: Pages redirects index.html to this URL.
+--- a/tests/em-learning.test.js
++++ /dev/null
+@@ -1,11 +0,0 @@
+-'use strict';
+-const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+-function load(){const saved=new Map(),calls=[];let failAt=Infinity,writes=0,blocked=false;const storage={getItem(k){calls.push(k);if(blocked)throw Error('blocked');return saved.get(k)??null;},setItem(k,v){calls.push(k);if(blocked||++writes===failAt)throw Error('quota');saved.set(k,v);},removeItem(k){saved.delete(k);}};const ctx={window:{},localStorage:storage};vm.createContext(ctx);for(const file of ['em-learning-data.js','em-learning.js'])vm.runInContext(fs.readFileSync('assets/'+file,'utf8'),ctx);return {api:ctx.window.EM_LEARNING,data:ctx.window.EM_LEARNING_DATA,saved,calls,block(){blocked=true;},fail(n){failAt=n;writes=0;}};}
+-const backup=values=>({app:'EM Pocket free',version:1,values});
+-test('six evolving cases have sequential updates, unique choices and explained outcomes',()=>{const {data}=load();assert.equal(data.cases.length,6);assert.equal(new Set(data.cases.map(c=>c.domain)).size,6);for(const c of data.cases){assert.ok(data.sources[c.source]);assert.equal(c.steps.length,3);assert.equal(c.debrief.length,3);for(const q of c.steps){assert.equal(q.options.filter(o=>o.correct).length,1);assert.equal(new Set(q.options.map(o=>o.id)).size,3);assert.ok(q.options.every(o=>o.why.length>25));assert.ok(q.update.length>10);}}});
+-test('progress separates latest scored attempts from reading and survives storage failure',()=>{const {api,block}=load();const p=api.progress();p.cases.resus={correct:2,total:3,runs:1,last:123};p.viewed=['abg'];block();assert.equal(api.saveProgress(p),false);assert.equal(api.progress().cases.resus.correct,2);assert.equal(api.progress().viewed[0],'abg');assert.equal(Object.keys(api.normalizeProgress({cases:{fake:{correct:99}},viewed:['fake']} ).cases).length,0);});
+-test('backup reads only explicit free learning keys and excludes agreements',()=>{const {api,saved,calls}=load();saved.set('unrelated-data','private');saved.set('em-cps-disclaimer-agreed','123');saved.set('em-cps-learning',JSON.stringify({notes:{'chest-pain':'My learning note'},saved:{},reviewed:{},reviewPlan:{}}));const data=api.exportBackup();assert.equal(data.values['em-cps-learning'].notes['chest-pain'],'My learning note');assert.ok(calls.every(k=>api.backupKeys.includes(k)));assert.equal(Object.keys(data.values).length,1);});
+-test('import merges missing records without replacing existing notes or clearing arrays',()=>{const {api,saved}=load();saved.set('em-cps-learning',JSON.stringify({notes:{'chest-pain':'Current'},saved:{},reviewed:{},reviewPlan:{}}));saved.set('em-ecg-practice-v1','["normal"]');api.importBackup(backup({'em-cps-learning':{notes:{'chest-pain':'Older','shock':'New'},saved:{},reviewed:{},reviewPlan:{}},'em-ecg-practice-v1':['af']}));assert.equal(JSON.parse(saved.get('em-cps-learning')).notes['chest-pain'],'Current');assert.equal(JSON.parse(saved.get('em-cps-learning')).notes.shock,'New');assert.deepEqual(JSON.parse(saved.get('em-ecg-practice-v1')),['normal','af']);});
+-test('failed multi-key imports restore the original stored data',()=>{const {api,saved,fail}=load();saved.set('em-cps-learning',JSON.stringify({notes:{},saved:{},reviewed:{},reviewPlan:{}}));const before=new Map(saved);fail(2);assert.throws(()=>api.importBackup(backup({'em-cps-learning':{notes:{shock:'New'},saved:{},reviewed:{},reviewPlan:{}},'em-ecg-practice-v1':['af']})),/restored/);assert.deepEqual(saved,before);});
+-test('untrusted backups reject unsupported keys, dangerous properties and invalid state before writes',()=>{const {api,saved}=load();for(const values of [{'unrelated-data':{}},{'em-cps-disclaimer-agreed':'yes'},{'em-cps-learning':{notes:{shock:{html:'bad'}}}},{'em-cps-prefs':{scale:50}},{'em-student-progress':{ratings:{x:null}}},{'em-workspace-progress-v1':{cases:{resus:{correct:5,total:3,runs:1,last:10}},viewed:[]}}])assert.throws(()=>api.importBackup(backup(values)));assert.throws(()=>api.validateBackup('{"app":"EM Pocket free","version":1,"values":{"__proto__":{}}}'));assert.throws(()=>api.validateBackup('x'.repeat(2000001)));assert.equal(saved.size,0);});
+-test('all visual/module entries and search routes have supporting metadata',()=>{const {api,data}=load();assert.equal(api.visuals.length,4);assert.equal(data.modules.length,6);for(const m of data.modules){assert.ok(data.sources[m.source]);assert.equal(m.sections.length,3);}for(const item of api.searchItems()){assert.equal(item.cpId,'learn');assert.match(item.target,/^(case-|module-|visual-|progress)/);}});
+--- a/tests/student-learning.test.js
++++ b/tests/student-learning.test.js
+@@ -4,4 +4,3 @@
+ test('authored practice scenarios have facts, distinct choices and option-specific feedback',()=>{const S=load();assert.equal(S.cases.length,12);for(const c of S.cases){assert.ok(c.stem.length>100,c.id);assert.equal(c.questions.length,2);for(const q of c.questions){assert.equal(q.options.filter(o=>o.correct).length,1);assert.equal(new Set(q.options.map(o=>o.id)).size,3);assert.ok(q.options.every(o=>o.why.length>20));}const html=S.render(S.cases.indexOf(c));assert.match(html,/class="case-complete" hidden/);for(const q of c.questions)for(const o of q.options)assert.ok(!html.includes(o.why),'Feedback leaked before attempt');}});
+ test('shuffle preserves stable option IDs and uses all correct-answer positions',()=>{const S=load(),options=S.cases[0].questions[0].options,seen=new Set();for(let seed=0;seed<100;seed++){const result=S.shuffled(options,seed);seen.add(result.findIndex(o=>o.correct));assert.deepEqual(Array.from(result,o=>o.id).sort(),Array.from(options,o=>o.id).sort());}assert.equal(seen.size,3);assert.equal(options[0].id,'best');});
+ test('self-rating storage failures retain session progress without saving answers',()=>{const S=load(true);assert.equal(S.rate('ecg:normal','again'),false);assert.equal(S.read().ratings['ecg:normal'].value,'again');S.remember('ecg-explorer~normal');assert.equal(S.read().last,'ecg-explorer~normal');assert.equal(S.rate('ecg:normal','made-up'),false);assert.deepEqual(Object.keys(S.read()).sort(),['last','ratings']);});
+-test('learning depth is optional, validates preferences and retains blocked-storage choices',()=>{for(const blocked of [false,true]){const S=load(blocked);assert.equal(S.getFocus(),'core');assert.equal(S.setFocus('advanced'),!blocked);assert.equal(S.getFocus(),'advanced');assert.equal(S.setFocus('__proto__'),false);assert.equal(S.getFocus(),'advanced');const html=S.guidedHtml('chest-pain');assert.match(html,/Advanced/);assert.match(html,/#chest-pain~references/);assert.doesNotMatch(html,/<details[^>]+open/);assert.equal((html.match(/data-learning-focus=/g)||[]).length,3);assert.ok(!S.guidedHtml('<img>').includes('<img>'));}});

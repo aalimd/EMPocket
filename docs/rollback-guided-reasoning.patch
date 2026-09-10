@@ -1,0 +1,265 @@
+--- a/README.md
++++ b/README.md
+@@ -50,7 +50,7 @@
+ 
+ ## Release and offline updates
+ 
+-The current asset token is `20260910-guided-r6`; `CACHE_VERSION` is `v165` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
++The current asset token is `20260910-verified-r5`; `CACHE_VERSION` is `v164` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
+ 
+ The worker precaches the canonical `./` shell because Pages redirects `/index.html` to `/`. Direct hash routes and offline `/index.html` requests fall back to that shell. Required asset failure or an HTML fallback returned instead of required JavaScript/CSS prevents a new worker from activating; optional icon failure does not prevent core offline use. A new worker claims the app and notifies users to refresh. The worker handles only this app's entry points and shipped asset paths, including at the domain root. New cache names encode the exact installation path, preserving case and punctuation. Cleanup touches only that exact namespace; it does not clear saved progress or other apps' caches. Ambiguous legacy cache names are intentionally retained during this one-time naming change.
+ 
+--- a/assets/student-learning.js
++++ b/assets/student-learning.js
+@@ -55,24 +55,12 @@
+  const glossary={ACS:'Acute coronary syndrome',OMI:'Occlusion myocardial infarction',ECG:'Electrocardiogram',PE:'Pulmonary embolism',POCUS:'Point-of-care ultrasound',QTc:'QT interval corrected for heart rate',LBBB:'Left bundle branch block',RBBB:'Right bundle branch block','hs-cTn':'High-sensitivity cardiac troponin',CTA:'Computed tomography angiography',ICU:'Intensive care unit'};
+  function glossaryHtml(){return '<details class="student-glossary"><summary>Abbreviations explained</summary><dl>'+Object.entries(glossary).map(([a,b])=>'<div><dt>'+a+'</dt><dd>'+b+'</dd></div>').join('')+'</dl></details>';}
+  function starterHtml(){const p=read();const last=/^(?:ecg(?:-explorer)?|[a-z-]+)(?:~[a-z0-9-]+)?$/.test(p.last)?p.last:'';const weak=Object.entries(p.ratings).filter(([k,v])=>v&&v.value!=='got').sort((a,b)=>b[1].at-a[1].at);return '<section class="student-start"><p class="study-kicker">YOUR NEXT STEP</p><h2>'+(last?'Continue your learning':'Start a 10-minute learning session')+'</h2><p>Learn an approach, inspect a tracing, then test yourself.</p><div class="student-actions">'+(last?'<a href="#'+esc(last)+'">Continue where you left off →</a>':'')+'<a href="#chest-pain">1 · Learn the first approach</a><a href="#ecg-explorer~normal">2 · Read a normal ECG</a><a href="#study~case">3 · Try a clinical case</a></div>'+(weak.length?'<details class="weak-areas"><summary>Revisit your weak areas ('+weak.length+')</summary><ul>'+weak.map(([key,v])=>{const id=key.split(':')[1];let route=key.startsWith('ecg:')?'ecg-explorer~'+id:key.startsWith('case:')?'study~case-'+id:id+'~study';const name=key.startsWith('ecg:')?(window.ECG_EXPLORER.cases.find(c=>c.id===id)||{}).name:(window.CP_DATA.find(c=>c.id===id)||{}).name;return name?'<li><a href="#'+esc(route)+'">'+esc(name)+'</a> · '+(v.value==='again'?'Review again':'Partly confident')+'</li>':'';}).join('')+'</ul></details>':'')+'</section>';}
+- // Learning depth changes prompts only; clinical content and progress stay available.
+- const focusLevels={
+-  core:{label:'Core',description:'Build a structured approach. Useful when a presentation is new to you.',prompts:[['What needs attention first, and why?','how-to-think','Review the approach'],['Which immediate threats must you consider?','dont-miss','Review important diagnoses'],['Which history and examination findings would you seek?','history','Review assessment']]},
+-  applied:{label:'Applied',description:'Practice decisions, reassessment and disposition. Useful for supervised clinical work.',prompts:[['Which investigation could change your next decision?','workup','Review the workup'],['What would you reassess, and what change would prompt escalation?','red-flags','Review warning signs'],['What supports admission, observation or discharge in this presentation?','disposition','Review disposition']]},
+-  advanced:{label:'Advanced',description:'Challenge your reasoning and prepare to teach it. These are discussion prompts, not a competency assessment.',prompts:[['Which plausible alternative could you be overlooking? What evidence would change your mind?','pearls-pitfalls','Review pitfalls'],['What uncertainty remains before disposition? How would you explain it in a handover?','disposition','Review disposition'],['Which recommendation depends on patient context, source limitations or local practice?','references','Examine the references']]}
+- };
+- let focusMemory='core',focusVolatile=false;
+- function getFocus(){if(!focusVolatile){try{const value=localStorage.getItem('em-learning-focus-v1');if(Object.hasOwn(focusLevels,value))focusMemory=value;}catch(e){}}return focusMemory;}
+- function setFocus(value){if(!Object.hasOwn(focusLevels,value))return false;focusMemory=value;try{localStorage.setItem('em-learning-focus-v1',value);focusVolatile=false;return true;}catch(e){focusVolatile=true;return false;}}
+- function focusBody(id,value){const level=focusLevels[value];return '<p>'+esc(level.description)+'</p><ol class="guided-prompts">'+level.prompts.map(([prompt,target,label])=>'<li><p>'+esc(prompt)+'</p><a href="#'+esc(id)+'~'+target+'">'+esc(label)+' →</a></li>').join('')+'</ol><p class="guided-footnote">Think through each question before opening the reference. All topic sections remain available at every level.</p>';}
+- function guidedHtml(id){const value=getFocus();return '<details class="guided-reasoning"><summary>Guided reasoning · <span data-focus-label>'+focusLevels[value].label+'</span></summary><div class="guided-inner"><div class="guided-levels" role="group" aria-label="Learning depth">'+Object.entries(focusLevels).map(([key,level])=>'<button type="button" data-learning-focus="'+key+'" aria-pressed="'+(key===value)+'">'+level.label+'</button>').join('')+'</div><div data-focus-body>'+focusBody(id,value)+'</div><p class="guided-save" role="status"></p></div></details>';}
+- function bindGuided(panel,id){panel.addEventListener('click',e=>{const button=e.target.closest('[data-learning-focus]');if(!button)return;const value=button.dataset.learningFocus,ok=setFocus(value);panel.querySelectorAll('[data-learning-focus]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));panel.querySelector('[data-focus-label]').textContent=focusLevels[value].label;panel.querySelector('[data-focus-body]').innerHTML=focusBody(id,value);panel.querySelector('.guided-save').textContent=ok?'Learning depth remembered on this device.':'Learning depth remembered for this session only.';});}
+  let contextFilters;
+  function enhance(stage){
+   if(stage.querySelector('.student-enhanced'))return;
+   const marker=document.createElement('span');marker.className='student-enhanced';marker.hidden=true;stage.append(marker);
+   const route=location.hash.slice(1),hero=stage.querySelector('.cp-hero');
+-  if(hero){const id=route.split('~')[0];if(id)remember(route);const intro=document.createElement('section');intro.className='student-intro';intro.innerHTML='<div class="student-actions"><strong>Learn</strong><a href="#'+(id==='ecg'?'ecg-explorer':'shift~'+esc(id))+'">'+(id==='ecg'?'Explore ECGs':'Quick reference')+'</a><a href="#study~case">Clinical practice</a></div><p><strong>Your objective:</strong> explain the approach, recognize important warning signs, then test your recall.</p>'+glossaryHtml();hero.after(intro);if(id!=='ecg'&&Array.isArray(window.CP_DATA)&&window.CP_DATA.some(c=>c.id===id)){intro.insertAdjacentHTML('beforeend',guidedHtml(id));bindGuided(intro.querySelector('.guided-reasoning'),id);}}
++  if(hero){const id=route.split('~')[0];if(id)remember(route);const intro=document.createElement('section');intro.className='student-intro';intro.innerHTML='<div class="student-actions"><strong>Learn</strong><a href="#'+(id==='ecg'?'ecg-explorer':'shift~'+esc(id))+'">'+(id==='ecg'?'Explore ECGs':'Quick reference')+'</a><a href="#study~case">Clinical practice</a></div><p><strong>Your objective:</strong> explain the approach, recognize important warning signs, then test your recall.</p>'+glossaryHtml();hero.after(intro);}
+   if(stage.querySelector('.home-intro')||stage.querySelector('.study-page')){const holder=document.createElement('div');holder.innerHTML=starterHtml();const at=stage.querySelector('.study-dashboard')||stage.querySelector('.home-intro')||stage.querySelector('.study-page');at.after(holder.firstElementChild);if(stage.querySelector('.home-intro')&&!Object.keys(read().ratings).length){const stats=stage.querySelector('.study-dashboard');if(stats)stats.hidden=true;}}
+   if(!contextFilters)contextFilters=document.querySelector('.context-filters');
+   if(contextFilters){const target=stage.querySelector('.library-head')||stage.querySelector('.student-intro');if(target){contextFilters.hidden=false;target.append(contextFilters);}else contextFilters.remove();}
+@@ -83,6 +71,6 @@
+  // A single delegated listener survives route rendering; enhancement observes only root replacement.
+  function rememberJump(e){const b=e.target.closest('[data-jump]');if(b){const id=location.hash.slice(1).split('~')[0];if(id)remember(id+'~'+b.dataset.jump);}}
+  function start(){const stage=document.getElementById('stage');if(!stage)return;stage.addEventListener('click',rememberJump);new MutationObserver(()=>enhance(stage)).observe(stage,{childList:true});enhance(stage);}
+- window.STUDENT_LEARNING={cases,render,bindPractice,shuffled,read,rate,remember,ratingHtml,getFocus,setFocus,guidedHtml};
++ window.STUDENT_LEARNING={cases,render,bindPractice,shuffled,read,rate,remember,ratingHtml};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+ }());
+--- a/assets/app.css
++++ b/assets/app.css
+@@ -5119,18 +5119,3 @@
+ .explorer-finding-chooser summary { cursor: pointer; min-height: 28px; font-size: .82rem; font-weight: 600; }
+ .explorer-finding-chooser .explorer-finding-list { margin-top: 8px; }
+ .explorer-path summary, .explorer-checklist summary, .explorer-finding-chooser summary { box-sizing: border-box; min-height: 44px; padding-block: 8px; }
+-
+-/* Optional learning depth: compact disclosure, no hidden clinical sections. */
+-.guided-reasoning{margin-top:16px;border:1px solid var(--line,#ccd3dc);border-radius:12px;background:var(--card,#fff);color:var(--ink,#172536)}
+-.guided-reasoning>summary{padding:14px 16px;cursor:pointer;font-weight:700;min-height:44px}
+-.guided-inner{padding:0 16px 16px}
+-.guided-levels{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+-.guided-levels button{font:inherit;min-height:44px;padding:8px 16px;border:1px solid currentColor;border-radius:8px;background:transparent;color:inherit;cursor:pointer}
+-.guided-levels button[aria-pressed="true"]{background:var(--ink,#172536);color:var(--card,#fff)}
+-.guided-prompts{padding-left:24px;margin:12px 0}
+-.guided-prompts li{padding:8px 0 12px}
+-.guided-prompts li p{margin:0 0 6px}
+-.guided-prompts a{display:inline-block;padding:8px 0;text-underline-offset:3px}
+-.guided-footnote,.guided-save{font-size:.85rem;line-height:1.5}
+-.guided-save:empty{display:none}
+-.guided-reasoning :focus-visible{outline:3px solid var(--accent,#2563eb);outline-offset:3px}
+--- a/assets/app.js
++++ b/assets/app.js
+@@ -2199,7 +2199,7 @@
+         if ('serviceWorker' in navigator) {
+             window.addEventListener('load', () => {
+                 const hadController = !!navigator.serviceWorker.controller;
+-                navigator.serviceWorker.register('./sw.js?v=20260910-guided-r6').then((registration) => {
++                navigator.serviceWorker.register('./sw.js?v=20260910-verified-r5').then((registration) => {
+                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
+                     if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
+                     registration.addEventListener('updatefound', () => {
+--- a/index.html
++++ b/index.html
+@@ -9,14 +9,14 @@
+ <title>EM Pocket — Emergency Medicine Reference</title>
+ <meta name="description" content="A focused emergency medicine reference for chest pain, dyspnea, abdominal pain, and more. Rosen's-based frameworks for clinical learning and review.">
+ <meta name="theme-color" content="#f6f7f9" id="themeColor">
+-<link rel="manifest" href="manifest.json?v=20260910-guided-r6">
+-<link rel="icon" href="assets/icon.svg?v=20260910-guided-r6" type="image/svg+xml">
+-<link rel="icon" href="assets/icon-192.png?v=20260910-guided-r6" type="image/png" sizes="192x192">
+-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260910-guided-r6" sizes="180x180">
++<link rel="manifest" href="manifest.json?v=20260910-verified-r5">
++<link rel="icon" href="assets/icon.svg?v=20260910-verified-r5" type="image/svg+xml">
++<link rel="icon" href="assets/icon-192.png?v=20260910-verified-r5" type="image/png" sizes="192x192">
++<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260910-verified-r5" sizes="180x180">
+ <meta name="mobile-web-app-capable" content="yes">
+ <meta name="apple-mobile-web-app-capable" content="yes">
+ <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+-<link rel="stylesheet" href="assets/app.css?v=20260910-guided-r6">
++<link rel="stylesheet" href="assets/app.css?v=20260910-verified-r5">
+ <script>
+ (function () {
+     try {
+@@ -46,7 +46,7 @@
+ <nav class="sidebar" id="sidebar" aria-label="Presentations">
+     <div class="side-head">
+     <button class="brand" id="brandBtn" type="button" title="All presentations">
+-        <span class="brand-mark" aria-hidden="true"><img src="assets/icon-192.png?v=20260910-guided-r6" alt="" width="44" height="44"></span>
++        <span class="brand-mark" aria-hidden="true"><img src="assets/icon-192.png?v=20260910-verified-r5" alt="" width="44" height="44"></span>
+         <span class="brand-text">
+             <strong>EM Pocket</strong>
+             <span>Emergency medicine</span>
+@@ -182,13 +182,13 @@
+ <div class="toast" id="toast" role="status"></div>
+ <noscript><p class="noscript">EM Pocket needs JavaScript enabled to show presentations.</p></noscript>
+ 
+-<script src="assets/ecg-svg.js?v=20260910-guided-r6"></script>
+-<script src="assets/ecg-engine.js?v=20260910-guided-r6"></script>
+-<script src="assets/ecg-case-tracings.js?v=20260910-guided-r6"></script>
+-<script src="assets/ecg-interactive.js?v=20260910-guided-r6"></script>
+-<script src="assets/ecg-curriculum.js?v=20260910-guided-r6"></script><script src="assets/ecg-explorer.js?v=20260910-guided-r6"></script>
+-<script src="assets/data.js?v=20260910-guided-r6"></script>
+-<script src="assets/evidence.js?v=20260910-guided-r6"></script>
+-<script src="assets/student-learning.js?v=20260910-guided-r6"></script><script src="assets/app.js?v=20260910-guided-r6"></script>
++<script src="assets/ecg-svg.js?v=20260910-verified-r5"></script>
++<script src="assets/ecg-engine.js?v=20260910-verified-r5"></script>
++<script src="assets/ecg-case-tracings.js?v=20260910-verified-r5"></script>
++<script src="assets/ecg-interactive.js?v=20260910-verified-r5"></script>
++<script src="assets/ecg-curriculum.js?v=20260910-verified-r5"></script><script src="assets/ecg-explorer.js?v=20260910-verified-r5"></script>
++<script src="assets/data.js?v=20260910-verified-r5"></script>
++<script src="assets/evidence.js?v=20260910-verified-r5"></script>
++<script src="assets/student-learning.js?v=20260910-verified-r5"></script><script src="assets/app.js?v=20260910-verified-r5"></script>
+ </body>
+ </html>
+--- a/manifest.json
++++ b/manifest.json
+@@ -15,42 +15,42 @@
+             "name": "Chest Pain",
+             "short_name": "Chest Pain",
+             "url": "./#chest-pain",
+-            "icons": [{"src": "assets/icon-192.png?v=20260910-guided-r6", "sizes": "192x192"}]
++            "icons": [{"src": "assets/icon-192.png?v=20260910-verified-r5", "sizes": "192x192"}]
+         },
+         {
+             "name": "Shortness of Breath",
+             "short_name": "Dyspnea",
+             "url": "./#dyspnea",
+-            "icons": [{"src": "assets/icon-192.png?v=20260910-guided-r6", "sizes": "192x192"}]
++            "icons": [{"src": "assets/icon-192.png?v=20260910-verified-r5", "sizes": "192x192"}]
+         },
+         {
+             "name": "Suspected Stroke",
+             "short_name": "Stroke",
+             "url": "./#focal-neurologic-deficit",
+-            "icons": [{"src": "assets/icon-192.png?v=20260910-guided-r6", "sizes": "192x192"}]
++            "icons": [{"src": "assets/icon-192.png?v=20260910-verified-r5", "sizes": "192x192"}]
+         },
+         {
+             "name": "ECG from scratch",
+             "short_name": "ECG",
+             "url": "./#ecg",
+-            "icons": [{"src": "assets/icon-192.png?v=20260910-guided-r6", "sizes": "192x192"}]
++            "icons": [{"src": "assets/icon-192.png?v=20260910-verified-r5", "sizes": "192x192"}]
+         }
+     ],
+     "icons": [
+         {
+-            "src": "assets/icon-192.png?v=20260910-guided-r6",
++            "src": "assets/icon-192.png?v=20260910-verified-r5",
+             "sizes": "192x192",
+             "type": "image/png",
+             "purpose": "any"
+         },
+         {
+-            "src": "assets/icon-512.png?v=20260910-guided-r6",
++            "src": "assets/icon-512.png?v=20260910-verified-r5",
+             "sizes": "512x512",
+             "type": "image/png",
+             "purpose": "any"
+         },
+         {
+-            "src": "assets/icon-maskable-512.png?v=20260910-guided-r6",
++            "src": "assets/icon-maskable-512.png?v=20260910-verified-r5",
+             "sizes": "512x512",
+             "type": "image/png",
+             "purpose": "maskable"
+--- a/sw.js
++++ b/sw.js
+@@ -1,30 +1,30 @@
+ /* EM Pocket service worker — resilient app-shell caching for offline clinical reference. */
+-const CACHE_VERSION = 'v165';
++const CACHE_VERSION = 'v164';
+ // Preserve case, separators and the full path: sibling installations must never share caches.
+ const SCOPE_KEY = encodeURIComponent(new URL(self.registration.scope).pathname);
+ const CACHE_PREFIX = 'em-cps-scope-' + SCOPE_KEY + '-';
+ const CACHE = CACHE_PREFIX + CACHE_VERSION;
+ const CORE_ASSETS = [
+     './',
+-    './assets/app.css?v=20260910-guided-r6',
+-    './assets/student-learning.js?v=20260910-guided-r6',
+-    './assets/app.js?v=20260910-guided-r6',
+-    './assets/data.js?v=20260910-guided-r6',
+-    './assets/evidence.js?v=20260910-guided-r6',
+-    './assets/ecg-svg.js?v=20260910-guided-r6',
+-    './assets/ecg-engine.js?v=20260910-guided-r6',
+-    './assets/ecg-case-tracings.js?v=20260910-guided-r6',
+-    './assets/ecg-interactive.js?v=20260910-guided-r6',
+-    './assets/ecg-curriculum.js?v=20260910-guided-r6',
+-  './assets/ecg-explorer.js?v=20260910-guided-r6'
++    './assets/app.css?v=20260910-verified-r5',
++    './assets/student-learning.js?v=20260910-verified-r5',
++    './assets/app.js?v=20260910-verified-r5',
++    './assets/data.js?v=20260910-verified-r5',
++    './assets/evidence.js?v=20260910-verified-r5',
++    './assets/ecg-svg.js?v=20260910-verified-r5',
++    './assets/ecg-engine.js?v=20260910-verified-r5',
++    './assets/ecg-case-tracings.js?v=20260910-verified-r5',
++    './assets/ecg-interactive.js?v=20260910-verified-r5',
++    './assets/ecg-curriculum.js?v=20260910-verified-r5',
++  './assets/ecg-explorer.js?v=20260910-verified-r5'
+ ];
+ const OPTIONAL_ASSETS = [
+-    './manifest.json?v=20260910-guided-r6',
+-    './assets/icon.svg?v=20260910-guided-r6',
+-    './assets/icon-192.png?v=20260910-guided-r6',
+-    './assets/icon-512.png?v=20260910-guided-r6',
+-    './assets/icon-maskable-512.png?v=20260910-guided-r6',
+-    './assets/apple-touch-icon.png?v=20260910-guided-r6'
++    './manifest.json?v=20260910-verified-r5',
++    './assets/icon.svg?v=20260910-verified-r5',
++    './assets/icon-192.png?v=20260910-verified-r5',
++    './assets/icon-512.png?v=20260910-verified-r5',
++    './assets/icon-maskable-512.png?v=20260910-verified-r5',
++    './assets/apple-touch-icon.png?v=20260910-verified-r5'
+ ];
+ 
+ // Cache the canonical directory URL: Pages redirects index.html to this URL.
+--- a/dev/explorer.html
++++ b/dev/explorer.html
+@@ -1 +1 @@
+-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ECG Explorer local preview</title><link rel="stylesheet" href="../assets/app.css?v=20260910-guided-r6"><style>body{display:block;padding:24px}#preview{max-width:1450px;margin:auto}#qa{margin:16px 0}#qaResult,#learningResult,#studentExplorerResult{white-space:pre-wrap;overflow-wrap:anywhere}#qa button{max-width:100%}@media(max-width:600px){body{padding:12px}}</style></head><body><div id="preview" class="ecg-explorer"></div><div id="qa"><button id="runExplorer">Run Explorer checks</button><pre id="qaResult"></pre></div><script src="../assets/ecg-svg.js?v=20260910-guided-r6"></script><script src="../assets/ecg-engine.js?v=20260910-guided-r6"></script><script src="../assets/ecg-case-tracings.js?v=20260910-guided-r6"></script><script src="../assets/ecg-interactive.js?v=20260910-guided-r6"></script><script src="../assets/ecg-curriculum.js?v=20260910-guided-r6"></script><script src="../assets/ecg-explorer.js?v=20260910-guided-r6"></script><script>if(['localhost','127.0.0.1'].includes(location.hostname))window.ECG_EXPLORER.mount(document.querySelector('#preview'));</script><script src="explorer-audit.js?v=3"></script><script src="ecg-learning-audit.js?v=3"></script><script src="explorer-student-audit.js"></script></body></html>
++<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ECG Explorer local preview</title><link rel="stylesheet" href="../assets/app.css?v=20260910-verified-r5"><style>body{display:block;padding:24px}#preview{max-width:1450px;margin:auto}#qa{margin:16px 0}#qaResult,#learningResult,#studentExplorerResult{white-space:pre-wrap;overflow-wrap:anywhere}#qa button{max-width:100%}@media(max-width:600px){body{padding:12px}}</style></head><body><div id="preview" class="ecg-explorer"></div><div id="qa"><button id="runExplorer">Run Explorer checks</button><pre id="qaResult"></pre></div><script src="../assets/ecg-svg.js?v=20260910-verified-r5"></script><script src="../assets/ecg-engine.js?v=20260910-verified-r5"></script><script src="../assets/ecg-case-tracings.js?v=20260910-verified-r5"></script><script src="../assets/ecg-interactive.js?v=20260910-verified-r5"></script><script src="../assets/ecg-curriculum.js?v=20260910-verified-r5"></script><script src="../assets/ecg-explorer.js?v=20260910-verified-r5"></script><script>if(['localhost','127.0.0.1'].includes(location.hostname))window.ECG_EXPLORER.mount(document.querySelector('#preview'));</script><script src="explorer-audit.js?v=3"></script><script src="ecg-learning-audit.js?v=3"></script><script src="explorer-student-audit.js"></script></body></html>
+--- a/dev/explorer-contact.html
++++ b/dev/explorer-contact.html
+@@ -1 +1 @@
+-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ECG curriculum visual QA</title><link rel="stylesheet" href="../assets/app.css?v=20260910-guided-r6"><style>body{display:block;padding:12px}main{display:grid;grid-template-columns:1fr 1fr;gap:12px}article{min-width:0}h2{font:700 18px system-ui}svg{width:100%;height:auto;max-height:none!important}p{font:14px/1.5 system-ui}</style></head><body><main></main><script src="../assets/ecg-svg.js?v=20260910-guided-r6"></script><script src="../assets/ecg-engine.js?v=20260910-guided-r6"></script><script src="../assets/ecg-case-tracings.js?v=20260910-guided-r6"></script><script src="../assets/ecg-interactive.js?v=20260910-guided-r6"></script><script src="../assets/ecg-curriculum.js?v=20260910-guided-r6"></script><script src="../assets/ecg-explorer.js?v=20260910-guided-r6"></script><script>if(['localhost','127.0.0.1'].includes(location.hostname)){const page=Number(new URLSearchParams(location.search).get('page'))||0;for(const c of ECG_EXPLORER.cases.filter(c=>new URLSearchParams(location.search).get('mode')==='full'?c.overrides:c.kind).slice(page*6,page*6+6)){const v=ECG_EXPLORER.build(c.id,false),a=document.createElement('article'),h=document.createElement('h2');h.textContent=c.name;a.append(h);a.insertAdjacentHTML('beforeend',v.svg);const p=document.createElement('p');p.textContent=c.summary;a.append(p);document.querySelector('main').append(a);}}</script></body></html>
++<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ECG curriculum visual QA</title><link rel="stylesheet" href="../assets/app.css?v=20260910-verified-r5"><style>body{display:block;padding:12px}main{display:grid;grid-template-columns:1fr 1fr;gap:12px}article{min-width:0}h2{font:700 18px system-ui}svg{width:100%;height:auto;max-height:none!important}p{font:14px/1.5 system-ui}</style></head><body><main></main><script src="../assets/ecg-svg.js?v=20260910-verified-r5"></script><script src="../assets/ecg-engine.js?v=20260910-verified-r5"></script><script src="../assets/ecg-case-tracings.js?v=20260910-verified-r5"></script><script src="../assets/ecg-interactive.js?v=20260910-verified-r5"></script><script src="../assets/ecg-curriculum.js?v=20260910-verified-r5"></script><script src="../assets/ecg-explorer.js?v=20260910-verified-r5"></script><script>if(['localhost','127.0.0.1'].includes(location.hostname)){const page=Number(new URLSearchParams(location.search).get('page'))||0;for(const c of ECG_EXPLORER.cases.filter(c=>new URLSearchParams(location.search).get('mode')==='full'?c.overrides:c.kind).slice(page*6,page*6+6)){const v=ECG_EXPLORER.build(c.id,false),a=document.createElement('article'),h=document.createElement('h2');h.textContent=c.name;a.append(h);a.insertAdjacentHTML('beforeend',v.svg);const p=document.createElement('p');p.textContent=c.summary;a.append(p);document.querySelector('main').append(a);}}</script></body></html>
+--- a/dev/ecg-highlight-gallery.html
++++ b/dev/ecg-highlight-gallery.html
+@@ -1,4 +1,4 @@
+-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ECG highlight QA</title><link rel="stylesheet" href="../assets/app.css?v=20260910-guided-r6"><style>body{display:block;padding:12px}main{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}article{background:white;color:#111;padding:10px;min-width:0}h2{font:700 16px system-ui;margin:0 0 10px}svg{width:100%;height:auto;max-height:500px}p{font:13px/1.5 system-ui}.ecg-guided-target,.ecg-reference{display:none}</style></head><body><main></main><script src="../assets/ecg-svg.js?v=20260910-guided-r6"></script><script src="../assets/ecg-engine.js?v=20260910-guided-r6"></script><script src="../assets/ecg-case-tracings.js?v=20260910-guided-r6"></script><script src="../assets/ecg-interactive.js?v=20260910-guided-r6"></script><script src="../assets/ecg-curriculum.js?v=20260910-guided-r6"></script><script>
++<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ECG highlight QA</title><link rel="stylesheet" href="../assets/app.css?v=20260910-verified-r5"><style>body{display:block;padding:12px}main{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}article{background:white;color:#111;padding:10px;min-width:0}h2{font:700 16px system-ui;margin:0 0 10px}svg{width:100%;height:auto;max-height:500px}p{font:13px/1.5 system-ui}.ecg-guided-target,.ecg-reference{display:none}</style></head><body><main></main><script src="../assets/ecg-svg.js?v=20260910-verified-r5"></script><script src="../assets/ecg-engine.js?v=20260910-verified-r5"></script><script src="../assets/ecg-case-tracings.js?v=20260910-verified-r5"></script><script src="../assets/ecg-interactive.js?v=20260910-verified-r5"></script><script src="../assets/ecg-curriculum.js?v=20260910-verified-r5"></script><script>
+ if(['localhost','127.0.0.1'].includes(location.hostname)){
+  const page=Number(new URLSearchParams(location.search).get('page'))||0;
+  for(const [id,entry] of Object.entries(window.ECG_SVG).slice(page*3,page*3+3)){
+--- a/dev/audit.html
++++ b/dev/audit.html
+@@ -1 +1 @@
+-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EM Pocket local audit</title><link rel="stylesheet" href="../assets/app.css?v=20260910-guided-r6"><style>body{display:block;padding:20px;overflow:auto}main{max-width:1000px;margin:auto}#gallery{max-width:900px}.qa-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}select,button{font:inherit;padding:10px}iframe{box-sizing:content-box;height:850px;max-width:none;border:1px solid #aaa;background:white}#result{white-space:pre-wrap}#gallery h2{margin:12px 0}</style></head><body><main><h1>Local regression & visual audit</h1><p>This isolated test fixture omits the onboarding notice without accepting or recording any agreement.</p><div class="qa-row"><button id="run">Run browser checks</button><label>Figure <select id="figure"></select></label><button id="enlarge">Enlarge</button></div><pre id="result" role="status">Loading…</pre><section id="gallery"></section><h2>Application fixture</h2><label>Route <select id="route"></select></label><iframe title="Application test fixture" id="app"></iframe></main><script src="../assets/ecg-svg.js?v=20260910-guided-r6"></script><script src="../assets/ecg-engine.js?v=20260910-guided-r6"></script><script src="../assets/ecg-case-tracings.js?v=20260910-guided-r6"></script><script src="../assets/ecg-interactive.js?v=20260910-guided-r6"></script><script src="../assets/ecg-curriculum.js?v=20260910-guided-r6"></script><script src="../assets/ecg-explorer.js?v=20260910-guided-r6"></script><script src="../assets/data.js?v=20260910-guided-r6"></script><script src="../assets/evidence.js?v=20260910-guided-r6"></script><script src="audit.js?v=20260910-guided-r6"></script><script src="ecg-interaction-audit.js?v=7"></script><script src="student-audit.js?v=2"></script><script src="theme-audit.js?v=3"></script><script src="header-audit.js?v=2"></script></body></html>
++<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EM Pocket local audit</title><link rel="stylesheet" href="../assets/app.css?v=20260910-verified-r5"><style>body{display:block;padding:20px;overflow:auto}main{max-width:1000px;margin:auto}#gallery{max-width:900px}.qa-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}select,button{font:inherit;padding:10px}iframe{box-sizing:content-box;height:850px;max-width:none;border:1px solid #aaa;background:white}#result{white-space:pre-wrap}#gallery h2{margin:12px 0}</style></head><body><main><h1>Local regression & visual audit</h1><p>This isolated test fixture omits the onboarding notice without accepting or recording any agreement.</p><div class="qa-row"><button id="run">Run browser checks</button><label>Figure <select id="figure"></select></label><button id="enlarge">Enlarge</button></div><pre id="result" role="status">Loading…</pre><section id="gallery"></section><h2>Application fixture</h2><label>Route <select id="route"></select></label><iframe title="Application test fixture" id="app"></iframe></main><script src="../assets/ecg-svg.js?v=20260910-verified-r5"></script><script src="../assets/ecg-engine.js?v=20260910-verified-r5"></script><script src="../assets/ecg-case-tracings.js?v=20260910-verified-r5"></script><script src="../assets/ecg-interactive.js?v=20260910-verified-r5"></script><script src="../assets/ecg-curriculum.js?v=20260910-verified-r5"></script><script src="../assets/ecg-explorer.js?v=20260910-verified-r5"></script><script src="../assets/data.js?v=20260910-verified-r5"></script><script src="../assets/evidence.js?v=20260910-verified-r5"></script><script src="audit.js?v=20260910-verified-r5"></script><script src="ecg-interaction-audit.js?v=7"></script><script src="student-audit.js?v=2"></script><script src="theme-audit.js?v=3"></script><script src="header-audit.js?v=2"></script></body></html>
+--- a/tests/student-learning.test.js
++++ b/tests/student-learning.test.js
+@@ -4,4 +4,3 @@
+ test('authored practice scenarios have facts, distinct choices and option-specific feedback',()=>{const S=load();assert.equal(S.cases.length,12);for(const c of S.cases){assert.ok(c.stem.length>100,c.id);assert.equal(c.questions.length,2);for(const q of c.questions){assert.equal(q.options.filter(o=>o.correct).length,1);assert.equal(new Set(q.options.map(o=>o.id)).size,3);assert.ok(q.options.every(o=>o.why.length>20));}const html=S.render(S.cases.indexOf(c));assert.match(html,/class="case-complete" hidden/);for(const q of c.questions)for(const o of q.options)assert.ok(!html.includes(o.why),'Feedback leaked before attempt');}});
+ test('shuffle preserves stable option IDs and uses all correct-answer positions',()=>{const S=load(),options=S.cases[0].questions[0].options,seen=new Set();for(let seed=0;seed<100;seed++){const result=S.shuffled(options,seed);seen.add(result.findIndex(o=>o.correct));assert.deepEqual(Array.from(result,o=>o.id).sort(),Array.from(options,o=>o.id).sort());}assert.equal(seen.size,3);assert.equal(options[0].id,'best');});
+ test('self-rating storage failures retain session progress without saving answers',()=>{const S=load(true);assert.equal(S.rate('ecg:normal','again'),false);assert.equal(S.read().ratings['ecg:normal'].value,'again');S.remember('ecg-explorer~normal');assert.equal(S.read().last,'ecg-explorer~normal');assert.equal(S.rate('ecg:normal','made-up'),false);assert.deepEqual(Object.keys(S.read()).sort(),['last','ratings']);});
+-test('learning depth is optional, validates preferences and retains blocked-storage choices',()=>{for(const blocked of [false,true]){const S=load(blocked);assert.equal(S.getFocus(),'core');assert.equal(S.setFocus('advanced'),!blocked);assert.equal(S.getFocus(),'advanced');assert.equal(S.setFocus('__proto__'),false);assert.equal(S.getFocus(),'advanced');const html=S.guidedHtml('chest-pain');assert.match(html,/Advanced/);assert.match(html,/#chest-pain~references/);assert.doesNotMatch(html,/<details[^>]+open/);assert.equal((html.match(/data-learning-focus=/g)||[]).length,3);assert.ok(!S.guidedHtml('<img>').includes('<img>'));}});

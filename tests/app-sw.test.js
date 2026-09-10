@@ -94,7 +94,7 @@ test('install caches a nonredirecting shell; optional icon failure does not bloc
     const handlers={},added=[];let skipped=false;
     vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../sw.js'),'utf8'),{
       URL,Promise,self:{registration:{scope:'https://example.test/'},addEventListener:(type,fn)=>handlers[type]=fn,skipWaiting:async()=>{skipped=true;}},
-      caches:{open:async()=>({addAll:async urls=>{added.push(...urls);if(failCore)throw Error('core failed');},add:async()=>{throw Error('optional icon unavailable');},match:async url=>({headers:{get:()=>url.includes('.js')?'text/javascript':url.includes('.css')?'text/css':'text/html'}})})}
+      caches:{open:async()=>({addAll:async urls=>{added.push(...urls);if(failCore)throw Error('core failed');},add:async()=>{throw Error('optional icon unavailable');},match:async url=>({headers:{get:()=>url.includes('.js')?'text/javascript':url.includes('.css')?'text/css':url.includes('.txt')?'text/plain':'text/html'}})})}
     });
     let pending;handlers.install({waitUntil:p=>pending=p});
     if(failCore)await assert.rejects(pending,/core failed/);else await pending;

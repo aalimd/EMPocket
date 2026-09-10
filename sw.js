@@ -1,30 +1,34 @@
 /* EM Pocket service worker — resilient app-shell caching for offline clinical reference. */
-const CACHE_VERSION = 'v163';
+const CACHE_VERSION = 'v170';
 // Preserve case, separators and the full path: sibling installations must never share caches.
 const SCOPE_KEY = encodeURIComponent(new URL(self.registration.scope).pathname);
 const CACHE_PREFIX = 'em-cps-scope-' + SCOPE_KEY + '-';
 const CACHE = CACHE_PREFIX + CACHE_VERSION;
 const CORE_ASSETS = [
     './',
-    './assets/app.css?v=20260910-verified-r4',
-    './assets/student-learning.js?v=20260910-verified-r4',
-    './assets/app.js?v=20260910-verified-r4',
-    './assets/data.js?v=20260910-verified-r4',
-    './assets/evidence.js?v=20260910-verified-r4',
-    './assets/ecg-svg.js?v=20260910-verified-r4',
-    './assets/ecg-engine.js?v=20260910-verified-r4',
-    './assets/ecg-case-tracings.js?v=20260910-verified-r4',
-    './assets/ecg-interactive.js?v=20260910-verified-r4',
-    './assets/ecg-curriculum.js?v=20260910-verified-r4',
-  './assets/ecg-explorer.js?v=20260910-verified-r4'
+    './assets/app.css?v=20260910-complete-r11',
+    './assets/em-learning-data.js?v=20260910-complete-r11',
+    './assets/ecg-recordings.js?v=20260910-complete-r11',
+    './assets/ptb-xl-LICENSE.txt',
+    './assets/em-learning.js?v=20260910-complete-r11',
+    './assets/student-learning.js?v=20260910-complete-r11',
+    './assets/app.js?v=20260910-complete-r11',
+    './assets/data.js?v=20260910-complete-r11',
+    './assets/evidence.js?v=20260910-complete-r11',
+    './assets/ecg-svg.js?v=20260910-complete-r11',
+    './assets/ecg-engine.js?v=20260910-complete-r11',
+    './assets/ecg-case-tracings.js?v=20260910-complete-r11',
+    './assets/ecg-interactive.js?v=20260910-complete-r11',
+    './assets/ecg-curriculum.js?v=20260910-complete-r11',
+  './assets/ecg-explorer.js?v=20260910-complete-r11'
 ];
 const OPTIONAL_ASSETS = [
-    './manifest.json?v=20260910-verified-r4',
-    './assets/icon.svg?v=20260910-verified-r4',
-    './assets/icon-192.png?v=20260910-verified-r4',
-    './assets/icon-512.png?v=20260910-verified-r4',
-    './assets/icon-maskable-512.png?v=20260910-verified-r4',
-    './assets/apple-touch-icon.png?v=20260910-verified-r4'
+    './manifest.json?v=20260910-complete-r11',
+    './assets/icon.svg?v=20260910-complete-r11',
+    './assets/icon-192.png?v=20260910-complete-r11',
+    './assets/icon-512.png?v=20260910-complete-r11',
+    './assets/icon-maskable-512.png?v=20260910-complete-r11',
+    './assets/apple-touch-icon.png?v=20260910-complete-r11'
 ];
 
 // Cache the canonical directory URL: Pages redirects index.html to this URL.
@@ -53,7 +57,7 @@ async function validateCore(cache) {
         const type = response && response.headers.get('Content-Type') || '';
         const path = new URL(asset, APP_SHELL).pathname;
         const expected = path.endsWith('.js') ? /^(?:application|text)\/(?:x-)?(?:java|ecma)script(?:\s*;|$)/i :
-            path.endsWith('.css') ? /^text\/css(?:\s*;|$)/i : /^text\/html(?:\s*;|$)/i;
+            path.endsWith('.css') ? /^text\/css(?:\s*;|$)/i : path.endsWith('.txt') ? /^text\/plain(?:\s*;|$)/i : /^text\/html(?:\s*;|$)/i;
         if (!expected.test(type.trim())) throw new Error('Invalid offline asset type: ' + asset);
     }
 }
