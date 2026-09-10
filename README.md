@@ -48,7 +48,7 @@ See Cloudflare's official [static HTML settings](https://developers.cloudflare.c
 
 ## Release and offline updates
 
-The current asset token is `20260910-hosts-r1`; `CACHE_VERSION` is `v160` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
+The current asset token is `20260910-explorer-r2`; `CACHE_VERSION` is `v161` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
 
 The worker precaches the canonical `./` shell because Pages redirects `/index.html` to `/`. Direct hash routes and offline `/index.html` requests fall back to that shell. Required asset failure prevents a new worker from activating; optional icon failure does not prevent core offline use. A new worker claims the app and notifies users to refresh. Cache cleanup remains scoped to this installation; it does not clear saved progress or other apps' caches.
 

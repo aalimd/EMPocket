@@ -444,6 +444,7 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: var(--hove
     flex: none;
     display: grid;
     place-items: center;
+    overflow: hidden;
     background: linear-gradient(135deg, var(--mark-1) 0%, var(--mark-2) 100%);
     color: var(--on-mark);
     font-weight: 900;
@@ -451,6 +452,12 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: var(--hove
     letter-spacing: -0.5px;
     box-shadow: 0 6px 18px rgba(var(--accent-rgb), 0.38);
     transition: transform var(--transition-smooth) var(--ease-spring), box-shadow var(--transition-base) ease;
+}
+.brand-mark img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 .brand-text strong {
     display: block;
@@ -4497,18 +4504,18 @@ body button { box-shadow: none; }
 .side-btn { justify-content: flex-start; padding-inline: 10px; font-weight: 500; border-color: transparent; background: transparent; }
 .side-btn:hover { background: var(--home-hover); color: var(--ink); border-color: transparent; }
 .side-note { font-size: .67rem; line-height: 1.6; }
-.topbar { display: grid; grid-template-columns: minmax(180px,1fr) auto auto; gap: 18px; padding: 14px 32px; background: var(--topbar-bg); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-.topbar > .burger { display: none; }
-.primary-nav { display: flex; align-items: center; gap: 3px; grid-column: 2; grid-row: 1; }
+.topbar { display: grid; grid-template-columns: 44px minmax(180px,1fr) auto auto; gap: 18px; padding: 14px 32px; background: var(--topbar-bg); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.topbar > .burger { display: flex; grid-column: 1; grid-row: 1; width: 44px; min-width: 44px; height: 44px; padding: 0; border: 1px solid var(--line); border-radius: 9px; background: transparent; color: var(--ink-soft); align-items: center; justify-content: center; cursor: pointer; }
+.primary-nav { display: flex; align-items: center; gap: 3px; grid-column: 3; grid-row: 1; }
 .primary-nav .home-btn { width: auto; min-width: 0; height: 44px; padding: 0 11px; font-size: .8rem; font-weight: 550; border: 0; border-radius: 8px; color: var(--ink-soft); background: transparent; gap: 7px; box-shadow: none; }
 .primary-nav #homeBtn, .primary-nav #studyBtn, .primary-nav #shiftBtn, .primary-nav #ecgBtn { grid-column: auto; grid-row: auto; width: auto; min-width: 0; display: flex; align-items: center; justify-content: center; font-size: .8rem; padding: 0 11px; }
 .primary-nav #homeBtn .header-label, .primary-nav #studyBtn .header-label, .primary-nav #shiftBtn .header-label, .primary-nav #ecgBtn .header-label { display: inline; font-size: inherit; }
 .primary-nav .home-btn:hover { transform: none; color: var(--ink); background: var(--home-hover); box-shadow: none; }
 .primary-nav .home-btn.active-nav, html[data-theme="dark"] .primary-nav .home-btn.active-nav { background: var(--ov-job-bg); color: var(--brand-2); border-color: transparent; box-shadow: none; }
-.topbar > .searchwrap { grid-column: 1; grid-row: 1; width: 100%; max-width: 460px; min-width: 0; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--bg); box-shadow: none; margin: 0; }
+.topbar > .searchwrap { grid-column: 2; grid-row: 1; width: 100%; max-width: 460px; min-width: 0; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--bg); box-shadow: none; margin: 0; }
 #searchInput { font-size: .84rem; }
 .search-ico { opacity: 1; color: var(--ink-soft); }
-.topbar > .tools-toggle { display: flex; grid-column: 3; grid-row: 1; min-width: 44px; width: 44px; height: 44px; padding: 0; border: 1px solid var(--line); border-radius: 9px; background: transparent; color: var(--ink-soft); box-shadow: none; }
+.topbar > .tools-toggle { display: flex; grid-column: 4; grid-row: 1; min-width: 44px; width: 44px; height: 44px; padding: 0; border: 1px solid var(--line); border-radius: 9px; background: transparent; color: var(--ink-soft); box-shadow: none; }
 .tools-toggle .header-label { display: none; }
 .topbar > .topbar-tools { display: none; position: absolute; left: auto; top: calc(100% + 8px); right: 24px; width: 380px; max-width: calc(100vw - 24px); padding: 18px; margin: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--card); box-shadow: var(--shadow-float); }
 .topbar > .topbar-tools.open { display: flex; flex-direction: column; align-items: stretch; gap: 14px; }
@@ -4674,7 +4681,7 @@ body button { box-shadow: none; }
 .foot { border-top: 1px solid var(--line); color: var(--ink-soft); background: var(--foot-bg); padding: 24px 40px; }
 .foot p { max-width: 1000px; margin-inline: auto; font-size: .72rem; line-height: 1.7; }
 @media (max-width: 1160px) and (min-width: 921px) {
-  .topbar { padding-inline: 22px; gap: 10px; grid-template-columns: minmax(120px,1fr) auto auto; }
+  .topbar { padding-inline: 22px; gap: 10px; grid-template-columns: 44px minmax(120px,1fr) auto auto; }
   .primary-nav .home-btn { padding-inline: 8px; }
   /* Hybrid fix: keep header SVG visible on tablet — was `display:none` (bug). */
   .primary-nav .ui-icon { display: block; width: 17px; height: 17px; }
@@ -4995,4 +5002,68 @@ html[data-theme="light"] .disp-col.d-icu h4 { color: #b91c1c; }
 .explorer-sheet > .explorer-explanation { margin: 0; padding: 14px; background: var(--card); border-left: 3px solid var(--brand); border-radius: 0; }
 .explorer-sheet { scroll-margin-top: 90px; }
 .has-comparison .explorer-paper-hint { min-height: 44px; align-items: center; }
+
+/* ── Fixed headers: brand + footer pinned, presentation list scrolls ──
+   Rollback: delete this block to restore whole-sidebar scrolling. */
+.sidebar { overflow: hidden; }
+.sidebar > .brand { flex: none; }
+.sidebar > .side-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--side-scroll) transparent;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding-bottom: 8px;
+}
+.side-list::-webkit-scrollbar { width: 4px; }
+.side-list::-webkit-scrollbar-thumb { background: var(--side-scroll); border-radius: var(--radius-full); }
+.sidebar > .side-footer { flex: none; }
+/* ── Sidebar content: counts + feedback link ── */
+.side-count {
+    display: inline-block;
+    font-size: .66rem;
+    font-weight: 700;
+    line-height: 1;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--side-muted);
+    white-space: nowrap;
+}
+.side-item .side-count { margin-left: auto; }
+.side-group .side-count { margin-left: 6px; vertical-align: 1px; }
+a.side-btn { text-decoration: none; }
+.foot a { color: var(--brand-2); }
+/* Topbar stays pinned on scroll (reinforces base sticky rule across overrides). */
+.topbar { position: -webkit-sticky; position: sticky; top: 0; }
+
+/* ── Collapsible sidebar: toggle from topbar (desktop) or side-head (drawer) ──
+   State lives on <html class="sidebar-collapsed">, persisted in em-cps-prefs.
+   Rollback: delete from here to the end of this block. */
+.side-head { display: flex; align-items: center; gap: 8px; }
+.side-head .brand { flex: 1 1 auto; min-width: 0; padding-bottom: 18px; }
+.collapse-btn {
+    flex: none;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    margin-bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--side-muted);
+    cursor: pointer;
+}
+.collapse-btn:hover { background: rgba(255, 255, 255, 0.15); color: #ffffff; }
+.collapse-btn .ui-icon { width: 19px; height: 19px; display: block; }
+@media (min-width: 921px) {
+  .sidebar { transition: transform var(--transition-smooth) var(--ease-out), visibility 0s; }
+  html.sidebar-collapsed .sidebar { -webkit-transform: translateX(-105%); transform: translateX(-105%); box-shadow: none; visibility: hidden; transition: transform var(--transition-smooth) var(--ease-out), visibility 0s .3s; }
+  html.sidebar-collapsed .main { margin-left: 0; }
+}
 .has-comparison .explorer-paper-hint span { display: none; }

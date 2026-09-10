@@ -400,13 +400,11 @@
     /* ---------- sidebar ---------- */
     function buildSidebar() {
         const list = document.getElementById('sideList');
-        list.innerHTML = '<button type="button" class="side-item side-home" data-home="1"><i class="ico" aria-hidden="true">' + GROUP_SVG.home + '</i>All presentations</button>' +
-            (getEcg() ? '<button type="button" class="side-item" data-ecg="1"><i class="ico" aria-hidden="true">' + GROUP_SVG.ecg + '</i>ECG Guide</button>' : '') +
-            '<button type="button" class="side-item" data-explorer="1"><i class="ico" aria-hidden="true">' + GROUP_SVG.ecg + '</i>ECG Explorer</button>' +
+        list.innerHTML = '<button type="button" class="side-item side-home" data-home="1"><i class="ico" aria-hidden="true">' + GROUP_SVG.home + '</i>All presentations<span class="side-count">' + DATA.length + '</span></button>' +
             GROUPS.map((g, groupIndex) => {
             const items = g.ids.map(id => BY_ID[id]).filter(Boolean);
             if (!items.length) return '';
-            return '<details class="side-group"' + (groupIndex === 0 ? ' open' : '') + '><summary class="side-label">' + esc(g.title) + '</summary>' +
+            return '<details class="side-group"' + (groupIndex === 0 ? ' open' : '') + '><summary class="side-label">' + esc(g.title) + ' <span class="side-count">' + items.length + '</span></summary>' +
                 items.map(cp =>
                     '<button type="button" class="side-item" data-id="' + cp.id + '"><i class="ico" aria-hidden="true">' + iconFor(cp) + '</i>' + esc(cp.name) + '</button>'
                 ).join('') + '</details>';
@@ -436,18 +434,20 @@
     function syncSidebarAccessibility() {
         const sidebar = document.getElementById('sidebar');
         if (!sidebar) return;
-        const closedMobileMenu = sidebarIsMobile() && !sidebar.classList.contains('open');
+        const mobile = sidebarIsMobile();
+        const hiddenMenu = (mobile && !sidebar.classList.contains('open')) ||
+            (!mobile && document.documentElement.classList.contains('sidebar-collapsed'));
         try {
-            if ('inert' in sidebar) sidebar.inert = closedMobileMenu;
-            else if (closedMobileMenu) sidebar.setAttribute('inert', '');
+            if ('inert' in sidebar) sidebar.inert = hiddenMenu;
+            else if (hiddenMenu) sidebar.setAttribute('inert', '');
             else sidebar.removeAttribute('inert');
         } catch (e) {}
-        sidebar.setAttribute('aria-hidden', closedMobileMenu ? 'true' : 'false');
+        sidebar.setAttribute('aria-hidden', hiddenMenu ? 'true' : 'false');
         // Fallback for browsers without native inert: remove from tab order when hidden on mobile
         try {
             const focusables = sidebar.querySelectorAll('button, summary, [href], input, select, textarea, [tabindex]');
             focusables.forEach(function (el) {
-                if (closedMobileMenu) {
+                if (hiddenMenu) {
                     if (el.dataset.prevTabindex === undefined) el.dataset.prevTabindex = el.getAttribute('tabindex') || '';
                     el.setAttribute('tabindex', '-1');
                 } else if (el.dataset.prevTabindex !== undefined) {
@@ -486,6 +486,32 @@
         document.getElementById('burgerBtn').setAttribute('aria-expanded', 'false');
         syncSidebarAccessibility();
         if (restoreFocus && wasOpen && sidebarIsMobile() && sidebarReturnFocus) sidebarReturnFocus.focus();
+    }
+    function sidebarCollapsed() {
+        return document.documentElement.classList.contains('sidebar-collapsed');
+    }
+    function syncSidebarToggle() {
+        const collapsed = sidebarCollapsed();
+        const collapseBtn = document.getElementById('collapseBtn');
+        if (collapseBtn) {
+            collapseBtn.setAttribute('aria-expanded', String(!collapsed));
+            collapseBtn.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
+            collapseBtn.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+        }
+        if (!sidebarIsMobile()) {
+            const burger = document.getElementById('burgerBtn');
+            if (burger) burger.setAttribute('aria-expanded', String(!collapsed));
+        }
+    }
+    function setSidebarCollapsed(collapsed) {
+        document.documentElement.classList.toggle('sidebar-collapsed', !!collapsed);
+        try {
+            const p = loadPrefs();
+            p.sidebar = !!collapsed;
+            savePrefs(p);
+        } catch (e) {}
+        syncSidebarToggle();
+        syncSidebarAccessibility();
     }
 
     function cardHtml(cp) {
@@ -1591,7 +1617,8 @@
             theme: prefs.theme === 'dark' ? 'dark' : 'light',
             accent: normalizeAccent(prefs.accent),
             scale: nearestScale(prefs.scale),
-            bold: typeof prefs.bold === 'boolean' ? prefs.bold : false
+            bold: typeof prefs.bold === 'boolean' ? prefs.bold : false,
+            sidebar: prefs.sidebar === true
         };
     }
     let prefsMemory = normalizePrefs({});
@@ -1628,6 +1655,8 @@
         r.setAttribute('data-accent', accent);
         if (p.bold !== false) r.setAttribute('data-weight', 'bold');
         else r.removeAttribute('data-weight');
+        r.classList.toggle('sidebar-collapsed', p.sidebar === true);
+        syncSidebarToggle();
         const scale = nearestScale(p.scale);
         r.style.setProperty('--type-scale', String(scale));
         const themeBtn = document.getElementById('themeBtn');
@@ -1979,15 +2008,29 @@
             else ecgBtn.addEventListener('click', () => showEcg());
         }
 
-        document.getElementById('burgerBtn').addEventListener('click', openSidebar);
+        document.getElementById('burgerBtn').addEventListener('click', () => {
+            if (sidebarIsMobile()) openSidebar();
+            else setSidebarCollapsed(!sidebarCollapsed());
+        });
+        const collapseBtn = document.getElementById('collapseBtn');
+        if (collapseBtn) collapseBtn.addEventListener('click', () => {
+            if (sidebarIsMobile()) closeSidebar(true);
+            else setSidebarCollapsed(!sidebarCollapsed());
+        });
         document.getElementById('sideBackdrop').addEventListener('click', () => closeSidebar(true));
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && sidebarIsMobile() &&
+                document.getElementById('sidebar').classList.contains('open')) closeSidebar(true);
+        });
         window.addEventListener('resize', () => {
             if (!sidebarIsMobile()) {
                 document.getElementById('sidebar').classList.remove('open');
                 document.getElementById('sideBackdrop').classList.remove('show');
-                document.getElementById('burgerBtn').setAttribute('aria-expanded', 'false');
                 sidebarReturnFocus = null;
+            } else {
+                document.getElementById('burgerBtn').setAttribute('aria-expanded', 'false');
             }
+            syncSidebarToggle();
             syncSidebarAccessibility();
         });
         document.addEventListener('keydown', (e) => {
@@ -2156,7 +2199,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20260910-hosts-r1').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20260910-explorer-r2').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
                     registration.addEventListener('updatefound', () => {

@@ -9,14 +9,14 @@
 <title>EM Pocket — Emergency Medicine Reference</title>
 <meta name="description" content="A focused emergency medicine reference for chest pain, dyspnea, abdominal pain, and more. Rosen's-based frameworks for clinical learning and review.">
 <meta name="theme-color" content="#f6f7f9" id="themeColor">
-<link rel="manifest" href="manifest.json?v=20260910-hosts-r1">
-<link rel="icon" href="assets/icon.svg?v=20260910-hosts-r1" type="image/svg+xml">
-<link rel="icon" href="assets/icon-192.png?v=20260910-hosts-r1" type="image/png" sizes="192x192">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260910-hosts-r1" sizes="180x180">
+<link rel="manifest" href="manifest.json?v=20260910-explorer-r2">
+<link rel="icon" href="assets/icon.svg?v=20260910-explorer-r2" type="image/svg+xml">
+<link rel="icon" href="assets/icon-192.png?v=20260910-explorer-r2" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260910-explorer-r2" sizes="180x180">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="assets/app.css?v=20260910-hosts-r1">
+<link rel="stylesheet" href="assets/app.css?v=20260910-explorer-r2">
 <script>
 (function () {
     try {
@@ -29,6 +29,7 @@
         r.setAttribute('data-accent', accent);
         if (p.bold === true) r.setAttribute('data-weight', 'bold');
         if (p.scale) r.style.setProperty('--type-scale', String(p.scale));
+        if (p.sidebar === true) r.classList.add('sidebar-collapsed');
         var meta = document.getElementById('themeColor');
         if (meta) {
             meta.setAttribute('content', theme === 'light' ? '#ffffff' : '#151d27');
@@ -43,18 +44,21 @@
 
 <!-- ═══════════ Sidebar ═══════════ -->
 <nav class="sidebar" id="sidebar" aria-label="Presentations">
+    <div class="side-head">
     <button class="brand" id="brandBtn" type="button" title="All presentations">
-        <span class="brand-mark">EM</span>
+        <span class="brand-mark" aria-hidden="true"><img src="assets/icon-192.png?v=20260910-explorer-r2" alt="" width="44" height="44"></span>
         <span class="brand-text">
             <strong>EM Pocket</strong>
             <span>Emergency medicine</span>
         </span>
     </button>
+    <button class="collapse-btn" id="collapseBtn" type="button" aria-label="Collapse sidebar" aria-expanded="true" title="Collapse sidebar"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg></button>
+    </div>
     <div class="side-list" id="sideList"></div>
     <div class="side-footer">
-        <button class="side-btn install-btn" id="installBtn" type="button" hidden>⇩ Install EM Pocket</button>
         <button class="side-btn" id="printBtn" type="button" title="Print / Export PDF (Ctrl+P)">Print / PDF</button>
         <button class="side-btn disclaimer-link-btn" id="disclaimerLinkBtn" type="button" title="View Educational Terms &amp; Disclaimer">Clinical notice</button>
+        <a class="side-btn" href="mailto:apps@aamd.sa?subject=EM%20Pocket%20feedback" title="Send feedback or suggestions to apps@aamd.sa">Send feedback</a>
         <p class="side-note">Education only — never replaces clinical judgment or local protocols.</p>
     </div>
 </nav>
@@ -113,7 +117,7 @@
     <main class="stage" id="stage" tabindex="-1" role="main" aria-label="Presentation content"></main>
 
     <footer class="foot">
-        <p>Made by Dr. Alzahrani EM.</p>
+        <p>Made by Dr. Alzahrani EM. · <a href="mailto:apps@aamd.sa?subject=EM%20Pocket%20feedback" title="Send feedback or suggestions">Send feedback: apps@aamd.sa</a></p>
         <p><strong>EM Pocket</strong> — Built on the approach of <em>Rosen's Emergency Medicine</em> (10th ed., 2023)
             and corroborating society guidance reviewed in September 2026 (Tintinalli's 9th ed., ACC/AHA, ESC, SSC, AAP, ACG, GINA/GOLD, ACEP). Educational reference —
             always apply clinical judgment and institutional protocols.</p>
@@ -178,13 +182,13 @@
 <div class="toast" id="toast" role="status"></div>
 <noscript><p class="noscript">EM Pocket needs JavaScript enabled to show presentations.</p></noscript>
 
-<script src="assets/ecg-svg.js?v=20260910-hosts-r1"></script>
-<script src="assets/ecg-engine.js?v=20260910-hosts-r1"></script>
-<script src="assets/ecg-case-tracings.js?v=20260910-hosts-r1"></script>
-<script src="assets/ecg-interactive.js?v=20260910-hosts-r1"></script>
-<script src="assets/ecg-curriculum.js?v=20260910-hosts-r1"></script><script src="assets/ecg-explorer.js?v=20260910-hosts-r1"></script>
-<script src="assets/data.js?v=20260910-hosts-r1"></script>
-<script src="assets/evidence.js?v=20260910-hosts-r1"></script>
-<script src="assets/student-learning.js?v=20260910-hosts-r1"></script><script src="assets/app.js?v=20260910-hosts-r1"></script>
+<script src="assets/ecg-svg.js?v=20260910-explorer-r2"></script>
+<script src="assets/ecg-engine.js?v=20260910-explorer-r2"></script>
+<script src="assets/ecg-case-tracings.js?v=20260910-explorer-r2"></script>
+<script src="assets/ecg-interactive.js?v=20260910-explorer-r2"></script>
+<script src="assets/ecg-curriculum.js?v=20260910-explorer-r2"></script><script src="assets/ecg-explorer.js?v=20260910-explorer-r2"></script>
+<script src="assets/data.js?v=20260910-explorer-r2"></script>
+<script src="assets/evidence.js?v=20260910-explorer-r2"></script>
+<script src="assets/student-learning.js?v=20260910-explorer-r2"></script><script src="assets/app.js?v=20260910-explorer-r2"></script>
 </body>
 </html>

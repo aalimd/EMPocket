@@ -184,7 +184,7 @@
 
     let cached, cacheKey, dialogHost;
     function model() {const key=state.id+':'+(state.practice&&!state.revealed);if(key!==cacheKey){cached=build(state.id,state.practice&&!state.revealed);cacheKey=key;}return cached;}
-    function render(host,expanded) {
+    function render(host,expanded,changedControl) {
       const item=model(),hidden=state.practice&&!state.revealed;
       const suppress=hidden||state.locating;
       state.finding=Math.max(0,Math.min(item.findings.length-1,state.finding));
@@ -200,6 +200,9 @@
         '<aside class="explorer-findings" aria-label="Diagnosis and findings">'+(hidden?'<p class="explorer-kicker">YOUR INTERPRETATION</p><h2>Read before revealing</h2><p>What are the rate, rhythm and important findings? Use the whole ECG.</p>':'<p class="explorer-kicker">'+esc(item.format)+' · CURRENT DIAGNOSIS / PATTERN</p><h2>'+esc(item.record.name)+'</h2><p>'+esc(item.record.summary)+'</p>')+
         (state.practice?'<label class="explorer-answer">Your interpretation<textarea data-control="answer" rows="3" placeholder="Rate, rhythm, intervals, ST–T changes…">'+esc(state.answer)+'</textarea></label>':'')+
         (hidden?'<button type="button" class="ex-button ex-primary" data-action="reveal">Reveal diagnosis &amp; findings</button>':'<h3>Findings <span>'+item.findings.length+'</span></h3><div class="explorer-finding-list">'+item.findings.map((f,i)=>'<button type="button" data-finding="'+i+'" aria-pressed="'+(i===state.finding)+'"><span>'+String(i+1).padStart(2,'0')+'</span>'+esc(f.title)+'</button>').join('')+'</div><div class="explorer-explanation" role="status"><strong>'+esc(item.findings[state.finding].title)+'</strong><p>'+esc(item.findings[state.finding].explanation)+'</p><button class="ex-button" type="button" data-action="focus">Focus this finding</button></div><a class="explorer-guide-link" href="#ecg~'+item.record.guide+'">Open the ECG guide →</a>')+(!hidden&&source?'<p class="explorer-source"><a target="_blank" rel="noopener noreferrer" href="'+source.url+'">'+esc(source.label)+'</a></p>':'')+'</aside></div>';
+      // Keep the native picker that committed the change. Replacing and immediately
+      // focusing a new select can reopen its popup during the native click sequence.
+      if(changedControl)host.querySelector('[data-control="'+changedControl.dataset.control+'"]').replaceWith(changedControl);
       const extra=document.createElement('details');extra.className='explorer-options';
       extra.innerHTML='<summary>View options</summary>';
       const zoom=host.querySelector('[data-control="zoom"]').closest('label');extra.append(zoom);
@@ -253,7 +256,7 @@
       if(expanded&&root.isConnected)render(root,false);
     }
     function locate(host) {
-      const mark=host.querySelector('.ecg-finding-marks ellipse'),paper=host.querySelector('.explorer-paper');if(!mark)return;
+      const mark=host.querySelectorAll('.explorer-canvas .ecg-finding-marks ellipse')[state.region],paper=host.querySelector('.explorer-paper');if(!mark)return;
       const a=mark.getBoundingClientRect(),b=paper.getBoundingClientRect();paper.scrollLeft+=a.left-b.left-40;paper.scrollTop+=a.top-b.top-40;
       const detail=host.querySelector('.explorer-explanation');if(detail&&window.innerWidth<=1100)detail.scrollIntoView({block:'start',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
     }
@@ -285,7 +288,11 @@
         const key=event.target.dataset.control;if(key==='answer')return;
         if(key==='case'){state.id=event.target.value;state.finding=0;state.region=0;state.zoom='1';state.answer='';state.revealed=!state.practice;state.locating=false;state.locationFeedback='';}
         else if(key==='zoom')state.zoom=event.target.value;else return;
-        render(host,expanded);host.querySelector('[data-control="'+key+'"]').focus({preventScroll:true});
+        const control=event.target,restoreFocus=document.activeElement===control;
+        render(host,expanded,control);
+        if(restoreFocus)requestAnimationFrame(()=>{
+          if(control.isConnected&&!lifecycle.signal.aborted&&document.activeElement===document.body)control.focus({preventScroll:true});
+        });
       },{signal:lifecycle.signal});
       host.addEventListener('click',event=>{
         const button=event.target.closest('button');if(!button)return;

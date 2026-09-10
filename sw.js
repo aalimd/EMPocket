@@ -1,5 +1,5 @@
 /* EM Pocket service worker — resilient app-shell caching for offline clinical reference. */
-const CACHE_VERSION = 'v160';
+const CACHE_VERSION = 'v161';
 const SCOPE_KEY = new URL(self.registration.scope).pathname.toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '') || 'root';
@@ -7,25 +7,25 @@ const CACHE_PREFIX = 'em-cps-' + SCOPE_KEY + '-';
 const CACHE = CACHE_PREFIX + CACHE_VERSION;
 const CORE_ASSETS = [
     './',
-    './assets/app.css?v=20260910-hosts-r1',
-    './assets/student-learning.js?v=20260910-hosts-r1',
-    './assets/app.js?v=20260910-hosts-r1',
-    './assets/data.js?v=20260910-hosts-r1',
-    './assets/evidence.js?v=20260910-hosts-r1',
-    './assets/ecg-svg.js?v=20260910-hosts-r1',
-    './assets/ecg-engine.js?v=20260910-hosts-r1',
-    './assets/ecg-case-tracings.js?v=20260910-hosts-r1',
-    './assets/ecg-interactive.js?v=20260910-hosts-r1',
-    './assets/ecg-curriculum.js?v=20260910-hosts-r1',
-  './assets/ecg-explorer.js?v=20260910-hosts-r1'
+    './assets/app.css?v=20260910-explorer-r2',
+    './assets/student-learning.js?v=20260910-explorer-r2',
+    './assets/app.js?v=20260910-explorer-r2',
+    './assets/data.js?v=20260910-explorer-r2',
+    './assets/evidence.js?v=20260910-explorer-r2',
+    './assets/ecg-svg.js?v=20260910-explorer-r2',
+    './assets/ecg-engine.js?v=20260910-explorer-r2',
+    './assets/ecg-case-tracings.js?v=20260910-explorer-r2',
+    './assets/ecg-interactive.js?v=20260910-explorer-r2',
+    './assets/ecg-curriculum.js?v=20260910-explorer-r2',
+  './assets/ecg-explorer.js?v=20260910-explorer-r2'
 ];
 const OPTIONAL_ASSETS = [
-    './manifest.json?v=20260910-hosts-r1',
-    './assets/icon.svg?v=20260910-hosts-r1',
-    './assets/icon-192.png?v=20260910-hosts-r1',
-    './assets/icon-512.png?v=20260910-hosts-r1',
-    './assets/icon-maskable-512.png?v=20260910-hosts-r1',
-    './assets/apple-touch-icon.png?v=20260910-hosts-r1'
+    './manifest.json?v=20260910-explorer-r2',
+    './assets/icon.svg?v=20260910-explorer-r2',
+    './assets/icon-192.png?v=20260910-explorer-r2',
+    './assets/icon-512.png?v=20260910-explorer-r2',
+    './assets/icon-maskable-512.png?v=20260910-explorer-r2',
+    './assets/apple-touch-icon.png?v=20260910-explorer-r2'
 ];
 
 // Cache the canonical directory URL: Pages redirects index.html to this URL.

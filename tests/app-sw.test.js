@@ -67,7 +67,9 @@ test('free worker does not intercept paid, sibling or external requests even whe
 
 test('activation deletes only obsolete caches belonging to this free app', async () => {
   const handlers={},deleted=[];
-  const keys=['em-cps-em-cps-v1','em-cps-em-cps-v160','em-p-em-p-v1','em-cps-other-v1','unrelated'];
+  const source=fs.readFileSync(require('node:path').join(__dirname,'../sw.js'),'utf8');
+  const version=source.match(/const CACHE_VERSION = '([^']+)'/)[1];
+  const keys=['em-cps-em-cps-v1','em-cps-em-cps-'+version,'em-p-em-p-v1','em-cps-other-v1','unrelated'];
   vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../sw.js'),'utf8'),{
     URL,Promise,self:{registration:{scope:'https://zahrani.net/EM-CPs/'},addEventListener:(type,fn)=>handlers[type]=fn,clients:{claim:async()=>{}}},
     caches:{keys:async()=>keys,delete:async key=>deleted.push(key)}

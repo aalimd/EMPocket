@@ -4,7 +4,7 @@
  const root=document.querySelector('#preview'),out=document.querySelector('#qaResult');
  document.querySelector('#runExplorer').onclick=async()=>{
   let count=0;const errors=[];const check=(v,m)=>{count++;if(!v)throw Error(m);};
-  const change=(host,key,value)=>{const input=host.querySelector('[data-control="'+key+'"]');input.value=value;input.dispatchEvent(new Event('change',{bubbles:true}));};
+  const change=(host,key,value)=>{const input=host.querySelector('[data-control="'+key+'"]');input.value=value;input.dispatchEvent(new Event('change',{bubbles:true}));check(host.querySelector('[data-control="'+key+'"]')===input,'Native '+key+' picker retained');};
   const click=(host,key)=>host.querySelector('[data-action="'+key+'"]').click();
   const validate=host=>{const svg=host.querySelector('svg');check(!svg.querySelector('parsererror'),'SVG parse');check(svg.querySelector('rect[fill="#fff1f2"]'),'Pink paper');check(!/NaN|Infinity/.test(svg.outerHTML),'Finite SVG');check(host.scrollWidth<=host.clientWidth+2,'Outer overflow');const seen=new Set();for(const node of document.querySelectorAll('[id]')){check(!seen.has(node.id),'Duplicate ID '+node.id);seen.add(node.id);} };
   const tick=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
@@ -14,6 +14,13 @@
     check(root.querySelector('.explorer-findings h2').textContent===record.name,'Correct diagnosis');
     const n=root.querySelectorAll('[data-finding]').length;
     for(let i=0;i<n;i++){root.querySelector('[data-finding="'+i+'"]').click();check(root.querySelector('.ecg-finding-marks ellipse'),'Finding circle');check(root.querySelector('.explorer-explanation p').textContent.length>30,'Explanation');click(root,'focus');check(root.querySelector('[data-control="zoom"]').value==='2','Focus zoom');}
+    const multiple=window.ECG_EXPLORER.build(record.id,false).findings.findIndex(f=>f.targets.length>1);
+    if(multiple>=0){
+     root.querySelector('[data-finding="'+multiple+'"]').click();click(root,'region');click(root,'focus');
+     const paper=root.querySelector('.explorer-paper'),mark=root.querySelectorAll('.explorer-canvas .ecg-finding-marks ellipse')[1];
+     const expected=Math.min(paper.scrollWidth-paper.clientWidth,Math.max(0,mark.getBoundingClientRect().left-paper.getBoundingClientRect().left+paper.scrollLeft-40));
+     check(Math.abs(paper.scrollLeft-expected)<2,'Focus follows the selected marked region');
+    }
     click(root,'highlights');check(!root.querySelector('.ecg-finding-marks'),'Hide highlights');click(root,'highlights');
     click(root,'practice');check(!root.querySelector('.explorer-finding-list'),'Hidden findings');check(!root.querySelector('.ecg-finding-marks'),'No answer marks');check(!root.textContent.includes(record.name),'No diagnosis leak');
     const answer=root.querySelector('textarea');answer.value='My interpretation';answer.dispatchEvent(new Event('input',{bubbles:true}));

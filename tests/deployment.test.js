@@ -14,7 +14,7 @@ function headers(url) {
   if(new RegExp(pattern).test(pathname))for(const [key,value]of rule.headers)(result[key]||=[]).push(value);
  }return result;
 }
-const refs=[...html.matchAll(/(?:src|href)="([^"]+)"/g)].map(m=>m[1]).filter(s=>!s.startsWith('#'));
+const refs=[...html.matchAll(/(?:src|href)="([^"]+)"/g)].map(m=>m[1]).filter(s=>!s.startsWith('#')&&!s.startsWith('mailto:'));
 const precache=[...worker.matchAll(/'\.\/([^']*)'/g)].map(m=>'./'+m[1]);
 test('all shipped references and precache URLs exist at root and nested deployments',()=>{
  for(const ref of [...refs,...precache,...manifest.icons.map(i=>i.src),...manifest.shortcuts.flatMap(s=>s.icons.map(i=>i.src))]) {
