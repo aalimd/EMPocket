@@ -41,7 +41,11 @@
         return '<section class="learning-workspace"><a class="back-btn" href="#">← Presentation library</a><p class="study-kicker">EM POCKET · LEARNING WORKSPACE</p><h1 tabindex="-1">'+esc(title)+'</h1><p class="workspace-lead">'+esc(description)+'</p><nav class="workspace-tabs" aria-label="Learning workspace">'+[['practice','Practice'],['visuals','Visual learning'],['skills','Procedures & teams'],['progress','My progress']].map(([id,label])=>'<a href="#learn~'+id+'"'+(id===active?' aria-current="page"':'')+'>'+label+'</a>').join('')+'</nav><div class="workspace-body"></div></section>';
     }
     function homeHtml() {
-        return '<section class="workspace-entry" aria-label="Choose how to use EM Pocket"><a href="#learn~practice"><span>01 · Practice</span><strong>Work through a changing patient</strong><p>Make a decision, reassess, then plan the next step.</p></a><a href="#learn~visuals"><span>02 · Learn</span><strong>Build interpretation and team skills</strong><p>Explore diagrams, prepare a procedure or rehearse a handover.</p></a><a href="#shift"><span>03 · Reference</span><strong>Find a focused pathway</strong><p>Review immediate priorities, warning signs and disposition.</p></a></section>';
+        return '<section class="workspace-entry" aria-label="Choose how to use EM Pocket">' +
+            '<a href="#presentationLibrary" data-browse-library="1"><span>01 · Presentations</span><strong>Rosen’s Clinical Frameworks</strong><p>Explore 30+ emergency complaints with prioritized differentials, red flags, first minutes and disposition.</p></a>' +
+            '<a href="#ecg"><span>02 · ECG Masterclass</span><strong>10-Step ECG Curriculum &amp; Explorer</strong><p>Master rate, rhythm, axis, and ischemia from scratch with interactive 12-lead waveforms.</p></a>' +
+            '<a href="#learn~practice"><span>03 · Decision Practice</span><strong>Simulated Patient Scenarios</strong><p>Test your reasoning in evolving clinical cases, manage deterioration, and review debriefs.</p></a>' +
+            '</section>';
     }
     function caseCards() {
         const p=progress();

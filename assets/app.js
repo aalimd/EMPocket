@@ -659,7 +659,7 @@
             '<section class="home-intro">' +
             '<span class="study-kicker">EM POCKET · EMERGENCY MEDICINE</span>' +
             '<h1>Build your clinical reasoning</h1>' +
-            '<p>Choose a presentation. Learn the approach, recognise the red flags, then test your recall.</p>' +
+            '<p>Structured emergency medicine frameworks, ECG mastery, and simulated clinical practice.</p>' +
             '<div class="home-actions"><button type="button" class="home-start" data-browse-library="1">Browse presentations <span aria-hidden="true">↓</span></button>' +
             (getEcg() ? '<button type="button" class="home-ecg" id="ecgEntryBtn">Learn ECGs <span aria-hidden="true">→</span></button>' : '') +
             '</div><div class="home-meta"><span>' + DATA.length + ' presentations</span><span>' + reviewedIds().length + ' reviewed</span><span id="offlineStatus">' + esc(offlineStatus) + '</span></div></section>' +
@@ -672,11 +672,14 @@
         bindCards(stage);
         const ecgEntry = document.getElementById('ecgEntryBtn');
         if (ecgEntry) ecgEntry.addEventListener('click', function () { showEcg(); });
-        stage.querySelector('[data-browse-library]').addEventListener('click', () => {
+        stage.querySelectorAll('[data-browse-library]').forEach(btn => btn.addEventListener('click', (e) => {
+            if (btn.tagName === 'A') e.preventDefault();
             const library = document.getElementById('presentationLibrary');
-            library.focus({ preventScroll: true });
-            library.scrollIntoView({ block: 'start', behavior: 'smooth' });
-        });
+            if (library) {
+                library.focus({ preventScroll: true });
+                library.scrollIntoView({ block: 'start', behavior: 'smooth' });
+            }
+        }));
         stage.querySelector('.library-filters').addEventListener('toggle', function () { libraryFiltersOpen = this.open; });
         stage.querySelectorAll('.patient-chip').forEach(btn => btn.addEventListener('click', function () {
             patientFilter = btn.dataset.patient;
@@ -2274,7 +2277,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20260910-complete-r11').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20260911-streamline-r1').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
                     registration.addEventListener('updatefound', () => {

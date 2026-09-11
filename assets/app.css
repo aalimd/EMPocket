@@ -4950,11 +4950,13 @@ html[data-theme="dark"] [data-cat="home"], html[data-theme="dark"] [data-cat="ge
 
 /* Student reading and practice. A single hierarchy across learning tools. */
 [hidden] { display: none !important; }
-.student-intro, .student-start { padding: 20px; margin: 16px 0 24px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.student-intro { padding: 20px; margin: 16px 0 24px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.student-start { padding: 20px; margin: 16px 0 24px; background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 12px; box-shadow: var(--shadow-sm); }
 .student-start h2 { font-size: 1.25rem; margin: 6px 0 10px; }
 .student-actions, .confidence-buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 12px 0; }
-.student-actions a, .confidence button, .study-actions button, #saveNote { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); text-decoration: none; font: inherit; font-size: .9rem; cursor: pointer; }
-.student-actions a:first-child { border-color: var(--brand-2); }
+.student-actions a, .confidence button, .study-actions button, #saveNote { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); text-decoration: none; font: inherit; font-size: .9rem; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; }
+.student-actions a:hover { border-color: var(--accent); }
+.student-actions a:first-child { border-color: var(--brand-2); font-weight: 600; }
 .confidence button[aria-pressed="true"] { background: var(--ov-job-bg); border-color: var(--brand-2); }
 .confidence-status, .explorer-source { color: var(--ink-soft); font-size: .85rem; }
 .student-glossary { margin-top: 12px; }
@@ -5223,12 +5225,13 @@ a.side-btn { text-decoration: none; }
 
 /* Learning workspace: shared layouts for cases, visual interpretation and team preparation. */
 .workspace-entry,.workspace-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px;margin:24px 0}
-.workspace-entry>a,.workspace-card{display:block;padding:22px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);min-width:0}
+.workspace-entry>a,.workspace-card{display:flex;flex-direction:column;justify-content:space-between;padding:22px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);min-width:0;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
 .workspace-entry>a{text-decoration:none}
-.workspace-entry>a:hover,.workspace-card[href]:hover{border-color:var(--accent);box-shadow:var(--shadow-sm)}
+.workspace-entry>a:hover,.workspace-card[href]:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:var(--shadow-md)}
 .workspace-entry span{display:block;color:var(--ink-soft);font-size:.85rem;margin-bottom:10px}
 .workspace-entry strong{display:block;font-size:1.15rem;line-height:1.35}
 .workspace-entry p{margin-top:10px;color:var(--ink-soft);line-height:1.55}
+.workspace-entry b{display:inline-flex;align-items:center;gap:4px;margin-top:14px;color:var(--accent);font-size:.9rem;font-weight:600}
 .learning-workspace{max-width:1120px;margin:0 auto;color:var(--ink)}
 .learning-workspace h1{font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.2;margin:12px 0}
 .workspace-lead{color:var(--ink-soft);line-height:1.6;max-width:70ch}
