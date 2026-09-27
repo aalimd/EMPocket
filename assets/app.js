@@ -99,10 +99,8 @@
     };
 
     const stage = document.getElementById('stage');
-    const SEV_ICON = { critical: '🔴', emergent: '🟠', common: '🟢' };
     const SEV_LABEL = { critical: 'Critical', emergent: 'Emergent', common: 'Common' };
-    /* Distinct per-presentation icons — original `cp.icon` emoji kept in data.js, never deleted.
-       Each subject keeps its own icon (🫀🫁🧠…). System chrome (home/ecg/theme/bolt) stays mono SVG. */
+    /* Micro-glass SVG Clinical Icons — raw emoji in data.js kept for reference, never rendered in UI. */
     function monoSvg(inner) {
         return '<svg class="mono-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + inner + '</svg>';
     }
@@ -117,6 +115,17 @@
         moon: monoSvg('<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'),
         sun: monoSvg('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>')
     };
+    const STAR_SVG = {
+        outline: '<svg class="save-ico" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+        filled: '<svg class="save-ico filled" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
+    };
+    function saveButtonContent(saved) {
+        return (saved ? STAR_SVG.filled : STAR_SVG.outline) + '<span>' + (saved ? 'Saved topic' : 'Save topic') + '</span>';
+    }
+    const CHEVRON_BACK_SVG = '<svg class="ios-back-ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>';
+    function backButtonHtml(extraAttr) {
+        return '<button type="button" class="back-btn ios-nav-back"' + (extraAttr ? ' ' + extraAttr : '') + '>' + CHEVRON_BACK_SVG + '<span>All presentations</span></button>';
+    }
     function colorSvg(inner) {
         return '<svg class="color-ico" viewBox="0 0 32 32" aria-hidden="true" focusable="false">' + inner + '</svg>';
     }
@@ -188,19 +197,21 @@
     function catFor(id) {
         return (id && TOPIC_CATS[id]) ? TOPIC_CATS[id] : 'generic';
     }
+    function groupTitleFor(id) {
+        var group = GROUPS.find(function (g) { return g.ids.indexOf(id) >= 0; });
+        return group ? group.title : '';
+    }
 
     function iconForId(id) {
-        if (id === 'ecg' || id === 'ecg-explorer') return CP_COLOR_SVG.ecg;
-        if (id === 'learn' || id === 'study') return CP_COLOR_SVG.learn;
-        if (CP_COLOR_SVG[id]) return CP_COLOR_SVG[id];
-        try {
-            var cp = (typeof BY_ID !== 'undefined' && BY_ID[id]) ? BY_ID[id] : null;
-            if (cp && cp.icon) return '<span class="emoji-ico" aria-hidden="true">' + esc(cp.icon) + '</span>';
-        } catch (e) {}
-        return GROUP_SVG.generic;
+        if (id === 'ecg' || id === 'ecg-explorer') return '<span class="ios-emoji-badge" aria-hidden="true">📈</span>';
+        if (id === 'learn' || id === 'study') return '<span class="ios-emoji-badge" aria-hidden="true">🎯</span>';
+        var cp = BY_ID[id] || (Array.isArray(CP_DATA) ? CP_DATA.find(function (c) { return c.id === id; }) : null);
+        if (cp && cp.icon) return '<span class="ios-emoji-badge" aria-hidden="true">' + cp.icon + '</span>';
+        return '<span class="ios-emoji-badge" aria-hidden="true">🩺</span>';
     }
     function iconFor(cp) {
-        if (!cp) return GROUP_SVG.generic;
+        if (!cp) return '<span class="ios-emoji-badge" aria-hidden="true">🩺</span>';
+        if (cp.icon) return '<span class="ios-emoji-badge" aria-hidden="true">' + cp.icon + '</span>';
         return iconForId(cp.id);
     }
     function sevDot(sev) { return '<span class="sev-dot sev-' + sev + '" aria-hidden="true"></span>'; }
@@ -596,7 +607,7 @@
             '<div class="cp-ico" data-cat="' + catFor(cp.id) + '" aria-hidden="true">' + iconFor(cp) + '</div>' +
             '<h3>' + esc(cp.name) + '</h3><p>' + esc(cp.tag) + '</p>' +
             (isReviewed(cp.id) ? '<span class="cp-reviewed">✓ ' + esc(reviewLabel(cp.id)) + '</span>' : '') +
-            (isSaved(cp.id) ? '<span class="cp-saved">★ Saved</span>' : '') + '</button>';
+            (isSaved(cp.id) ? '<span class="cp-saved">' + STAR_SVG.filled + ' Saved</span>' : '') + '</button>';
     }
     function bindCards(root) {
         root.querySelectorAll('.cp-card').forEach(card =>
@@ -605,35 +616,47 @@
 
     /* ---------- home view ---------- */
     function syncNav(view) {
-        const homeBtn = document.getElementById('homeBtn');
-        if (homeBtn) {
-            homeBtn.classList.toggle('on-home', (view === 'home' || view === 'learning'));
-            homeBtn.classList.toggle('active-nav', (view === 'home' || view === 'learning'));
-            homeBtn.setAttribute('aria-current', (view === 'home' || view === 'learning') ? 'page' : 'false');
-        }
-        [['studyBtn', 'study'], ['shiftBtn', 'shift'], ['ecgBtn', 'ecg'], ['explorerBtn', 'explorer']].forEach(function (pair) {
-            const el = document.getElementById(pair[0]);
-            if (!el) return;
-            const on = view === pair[1];
+        const activeNavKey = (view === 'home' || view === 'learning') ? 'home' : view;
+        document.querySelectorAll('[data-nav]').forEach(function (el) {
+            const on = (el.getAttribute('data-nav') === activeNavKey);
             el.classList.toggle('on-home', on);
             el.classList.toggle('active-nav', on);
+            el.classList.toggle('active', on);
             el.setAttribute('aria-current', on ? 'page' : 'false');
         });
     }
+
+    const GROUP_EMOJIS = {
+        'Cardiorespiratory & vascular': '🫀',
+        'Neurologic': '🧠',
+        'Abdomen, pelvis & GU': '🎯',
+        'Airway, allergy, skin & pediatrics': '👶',
+        'Toxic, metabolic & environmental': '🧪',
+        'Trauma, pregnancy & older adults': '🚑'
+    };
 
     function studyDashboardHtml() {
         const due = dueIds();
         const saved = savedIds();
         return '<section class="study-dashboard study-dashboard-compact" aria-label="Personal study tools">' +
-            '<div class="study-stats"><button type="button" class="study-stat" data-study="due"><strong>' + due.length + '</strong><span>due now</span></button>' +
-            '<button type="button" class="study-stat" data-study="saved"><strong>' + saved.length + '</strong><span>saved topics</span></button>' +
-            '<button type="button" class="study-stat" data-study="case"><strong>Practice</strong><span>Work through a case</span></button></div></section>';
+            '<div class="study-stats">' +
+            '<button type="button" class="study-stat" data-study="due"><span class="stat-emoji" aria-hidden="true">⏱️</span><strong>' + due.length + '</strong><span>due now</span></button>' +
+            '<button type="button" class="study-stat" data-study="saved"><span class="stat-emoji" aria-hidden="true">⭐</span><strong>' + saved.length + '</strong><span>saved topics</span></button>' +
+            '<button type="button" class="study-stat" data-study="case"><span class="stat-emoji" aria-hidden="true">🎯</span><strong>Practice</strong><span>Work through a case</span></button>' +
+            '</div></section>';
     }
 
     function patientFiltersHtml() {
-        const filters = [['all', 'All patients'], ['pediatric', 'Pediatric'], ['pregnancy', 'Pregnancy'], ['geriatric', 'Older adult'], ['immunocompromised', 'Immunocompromised'], ['trauma', 'Trauma']];
+        const filters = [
+            ['all', 'All patients', '🌐'],
+            ['pediatric', 'Pediatric', '👶'],
+            ['pregnancy', 'Pregnancy', '🤰'],
+            ['geriatric', 'Older adult', '🧓'],
+            ['immunocompromised', 'Immunocompromised', '🛡️'],
+            ['trauma', 'Trauma', '🩹']
+        ];
         return '<div class="patient-filter" role="group" aria-label="Patient context filter"><span>Patient context</span>' + filters.map(function (f) {
-            return '<button type="button" class="patient-chip' + (patientFilter === f[0] ? ' active' : '') + '" data-patient="' + f[0] + '" aria-pressed="' + (patientFilter === f[0]) + '">' + f[1] + '</button>';
+            return '<button type="button" class="patient-chip' + (patientFilter === f[0] ? ' active' : '') + '" data-patient="' + f[0] + '" aria-pressed="' + (patientFilter === f[0]) + '"><span class="chip-emoji" aria-hidden="true">' + f[2] + '</span>' + f[1] + '</button>';
         }).join('') + '</div>';
     }
 
@@ -650,8 +673,8 @@
         const groupsHtml = GROUPS.map(g => {
             const items = g.ids.map(id => BY_ID[id]).filter(cp => cp && cpMatchesFilter(cp) && patientMatches(cp));
             if (!items.length) return '';
-            return '<section class="home-group">' +
-                '<h3 class="group-title">' + esc(g.title) + ' <span>' + items.length + '</span></h3>' +
+            return '<section class="home-group" data-cat="' + catFor(items[0].id) + '">' +
+                '<h3 class="group-title"><span class="ios-emoji-badge group-badge" aria-hidden="true">' + (GROUP_EMOJIS[g.title] || '📋') + '</span>' + esc(g.title) + ' <span>' + items.length + '</span></h3>' +
                 '<div class="cp-grid">' + items.map(cardHtml).join('') + '</div></section>';
         }).join('');
         const visibleCount = DATA.filter(cp => cpMatchesFilter(cp) && patientMatches(cp)).length;
@@ -727,7 +750,7 @@
         if(view&&view.indexOf('case-')===0){const i=window.STUDENT_LEARNING.cases.findIndex(c=>c.id===view.slice(5));if(i>=0)caseCursor=i;view='case';}
         const chosen = view === 'saved' ? 'saved' : view === 'case' ? 'case' : 'due';
         const body = chosen === 'case' ? caseHtml() :
-            '<section class="study-page"><div class="study-page-head"><button type="button" class="back-btn" data-home="1">← All presentations</button><span class="study-kicker">PERSONAL STUDY SPACE</span><h1>' + (chosen === 'due' ? 'Review queue' : 'Saved topics') + '</h1><p>' + (chosen === 'due' ? 'Topics return after 1, 3, 7, and 14 days of review. Complete a review to move it to the next interval.' : 'Use saved topics for weak areas, upcoming rotations, or cases you want to discuss.') + '</p></div>' +
+            '<section class="study-page"><div class="study-page-head">' + backButtonHtml('data-home="1"') + '<span class="study-kicker">PERSONAL STUDY SPACE</span><h1>' + (chosen === 'due' ? 'Review queue' : 'Saved topics') + '</h1><p>' + (chosen === 'due' ? 'Topics return after 1, 3, 7, and 14 days of review. Complete a review to move it to the next interval.' : 'Use saved topics for weak areas, upcoming rotations, or cases you want to discuss.') + '</p></div>' +
             topicListHtml(chosen === 'due' ? dueIds() : savedIds(), chosen === 'due' ? 'Nothing is due yet. Mark a topic reviewed to start its spaced-review schedule.' : 'No saved topics yet. Save one from any presentation.') + '</section>';
         stage.innerHTML = '<div class="workspace-actions study-workspace-links"><a href="#learn~practice">Evolving cases →</a><a href="#learn~progress">Progress & backup →</a><a href="#learn~skills">Procedures & teams →</a></div><nav class="study-tabs" aria-label="Study views"><button type="button" data-study="due" aria-current="' + (chosen === 'due' ? 'page' : 'false') + '" class="' + (chosen === 'due' ? 'active' : '') + '">Review queue <span>' + dueIds().length + '</span></button><button type="button" data-study="saved" aria-current="' + (chosen === 'saved' ? 'page' : 'false') + '" class="' + (chosen === 'saved' ? 'active' : '') + '">Saved</button><button type="button" data-study="case" aria-current="' + (chosen === 'case' ? 'page' : 'false') + '" class="' + (chosen === 'case' ? 'active' : '') + '">Practice case</button></nav>' + body;
         stage.querySelectorAll('[data-home]').forEach(btn => btn.addEventListener('click', showHome));
@@ -753,34 +776,78 @@
     }
 
     /* ---------- shift-ready view ---------- */
+    const SHIFT_STEP_EMOJIS = ['⚡', '🚨', '🧪', '🎯', '🚪'];
     function shiftHtml(cp) {
         const immediateWorkup = (cp.workup && cp.workup[0]) ? cp.workup[0][1].slice(0, 4) : [];
         const critical = cp.dontMiss.filter(d => d[1] === 'critical').slice(0, 5);
         const escalation = (cp.disposition || []).slice(-2);
-        return '<section class="shift-sheet"><div class="shift-sheet-head"><div><span>FOCUSED SHIFT VIEW</span><h1>' + esc(cp.name) + '</h1><p>' + esc(cp.tag) + '</p></div><button type="button" class="review-btn" data-full-id="' + cp.id + '">Open full pathway</button></div>' +
-            '<div class="shift-warning">Educational first-pass aid. Reassess the patient, confirm doses and use local protocols.</div>' +
-            '<div class="shift-grid"><section><h2>1 · First minutes</h2><ol>' + (cp.approach || []).slice(0, 3).map(x => '<li>' + esc(x) + '</li>').join('') + '</ol></section>' +
-            '<section class="shift-red"><h2>2 · Escalate now if</h2><ul>' + (cp.redFlags || []).slice(0, 6).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></section>' +
-            '<section><h2>3 · Immediate workup</h2><ul>' + immediateWorkup.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></section>' +
-            '<section><h2>4 · Don’t miss</h2><ul>' + critical.map(x => '<li><strong>' + esc(x[0]) + '</strong><br><small>' + esc(x[2]) + '</small></li>').join('') + '</ul></section>' +
-            '<section class="shift-disposition"><h2>5 · Disposition lane</h2>' + escalation.map(x => '<div><strong>' + esc(x[0]) + '</strong><p>' + esc(x[1]) + '</p></div>').join('') + '</section></div></section>';
+        const step = function (n, title) {
+            const emoji = SHIFT_STEP_EMOJIS[n - 1] || '📋';
+            return '<h2><span class="shift-step-n">' + n + '</span><span class="ios-emoji-badge shift-step-badge" aria-hidden="true">' + emoji + '</span><span class="shift-step-t">' + title + '</span></h2>';
+        };
+        return '<section class="shift-sheet" data-cat="' + catFor(cp.id) + '">' +
+            '<div class="shift-sheet-head">' +
+            '<div class="shift-head-main">' +
+            '<span class="ios-emoji-badge shift-hero-badge" aria-hidden="true">' + (cp.icon || '🩺') + '</span>' +
+            '<div><span class="shift-kicker">⚡ FOCUSED SHIFT VIEW</span><h1>' + esc(cp.name) + '</h1><p>' + esc(cp.tag) + '</p></div>' +
+            '</div>' +
+            '<div class="shift-head-actions">' +
+            '<button type="button" class="handover-btn" id="copyHandoverBtn" title="Copy handover summary"><span class="btn-emoji" aria-hidden="true">📋</span><span>Copy handover</span></button>' +
+            '<button type="button" class="review-btn" data-full-id="' + cp.id + '"><span class="btn-emoji" aria-hidden="true">📖</span><span>Open full pathway</span></button>' +
+            '</div></div>' +
+            '<div class="shift-warning"><span class="ios-emoji-badge warning-badge" aria-hidden="true">⚠️</span><span>Educational first-pass aid. Reassess the patient, confirm doses and use local protocols.</span></div>' +
+            '<div class="shift-grid"><section>' + step(1, 'First minutes') + '<ol>' + (cp.approach || []).slice(0, 3).map(x => '<li>' + esc(x) + '</li>').join('') + '</ol></section>' +
+            '<section class="shift-red">' + step(2, 'Escalate now if') + '<ul>' + (cp.redFlags || []).slice(0, 6).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></section>' +
+            '<section>' + step(3, 'Immediate workup') + '<ul>' + immediateWorkup.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></section>' +
+            '<section class="shift-crit">' + step(4, 'Don’t miss') + '<ul>' + critical.map(x => '<li><strong>' + esc(x[0]) + '</strong><br><small>' + esc(x[2]) + '</small></li>').join('') + '</ul></section>' +
+            '<section class="shift-disposition">' + step(5, 'Disposition lane') + escalation.map(x => '<div><strong>' + esc(x[0]) + '</strong><p>' + esc(x[1]) + '</p></div>').join('') + '</section></div></section>';
     }
     function renderShift(id) {
         if (!DATA.length) {
             currentId = null;
             markActive('shift'); syncNav('shift'); setTitle('Shift view');
             setStageContext('Focused shift view');
-            stage.innerHTML = '<section class="study-page"><div class="study-page-head"><button type="button" class="back-btn" data-home="1">← All presentations</button><h1>Shift view unavailable</h1><p>Presentation data could not be loaded. Confirm <code>assets/data.js</code> is available, then refresh.</p></div></section>';
+            stage.innerHTML = '<section class="study-page"><div class="study-page-head">' + backButtonHtml('data-home="1"') + '<h1>Shift view unavailable</h1><p>Presentation data could not be loaded. Confirm <code>assets/data.js</code> is available, then refresh.</p></div></section>';
             stage.querySelector('[data-home]').addEventListener('click', showHome);
             return;
         }
         const cp = BY_ID[id] || BY_ID[currentId] || DATA[0];
         currentId = cp.id; markActive(cp.id); syncNav('shift'); setTitle('Shift view · ' + cp.name);
         setStageContext('Focused shift view for ' + cp.name);
-        stage.innerHTML = '<div class="shift-topline"><button type="button" class="back-btn" data-home="1">← All presentations</button><label for="shiftSelect">Presentation</label><select id="shiftSelect">' + orderedIds().map(function (pid) { const item = BY_ID[pid]; return '<option value="' + item.id + '"' + (item.id === cp.id ? ' selected' : '') + '>' + esc(item.name) + '</option>'; }).join('') + '</select></div>' + shiftHtml(cp);
+        stage.innerHTML = '<div class="shift-topline">' +
+            backButtonHtml('data-home="1"') +
+            '<div class="shift-select-wrap">' +
+            '<span class="ios-emoji-badge shift-select-badge" aria-hidden="true">' + (cp.icon || '🩺') + '</span>' +
+            '<label for="shiftSelect" class="sr-only">Presentation</label>' +
+            '<select id="shiftSelect">' + orderedIds().map(function (pid) {
+                const item = BY_ID[pid];
+                return '<option value="' + item.id + '"' + (item.id === cp.id ? ' selected' : '') + '>' + (item.icon ? item.icon + ' ' : '') + esc(item.name) + '</option>';
+            }).join('') + '</select>' +
+            '</div></div>' + shiftHtml(cp);
         document.getElementById('shiftSelect').addEventListener('change', function () { showShift(this.value); });
         stage.querySelector('[data-home]').addEventListener('click', showHome);
         stage.querySelector('[data-full-id]').addEventListener('click', function () { showPresentation(this.dataset.fullId); });
+        const copyBtn = stage.querySelector('#copyHandoverBtn');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', function () {
+                const rfText = (cp.redFlags || []).slice(0, 5).join('; ');
+                const immediateWorkup = (cp.workup && cp.workup[0]) ? cp.workup[0][1].slice(0, 4) : [];
+                const text = 'EM Pocket Bedside Handover: ' + cp.name + '\n' +
+                    'Red Flags: ' + (rfText || 'None listed') + '\n' +
+                    'First Minutes: ' + ((cp.approach || []).slice(0, 3).join('; ') || 'Standard resuscitation') + '\n' +
+                    'Immediate Workup: ' + (immediateWorkup.join('; ') || 'Per protocol') + '\n' +
+                    'Reference: EM Pocket (offline clinical education)';
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(function () {
+                        toast('Handover summary copied to clipboard.');
+                    }).catch(function () {
+                        toast('Handover ready.');
+                    });
+                } else {
+                    toast('Handover ready.');
+                }
+            });
+        }
         window.scrollTo({ top: 0 });
     }
     function showShift(id) {
@@ -790,33 +857,186 @@
         else location.hash = route;
     }
 
+    /* Marks the rail entry for whichever section currently owns the viewport.
+       Re-created per render; the previous observer is disconnected first so
+       navigating between presentations cannot leave two running. */
+    let railObserver = null;
+    function observeRail() {
+        if (railObserver) { railObserver.disconnect(); railObserver = null; }
+        const rail = document.querySelector('.pres-rail');
+        if (!rail || !('IntersectionObserver' in window)) return;
+        const links = {};
+        rail.querySelectorAll('.rail-jump').forEach(function (b) { links[b.dataset.jump] = b; });
+        const targets = Object.keys(links)
+            .map(function (k) { return document.getElementById('section-' + k); })
+            .filter(Boolean);
+        if (!targets.length) return;
+        const visible = new Set();
+        railObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                if (e.isIntersecting) visible.add(e.target.id.replace('section-', ''));
+                else visible.delete(e.target.id.replace('section-', ''));
+            });
+            // Topmost visible section wins, so the marker never sits below the fold.
+            let active = null;
+            for (const t of targets) {
+                const key = t.id.replace('section-', '');
+                if (visible.has(key)) { active = key; break; }
+            }
+            if (!active && window.scrollY < 40) active = targets[0].id.replace('section-', '');
+            Object.keys(links).forEach(function (k) {
+                const on = k === active;
+                links[k].classList.toggle('current', on);
+                if (on) links[k].setAttribute('aria-current', 'true');
+                else links[k].removeAttribute('aria-current');
+            });
+        }, { rootMargin: '-88px 0px -62% 0px', threshold: 0 });
+        targets.forEach(function (t) { railObserver.observe(t); });
+    }
+
+    /* Reading progress. Module scope: registered by init() on scroll/resize and
+       called directly by renderPresentation() once the rail is in the DOM. */
+    let readBarFrame = 0;
+    function syncReadProgress() {
+        readBarFrame = 0;
+        const bar = document.getElementById('readBar');
+        if (!bar) return;
+        const topbar = document.querySelector('.topbar');
+        if (topbar) bar.parentNode.style.setProperty('--topbar-h', topbar.offsetHeight + 'px');
+        const doc = document.documentElement;
+        const span = doc.scrollHeight - window.innerHeight;
+        const pct = span > 8 ? Math.min(100, Math.max(0, (window.scrollY / span) * 100)) : 0;
+        bar.style.width = pct.toFixed(2) + '%';
+    }
+
     /* ---------- presentation view ---------- */
+    const SECTION_ICONS = {
+        'how-to-think': monoSvg('<circle cx="12" cy="12" r="9"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>'),
+        'dont-miss': monoSvg('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'),
+        'red-flags': monoSvg('<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>'),
+        'history': monoSvg('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/>'),
+        'exam': monoSvg('<path d="M4.5 2.5A.5.5 0 0 1 5 3v5a5 5 0 0 0 10 0V3a.5.5 0 0 1 1 0v5a6 6 0 0 1-5 5.92V17h3a2 2 0 0 1 2 2v2"/><circle cx="16" cy="21" r="2"/><line x1="4" y1="3" x2="6" y2="3"/><line x1="15" y1="3" x2="17" y2="3"/>'),
+        'workup': monoSvg('<path d="M9 3h6M10 3v6l-5 9.5a1.5 1.5 0 0 0 1.3 2.5h11.4a1.5 1.5 0 0 0 1.3-2.5L14 9V3"/><line x1="7.5" y1="15" x2="16.5" y2="15"/>'),
+        'disposition': monoSvg('<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M9 22V12h6v10"/><path d="M10 8h4M12 6v4"/>'),
+        'pearls-pitfalls': monoSvg('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>'),
+        'see-also': monoSvg('<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>'),
+        'references': monoSvg('<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/>'),
+        'ecg-patterns': monoSvg('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/>'),
+        'ecg-how': monoSvg('<circle cx="12" cy="12" r="9"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>'),
+        'ecg-red-flags': monoSvg('<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>'),
+        'ecg-references': monoSvg('<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/>'),
+        'ecg-related': monoSvg('<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>')
+    };
+
+    const ECG_STEP_ICONS = {
+        'rate-calibration': monoSvg('<path d="M2 12h5l3-8 4 16 3-8h5"/>'),
+        'rhythm': monoSvg('<circle cx="12" cy="12" r="9"/><path d="M8 12h2l1.5-3 2.5 6 1.5-3H16"/>'),
+        'axis': monoSvg('<circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="12" x2="18.5" y2="5.5"/>'),
+        'hypertrophy': monoSvg('<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>'),
+        'ischemia-territories': monoSvg('<path d="M2 12h4l2.5-7 3.5 13 2.5-9 1.5 3h6.5"/>'),
+        'tox-lytes': monoSvg('<path d="M9 3h6M10 3v6l-5 9.5a1.5 1.5 0 0 0 1.3 2.5h11.4a1.5 1.5 0 0 0 1.3-2.5L14 9V3"/><line x1="7.5" y1="15" x2="16.5" y2="15"/>')
+    };
+
+    const SECTION_EMOJIS = {
+        'how-to-think': '🧭',
+        'dont-miss': '🎯',
+        'red-flags': '🚨',
+        'history': '📋',
+        'exam': '🩺',
+        'workup': '🧪',
+        'disposition': '🚪',
+        'pearls-pitfalls': '💡',
+        'see-also': '🔗',
+        'references': '📚',
+        'study': '📝',
+        'first-minutes': '⚡',
+        'ecg-patterns': '📊',
+        'ecg-how': '🧭',
+        'ecg-red-flags': '🚨',
+        'ecg-references': '📚',
+        'ecg-related': '🔗',
+        'rate-calibration': '⏱️',
+        'rhythm': '💓',
+        'axis': '📐',
+        'hypertrophy': '🫀',
+        'ischemia-territories': '⚡',
+        'tox-lytes': '🧪',
+        'ecg-step-rate-calibration': '⏱️',
+        'ecg-step-rhythm': '💓',
+        'ecg-step-axis': '📐',
+        'ecg-step-hypertrophy': '🫀',
+        'ecg-step-ischemia-territories': '⚡',
+        'ecg-step-tox-lytes': '🧪'
+    };
+
+    function sectionEmojiFor(key, defaultIcon) {
+        if (key && SECTION_EMOJIS[key]) return SECTION_EMOJIS[key];
+        if (key && key.startsWith('ecg-step-')) {
+            const stepId = key.replace('ecg-step-', '');
+            if (SECTION_EMOJIS[stepId]) return SECTION_EMOJIS[stepId];
+        }
+        if (typeof defaultIcon === 'string' && !defaultIcon.startsWith('<')) {
+            return defaultIcon;
+        }
+        return '📋';
+    }
+
     function sectionCard(icon, title, bodyHtml, closed, key) {
         const sectionId = 'section-' + (key || title.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
-        return '<section class="section-card ' + (closed ? 'closed' : '') + '" id="' + sectionId + '" data-section="' + (key || '') + '">' +
-            '<button class="sec-head" type="button" aria-expanded="' + (!closed) + '" aria-controls="' + sectionId + '-body"><span class="sec-ico">' + icon + '</span>' +
-            '<span>' + title + '</span><span class="arrow">▼</span></button>' +
+        const safeKey = key || '';
+        const emoji = sectionEmojiFor(safeKey, icon);
+        const iconMarkup = '<span class="ios-emoji-badge sec-badge" aria-hidden="true">' + emoji + '</span>';
+        return '<section class="section-card ' + (closed ? 'closed' : '') + '" id="' + sectionId + '" data-section="' + safeKey + '">' +
+            '<button class="sec-head" type="button" aria-expanded="' + (!closed) + '" aria-controls="' + sectionId + '-body">' +
+            '<span class="sec-ico" data-section-ico="' + safeKey + '" aria-hidden="true">' + iconMarkup + '</span>' +
+            '<span class="sec-title">' + title + '</span>' +
+            '<span class="arrow"><svg class="sec-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></span></button>' +
             '<div class="sec-body" id="' + sectionId + '-body">' + bodyHtml + '</div></section>';
     }
 
     function firstMinutesHtml(cp) {
         const steps = (cp.approach || []).slice(0, 3);
         return '<aside class="case-rail" aria-label="First five minutes">' +
-            '<div class="case-rail-title"><span aria-hidden="true">' + GROUP_SVG.bolt + '</span><div><strong>First 5 minutes</strong><small>Start here, then work the case</small></div></div>' +
+            '<div class="case-rail-title"><span class="ios-emoji-badge" aria-hidden="true">⚡</span><div><strong>First 5 minutes</strong><small>Start here, then work the case</small></div></div>' +
             '<ol class="case-steps">' + steps.map((step, i) =>
                 '<li><span>' + (i + 1) + '</span>' + esc(step) + '</li>').join('') + '</ol>' +
             '</aside>';
     }
 
+    const RAIL_SECTIONS = [
+        ['how-to-think', 'Approach', 'how'],
+        ['dont-miss', 'Don’t miss', 'critical'],
+        ['red-flags', 'Red flags', 'critical'],
+        ['history', 'Focused history', ''],
+        ['exam', 'Examination', ''],
+        ['workup', 'Workup', ''],
+        ['disposition', 'Disposition', ''],
+        ['pearls-pitfalls', 'Pearls & pitfalls', ''],
+        ['study', 'Recall & notes', ''],
+        ['see-also', 'See also', ''],
+        ['references', 'References', '']
+    ];
     function presentationTocHtml() {
-        const sections = [['how-to-think', 'Approach'], ['dont-miss', 'Don’t miss'], ['red-flags', 'Red flags'], ['history', 'Assessment'], ['workup', 'Workup'], ['disposition', 'Disposition'], ['study', 'Recall & notes']];
+        const sections = RAIL_SECTIONS.filter(function (s) { return s[0] !== 'exam' && s[0] !== 'pearls-pitfalls' && s[0] !== 'see-also' && s[0] !== 'references'; })
+            .map(function (s) { return [s[0], s[1]]; });
         return '<nav class="presentation-toc" aria-label="Presentation sections">' + sections.map(item =>
             '<button type="button" class="section-jump" data-jump="' + item[0] + '">' + esc(item[1]) + '</button>').join('') + '</nav>';
+    }
+    /* Persistent map for wide screens. Markup only — the click behaviour is the
+       same jumpToSection() the horizontal chips already use, and the current
+       position is marked by an observer rather than by polling. */
+    function presentationRailHtml() {
+        return '<nav class="pres-rail" aria-label="Sections">' +
+            '<span class="pres-rail-label">On this page</span>' +
+            RAIL_SECTIONS.map(function (s) {
+                return '<button type="button" class="rail-jump' + (s[2] ? ' rail-' + s[2] : '') + '" data-jump="' + s[0] + '">' +
+                    '<span class="rail-dot" aria-hidden="true"></span>' + esc(s[1]) + '</button>';
+            }).join('') + '</nav>';
     }
 
     function personalPlanHtml(cp) {
         const note = noteFor(cp.id);
-        return '<section class="personal-plan" aria-label="Personal study notes"><div><span class="study-kicker">PRIVATE TO THIS DEVICE</span><h2>Your learning note</h2><p>Capture a weak point, a teaching pearl, or a question to take to your next shift.</p></div><div class="personal-controls"><button type="button" class="save-topic' + (isSaved(cp.id) ? ' active' : '') + '" id="saveTopic" aria-pressed="' + isSaved(cp.id) + '">' + (isSaved(cp.id) ? '★ Saved topic' : '☆ Save topic') + '</button><span class="review-status">' + esc(isReviewed(cp.id) ? reviewLabel(cp.id) : 'Review schedule starts when marked reviewed') + '</span></div><label for="studyNote">Private note</label><textarea id="studyNote" rows="3" maxlength="800" placeholder="Example: I need to revisit the disposition threshold…">' + esc(note) + '</textarea><div class="note-actions"><button type="button" class="rf-clear" id="saveNote">Save note</button><span id="noteStatus"></span></div></section>';
+        return '<section class="personal-plan" aria-label="Personal study notes"><div><span class="study-kicker">PRIVATE TO THIS DEVICE</span><h2>Your learning note</h2><p>Capture a weak point, a teaching pearl, or a question to take to your next shift.</p></div><div class="personal-controls"><button type="button" class="save-topic' + (isSaved(cp.id) ? ' active' : '') + '" id="saveTopic" aria-pressed="' + isSaved(cp.id) + '">' + saveButtonContent(isSaved(cp.id)) + '</button><span class="review-status">' + esc(isReviewed(cp.id) ? reviewLabel(cp.id) : 'Review schedule starts when marked reviewed') + '</span></div><label for="studyNote">Private note</label><textarea id="studyNote" rows="3" maxlength="800" placeholder="Example: I need to revisit the disposition threshold…">' + esc(note) + '</textarea><div class="note-actions"><button type="button" class="rf-clear" id="saveNote">Save note</button><span id="noteStatus"></span></div></section>';
     }
 
     function learningLoopHtml(cp) {
@@ -879,7 +1099,7 @@
             ? '<button type="button" class="related-chip" data-ecg="1"><span class="chip-ico" data-cat="ecg" aria-hidden="true">' + iconForId('ecg') + '</span>ECG Guide</button>'
             : '';
         if (!ids.length && !ecgChip) return '';
-        return sectionCard('🔗', 'See also',
+        return sectionCard(SECTION_ICONS['see-also'], 'See also',
             '<div class="related">' + ids.map(rid => {
                 const r = BY_ID[rid];
                 return '<button type="button" class="related-chip" data-id="' + r.id + '"><span class="chip-ico" data-cat="' + catFor(r.id) + '" aria-hidden="true">' + iconFor(r) + '</span>' + esc(r.name) + '</button>';
@@ -918,42 +1138,59 @@
         };
         const dxTitle = severityFilter === 'all' ? 'Don’t-Miss Diagnoses' : 'Don’t-Miss Diagnoses · ' + SEV_LABEL[severityFilter] + ' only';
 
+        const groupTitle = groupTitleFor(cp.id);
+        const breadcrumbHtml = groupTitle
+            ? '<nav class="breadcrumbs" aria-label="Topic path"><span class="crumb-group">' + esc(groupTitle) + '</span><span class="crumb-sep" aria-hidden="true">›</span></nav>'
+            : '';
+
         stage.innerHTML =
-            '<div class="cp-hero">' +
-            '<button type="button" class="back-btn" id="backBtn">← All presentations</button>' +
+            '<div class="read-progress" aria-hidden="true"><i id="readBar"></i></div>' +
+            '<div class="pres-layout" data-cat="' + catFor(cp.id) + '">' +
+            '<div class="pres-rail-wrap">' + presentationRailHtml() + '</div>' +
+            '<div class="pres-main">' +
+            breadcrumbHtml +
+            '<div class="cp-hero-nav">' +
+            backButtonHtml('id="backBtn"') +
+            '</div>' +
+            '<div class="cp-hero" data-cat="' + catFor(cp.id) + '">' +
+            '<div class="cp-hero-inner">' +
             '<div class="cp-ico-lg" data-cat="' + catFor(cp.id) + '" aria-hidden="true">' + iconFor(cp) + '</div>' +
-            '<h1 id="presentationTitle" tabindex="-1">' + esc(cp.name) + '</h1><p class="tag">' + esc(cp.tag) + '</p></div>' +
+            '<div class="cp-hero-text">' +
+            (groupTitle ? '<div class="cp-hero-badge-row"><span class="cp-cat-badge" data-cat="' + catFor(cp.id) + '">' + esc(groupTitle) + '</span></div>' : '') +
+            '<h1 id="presentationTitle" tabindex="-1">' + esc(cp.name) + '</h1>' +
+            '</div></div>' +
+            '<p class="tag">' + esc(cp.tag) + '</p></div>' +
 
             presentationTocHtml() +
-            sectionCard('🧭', 'How to think', overviewHtml(cp), isClosed('how-to-think', false), 'how-to-think') +
+            sectionCard(SECTION_ICONS['how-to-think'], 'How to think', overviewHtml(cp), isClosed('how-to-think', false), 'how-to-think') +
             firstMinutesHtml(cp) +
 
-            sectionCard('🚨', dxTitle, dxCards(cp), isClosed('dont-miss'), 'dont-miss') +
+            sectionCard(SECTION_ICONS['dont-miss'], dxTitle, dxCards(cp), isClosed('dont-miss'), 'dont-miss') +
 
-            sectionCard('🚩', 'Interactive Red-Flag Checklist',
+            sectionCard(SECTION_ICONS['red-flags'], 'Interactive Red-Flag Checklist',
                 '<div class="rf-box"><div class="rf-banner" id="rfBanner"></div>' +
                 '<p style="font-size:.78rem;color:var(--ink-soft);margin-bottom:6px">' +
                 'Tick what your patient has — the banner updates as you go.</p><div class="rf-tools"><button type="button" class="rf-clear" id="clearRedFlags">Clear selected</button><button type="button" class="rf-clear" id="copyReview">Copy review</button></div>' + rfItems +
                 '<div class="rf-progress"><i id="rfBar"></i></div></div>', isClosed('red-flags'), 'red-flags') +
 
-            sectionCard('🗣️', 'Focused History', clusterGrid(cp.history), isClosed('history', true), 'history') +
+            sectionCard(SECTION_ICONS['history'], 'Focused History', clusterGrid(cp.history), isClosed('history', true), 'history') +
 
-            sectionCard('🩺', 'Examination Clusters', clusterGrid(cp.exam), isClosed('exam', true), 'exam') +
+            sectionCard(SECTION_ICONS['exam'], 'Examination Clusters', clusterGrid(cp.exam), isClosed('exam', true), 'exam') +
 
-            sectionCard('🧪', 'Workup',
+            sectionCard(SECTION_ICONS['workup'], 'Workup',
                 '<div class="wu-grid">' + cp.workup.map(w =>
                     '<div class="wu-col"><h4>' + esc(w[0]) + '</h4><ul>' +
                     w[1].map(i => '<li>' + esc(i) + '</li>').join('') + '</ul></div>').join('') + '</div>' +
                 '<details class="medication-safety"><summary>Medication safety reminder</summary><p>Use this as a first-pass prompt; verify all medications, doses, concentrations, contraindications, weight, pregnancy status, and local protocols before administration.</p><p>Check indication, allergy, route, renal/hepatic risk, interactions, monitoring, and local formulary.</p></details>', isClosed('workup'), 'workup') +
 
-            sectionCard('🏥', 'Disposition Pathway',
+            sectionCard(SECTION_ICONS['disposition'], 'Disposition Pathway',
                 '<div class="disp-grid">' + cp.disposition.map(d => {
                     const cls = dispClass(d[0]);
                     return '<div class="disp-col ' + cls + '"><h4>' + esc(d[0]) +
                         '</h4><ul><li>' + esc(d[1]) + '</li></ul></div>';
                 }).join('') + '</div><p class="clinical-safety-note">Use objective reassessment and the local pathway.</p>' + (window.EM_LEARNING ? window.EM_LEARNING.reassessmentHtml(cp) : ''), isClosed('disposition'), 'disposition') +
 
-            sectionCard('💡', 'Pearls & Pitfalls',
+            sectionCard(SECTION_ICONS['pearls-pitfalls'], 'Pearls & Pitfalls',
                 '<div class="pp-grid"><div class="pp-box pearls"><h4>Clinical Pearls</h4><ul class="plain-list">' +
                 (Array.isArray(cp.pearls) && cp.pearls.length
                     ? cp.pearls.map(p => '<li>' + esc(p) + '</li>')
@@ -968,10 +1205,11 @@
 
             relatedHtml(id, isClosed('see-also')) +
 
-            sectionCard('📚', 'References',
+            sectionCard(SECTION_ICONS['references'], 'References',
                 evidenceHtml(cp.id) + (window.EM_LEARNING ? window.EM_LEARNING.evidenceContext(cp.id) : '') + '<ul class="refs">' + cp.refs.map(r => '<li>' + esc(r) + '</li>').join('') + '</ul>', isClosed('references', true), 'references') +
 
-            pagerHtml(id);
+            pagerHtml(id) +
+            '</div></div>';
 
         document.getElementById('backBtn').addEventListener('click', showHome);
         stage.querySelectorAll('.sec-head').forEach(h =>
@@ -987,7 +1225,7 @@
                 if (btn.dataset.ecg) showEcg();
                 else showPresentation(btn.dataset.id);
             }));
-        stage.querySelectorAll('.case-action, .section-jump').forEach(btn =>
+        stage.querySelectorAll('.case-action, .section-jump, .rail-jump').forEach(btn =>
             btn.addEventListener('click', () => jumpToSection(btn.dataset.jump, true)));
         stage.querySelectorAll('.reveal-btn').forEach(btn => btn.addEventListener('click', () => {
             const answer = document.getElementById('recall-' + btn.dataset.reveal);
@@ -1022,7 +1260,7 @@
             const persisted = setSaved(cp.id, saved);
             saveTopic.classList.toggle('active', saved);
             saveTopic.setAttribute('aria-pressed', String(saved));
-            saveTopic.textContent = saved ? '★ Saved topic' : '☆ Save topic';
+            saveTopic.innerHTML = saveButtonContent(saved);
             toast((saved ? 'Saved to your study list.' : 'Removed from saved topics.') + (persisted ? '' : ' This change lasts for this session only.'));
         });
         const saveNote = document.getElementById('saveNote');
@@ -1033,6 +1271,14 @@
             toast(persisted ? 'Learning note saved.' : 'Learning note saved for this session only.');
         });
         setupRedFlags(cp, state);
+        const readBar = document.getElementById('readBar');
+        if (readBar) {
+            readBar.style.width = '0%';
+            window.requestAnimationFrame(syncReadProgress);
+        }
+        if (!preservePosition) {
+            observeRail();
+        }
         if (target) jumpToSection(target, true);
         else if (preservePosition) { /* Filtering keeps the clinician in the same reading position. */ }
         else {
@@ -1252,7 +1498,7 @@
             const persisted = setSaved(ECG_TOPIC_ID, saved);
             saveTopic.classList.toggle('active', saved);
             saveTopic.setAttribute('aria-pressed', String(saved));
-            saveTopic.textContent = saved ? '★ Saved topic' : '☆ Save topic';
+            saveTopic.innerHTML = saveButtonContent(saved);
             toast((saved ? 'Saved to your study list.' : 'Removed from saved topics.') + (persisted ? '' : ' This change lasts for this session only.'));
         });
         const saveNote = document.getElementById('saveNote');
@@ -1281,7 +1527,7 @@
         if (!ecg) {
             setTitle('ECG');
             setStageContext('Emergency ECG interpretation');
-            stage.innerHTML = '<section class="study-page"><div class="study-page-head"><button type="button" class="back-btn" data-home="1">← All presentations</button><h1>ECG guide unavailable</h1><p>Confirm <code>assets/data.js</code> includes <code>ECG_DATA</code>, then refresh.</p></div></section>';
+            stage.innerHTML = '<section class="study-page"><div class="study-page-head">' + backButtonHtml('data-home="1"') + '<h1>ECG guide unavailable</h1><p>Confirm <code>assets/data.js</code> includes <code>ECG_DATA</code>, then refresh.</p></div></section>';
             stage.querySelector('[data-home]').addEventListener('click', showHome);
             return;
         }
@@ -1313,7 +1559,7 @@
                 return '<button type="button" class="ecg-killer" data-ecg-pattern="' + p.id + '"><strong>' + esc(p.name) + '</strong><small>' + esc(p.tag) + '</small></button>';
             }).join('') + '</div></details>';
         const stepsHtml = ecg.steps.map(function (s) {
-            return sectionCard(s.icon || '📈', 'Step ' + s.num + ' · ' + s.name,
+            return sectionCard(ECG_STEP_ICONS[s.id] || SECTION_ICONS['how-to-think'], 'Step ' + s.num + ' · ' + s.name,
                 '<p class="ecg-summary">' + esc(s.summary) + '</p>' +
                 ecgFigure(s.id) + (s.id === 'rate-calibration' ? ecgFigure('normal-12lead') : '') +
                 ecgDetailList(s.details) +
@@ -1321,10 +1567,19 @@
                 '<div class="pp-box pitfalls"><h4>Pitfall</h4><p>' + esc(s.pitfall || '') + '</p></div></div>',
                 s.num !== 1, 'ecg-step-' + s.id);
         }).join('');
+        const ECG_CAT_EMOJIS = {
+            'all': '🌐',
+            'stemi': '⚡',
+            'ischemia': '🎯',
+            'rhythm': '💓',
+            'conduction': '🔀',
+            'metabolic': '🧪'
+        };
         const cats = [['all', 'All patterns']].concat(Object.keys(ECG_CAT_LABEL).map(function (k) { return [k, ECG_CAT_LABEL[k]]; }));
         const filters = '<div class="ecg-filters" role="group" aria-label="ECG pattern category">' +
             cats.map(function (c) {
-                return '<button type="button" class="chip' + (ecgCategory === c[0] ? ' active' : '') + '" data-ecg-cat="' + c[0] + '" aria-pressed="' + String(ecgCategory === c[0]) + '">' + esc(c[1]) + '</button>';
+                const emo = ECG_CAT_EMOJIS[c[0]] || '📊';
+                return '<button type="button" class="chip' + (ecgCategory === c[0] ? ' active' : '') + '" data-ecg-cat="' + c[0] + '" aria-pressed="' + String(ecgCategory === c[0]) + '"><span class="chip-emoji" aria-hidden="true">' + emo + '</span>' + esc(c[1]) + '</button>';
             }).join('') + '</div>';
         const visible = ecg.patterns.filter(ecgPatternVisible);
         const patternsHtml = '<div class="ecg-pattern-grid">' + (visible.length ? visible.map(function (p) {
@@ -1343,14 +1598,14 @@
                 '</article>';
         }).join('') : '<p class="empty-filter">No patterns in this filter. Choose All, or another severity/category.</p>') + '</div>';
         const recallHtml = '<section class="learning-loop" aria-label="ECG rapid recall">' +
-            '<div class="learning-head"><div><span class="learning-kicker">PRACTICE REFRESHER</span><h2>Rapid recall</h2><p>Test your first action and the dangerous patterns before revealing the answer.</p></div>' +
+            '<div class="learning-head"><div><span class="learning-kicker">⚡ PRACTICE REFRESHER</span><h2><span class="ios-emoji-badge sec-badge-sm" aria-hidden="true">💡</span>Rapid recall</h2><p>Test your first action and the dangerous patterns before revealing the answer.</p></div>' +
             '<button type="button" class="review-btn" id="reviewBtn" aria-pressed="' + isReviewed(ECG_TOPIC_ID) + '">' + reviewActionLabel(ECG_TOPIC_ID) + '</button></div>' +
             '<div class="recall-grid">' +
             '<div class="recall-card"><span>01 · First move</span><p>The patient is hypotensive with a wide-complex tachycardia. What happens before a prettier 12-lead?</p><button type="button" class="reveal-btn" data-reveal="ecg-action">Reveal answer</button><div class="reveal-answer" id="recall-ecg-action" hidden>' + esc(first) + '</div></div>' +
             '<div class="recall-card"><span>02 · Killer patterns</span><p>Name three ECG patterns that should change management in the next minutes.</p><button type="button" class="reveal-btn" data-reveal="ecg-threats">Reveal answer</button><div class="reveal-answer" id="recall-ecg-threats" hidden>' + esc(killers.join(' · ')) + '</div></div>' +
             '</div></section>';
         const related = ecg.related.length
-            ? sectionCard('🔗', 'See also',
+            ? sectionCard(SECTION_ICONS['ecg-related'], 'See also',
                 '<div class="related">' + ecg.related.map(function (rid) {
                     const r = BY_ID[rid];
                     return '<button type="button" class="related-chip" data-id="' + r.id + '"><span class="chip-ico" data-cat="' + catFor(r.id) + '" aria-hidden="true">' + iconFor(r) + '</span>' + esc(r.name) + '</button>';
@@ -1358,10 +1613,16 @@
             : '';
 
         stage.innerHTML =
-            '<div class="cp-hero">' +
-            '<button type="button" class="back-btn" id="backBtn">← All presentations</button>' +
+            '<div class="cp-hero-nav">' +
+            backButtonHtml('id="backBtn"') +
+            '</div>' +
+            '<div class="cp-hero" data-cat="ecg">' +
+            '<div class="cp-hero-inner">' +
             '<div class="cp-ico-lg" data-cat="ecg" aria-hidden="true">' + iconForId('ecg') + '</div>' +
+            '<div class="cp-hero-text">' +
+            '<div class="cp-hero-badge-row"><span class="cp-cat-badge" data-cat="ecg">Cardiovascular · Diagnostic</span></div>' +
             '<h1 id="ecgTitle" tabindex="-1">ECG interpretation</h1>' +
+            '</div></div>' +
             '<p class="tag">' + esc(ecg.tag) + '</p>' +
             (ecg.subtitle ? '<p class="ecg-subhead">' + esc(ecg.subtitle) + '</p>' : '') +
             '</div>' +
@@ -1369,21 +1630,21 @@
             '<p class="student-safety">'+esc(ecg.firstPass[0])+'</p><details class="reference-firstpass"><summary>Urgent ECG assessment · reference checklist</summary>'+firstPassHtml+'</details>'+
             stepsHtml +
             killerHtml +
-            sectionCard('🗂️', 'Pattern library',
+            sectionCard(SECTION_ICONS['ecg-patterns'], 'Pattern library',
                 '<p class="ecg-summary">Choose a category, or use the severity filter above.</p>' +
                 filters + patternsHtml, true, 'ecg-patterns') +
-            sectionCard('🧭', 'How to think',
+            sectionCard(SECTION_ICONS['ecg-how'], 'How to think',
                 '<div class="ov"><p class="ov-job"><span class="ov-kicker">The job</span>' + esc(ecg.tag) + '</p>' +
                 '<ol class="ov-steps">' + ecg.firstPass.map(function (s, i) {
                     return '<li><span class="ov-n" aria-hidden="true">' + (i + 1) + '</span><span class="ov-s">' + esc(s) + '</span></li>';
                 }).join('') + '</ol>' +
                 (ecg.overview ? '<div class="ov-prose"><p>' + esc(ecg.overview) + '</p></div>' : '') + '</div>',
                 true, 'ecg-how') +
-            sectionCard('🚩', 'ECG red flags',
+            sectionCard(SECTION_ICONS['ecg-red-flags'], 'ECG red flags',
                 '<div class="rf-box"><p class="ecg-summary">These findings should move the patient to a different lane now.</p><ul class="plain-list">' +
                 ecg.redFlags.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul></div>',
                 false, 'ecg-red-flags') +
-            sectionCard('💡', 'Pearls & Pitfalls',
+            sectionCard(SECTION_ICONS['pearls-pitfalls'], 'Pearls & Pitfalls',
                 '<div class="pp-grid"><div class="pp-box pearls"><h4>Clinical Pearls</h4><ul class="plain-list">' +
                 ecg.pearls.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') +
                 '</ul></div><div class="pp-box pitfalls"><h4>Pitfalls</h4><ul class="plain-list">' +
@@ -1391,7 +1652,7 @@
                 '</ul></div></div>', true, 'pearls-pitfalls') +
             '<section class="presentation-study-group" id="section-study" aria-label="Recall and notes" tabindex="-1">' + recallHtml + personalPlanHtml(fakeCp) + '</section>' +
             related +
-            sectionCard('📚', 'References',
+            sectionCard(SECTION_ICONS['ecg-references'], 'References',
                 evidenceHtml('ecg') + '<ul class="refs">' + ecg.refs.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul>'
                 + '<p class="ecg-litfl">Diagrams above are original teaching drawings. For real 12-lead tracings see <a href="https://litfl.com/ecg-library/" target="_blank" rel="noopener">LITFL ECG Library</a> — free for non-profit education with credit to litfl.com (CC BY-NC-SA 4.0).</p>',
                 true, 'ecg-references');
@@ -2073,18 +2334,18 @@
         function goHome() { showHome(); closeSidebar(); }
         const brand = document.getElementById('brandBtn');
         if (brand) brand.addEventListener('click', goHome);
-        const homeBtn = document.getElementById('homeBtn');
-        if (homeBtn) homeBtn.addEventListener('click', goHome);
-        const studyBtn = document.getElementById('studyBtn');
-        if (studyBtn) studyBtn.addEventListener('click', () => { location.hash='learn~practice'; });
-        const shiftBtn = document.getElementById('shiftBtn');
-        if (shiftBtn) shiftBtn.addEventListener('click', () => showShift(currentId));
-        document.getElementById('explorerBtn').addEventListener('click', showExplorer);
-        const ecgBtn = document.getElementById('ecgBtn');
-        if (ecgBtn) {
-            if (!getEcg()) ecgBtn.hidden = true;
-            else ecgBtn.addEventListener('click', () => showEcg());
-        }
+        document.querySelectorAll('[data-nav]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const navKey = btn.getAttribute('data-nav');
+                if (navKey === 'home') goHome();
+                else if (navKey === 'study') { location.hash = 'learn~practice'; }
+                else if (navKey === 'shift') showShift(currentId);
+                else if (navKey === 'explorer') showExplorer();
+                else if (navKey === 'ecg') {
+                    if (getEcg()) showEcg();
+                }
+            });
+        });
 
         document.getElementById('burgerBtn').addEventListener('click', () => {
             if (sidebarIsMobile()) openSidebar();
@@ -2100,6 +2361,10 @@
             if (e.key === 'Escape' && sidebarIsMobile() &&
                 document.getElementById('sidebar').classList.contains('open')) closeSidebar(true);
         });
+        window.addEventListener('scroll', () => {
+            if (readBarFrame) return;
+            readBarFrame = window.requestAnimationFrame(syncReadProgress);
+        }, { passive: true });
         window.addEventListener('resize', () => {
             if (!sidebarIsMobile()) {
                 document.getElementById('sidebar').classList.remove('open');
@@ -2277,7 +2542,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20260911-streamline-r1').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20260927-ios27-r7').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
                     registration.addEventListener('updatefound', () => {

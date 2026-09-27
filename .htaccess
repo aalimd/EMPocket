@@ -5,6 +5,17 @@ Options -Indexes
     ForceType application/manifest+json
 </Files>
 
+# Self-hosted variable UI face. Apache builds without a ttf/woff2 entry in
+# mime.types answer these with no Content-Type at all, and the nosniff header
+# below then makes the browser discard the font. Declare the type explicitly so
+# the face actually loads here; CDN hosts already map it and simply ignore this.
+<FilesMatch "\.ttf$">
+    ForceType font/ttf
+</FilesMatch>
+<FilesMatch "\.woff2$">
+    ForceType font/woff2
+</FilesMatch>
+
 <IfModule mod_headers.c>
     # Keep the app shell and service worker revalidating so new clinical content is not held stale.
     <FilesMatch "\.(?:html|js|json|css)$">
@@ -15,6 +26,9 @@ Options -Indexes
     </Files>
     <FilesMatch "\.(?:png|svg|webp|jpg|jpeg|gif|ico)$">
         Header always set Cache-Control "public, max-age=604800"
+    </FilesMatch>
+    <FilesMatch "\.(?:ttf|woff2)$">
+        Header always set Cache-Control "no-cache, max-age=0, must-revalidate"
     </FilesMatch>
 
     Header always set X-Content-Type-Options "nosniff"

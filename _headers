@@ -27,6 +27,14 @@
 /manifest.json
   Content-Type: application/manifest+json
 
+# Self-hosted variable UI face — same declaration as the Apache .htaccess.
+# Kept in its own block so no URL matches two Cache-Control rules. The face is
+# release-stamped like the rest of the runtime, so it revalidates (cheap 304)
+# instead of joining the week-long image cache.
+/*.ttf
+  Content-Type: font/ttf
+  Cache-Control: no-cache, max-age=0, must-revalidate
+
 /sw.js
   Cache-Control: no-cache, no-store, must-revalidate
 

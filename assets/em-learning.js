@@ -37,8 +37,16 @@
         const source=D.sources[key];
         return source?'<details class="workspace-source"><summary>Source and scope</summary><p>Supporting teaching points checked '+D.checked+'. This is an educational synthesis, not an independently peer-reviewed protocol.</p><a href="'+esc(source[1])+'" target="_blank" rel="noopener noreferrer">'+esc(source[0])+'</a><p>Confirm patient context, full recommendations and local policy. External sources need an internet connection.</p></details>':'';
     }
+    const DOMAIN_EMOJIS = {
+        'Resuscitation': '⚡',
+        'Trauma': '🩹',
+        'Pediatric': '👶',
+        'Obstetric': '🤰',
+        'Toxicology': '🧪',
+        'Behavioral emergency': '🧠'
+    };
     function shell(title,description,active) {
-        return '<section class="learning-workspace"><a class="back-btn" href="#">← Presentation library</a><p class="study-kicker">EM POCKET · LEARNING WORKSPACE</p><h1 tabindex="-1">'+esc(title)+'</h1><p class="workspace-lead">'+esc(description)+'</p><nav class="workspace-tabs" aria-label="Learning workspace">'+[['practice','Practice'],['visuals','Visual learning'],['skills','Procedures & teams'],['progress','My progress']].map(([id,label])=>'<a href="#learn~'+id+'"'+(id===active?' aria-current="page"':'')+'>'+label+'</a>').join('')+'</nav><div class="workspace-body"></div></section>';
+        return '<section class="learning-workspace"><div class="workspace-hero-nav"><a class="back-btn ios-nav-back" href="#"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span>Presentations</span></a></div><p class="study-kicker">EM POCKET · LEARNING WORKSPACE</p><h1 tabindex="-1">'+esc(title)+'</h1><p class="workspace-lead">'+esc(description)+'</p><nav class="workspace-tabs" aria-label="Learning workspace">'+[['practice','🎯 Practice'],['visuals','📊 Visual learning'],['skills','🩺 Procedures & teams'],['progress','📈 My progress']].map(([id,label])=>'<a href="#learn~'+id+'"'+(id===active?' aria-current="page"':'')+'>'+label+'</a>').join('')+'</nav><div class="workspace-body"></div></section>';
     }
     function homeHtml() {
         return '<section class="workspace-entry" aria-label="Choose how to use EM Pocket">' +
@@ -49,7 +57,54 @@
     }
     function caseCards() {
         const p=progress();
-        return '<label for="caseFilter">Show cases</label><select id="caseFilter">'+[['all','All cases'],['continue','In progress'],['review','Incorrect decisions to revisit'],['new','Not yet attempted']].map(([id,label])=>'<option value="'+id+'"'+(caseFilter===id?' selected':'')+'>'+label+'</option>').join('')+'</select><p class="workspace-session-note">Unfinished decisions resume in this browser tab after reload. Completed attempts are saved on this device.</p><div class="workspace-grid">'+D.cases.filter(c=>caseFilter==='all'||(caseFilter==='continue'?sessions.has(c.id)&&!sessions.get(c.id).done:caseFilter==='review'?p.cases[c.id]&&p.cases[c.id].correct<p.cases[c.id].total:!p.cases[c.id])).map(c=>{const done=p.cases[c.id];return '<a class="workspace-card" href="#learn~case-'+c.id+'"><span class="study-kicker">'+esc(c.domain)+'</span><h2>'+esc(c.title)+'</h2><p>3 decisions · evolving fictional case</p><span>'+(sessions.has(c.id)&&!sessions.get(c.id).done?'Continue this session':done?'Latest attempt: '+done.correct+'/'+done.total+' correct':'Start case')+' →</span></a>';}).join('')+'</div><div class="workspace-callout"><h2>Prefer a short question set?</h2><p>The original 12 clinical cases and the ECG practice library are still available.</p><div class="workspace-actions"><a href="#study~case">Short clinical cases →</a><a href="#ecg-explorer~practice">ECG practice →</a><a href="#study~due">Review queue →</a></div></div>';
+        const filters = [
+            ['all', 'All cases'],
+            ['continue', 'In progress'],
+            ['review', 'Needs review'],
+            ['new', 'Unattempted']
+        ];
+        return '<div class="workspace-filter-bar">' +
+            '<div class="practice-filter-chips" role="group" aria-label="Filter cases">' +
+            filters.map(([id, label]) => '<button type="button" class="practice-chip' + (caseFilter === id ? ' active' : '') + '" data-case-filter="' + id + '" aria-pressed="' + (caseFilter === id) + '">' + label + '</button>').join('') +
+            '</div>' +
+            '<div class="select-wrap" style="display:none;"><label for="caseFilter" class="filter-label">Show cases</label><select id="caseFilter">' +
+            filters.map(([id, label]) => '<option value="' + id + '"' + (caseFilter === id ? ' selected' : '') + '>' + label + '</option>').join('') +
+            '</select></div>' +
+            '</div>' +
+            '<p class="workspace-session-note"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><span>Unfinished decisions resume automatically. Completed attempts are saved on this device.</span></p>' +
+            '<div class="workspace-grid">' +
+            D.cases.filter(c => caseFilter === 'all' || (caseFilter === 'continue' ? sessions.has(c.id) && !sessions.get(c.id).done : caseFilter === 'review' ? p.cases[c.id] && p.cases[c.id].correct < p.cases[c.id].total : !p.cases[c.id])).map(c => {
+                const done = p.cases[c.id];
+                const inProg = sessions.has(c.id) && !sessions.get(c.id).done;
+                const emoji = DOMAIN_EMOJIS[c.domain] || '🩺';
+                return '<a class="workspace-card practice-case-card" href="#learn~case-' + c.id + '">' +
+                    '<div class="workspace-card-top">' +
+                        '<div class="practice-domain-wrap">' +
+                            '<span class="ios-emoji-badge practice-card-emoji" aria-hidden="true">' + emoji + '</span>' +
+                            '<span class="study-kicker">' + esc(c.domain) + '</span>' +
+                        '</div>' +
+                        '<span class="case-badge ' + (inProg ? 'badge-progress' : done ? 'badge-done' : '') + '">' +
+                            (inProg ? 'In progress' : done ? 'Completed' : '3 Decisions') +
+                        '</span>' +
+                    '</div>' +
+                    '<h2>' + esc(c.title) + '</h2>' +
+                    '<p class="case-desc">3 decisions · evolving fictional case</p>' +
+                    '<div class="case-cta">' +
+                        '<span class="cta-label">' + (inProg ? 'Continue this session' : done ? 'Latest attempt: ' + done.correct + '/' + done.total + ' correct' : 'Start case') + '</span>' +
+                        '<span class="cta-arrow" aria-hidden="true">→</span>' +
+                    '</div>' +
+                '</a>';
+            }).join('') +
+            '</div>' +
+            '<div class="workspace-callout">' +
+                '<h2>Prefer a short question set?</h2>' +
+                '<p>The original 12 clinical cases and the ECG practice library are still available.</p>' +
+                '<div class="workspace-actions">' +
+                    '<a href="#study~case">Short clinical cases →</a>' +
+                    '<a href="#ecg-explorer~practice">ECG practice →</a>' +
+                    '<a href="#study~due">Review queue →</a>' +
+                '</div>' +
+            '</div>';
     }
     function newSession() { return {index:0,answers:[],done:false,seed:Math.floor(Math.random()*100000)}; }
     function mountCase(body,id) {
@@ -58,7 +113,9 @@
         let s=sessions.get(id);if(!s){s=newSession();sessions.set(id,s);}
         function draw(focus=false) {
             const q=c.steps[s.index], selected=s.answers[s.index], complete=s.done;const depth=window.STUDENT_LEARNING.getFocus();const objective=depth==='core'?'Identify the immediate threat and explain your first action.':depth==='applied'?'Connect each change to reassessment, escalation and disposition.':'Explain the failed alternatives and lead a debrief using this case’s three discussion questions.';
-            body.innerHTML='<article class="evolving-case"><p class="study-kicker">'+esc(c.domain)+' · FICTIONAL TEACHING CASE</p><h2 tabindex="-1">'+esc(c.title)+'</h2><p class="case-prompt">'+esc(c.stem)+'</p><p class="workspace-session-note">'+esc(depth.charAt(0).toUpperCase()+depth.slice(1))+' focus · '+objective+'</p>'+(complete?'<section class="workspace-result"><h3>Case debrief</h3><p>'+s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length+' / '+c.steps.length+' first choices correct in this attempt. This is a learning result, not a competency score.</p><ol>'+c.steps.map((x,i)=>'<li><strong>'+esc(x.prompt)+'</strong><p>Your choice: '+esc(x.options.find(o=>o.id===s.answers[i]).text)+'</p><p>'+esc(x.options.find(o=>o.correct).why)+'</p></li>').join('')+'</ol><h3>Discuss with a colleague</h3><ul>'+c.debrief.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul><p role="status">'+(s.saved?'Attempt saved on this device.':'Attempt available for this session only; storage is unavailable.')+'</p></section>':'<p class="workspace-step">Decision '+(s.index+1)+' of '+c.steps.length+'</p><div class="case-update"><strong>Teaching update</strong><p>'+esc(q.update)+'</p></div><fieldset class="quiz-question"><legend>'+esc(q.prompt)+'</legend><div class="quiz-options">'+window.STUDENT_LEARNING.shuffled(q.options,s.seed+s.index*97).map(o=>'<button type="button" data-evolving-choice="'+o.id+'"'+(selected?' disabled':'')+' class="quiz-option'+(selected&&o.id===selected?(o.correct?' correct':' incorrect'):'')+'">'+esc(o.text)+'</button>').join('')+'</div></fieldset>'+(selected?'<div class="workspace-feedback" role="status"><h3>'+(q.options.find(o=>o.id===selected).correct?'Correct for this scenario':'Review this decision')+'</h3><p>'+esc(q.options.find(o=>o.id===selected).why)+'</p><details><summary>Compare all options</summary>'+q.options.map(o=>'<p><strong>'+esc(o.text)+'</strong> '+esc(o.why)+'</p>').join('')+'</details><p>Each next update describes the teaching team’s actions, independently of your choice.</p><button class="workspace-primary" type="button" data-case-next>'+(s.index===c.steps.length-1?'Open debrief':'Continue case')+'</button></div>':''))+'<div class="workspace-actions">'+(complete?'<button type="button" data-case-retry>Start a new attempt</button>':'')+'<a href="#'+esc(c.topic)+'">Full presentation →</a><a href="#learn~practice">All evolving cases →</a></div>'+sourceHtml(c.source)+'</article>';
+            const letters = ['A', 'B', 'C', 'D'];
+            body.innerHTML='<article class="evolving-case"><div class="evolving-case-header"><span class="ios-emoji-badge practice-hero-emoji" aria-hidden="true">' + (DOMAIN_EMOJIS[c.domain] || '🩺') + '</span><div><p class="study-kicker">'+esc(c.domain)+' · FICTIONAL TEACHING CASE</p><h2 tabindex="-1">'+esc(c.title)+'</h2></div></div><p class="case-prompt">'+esc(c.stem)+'</p><p class="workspace-session-note">'+esc(depth.charAt(0).toUpperCase()+depth.slice(1))+' focus · '+objective+'</p>'+(complete?'<section class="workspace-result"><div class="result-header"><span class="ios-emoji-badge result-emoji" aria-hidden="true">' + (s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length === c.steps.length ? '🎉' : '📋') + '</span><h3>Case debrief</h3></div><p>'+s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length+' / '+c.steps.length+' first choices correct in this attempt. This is a learning result, not a competency score.</p><ol>'+c.steps.map((x,i)=>'<li><strong>'+esc(x.prompt)+'</strong><p>Your choice: '+esc(x.options.find(o=>o.id===s.answers[i]).text)+'</p><p>'+esc(x.options.find(o=>o.correct).why)+'</p></li>').join('')+'</ol><h3>Discuss with a colleague</h3><ul>'+c.debrief.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul><p role="status">'+(s.saved?'Attempt saved on this device.':'Attempt available for this session only; storage is unavailable.')+'</p></section>':'<div class="workspace-stepper-wrap"><div class="stepper-track"><div class="stepper-fill" style="width: '+Math.round(((s.index+1)/c.steps.length)*100)+'%"></div></div><p class="workspace-step">Decision '+(s.index+1)+' of '+c.steps.length+'</p></div><div class="case-update"><strong>Teaching update</strong><p>'+esc(q.update)+'</p></div><fieldset class="quiz-question"><legend>'+esc(q.prompt)+'</legend><div class="quiz-options">'+window.STUDENT_LEARNING.shuffled(q.options,s.seed+s.index*97).map((o, idx)=>'<button type="button" data-evolving-choice="'+o.id+'"'+(selected?' disabled':'')+' class="quiz-option'+(selected&&o.id===selected?(o.correct?' correct':' incorrect'):'')+'"><span class="option-pill" aria-hidden="true">'+(letters[idx]||(idx+1))+'</span><span class="option-label">'+esc(o.text)+'</span></button>').join('')+'</div></fieldset>'
++(selected?'<div class="workspace-feedback" role="status"><h3>'+(q.options.find(o=>o.id===selected).correct?'Correct for this scenario':'Review this decision')+'</h3><p>'+esc(q.options.find(o=>o.id===selected).why)+'</p><details><summary>Compare all options</summary>'+q.options.map(o=>'<p><strong>'+esc(o.text)+'</strong> '+esc(o.why)+'</p>').join('')+'</details><p>Each next update describes the teaching team’s actions, independently of your choice.</p><button class="workspace-primary" type="button" data-case-next>'+(s.index===c.steps.length-1?'Open debrief':'Continue case')+'</button></div>':''))+'<div class="workspace-actions">'+(complete?'<button type="button" data-case-retry>Start a new attempt</button>':'')+'<a href="#'+esc(c.topic)+'">Full presentation →</a><a href="#learn~practice">All evolving cases →</a></div>'+sourceHtml(c.source)+'</article>';
             body.querySelectorAll('[data-evolving-choice]').forEach(b=>b.addEventListener('click',()=>{if(s.answers[s.index])return;s.answers[s.index]=b.dataset.evolvingChoice;const retained=persistSessions();draw();if(!retained)body.querySelector('.workspace-feedback').insertAdjacentHTML('beforeend','<p>Reload recovery is unavailable; keep this tab open.</p>');body.querySelector('.workspace-feedback h3').setAttribute('tabindex','-1');body.querySelector('.workspace-feedback h3').focus();}));
             body.querySelector('[data-case-next]')?.addEventListener('click',()=>{if(!s.answers[s.index])return;if(s.index<c.steps.length-1)s.index++;else if(!s.done){s.done=true;const p=progress();p.cases[id]={correct:s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length,total:c.steps.length,runs:(p.cases[id]?.runs||0)+1,last:Date.now()};s.saved=saveProgress(p);}persistSessions();draw(true);});
             body.querySelector('[data-case-retry]')?.addEventListener('click',()=>{s=newSession();sessions.set(id,s);persistSessions();draw(true);});
@@ -186,8 +243,13 @@
         const titles={practice:['Practice decisions that evolve','From first assessment to reassessment, disposition and debrief.'],visuals:['Learn to interpret, then explain','Use visual comparisons to connect findings with their limitations.'],skills:['Prepare the procedure. Prepare the team.','Short exercises for supervised practice, handover and teaching.'],progress:['Keep your learning connected','Review your attempts and keep a portable copy of your saved learning.']};
         stage.innerHTML=shell(...titles[active],active);const body=stage.querySelector('.workspace-body');
         if(/^(case|module|visual)-/.test(target))stage.querySelector('.learning-workspace').classList.add('workspace-detail');if(target.startsWith('case-'))mountCase(body,target.slice(5));else if(target.startsWith('module-'))mountModule(body,target.slice(7));else if(target.startsWith('visual-'))mountVisual(body,target.slice(7));else if(active==='progress')mountProgress(body);else body.innerHTML=active==='practice'?caseCards():active==='skills'?moduleCards():visualCards();
-        if(active==='practice'&&!target.startsWith('case-')&&!body.querySelector('.workspace-grid .workspace-card'))body.querySelector('.workspace-grid')?.insertAdjacentHTML('afterend','<p role="status">No cases match this filter. Choose All cases to explore the library.</p>');
-        body.querySelector('#caseFilter')?.addEventListener('change',e=>{caseFilter=e.target.value;mount(stage,'practice');stage.querySelector('#caseFilter').focus();});
+        body.querySelectorAll('[data-case-filter]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                caseFilter = btn.dataset.caseFilter;
+                mount(stage, 'practice');
+            });
+        });
+        body.querySelector('#caseFilter')?.addEventListener('change',e=>{caseFilter=e.target.value;mount(stage,'practice');stage.querySelector('#caseFilter')?.focus();});
         stage.querySelector('h1').focus({preventScroll:true});window.scrollTo({top:0});
     }
     function reassessmentHtml(cp) {
