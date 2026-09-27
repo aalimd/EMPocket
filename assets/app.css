@@ -5,7 +5,7 @@
    first paint on the system stack, which matters on a slow hospital link. */
 @font-face {
     font-family: "Plus Jakarta Sans";
-    src: url("fonts/PlusJakartaSans-Variable.ttf?v=20260927-ios27-r7") format("truetype");
+    src: url("fonts/PlusJakartaSans-Variable.ttf?v=20260928-nightmode-r1") format("truetype");
     font-weight: 200 800;
     font-style: normal;
     font-display: swap;
@@ -107,6 +107,8 @@ html {
     --glass-bg-pill: rgba(0, 0, 0, 0.04);
     --glass-border-subtle: rgba(0, 0, 0, 0.07);
     --glass-border-highlight: rgba(255, 255, 255, 0.85);
+    --surface-1: rgba(0, 0, 0, 0.03);
+    --surface-2: rgba(0, 0, 0, 0.05);
     /* Sidebar — always dark, tinted per accent (emerald default) */
     --side-bg-1: #093326;
     --side-bg-2: #0c4232;
@@ -126,6 +128,8 @@ html[data-theme="dark"] {
     --glass-bg-pill: rgba(255, 255, 255, 0.06);
     --glass-border-subtle: rgba(255, 255, 255, 0.08);
     --glass-border-highlight: rgba(255, 255, 255, 0.18);
+    --surface-1: rgba(255, 255, 255, 0.04);
+    --surface-2: rgba(255, 255, 255, 0.08);
     --bg: #0b110f;
     --ink: #edf7f3;
     --ink-soft: #9bb5ab;
@@ -9348,7 +9352,8 @@ details > summary::-webkit-details-marker {
 }
 
 .study-tabs button.active,
-.workspace-tabs a.active {
+.workspace-tabs a.active,
+.workspace-tabs a[aria-current="page"] {
     background: var(--card) !important;
     color: var(--ink) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 0 1px rgba(0, 0, 0, 0.08) !important;
@@ -9400,28 +9405,60 @@ details > summary::-webkit-details-marker {
 .shift-head-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
 }
 
-.handover-btn {
+.shift-head-actions .handover-btn,
+.shift-head-actions .review-btn {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 8px 14px;
-    border-radius: 12px;
+    padding: 8px 16px;
+    border-radius: 999px;
     font-size: 0.82rem;
     font-weight: 650;
-    color: var(--accent);
-    background: var(--glass-bg-pill, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--glass-border-subtle, rgba(255, 255, 255, 0.12));
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
     font-family: inherit;
+    text-decoration: none;
+    line-height: 1.2;
 }
 
-.handover-btn:active {
-    transform: scale(0.95);
+.shift-head-actions .handover-btn {
+    color: var(--on-fill);
+    background: var(--brand);
+    border: 1px solid var(--brand);
+    box-shadow: 0 2px 10px rgba(var(--brand-rgb, var(--accent-rgb)), 0.25);
+}
+
+.shift-head-actions .handover-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(var(--brand-rgb, var(--accent-rgb)), 0.35);
+}
+
+.shift-head-actions .review-btn {
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-xs);
+}
+
+.shift-head-actions .review-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+}
+
+html[data-theme="dark"] .shift-head-actions .review-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: var(--ink);
+}
+
+.shift-head-actions .handover-btn:active,
+.shift-head-actions .review-btn:active {
+    transform: scale(0.96);
 }
 
 .shift-grid .shift-red {
@@ -9529,6 +9566,12 @@ details > summary::-webkit-details-marker {
     box-shadow: 0 4px 14px rgba(var(--accent-rgb, 0, 113, 227), 0.35);
     font-weight: 700;
 }
+html[data-theme="dark"] .practice-chip.active {
+    background: var(--brand) !important;
+    color: var(--on-fill) !important;
+    border-color: var(--brand) !important;
+    box-shadow: 0 4px 14px rgba(var(--accent-rgb), 0.35) !important;
+}
 
 /* Practice Case Cards */
 .practice-case-card {
@@ -9553,6 +9596,15 @@ details > summary::-webkit-details-marker {
 }
 .practice-case-card:active {
     transform: scale(0.985);
+}
+html[data-theme="dark"] .practice-case-card {
+    background: rgba(26, 30, 36, 0.75) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) !important;
+}
+html[data-theme="dark"] .practice-case-card:hover {
+    border-color: rgba(var(--accent-rgb), 0.45) !important;
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5) !important;
 }
 .practice-domain-wrap {
     display: inline-flex;
@@ -9641,6 +9693,14 @@ details > summary::-webkit-details-marker {
     background: var(--brand-2, #0071e3);
     color: #ffffff;
 }
+html[data-theme="dark"] .evolving-case .quiz-option:hover:not(:disabled) {
+    border-color: var(--accent) !important;
+    background: color-mix(in srgb, var(--accent) 10%, var(--card)) !important;
+}
+html[data-theme="dark"] .evolving-case .quiz-option:hover:not(:disabled) .option-pill {
+    background: var(--accent) !important;
+    color: var(--on-fill) !important;
+}
 .evolving-case .quiz-option.correct {
     border-color: #10b981 !important;
     background: rgba(16, 185, 129, 0.12) !important;
@@ -9656,6 +9716,24 @@ details > summary::-webkit-details-marker {
     color: var(--ink) !important;
 }
 .evolving-case .quiz-option.incorrect .option-pill {
+    background: #ef4444 !important;
+    color: #ffffff !important;
+}
+html[data-theme="dark"] .evolving-case .quiz-option.correct {
+    background: rgba(16, 185, 129, 0.22) !important;
+    border-color: #34d399 !important;
+    color: #34d399 !important;
+}
+html[data-theme="dark"] .evolving-case .quiz-option.correct .option-pill {
+    background: #10b981 !important;
+    color: #0b1a13 !important;
+}
+html[data-theme="dark"] .evolving-case .quiz-option.incorrect {
+    background: rgba(239, 68, 68, 0.22) !important;
+    border-color: #f87171 !important;
+    color: #f87171 !important;
+}
+html[data-theme="dark"] .evolving-case .quiz-option.incorrect .option-pill {
     background: #ef4444 !important;
     color: #ffffff !important;
 }
@@ -9939,6 +10017,89 @@ details > summary::-webkit-details-marker {
         gap: 12px;
     }
 }
+
+/* ══════════ Night Mode (Dark Theme) & Layout Fit Polish ══════════ */
+html[data-theme="dark"] .shift-hero-badge,
+html[data-theme="dark"] .explorer-hero-badge,
+html[data-theme="dark"] .practice-hero-badge {
+    box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+    background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.30) 0%, rgba(var(--accent-rgb), 0.10) 100%) !important;
+    border-color: color-mix(in srgb, var(--accent) 45%, rgba(255, 255, 255, 0.12)) !important;
+}
+
+html[data-theme="dark"] .shift-select-badge,
+html[data-theme="dark"] .finding-badge {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.14) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+html[data-theme="dark"] .shift-grid section.shift-crit .shift-step-n {
+    background: rgba(249, 115, 22, 0.22) !important;
+    color: #fb923c !important;
+}
+
+html[data-theme="dark"] .shift-grid section.shift-red .shift-step-n {
+    background: rgba(239, 68, 68, 0.22) !important;
+    color: #f87171 !important;
+}
+
+html[data-theme="dark"] .shift-disposition > div {
+    background: rgba(0, 0, 0, 0.25) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .case-update,
+html[data-theme="dark"] .workspace-feedback {
+    background: rgba(26, 30, 36, 0.75) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    border-left-color: var(--accent) !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3) !important;
+}
+
+html[data-theme="dark"] .workspace-feedback details {
+    background: rgba(0, 0, 0, 0.25) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .workspace-stepper-wrap {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .stepper-track {
+    background: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Mobile Fit Refinements */
+.shift-select-wrap {
+    max-width: 100%;
+}
+
+.shift-select-wrap select {
+    min-width: 0;
+    max-width: 100%;
+}
+
+@media (max-width: 680px) {
+    .shift-topline {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+    }
+    .shift-select-wrap {
+        display: flex !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .shift-select-wrap select {
+        flex: 1 1 auto !important;
+        width: 100% !important;
+        max-width: none !important;
+    }
+}
+
 
 
 
