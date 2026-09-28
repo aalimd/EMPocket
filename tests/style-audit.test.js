@@ -408,6 +408,34 @@ test('print output carries none of the phone chrome', async t => {
     assert.equal(res.stagePadding, '0px', 'the mobile tab-bar clearance must not add blank space when printing');
 });
 
+test('sticky offsets follow the real header height', async t => {
+    if (!await ready(t)) return;
+    /* --topbar-h drives the reading progress bar and the desktop section rail.
+       It used to be written onto .read-progress only, so the rail kept reading
+       a hard-coded 73px while the real bar was 75px. */
+    for (const [label, width] of [['phone', 393], ['desktop', 1280]]) {
+        await cdp('Emulation.setDeviceMetricsOverride', { width, height: 852, deviceScaleFactor: 2, mobile: width < 900 });
+        await load('#chest-pain');
+        const res = await evaluate(`(function () {
+            var bar = document.querySelector('.topbar');
+            var rp = document.querySelector('.read-progress');
+            return {
+                real: Math.round(bar.getBoundingClientRect().height),
+                rootVar: getComputedStyle(document.documentElement).getPropertyValue('--topbar-h').trim(),
+                inlineVar: rp ? rp.style.getPropertyValue('--topbar-h') : '',
+                progressTop: rp ? getComputedStyle(rp).top : null
+            };
+        })()`);
+        assert.equal(res.inlineVar, '',
+            label + ': --topbar-h must live on :root only, not on a single element');
+        assert.equal(res.rootVar, res.real + 'px',
+            label + ': --topbar-h is ' + res.rootVar + ' but the header is ' + res.real + 'px');
+        assert.equal(res.progressTop, res.real + 'px',
+            label + ': the reading progress bar is pinned at ' + res.progressTop + ' under a ' + res.real + 'px header');
+    }
+    await cdp('Emulation.setDeviceMetricsOverride', { ...VIEWPORT, deviceScaleFactor: 2, mobile: true });
+});
+
 test('every primary control meets the 44px tap target', async t => {
     if (!await ready(t)) return;
     await load('#ecg');

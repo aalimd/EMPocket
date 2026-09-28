@@ -36,7 +36,7 @@
    first paint on the system stack, which matters on a slow hospital link. */
 @font-face {
     font-family: "Plus Jakarta Sans";
-    src: url("fonts/PlusJakartaSans-Variable.ttf?v=20260928-hygiene-r1") format("truetype");
+    src: url("fonts/PlusJakartaSans-Variable.ttf?v=20260928-stickyfix-r1") format("truetype");
     font-weight: 200 800;
     font-style: normal;
     font-display: swap;
@@ -45,7 +45,7 @@
 [hidden] { display: none !important; }
 
 html {
-    scroll-padding-top: calc(20px + env(safe-area-inset-top, 20px));
+    scroll-padding-top: calc(var(--topbar-h, 73px) + 12px);
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     scroll-behavior: smooth;
@@ -1190,7 +1190,7 @@ html[data-theme="dark"] .accent-dot[aria-pressed="true"] {
     flex: 1;
     padding: var(--space-2xl) clamp(16px, 4vw, 48px) var(--space-3xl);
     outline: none;
-    scroll-padding-top: calc(20px + env(safe-area-inset-top, 20px));
+    scroll-padding-top: calc(var(--topbar-h, 73px) + 12px);
 }
 .foot {
     padding: var(--space-xl) clamp(16px, 4vw, 48px) var(--space-2xl);
@@ -1958,7 +1958,7 @@ html[data-theme="dark"] .review-btn[aria-pressed="true"] {
     box-shadow: var(--shadow);
     margin-bottom: 18px;
     overflow: hidden;
-    scroll-margin-top: calc(20px + env(safe-area-inset-top, 20px));
+    scroll-margin-top: calc(var(--topbar-h, 73px) + 12px);
     contain: layout style;
     transition: border-color var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
 }
@@ -5580,7 +5580,7 @@ a.side-btn { text-decoration: none; }
 .read-progress {
     pointer-events: none;
     position: sticky;
-    top: var(--topbar-h, 0px);
+    top: var(--topbar-h, 73px);
     z-index: 6;
     height: 3px;
     margin-bottom: 14px;
@@ -5630,8 +5630,8 @@ a.side-btn { text-decoration: none; }
     .pres-rail-wrap {
         display: block;
         position: sticky;
-        top: calc(var(--topbar-h, 72px) + 16px);
-        max-height: calc(100vh - var(--topbar-h, 72px) - 32px);
+        top: calc(var(--topbar-h, 73px) + 16px);
+        max-height: calc(100vh - var(--topbar-h, 73px) - 32px);
         overflow-y: auto;
         overscroll-behavior: contain;
         padding-inline-end: 4px;

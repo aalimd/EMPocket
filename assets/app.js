@@ -943,15 +943,28 @@
         targets.forEach(function (t) { railObserver.observe(t); });
     }
 
+    /* The header height is needed by the sticky reading progress bar and the
+       desktop section rail. Write it to :root so there is one source of truth:
+       setting it on a single element left .pres-rail-wrap reading a stale
+       hard-coded value. The bar is not laid out yet on some paths, so keep the
+       last known value when there is nothing to measure. */
+    let lastTopbarH = 0;
+    function syncTopbarHeight() {
+        const topbar = document.querySelector('.topbar');
+        const h = topbar ? topbar.offsetHeight : 0;
+        if (!h || h === lastTopbarH) return;
+        lastTopbarH = h;
+        document.documentElement.style.setProperty('--topbar-h', h + 'px');
+    }
+
     /* Reading progress. Module scope: registered by init() on scroll/resize and
        called directly by renderPresentation() once the rail is in the DOM. */
     let readBarFrame = 0;
     function syncReadProgress() {
         readBarFrame = 0;
+        syncTopbarHeight();
         const bar = document.getElementById('readBar');
         if (!bar) return;
-        const topbar = document.querySelector('.topbar');
-        if (topbar) bar.parentNode.style.setProperty('--topbar-h', topbar.offsetHeight + 'px');
         const doc = document.documentElement;
         const span = doc.scrollHeight - window.innerHeight;
         const pct = span > 8 ? Math.min(100, Math.max(0, (window.scrollY / span) * 100)) : 0;
@@ -2463,6 +2476,15 @@
             if (readBarFrame) return;
             readBarFrame = window.requestAnimationFrame(syncReadProgress);
         }, { passive: true });
+        /* Measure the header straight away and whenever it changes size. A
+           notch inset, a rotation or the label swap on resize all alter its
+           height, and the sticky progress bar and the section rail follow it. */
+        syncTopbarHeight();
+        window.addEventListener('resize', syncTopbarHeight, { passive: true });
+        if (window.ResizeObserver) {
+            const topbarEl = document.querySelector('.topbar');
+            if (topbarEl) new ResizeObserver(syncTopbarHeight).observe(topbarEl);
+        }
         window.addEventListener('resize', () => {
             if (!sidebarIsMobile()) {
                 document.getElementById('sidebar').classList.remove('open');
@@ -2640,7 +2662,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20260928-hygiene-r1').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20260928-stickyfix-r1').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
                     registration.addEventListener('updatefound', () => {
