@@ -616,7 +616,10 @@
 
     /* ---------- home view ---------- */
     function syncNav(view) {
-        const activeNavKey = (view === 'home' || view === 'learning') ? 'home' : view;
+        /* Reading a topic is part of the Presentations library, so the source tab stays
+           lit (iOS keeps the originating tab selected until the user leaves the section).
+           Every learn sub-view reports 'study' because it lives in the Practice workspace. */
+        const activeNavKey = view === 'presentation' ? 'home' : view;
         document.querySelectorAll('[data-nav]').forEach(function (el) {
             const on = (el.getAttribute('data-nav') === activeNavKey);
             el.classList.toggle('on-home', on);
@@ -802,6 +805,70 @@
             '<section class="shift-crit">' + step(4, 'Don’t miss') + '<ul>' + critical.map(x => '<li><strong>' + esc(x[0]) + '</strong><br><small>' + esc(x[2]) + '</small></li>').join('') + '</ul></section>' +
             '<section class="shift-disposition">' + step(5, 'Disposition lane') + escalation.map(x => '<div><strong>' + esc(x[0]) + '</strong><p>' + esc(x[1]) + '</p></div>').join('') + '</section></div></section>';
     }
+    /* Clipboard access is unavailable on insecure origins and can be denied by the
+       browser, so fall back to the legacy copy path and finally to a selectable
+       field. Never claim the summary was copied unless it actually was. */
+    function legacyCopyText(text) {
+        let ta = null;
+        try {
+            ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:0;opacity:0;';
+            document.body.append(ta);
+            ta.focus();
+            ta.select();
+            ta.setSelectionRange(0, text.length);
+            return document.execCommand('copy');
+        } catch (e) {
+            return false;
+        } finally {
+            if (ta) ta.remove();
+        }
+    }
+
+    function manualCopyField(text) {
+        const box = stage.querySelector('#handoverFallback');
+        if (!box) return;
+        box.innerHTML = '<label for="handoverFallbackText">Clipboard blocked — copy the handover manually</label>' +
+            '<textarea id="handoverFallbackText" rows="6" readonly></textarea>';
+        const field = box.querySelector('textarea');
+        field.value = text;
+        field.focus();
+        field.setSelectionRange(0, text.length);
+        box.hidden = false;
+    }
+
+    function copyHandoverSummary(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () {
+                toast('Handover summary copied to clipboard.');
+            }).catch(function () {
+                if (legacyCopyText(text)) toast('Handover summary copied to clipboard.');
+                else { toast('Clipboard blocked. Select the text and copy it manually.'); manualCopyField(text); }
+            });
+            return;
+        }
+        if (legacyCopyText(text)) { toast('Handover summary copied to clipboard.'); return; }
+        toast('Clipboard unavailable in this browser. Copy the handover manually.');
+        manualCopyField(text);
+    }
+
+    function setupHandoverCopy(cp) {
+        const copyBtn = stage.querySelector('#copyHandoverBtn');
+        if (!copyBtn) return;
+        copyBtn.addEventListener('click', function () {
+            const rfText = (cp.redFlags || []).slice(0, 5).join('; ');
+            const immediateWorkup = (cp.workup && cp.workup[0]) ? cp.workup[0][1].slice(0, 4) : [];
+            const text = 'EM Pocket Bedside Handover: ' + cp.name + '\n' +
+                'Red Flags: ' + (rfText || 'None listed') + '\n' +
+                'First Minutes: ' + ((cp.approach || []).slice(0, 3).join('; ') || 'Standard resuscitation') + '\n' +
+                'Immediate Workup: ' + (immediateWorkup.join('; ') || 'Per protocol') + '\n' +
+                'Reference: EM Pocket (offline clinical education)';
+            copyHandoverSummary(text);
+        });
+    }
+
     function renderShift(id) {
         if (!DATA.length) {
             currentId = null;
@@ -823,33 +890,15 @@
                 const item = BY_ID[pid];
                 return '<option value="' + item.id + '"' + (item.id === cp.id ? ' selected' : '') + '>' + (item.icon ? item.icon + ' ' : '') + esc(item.name) + '</option>';
             }).join('') + '</select>' +
-            '</div></div>' + shiftHtml(cp);
+            '</div></div>' + shiftHtml(cp) +
+            '<div class="handover-fallback" id="handoverFallback" hidden></div>';
         document.getElementById('shiftSelect').addEventListener('change', function () { showShift(this.value); });
         stage.querySelector('[data-home]').addEventListener('click', showHome);
         stage.querySelector('[data-full-id]').addEventListener('click', function () { showPresentation(this.dataset.fullId); });
-        const copyBtn = stage.querySelector('#copyHandoverBtn');
-        if (copyBtn) {
-            copyBtn.addEventListener('click', function () {
-                const rfText = (cp.redFlags || []).slice(0, 5).join('; ');
-                const immediateWorkup = (cp.workup && cp.workup[0]) ? cp.workup[0][1].slice(0, 4) : [];
-                const text = 'EM Pocket Bedside Handover: ' + cp.name + '\n' +
-                    'Red Flags: ' + (rfText || 'None listed') + '\n' +
-                    'First Minutes: ' + ((cp.approach || []).slice(0, 3).join('; ') || 'Standard resuscitation') + '\n' +
-                    'Immediate Workup: ' + (immediateWorkup.join('; ') || 'Per protocol') + '\n' +
-                    'Reference: EM Pocket (offline clinical education)';
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(function () {
-                        toast('Handover summary copied to clipboard.');
-                    }).catch(function () {
-                        toast('Handover ready.');
-                    });
-                } else {
-                    toast('Handover ready.');
-                }
-            });
-        }
+        setupHandoverCopy(cp);
         window.scrollTo({ top: 0 });
     }
+
     function showShift(id) {
         const fallbackId = id || currentId || (DATA[0] && DATA[0].id);
         const route = 'shift' + (fallbackId ? '~' + fallbackId : '');
@@ -910,33 +959,6 @@
     }
 
     /* ---------- presentation view ---------- */
-    const SECTION_ICONS = {
-        'how-to-think': monoSvg('<circle cx="12" cy="12" r="9"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>'),
-        'dont-miss': monoSvg('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'),
-        'red-flags': monoSvg('<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>'),
-        'history': monoSvg('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/>'),
-        'exam': monoSvg('<path d="M4.5 2.5A.5.5 0 0 1 5 3v5a5 5 0 0 0 10 0V3a.5.5 0 0 1 1 0v5a6 6 0 0 1-5 5.92V17h3a2 2 0 0 1 2 2v2"/><circle cx="16" cy="21" r="2"/><line x1="4" y1="3" x2="6" y2="3"/><line x1="15" y1="3" x2="17" y2="3"/>'),
-        'workup': monoSvg('<path d="M9 3h6M10 3v6l-5 9.5a1.5 1.5 0 0 0 1.3 2.5h11.4a1.5 1.5 0 0 0 1.3-2.5L14 9V3"/><line x1="7.5" y1="15" x2="16.5" y2="15"/>'),
-        'disposition': monoSvg('<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M9 22V12h6v10"/><path d="M10 8h4M12 6v4"/>'),
-        'pearls-pitfalls': monoSvg('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>'),
-        'see-also': monoSvg('<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>'),
-        'references': monoSvg('<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/>'),
-        'ecg-patterns': monoSvg('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/>'),
-        'ecg-how': monoSvg('<circle cx="12" cy="12" r="9"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>'),
-        'ecg-red-flags': monoSvg('<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>'),
-        'ecg-references': monoSvg('<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/>'),
-        'ecg-related': monoSvg('<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>')
-    };
-
-    const ECG_STEP_ICONS = {
-        'rate-calibration': monoSvg('<path d="M2 12h5l3-8 4 16 3-8h5"/>'),
-        'rhythm': monoSvg('<circle cx="12" cy="12" r="9"/><path d="M8 12h2l1.5-3 2.5 6 1.5-3H16"/>'),
-        'axis': monoSvg('<circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="12" x2="18.5" y2="5.5"/>'),
-        'hypertrophy': monoSvg('<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>'),
-        'ischemia-territories': monoSvg('<path d="M2 12h4l2.5-7 3.5 13 2.5-9 1.5 3h6.5"/>'),
-        'tox-lytes': monoSvg('<path d="M9 3h6M10 3v6l-5 9.5a1.5 1.5 0 0 0 1.3 2.5h11.4a1.5 1.5 0 0 0 1.3-2.5L14 9V3"/><line x1="7.5" y1="15" x2="16.5" y2="15"/>')
-    };
-
     const SECTION_EMOJIS = {
         'how-to-think': '🧭',
         'dont-miss': '🎯',
@@ -962,17 +984,31 @@
         'ischemia-territories': '⚡',
         'tox-lytes': '🧪',
         'ecg-step-rate-calibration': '⏱️',
-        'ecg-step-rhythm': '💓',
-        'ecg-step-axis': '📐',
+        'ecg-step-rhythm-axis': '💓',
+        'ecg-step-intervals': '📏',
         'ecg-step-hypertrophy': '🫀',
-        'ecg-step-ischemia-territories': '⚡',
-        'ecg-step-tox-lytes': '🧪'
+        'ecg-step-ischemia-map': '🗺️',
+        'ecg-step-omi-equivalents': '🚨',
+        'ecg-step-toxic-metabolic-mimics': '🧪'
+    };
+
+    /* Step ids in assets/data.js carry their own icon; this map is the fallback so a
+       newly added step never degrades to the generic clipboard emoji. */
+    const ECG_STEP_EMOJIS = {
+        'rate-calibration': '⏱️',
+        'rhythm-axis': '💓',
+        'intervals': '📏',
+        'hypertrophy': '🫀',
+        'ischemia-map': '🗺️',
+        'omi-equivalents': '🚨',
+        'toxic-metabolic-mimics': '🧪'
     };
 
     function sectionEmojiFor(key, defaultIcon) {
         if (key && SECTION_EMOJIS[key]) return SECTION_EMOJIS[key];
         if (key && key.startsWith('ecg-step-')) {
             const stepId = key.replace('ecg-step-', '');
+            if (ECG_STEP_EMOJIS[stepId]) return ECG_STEP_EMOJIS[stepId];
             if (SECTION_EMOJIS[stepId]) return SECTION_EMOJIS[stepId];
         }
         if (typeof defaultIcon === 'string' && !defaultIcon.startsWith('<')) {
@@ -1099,7 +1135,7 @@
             ? '<button type="button" class="related-chip" data-ecg="1"><span class="chip-ico" data-cat="ecg" aria-hidden="true">' + iconForId('ecg') + '</span>ECG Guide</button>'
             : '';
         if (!ids.length && !ecgChip) return '';
-        return sectionCard(SECTION_ICONS['see-also'], 'See also',
+        return sectionCard('', 'See also',
             '<div class="related">' + ids.map(rid => {
                 const r = BY_ID[rid];
                 return '<button type="button" class="related-chip" data-id="' + r.id + '"><span class="chip-ico" data-cat="' + catFor(r.id) + '" aria-hidden="true">' + iconFor(r) + '</span>' + esc(r.name) + '</button>';
@@ -1140,7 +1176,7 @@
 
         const groupTitle = groupTitleFor(cp.id);
         const breadcrumbHtml = groupTitle
-            ? '<nav class="breadcrumbs" aria-label="Topic path"><span class="crumb-group">' + esc(groupTitle) + '</span><span class="crumb-sep" aria-hidden="true">›</span></nav>'
+            ? '<nav class="breadcrumbs" aria-label="Topic path"><span class="crumb-group">' + esc(groupTitle) + '</span><span class="crumb-sep" aria-hidden="true">›</span><span class="crumb-current" aria-current="page">' + esc(cp.name) + '</span></nav>'
             : '';
 
         stage.innerHTML =
@@ -1162,35 +1198,35 @@
             '<p class="tag">' + esc(cp.tag) + '</p></div>' +
 
             presentationTocHtml() +
-            sectionCard(SECTION_ICONS['how-to-think'], 'How to think', overviewHtml(cp), isClosed('how-to-think', false), 'how-to-think') +
+            sectionCard('', 'How to think', overviewHtml(cp), isClosed('how-to-think', false), 'how-to-think') +
             firstMinutesHtml(cp) +
 
-            sectionCard(SECTION_ICONS['dont-miss'], dxTitle, dxCards(cp), isClosed('dont-miss'), 'dont-miss') +
+            sectionCard('', dxTitle, dxCards(cp), isClosed('dont-miss'), 'dont-miss') +
 
-            sectionCard(SECTION_ICONS['red-flags'], 'Interactive Red-Flag Checklist',
+            sectionCard('', 'Interactive Red-Flag Checklist',
                 '<div class="rf-box"><div class="rf-banner" id="rfBanner"></div>' +
                 '<p style="font-size:.78rem;color:var(--ink-soft);margin-bottom:6px">' +
                 'Tick what your patient has — the banner updates as you go.</p><div class="rf-tools"><button type="button" class="rf-clear" id="clearRedFlags">Clear selected</button><button type="button" class="rf-clear" id="copyReview">Copy review</button></div>' + rfItems +
                 '<div class="rf-progress"><i id="rfBar"></i></div></div>', isClosed('red-flags'), 'red-flags') +
 
-            sectionCard(SECTION_ICONS['history'], 'Focused History', clusterGrid(cp.history), isClosed('history', true), 'history') +
+            sectionCard('', 'Focused History', clusterGrid(cp.history), isClosed('history', true), 'history') +
 
-            sectionCard(SECTION_ICONS['exam'], 'Examination Clusters', clusterGrid(cp.exam), isClosed('exam', true), 'exam') +
+            sectionCard('', 'Examination Clusters', clusterGrid(cp.exam), isClosed('exam', true), 'exam') +
 
-            sectionCard(SECTION_ICONS['workup'], 'Workup',
+            sectionCard('', 'Workup',
                 '<div class="wu-grid">' + cp.workup.map(w =>
                     '<div class="wu-col"><h4>' + esc(w[0]) + '</h4><ul>' +
                     w[1].map(i => '<li>' + esc(i) + '</li>').join('') + '</ul></div>').join('') + '</div>' +
                 '<details class="medication-safety"><summary>Medication safety reminder</summary><p>Use this as a first-pass prompt; verify all medications, doses, concentrations, contraindications, weight, pregnancy status, and local protocols before administration.</p><p>Check indication, allergy, route, renal/hepatic risk, interactions, monitoring, and local formulary.</p></details>', isClosed('workup'), 'workup') +
 
-            sectionCard(SECTION_ICONS['disposition'], 'Disposition Pathway',
+            sectionCard('', 'Disposition Pathway',
                 '<div class="disp-grid">' + cp.disposition.map(d => {
                     const cls = dispClass(d[0]);
                     return '<div class="disp-col ' + cls + '"><h4>' + esc(d[0]) +
                         '</h4><ul><li>' + esc(d[1]) + '</li></ul></div>';
                 }).join('') + '</div><p class="clinical-safety-note">Use objective reassessment and the local pathway.</p>' + (window.EM_LEARNING ? window.EM_LEARNING.reassessmentHtml(cp) : ''), isClosed('disposition'), 'disposition') +
 
-            sectionCard(SECTION_ICONS['pearls-pitfalls'], 'Pearls & Pitfalls',
+            sectionCard('', 'Pearls & Pitfalls',
                 '<div class="pp-grid"><div class="pp-box pearls"><h4>Clinical Pearls</h4><ul class="plain-list">' +
                 (Array.isArray(cp.pearls) && cp.pearls.length
                     ? cp.pearls.map(p => '<li>' + esc(p) + '</li>')
@@ -1205,7 +1241,7 @@
 
             relatedHtml(id, isClosed('see-also')) +
 
-            sectionCard(SECTION_ICONS['references'], 'References',
+            sectionCard('', 'References',
                 evidenceHtml(cp.id) + (window.EM_LEARNING ? window.EM_LEARNING.evidenceContext(cp.id) : '') + '<ul class="refs">' + cp.refs.map(r => '<li>' + esc(r) + '</li>').join('') + '</ul>', isClosed('references', true), 'references') +
 
             pagerHtml(id) +
@@ -1276,9 +1312,11 @@
             readBar.style.width = '0%';
             window.requestAnimationFrame(syncReadProgress);
         }
-        if (!preservePosition) {
-            observeRail();
-        }
+        /* The rail is rebuilt inside stage.innerHTML on every render, including
+           preservePosition re-renders from the severity filter, so the observer must
+           re-attach unconditionally or it would watch detached nodes and the
+           highlight would freeze. */
+        observeRail();
         if (target) jumpToSection(target, true);
         else if (preservePosition) { /* Filtering keeps the clinician in the same reading position. */ }
         else {
@@ -1559,7 +1597,7 @@
                 return '<button type="button" class="ecg-killer" data-ecg-pattern="' + p.id + '"><strong>' + esc(p.name) + '</strong><small>' + esc(p.tag) + '</small></button>';
             }).join('') + '</div></details>';
         const stepsHtml = ecg.steps.map(function (s) {
-            return sectionCard(ECG_STEP_ICONS[s.id] || SECTION_ICONS['how-to-think'], 'Step ' + s.num + ' · ' + s.name,
+            return sectionCard(ECG_STEP_EMOJIS[s.id] || s.icon || '', 'Step ' + s.num + ' · ' + s.name,
                 '<p class="ecg-summary">' + esc(s.summary) + '</p>' +
                 ecgFigure(s.id) + (s.id === 'rate-calibration' ? ecgFigure('normal-12lead') : '') +
                 ecgDetailList(s.details) +
@@ -1605,7 +1643,7 @@
             '<div class="recall-card"><span>02 · Killer patterns</span><p>Name three ECG patterns that should change management in the next minutes.</p><button type="button" class="reveal-btn" data-reveal="ecg-threats">Reveal answer</button><div class="reveal-answer" id="recall-ecg-threats" hidden>' + esc(killers.join(' · ')) + '</div></div>' +
             '</div></section>';
         const related = ecg.related.length
-            ? sectionCard(SECTION_ICONS['ecg-related'], 'See also',
+            ? sectionCard('', 'See also',
                 '<div class="related">' + ecg.related.map(function (rid) {
                     const r = BY_ID[rid];
                     return '<button type="button" class="related-chip" data-id="' + r.id + '"><span class="chip-ico" data-cat="' + catFor(r.id) + '" aria-hidden="true">' + iconFor(r) + '</span>' + esc(r.name) + '</button>';
@@ -1630,21 +1668,21 @@
             '<p class="student-safety">'+esc(ecg.firstPass[0])+'</p><details class="reference-firstpass"><summary>Urgent ECG assessment · reference checklist</summary>'+firstPassHtml+'</details>'+
             stepsHtml +
             killerHtml +
-            sectionCard(SECTION_ICONS['ecg-patterns'], 'Pattern library',
+            sectionCard('', 'Pattern library',
                 '<p class="ecg-summary">Choose a category, or use the severity filter above.</p>' +
                 filters + patternsHtml, true, 'ecg-patterns') +
-            sectionCard(SECTION_ICONS['ecg-how'], 'How to think',
+            sectionCard('', 'How to think',
                 '<div class="ov"><p class="ov-job"><span class="ov-kicker">The job</span>' + esc(ecg.tag) + '</p>' +
                 '<ol class="ov-steps">' + ecg.firstPass.map(function (s, i) {
                     return '<li><span class="ov-n" aria-hidden="true">' + (i + 1) + '</span><span class="ov-s">' + esc(s) + '</span></li>';
                 }).join('') + '</ol>' +
                 (ecg.overview ? '<div class="ov-prose"><p>' + esc(ecg.overview) + '</p></div>' : '') + '</div>',
                 true, 'ecg-how') +
-            sectionCard(SECTION_ICONS['ecg-red-flags'], 'ECG red flags',
+            sectionCard('', 'ECG red flags',
                 '<div class="rf-box"><p class="ecg-summary">These findings should move the patient to a different lane now.</p><ul class="plain-list">' +
                 ecg.redFlags.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul></div>',
                 false, 'ecg-red-flags') +
-            sectionCard(SECTION_ICONS['pearls-pitfalls'], 'Pearls & Pitfalls',
+            sectionCard('', 'Pearls & Pitfalls',
                 '<div class="pp-grid"><div class="pp-box pearls"><h4>Clinical Pearls</h4><ul class="plain-list">' +
                 ecg.pearls.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') +
                 '</ul></div><div class="pp-box pitfalls"><h4>Pitfalls</h4><ul class="plain-list">' +
@@ -1652,7 +1690,7 @@
                 '</ul></div></div>', true, 'pearls-pitfalls') +
             '<section class="presentation-study-group" id="section-study" aria-label="Recall and notes" tabindex="-1">' + recallHtml + personalPlanHtml(fakeCp) + '</section>' +
             related +
-            sectionCard(SECTION_ICONS['ecg-references'], 'References',
+            sectionCard('', 'References',
                 evidenceHtml('ecg') + '<ul class="refs">' + ecg.refs.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul>'
                 + '<p class="ecg-litfl">Diagrams above are original teaching drawings. For real 12-lead tracings see <a href="https://litfl.com/ecg-library/" target="_blank" rel="noopener">LITFL ECG Library</a> — free for non-profit education with credit to litfl.com (CC BY-NC-SA 4.0).</p>',
                 true, 'ecg-references');
@@ -1734,7 +1772,7 @@
     function applyRoute(preservePosition) {
         const route = (location.hash || '').replace('#', '').split('~');
         const id = route[0], target = route[1];
-        if (id === 'learn' && window.EM_LEARNING) { currentId=null; markActive('study'); syncNav(!target||target==='practice'||target.startsWith('case-')?'study':'learning'); setTitle('Learning workspace'); setStageContext('Learning workspace'); window.EM_LEARNING.mount(stage,target||'practice'); announce('Learning workspace'); }
+        if (id === 'learn' && window.EM_LEARNING) { currentId=null; markActive('study'); syncNav('study'); setTitle('Learning workspace'); setStageContext('Learning workspace'); window.EM_LEARNING.mount(stage,target||'practice'); announce('Learning workspace'); }
         else if (id === 'study') renderStudy(target || 'due');
         else if (id === 'shift') renderShift(target);
         else if (id === 'ecg-explorer') renderExplorer(target);
@@ -2337,13 +2375,16 @@
         document.querySelectorAll('[data-nav]').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 const navKey = btn.getAttribute('data-nav');
-                if (navKey === 'home') goHome();
+                if (navKey === 'ecg' && !getEcg()) { toast('ECG guide data is unavailable on this device.'); return; }
+                /* Any navigation dismisses the drawer and the ECG overlay, otherwise the
+                   new view would render behind them with the page still scroll-locked. */
+                closeSidebar();
+                if (document.getElementById('ecgLightbox') || document.getElementById('ecgWorkbench')) closeEcgLightbox();
+                if (navKey === 'home') showHome();
                 else if (navKey === 'study') { location.hash = 'learn~practice'; }
                 else if (navKey === 'shift') showShift(currentId);
                 else if (navKey === 'explorer') showExplorer();
-                else if (navKey === 'ecg') {
-                    if (getEcg()) showEcg();
-                }
+                else if (navKey === 'ecg') showEcg();
             });
         });
 
@@ -2542,7 +2583,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20260928-nightmode-r1').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20260928-nightmode-r2').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
                     registration.addEventListener('updatefound', () => {

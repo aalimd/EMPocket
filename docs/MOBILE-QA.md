@@ -10,6 +10,33 @@ Test on the live HTTPS URL, not localhost (real service worker, real install).
 - [ ] 320px: topbar fits without overflow
 - [ ] Landscape: cards and figures usable
 
+## Bottom tab bar (≤920px)
+- [ ] Exactly 5 tabs; all labels on one line and inside the glass bar at 320px
+- [ ] Tab bar never floats over the first-run disclaimer: with it open, tapping
+      the bar area must hit the dialog, not a tab
+- [ ] Tab bar never floats over the navigation drawer or its backdrop
+- [ ] Opening the drawer and tapping any tab closes the drawer and unlocks scroll
+- [ ] Reading a topic keeps the Presentations tab lit
+- [ ] `#learn~progress`, `#learn~skills`, `#learn~visuals` keep the Practice tab lit
+- [ ] `#ecg-explorer`, `#ecg`, `#shift`, `#learn~practice` light their own tab
+- [ ] Toasts appear above the tab bar and never overlap it
+- [ ] Print preview (or print to PDF): the tab bar is absent and no blank space
+      is left at the bottom of the last page
+
+## Overlay behaviour
+- [ ] ECG workbench traps focus; the tab bar is inert while it is open and the
+      workbench Close button is the way out
+- [ ] Breadcrumb reads `Group › Topic`, never a trailing separator
+- [ ] Shift view: "Copy handover" copies on success; with the clipboard blocked it
+      says so and shows a selectable manual-copy field — never "Handover ready."
+
+## Symptom triggers
+- [ ] `#ecg`: all 7 step headers show a distinct emoji (none is the generic 📋)
+- [ ] `#ecg-explorer`: every category in the case picker has an emoji
+- [ ] Explorer diagnosis header shows the badge beside the heading, not stacked
+- [ ] Read a topic, scroll to a middle section, then change the severity filter:
+      the "On this page" marker must still follow the section you are reading
+
 ## Browsers
 - [ ] iOS Safari, Android Chrome, Samsung Internet (font boosting!)
 

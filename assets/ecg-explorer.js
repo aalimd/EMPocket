@@ -223,7 +223,10 @@
     'Rhythms': '💓',
     'Ischemia': '⚡',
     'Conduction': '🔀',
-    'Intervals and ectopy': '⏱️'
+    'Intervals and ectopy': '⏱️',
+    'Arrest rhythms': '🛑',
+    'Other important patterns': '🔎',
+    'Metabolic and toxic': '🧪'
   };
   function render(host,expanded,changedControl) {
       const item=model(),hidden=state.practice&&!state.revealed;
