@@ -1052,6 +1052,53 @@
         ['see-also', 'See also', ''],
         ['references', 'References', '']
     ];
+    /* The step rail scrolls horizontally. The full step names total ~1900px, so
+       chips carry a short label and keep the full name as a tooltip. */
+    const ECG_STEP_SHORT = {
+        'rate-calibration': 'Rate & leads',
+        'rhythm-axis': 'Rhythm & axis',
+        'intervals': 'Intervals',
+        'hypertrophy': 'Chambers',
+        'ischemia-map': 'Ischemia map',
+        'omi-equivalents': 'OMI mimics',
+        'toxic-metabolic-mimics': 'Toxic mimics'
+    };
+
+    function stepShortName(step) {
+        return ECG_STEP_SHORT[step.id] || step.name;
+    }
+
+    /* The step rail is a horizontal scroller far wider than a phone. Drive a
+       progress bar from its scroll position, drop the trailing fade once the end
+       is reached, and keep the active step in view. */
+    function setupStepRail() {
+        const rail = stage.querySelector('.ecg-step-nav');
+        if (!rail) return;
+        const bar = document.getElementById('stepRailProgress');
+        function sync() {
+            const max = rail.scrollWidth - rail.clientWidth;
+            const ratio = max > 4 ? rail.scrollLeft / max : 1;
+            rail.classList.toggle('at-end', max <= 4 || ratio > 0.985);
+            if (bar) {
+                const fill = bar.querySelector('i');
+                const pct = Math.round(Math.min(1, Math.max(0.08, rail.clientWidth / rail.scrollWidth)) * 100);
+                if (fill) fill.style.width = pct + '%';
+            }
+        }
+        rail.addEventListener('scroll', sync, { passive: true });
+        sync();
+        if (rail.scrollWidth > rail.clientWidth + 4) {
+            rail.dataset.scrollable = 'true';
+        }
+    }
+
+    function scrollStepChipIntoView(chip) {
+        const rail = chip && chip.closest('.ecg-step-nav');
+        if (!rail || rail.scrollWidth <= rail.clientWidth + 4) return;
+        const left = chip.offsetLeft - (rail.clientWidth - chip.offsetWidth) / 2;
+        rail.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+    }
+
     function presentationTocHtml() {
         const sections = RAIL_SECTIONS.filter(function (s) { return s[0] !== 'exam' && s[0] !== 'pearls-pitfalls' && s[0] !== 'see-also' && s[0] !== 'references'; })
             .map(function (s) { return [s[0], s[1]]; });
@@ -1346,6 +1393,12 @@
         card._focusTimer = setTimeout(() => card.classList.remove('section-focus'), 1800);
         const focusEl = head || card;
         if (fromSearch && focusEl && focusEl.focus) focusEl.focus({ preventScroll: true });
+        const chip = stage.querySelector('.ecg-step-chip[data-jump="' + target + '"]');
+        if (chip) {
+            chip.classList.add('active');
+            chip.setAttribute('aria-current', 'true');
+            scrollStepChipIntoView(chip);
+        }
     }
 
     function showPresentation(id, target) {
@@ -1578,9 +1631,12 @@
         const fakeCp = topicRecord(ECG_TOPIC_ID);
         const stepNav = '<nav class="ecg-step-nav" aria-label="Seven-step method">' +
             ecg.steps.map(function (s) {
-                return '<button type="button" class="ecg-step-chip" data-jump="ecg-step-' + s.id + '"><span>' + s.num + '</span>' + esc(s.name) + '</button>';
+                /* Short label for the rail: the full step name is the heading
+                   inside the section, so the chip only needs to identify it. */
+                return '<button type="button" class="ecg-step-chip" data-jump="ecg-step-' + s.id + '" title="' + esc(s.name) + '"><span>' + s.num + '</span>' + esc(stepShortName(s)) + '</button>';
             }).join('') +
-            '<button type="button" class="ecg-step-chip" data-jump="ecg-patterns">Patterns</button></nav>';
+            '<button type="button" class="ecg-step-chip" data-jump="ecg-patterns">Patterns</button></nav>' +
+            '<div class="step-rail-meter" id="stepRailProgress" aria-hidden="true"><i></i></div>';
         const firstPassHtml = '<aside class="case-rail" aria-label="First thirty seconds">' +
             '<div class="case-rail-title"><span aria-hidden="true">' + GROUP_SVG.bolt + '</span><div><strong>First 30 seconds</strong><small>Shift-first pass, then the 7-step method</small></div></div>' +
             '<ol class="case-steps">' + ecg.firstPass.map(function (step, i) {
@@ -1719,6 +1775,7 @@
         stage.querySelectorAll('[data-jump]').forEach(function (btn) {
             btn.addEventListener('click', function () { jumpToSection(btn.dataset.jump, true); });
         });
+        setupStepRail();
         stage.querySelectorAll('.related-chip').forEach(function (btn) {
             btn.addEventListener('click', function () { showPresentation(btn.dataset.id); });
         });
@@ -2583,7 +2640,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20260928-nightmode-r2').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20260928-mobilefix-r1').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
                     registration.addEventListener('updatefound', () => {

@@ -53,3 +53,16 @@ Test on the live HTTPS URL, not localhost (real service worker, real install).
 
 ## Content
 - [ ] `#ecg`, `#ecg~stemi-criteria`, `#ecg~wellens` render with figures, no console errors
+
+## Reachability and affordance (added after iPhone screenshot review)
+- [ ] `#ecg`: the step rail shows a fade at its right edge and a progress meter;
+      scrolling to the end removes the fade
+- [ ] `#ecg`: tapping step 5/6/7 scrolls that chip into view and marks it current
+- [ ] Tab bar: no ECG waveform, grid or numeric label (P, PR, ST, QTc) is visible
+      through it at any scroll position
+- [ ] Filter trigger reads as a button (icon + label + chevron, 44px tall) and
+      the severity popup stays on screen
+- [ ] Drawer: every group header shows a chevron; the open group's chevron rotates
+- [ ] Header: burger, search and reading-settings controls are all exactly 44px and
+      the bar is not shaved at 320/360/393/430px
+- [ ] Print / print-to-PDF: step rail, its meter and the tab bar are all absent
