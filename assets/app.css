@@ -1,3 +1,34 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   EM-CPs stylesheet — read this first
+   ──────────────────────────────────────────────────────────────────────────
+   This file is append-only: each design-system release adds a layer and nothing
+   is ever removed, so the LAST rule in the file always wins. Layers, in order:
+
+     v3    base tokens, typography, buttons, topbar, sidebar, stage   (~line 1)
+     v4    cross-browser hardening and fallbacks                      (~3377)
+     v4.1  inset/sticky/gap fallbacks                                 (~3882)
+     v4.2  ECG schematic figures                                      (~3896)
+     v5    clinical clean                                             (~6170)
+     v5.1  tighten and unify                                          (~6659)
+     v6    modern polish, depth                                       (~6770)
+     iOS27 bottom tab bar, liquid glass, accordions, shift view       (~7710)
+     print final overrides                                            (end of file)
+
+   Consequences to keep in mind when editing here:
+     • A selector is often declared in several layers. Change the LAST one.
+     • ~980 !important declarations are load-bearing; grep the selector before
+       removing one, or a later layer silently wins.
+     • 24 @media print blocks are deliberately left where they are. Gathering
+       them at the end would be tidier, but several screen layers set display
+       with !important and would then be overridden on paper. tests/style-audit
+       .test.js asserts the print result so any move must be verified first.
+     • z-index scale (do not invent new values; keep the tab bar between the
+       topbar and the drawer):
+         stage content < 90 topbar | 100 ios-tabbar | 105 side-backdrop
+         110 sidebar | 150 results-pop | 400 toast | 500 ecg-lightbox
+         600 skip-link | 1000 disclaimer-overlay  (native <dialog> = top layer)
+   ══════════════════════════════════════════════════════════════════════════ */
+
 /* ══════════ EM-CPs Design System v3 — Professional Medical Grade ══════════ */
 /* Self-hosted variable UI face. One file covers the whole weight range the
    design system asks for (--font-weight-body 500 … --font-weight-title 800), so
@@ -5,7 +36,7 @@
    first paint on the system stack, which matters on a slow hospital link. */
 @font-face {
     font-family: "Plus Jakarta Sans";
-    src: url("fonts/PlusJakartaSans-Variable.ttf?v=20260928-mobilefix-r1") format("truetype");
+    src: url("fonts/PlusJakartaSans-Variable.ttf?v=20260928-hygiene-r1") format("truetype");
     font-weight: 200 800;
     font-style: normal;
     font-display: swap;
@@ -608,12 +639,6 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: var(--hove
 .side-btn:active {
     background: rgba(255, 255, 255, 0.2);
     transform: scale(0.98);
-}
-.install-btn {
-    margin-bottom: 8px;
-    border-color: rgba(var(--accent-rgb), 0.6);
-    background: rgba(var(--accent-rgb), 0.18);
-    color: #ffffff;
 }
 .install-btn:hover { background: rgba(var(--accent-rgb), 0.3); }
 
@@ -1243,23 +1268,6 @@ html[data-theme="dark"] .accent-dot[aria-pressed="true"] {
     font-size: 0.94rem;
     line-height: 1.55;
 }
-.hero-badges {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 18px;
-}
-.hbadge {
-    font-size: 0.74rem;
-    font-weight: 700;
-    padding: 6px 13px;
-    border-radius: var(--radius-full);
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    color: #ffffff;
-    display: inline-flex;
-    align-items: center;
-}
 
 /* ─────────── Study Dashboard (Home) ─────────── */
 .study-dashboard {
@@ -1722,7 +1730,6 @@ html[data-theme="dark"] .case-action.primary {
     border: 1.5px solid var(--line);
     box-shadow: var(--shadow);
 }
-.resus-card { border-left: 5px solid var(--gold); }
 .resus-card h2, .management-pivots h2, .personal-plan h2, .learning-head h2 {
     margin-top: 2px;
     font-size: 1.05rem;
@@ -1733,12 +1740,6 @@ html[data-theme="dark"] .case-action.primary {
     font-size: 0.8rem;
     color: var(--ink-soft);
     line-height: 1.45;
-}
-.resus-grid, .pivot-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-top: 14px;
 }
 .resus-grid > div, .pivot-grid > div {
     padding: 13px 15px;
@@ -1760,8 +1761,6 @@ html[data-theme="dark"] .case-action.primary {
     line-height: 1.5;
     color: var(--ink);
 }
-
-.pivot-title { display: flex; gap: 12px; align-items: center; }
 .pivot-title > span {
     width: 36px;
     height: 36px;
@@ -2438,41 +2437,12 @@ html[data-theme="dark"] .rf-progress { background: #3d1c1c; }
     border-color: var(--hover-line);
 }
 .related-chip:active { transform: scale(0.97); }
-
-/* ─────────── ECG from scratch ─────────── */
-.ecg-entry {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    text-align: left;
-    margin: 0 0 var(--space-lg);
-    padding: 16px 18px;
-    border: 1.5px solid var(--ov-job-line);
-    border-radius: var(--radius-xl);
-    background: var(--ov-job-bg);
-    color: var(--ink);
-    font-family: inherit;
-    cursor: pointer;
-    box-shadow: var(--shadow-sm);
-    transition: transform var(--transition-fast) ease, box-shadow var(--transition-fast) ease, border-color var(--transition-fast) ease;
-}
 .ecg-entry:hover {
     transform: translateY(-1px);
     box-shadow: var(--shadow);
     border-color: var(--accent);
 }
 .ecg-entry:active { transform: scale(0.99); }
-.ecg-entry-ico {
-    flex: none;
-    width: 44px;
-    height: 44px;
-    display: grid;
-    place-items: center;
-    border-radius: var(--radius-md);
-    background: var(--grad-brand);
-    font-size: 1.25rem;
-}
 .ecg-entry span:not(.ecg-entry-ico) { flex: 1; min-width: 0; }
 .ecg-entry strong {
     display: block;
@@ -2493,14 +2463,6 @@ html[data-theme="dark"] .rf-progress { background: #3d1c1c; }
     color: rgba(255, 255, 255, 0.82);
     line-height: 1.45;
     max-width: 46rem;
-}
-.ecg-kicker {
-    font-size: 0.68rem;
-    font-weight: 900;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 4px 0 10px;
 }
 .ecg-step-nav {
     display: flex;
@@ -3660,21 +3622,6 @@ html[data-theme="dark"] .home-btn.active-nav {
   .case-rail, .case-steps { display: block; }
   .case-steps li { margin-bottom: 8px; }
 }
-
-/* ── 9. ECG view — professional, matches design system ── */
-.ecg-hero {
-  border-radius: var(--radius-xl);
-  padding: 28px clamp(20px, 3.5vw, 40px);
-  padding: 28px 24px;
-  padding: 28px clamp(20px, 3.5vw, 40px);
-  margin-bottom: var(--space-lg);
-  background: var(--grad-brand);
-  color: #ffffff;
-  box-shadow: var(--shadow-lg);
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.10);
-}
 .ecg-hero::after {
   content: '';
   position: absolute;
@@ -3694,9 +3641,6 @@ html[data-theme="dark"] .home-btn.active-nav {
   -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
 }
 .ecg-hero .back-btn:hover { background: rgba(255,255,255,0.28); }
-.ecg-meta {
-  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; position: relative; z-index: 1;
-}
 .ecg-firstpass, .ecg-redflags, .ecg-steps-card, .ecg-patterns, .ecg-pearls-pitfalls {
   background: var(--card);
   border: 1.5px solid var(--line);
@@ -3705,13 +3649,7 @@ html[data-theme="dark"] .home-btn.active-nav {
   margin-bottom: 18px;
   padding: 20px 24px;
 }
-.ecg-firstpass { border-left: 5px solid var(--accent); }
-.ecg-redflags { border: 1.5px dashed var(--rf-box-line); background: var(--rf-box-bg); }
 .ecg-firstpass h2, .ecg-redflags h2, .ecg-steps-card h2, .ecg-patterns h2 { font-size: 1.05rem; color: var(--ink); margin-top: 2px; }
-.ecg-kicker {
-  display: block; color: var(--accent);
-  font-size: 0.67rem; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase;
-}
 .ecg-redflags h2 { color: var(--critical); }
 .ecg-firstpass ol, .ecg-redflags ul { list-style: none; margin-top: 12px; display: grid; gap: 8px; }
 .ecg-firstpass li {
@@ -3730,13 +3668,6 @@ html[data-theme="dark"] .home-btn.active-nav {
   width: 7px; height: 7px; border-radius: 50%;
   background: var(--critical); box-shadow: 0 0 0 3px var(--critical-bg);
 }
-.ecg-step { border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--bg); margin-top: 12px; overflow: hidden; }
-.ecg-step-head {
-  display: flex; align-items: center; gap: 12px; width: 100%;
-  padding: 14px 18px; background: none; border: none; cursor: pointer;
-  font-family: inherit; font-size: 0.95rem; font-weight: 800; color: var(--ink); text-align: left;
-  min-height: var(--touch-target);
-}
 .ecg-step-head:hover { background: var(--home-hover); }
 .ecg-step-head .sec-ico {
   width: 34px; height: 34px; border-radius: var(--radius-md);
@@ -3745,18 +3676,11 @@ html[data-theme="dark"] .home-btn.active-nav {
 }
 .ecg-step-head .arrow { margin-left: auto; color: var(--ink-soft); font-size: 0.82rem; transition: transform 280ms cubic-bezier(0.16,1,0.3,1); }
 .ecg-step.closed .arrow { -webkit-transform: rotate(-90deg); transform: rotate(-90deg); }
-.ecg-step-body { padding: 4px 18px 18px; }
 .ecg-step.closed .ecg-step-body { display: none; }
 .ecg-step-body ul { list-style: none; }
 .ecg-step-body li { font-size: 0.85rem; line-height: 1.6; padding: 7px 0 7px 24px; position: relative; border-bottom: 1px dashed var(--line); color: var(--ink); }
 .ecg-step-body li:last-child { border-bottom: none; }
 .ecg-step-body li::before { content: '▸'; position: absolute; left: 4px; color: var(--accent); font-weight: 800; }
-.ecg-pearl, .ecg-pitfall {
-  margin-top: 10px; padding: 11px 13px; border-radius: 8px; font-size: 0.82rem; line-height: 1.5;
-}
-.ecg-pearl { border-left: 3px solid var(--common); background: var(--common-bg); color: var(--ink); }
-.ecg-pitfall { border-left: 3px solid var(--gold); background: var(--gold-bg); background: var(--pitfalls-bg); color: var(--ink); }
-.ecg-pattern-filter { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 4px; }
 .ecg-pattern-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; margin-top: 14px; }
 .ecg-pattern {
   border: 1.5px solid var(--line); border-radius: var(--radius-md);
@@ -3772,7 +3696,6 @@ html[data-theme="dark"] .home-btn.active-nav {
 .ecg-pattern dt { font-weight: 800; font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--brand-2); }
 .ecg-pattern dd { color: var(--ink); }
 .ecg-pattern dd + dt { margin-top: 4px; }
-.ecg-refs { font-size: 0.8rem; color: var(--ink-soft); list-style: none; padding: 2px 0; }
 .ecg-refs li { border-bottom: 1px solid var(--line-subtle) !important; padding: 8px 0 8px 22px !important; position: relative; list-style: none; line-height: 1.5; }
 .ecg-refs li:last-child { border-bottom: none !important; }
 .ecg-refs li::before {
@@ -4127,12 +4050,7 @@ html[data-theme="dark"] .ecg-tool[aria-pressed="true"] { background: var(--accen
 .ecg-fig.hide-anno circle.ecg-j,
 .ecg-fig.hide-anno .ecg-sthl,
 .ecg-fig.hide-anno text.ecg-label:not(.ecg-lead) { display: none; }
-/* Normal-reference inset (hidden until toggled) */
-.ecg-normal-ref { display: none; }
 .ecg-fig.show-compare .ecg-normal-ref { display: block; }
-.ecg-normal-trace { fill: none; stroke: var(--common); stroke-width: 1.6; stroke-dasharray: 5 3; stroke-linecap: round; }
-.ecg-normal-box { fill: var(--card); stroke: var(--common); stroke-width: 1; opacity: 0.96; }
-.ecg-credit { display: block; margin-top: 4px; font-size: 0.7rem; opacity: 0.9; }
 .ecg-litfl { margin-top: 10px; font-size: 0.78rem; color: var(--ink-soft); line-height: 1.5; }
 .ecg-litfl a { color: var(--brand-2); font-weight: 800; }
 /* Lightbox (enlarge) */
@@ -4245,9 +4163,6 @@ html[data-theme="dark"] .ecg-tool[aria-pressed="true"] { background: var(--accen
 @media (max-width: 700px) {
   .ecg-svg.ecg-paper { max-height: 240px; }
 }
-
-/* v4.6 pilot: tappable R-peak calipers (Step 1) */
-.ecg-hit { fill: transparent; stroke: none; pointer-events: all; cursor: pointer; outline: none; }
 .ecg-hit:hover { fill: rgba(var(--accent-rgb),0.28); stroke: var(--accent); stroke-width: 2; }
 .ecg-hit:focus, .ecg-hit:focus-visible { fill: rgba(var(--accent-rgb),0.32); stroke: var(--accent); stroke-width: 2.5; outline: none; }
 @media (forced-colors: active) { .ecg-hit:hover, .ecg-hit:focus { fill: Highlight; stroke: HighlightText; } }
@@ -4273,8 +4188,6 @@ html[data-theme="dark"] .ecg-tool[aria-pressed="true"] { background: var(--accen
 .ecg-inspector strong { color: var(--brand-2); }
 html[data-theme="dark"] .ecg-inspector strong { color: var(--accent); }
 @media print { .ecg-inspector { display: none !important; } .ecg-hotzone { display: none !important; } }
-
-.ecg-legend-ring { fill: none; stroke: var(--accent); stroke-width: 2; }
 .ecg-paper .ecg-legend-ring { stroke: #059669; }
 .ecg-lightbox .ecg-hotzone { pointer-events: none; }
 .ecg-lightbox .ecg-hot { cursor: default; }
@@ -5183,7 +5096,24 @@ html[data-theme="dark"] [data-cat="home"], html[data-theme="dark"] [data-cat="ge
 .context-filters .cf-caret { width: 15px; height: 15px; flex: none; opacity: .6; transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.3, 1); }
 .context-filters[open] > summary { background: rgba(var(--accent-rgb), 0.13); border-color: color-mix(in srgb, var(--accent) 40%, transparent); color: var(--brand-2); }
 .context-filters[open] > summary .cf-caret { transform: rotate(180deg); }
-.context-filters .chips { position: absolute; right: 0; top: 100%; z-index: 40; padding: 12px; width: 260px; flex-wrap: wrap; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px #0002; }
+.context-filters .chips {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    z-index: 40;
+    padding: 12px;
+    width: 260px;
+    /* The phone guard below clamps every .chips to 100% of its containing block.
+       This panel is absolutely positioned and intentionally wider than its own
+       trigger, so it needs its own ceiling or the severity choices collapse into
+       an unusable sliver. */
+    max-width: calc(100vw - 24px);
+    flex-wrap: wrap;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px #0002;
+}
 .theme-details { padding: 12px; }.theme-details summary { cursor: pointer; }.theme-details .accent-tools { padding-top: 16px; }
 .dx-card .sev-dot { display: none; }.dx-card { border-left-width: 1px; }.dx-card h4 { color: var(--ink); }.dx-card .sev-tag { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); font-size: .7rem; }
 .dx-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }.dx-key, .cluster p, .ov-prose { font-size: .96rem; line-height: 1.7; }.ov-prose { max-width: 75ch; }
@@ -5263,9 +5193,6 @@ html[data-theme="light"] .disp-col.d-icu h4 { color: #b91c1c; }
   .topbar > .primary-nav > :is(#homeBtn,#studyBtn,#shiftBtn,#ecgBtn,#explorerBtn) { width: auto; padding: 8px; min-height: 44px; height: auto; }
   .topbar > .primary-nav > :is(#homeBtn,#studyBtn,#shiftBtn,#ecgBtn,#explorerBtn) .header-label { display: inline; }
 }
-
-/* ECG learning workspace: readable paper, connected feedback and restrained motion. */
-.ecg-hero { padding-block: 22px; }
 .ecg-fig { border-color: var(--line); box-shadow: 0 3px 16px rgba(20,60,50,.04); }
 .ecg-fig .ecg-toolbar { padding: 10px 12px; }
 .ecg-fig .ecg-inspector { line-height: 1.65; }
@@ -5766,7 +5693,6 @@ a.side-btn { text-decoration: none; }
     background: var(--accent);
     transform: scale(1.5);
 }
-.rail-critical { color: var(--ink-soft); }
 .rail-critical .rail-dot { background: var(--critical-line); }
 .rail-critical.current { color: var(--critical); }
 .rail-critical.current .rail-dot { background: var(--critical); }
@@ -5876,8 +5802,6 @@ a.side-btn { text-decoration: none; }
     color: var(--ink-soft);
     font-variant-numeric: tabular-nums;
 }
-
-.library-group { margin-top: 30px; }
 .group-title {
     display: flex;
     align-items: center;
@@ -6416,13 +6340,6 @@ html[data-theme="dark"] .primary-nav .home-btn.active-nav {
 }
 .topbar > .context-filters > summary:hover { background: var(--home-hover); color: var(--ink); }
 .topbar > .context-filters[open] > summary { background: rgba(var(--accent-rgb), 0.13); color: var(--brand-2); }
-.topbar .context-filters .chips {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    box-shadow: var(--shadow-float);
-    padding: 10px;
-}
 .topbar > .topbar-tools {
     background: var(--card);
     border-color: var(--line);
@@ -10053,14 +9970,6 @@ html[data-theme="dark"] .evolving-case .quiz-option.incorrect .option-pill {
     vertical-align: middle;
 }
 
-.shift-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-}
-
 .shift-actions button {
     display: inline-flex;
     align-items: center;
@@ -10140,39 +10049,11 @@ html[data-theme="dark"] .evolving-case .quiz-option.incorrect .option-pill {
     font-weight: 750;
 }
 
-.case-finding-head {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
 .case-finding-head h4 {
     margin: 0;
     font-size: 1.1rem;
     font-weight: 750;
     color: var(--ink);
-}
-
-/* Practice View iOS 27 Polish */
-.practice-hero-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 52px;
-    height: 52px;
-    border-radius: 16px;
-    font-size: 2rem;
-    background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.25) 0%, rgba(var(--accent-rgb), 0.08) 100%);
-    border: 1.5px solid color-mix(in srgb, var(--accent) 45%, transparent);
-    box-shadow: 0 8px 20px -4px rgba(var(--accent-rgb), 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.65);
-    flex: none;
-}
-
-.practice-card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-    gap: 16px;
 }
 
 @media (max-width: 600px) {
