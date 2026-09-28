@@ -436,6 +436,34 @@ test('sticky offsets follow the real header height', async t => {
     await cdp('Emulation.setDeviceMetricsOverride', { ...VIEWPORT, deviceScaleFactor: 2, mobile: true });
 });
 
+test('modal dialogs never print', async t => {
+    if (!await ready(t)) return;
+    /* The first-run notice is a modal dialog, not document content. It only
+       shows before it is accepted, so the snapshot never catches it. */
+    await load('#ecg');
+    const res = await evaluate(`(function () {
+        var ov = document.getElementById('disclaimerOverlay');
+        if (!ov) return { missing: true };
+        ov.hidden = false;
+        var onScreen = getComputedStyle(ov).display;
+        return { onScreen: onScreen };
+    })()`);
+    assert.notEqual(res.onScreen, 'none', 'the notice should be visible when open, otherwise this proves nothing');
+    await cdp('Emulation.setEmulatedMedia', { media: 'print' });
+    await wait(400);
+    const printed = await evaluate(`(function () {
+        var ov = document.getElementById('disclaimerOverlay');
+        var dl = document.querySelector('.explorer-dialog');
+        return {
+            disclaimer: getComputedStyle(ov).display,
+            explorerDialog: dl ? getComputedStyle(dl).display : 'absent'
+        };
+    })()`);
+    await cdp('Emulation.setEmulatedMedia', { media: '' });
+    await evaluate(`(function () { var ov = document.getElementById('disclaimerOverlay'); if (ov) ov.hidden = true; }()`);
+    assert.equal(printed.disclaimer, 'none', 'the first-run notice must not appear on paper');
+});
+
 test('every primary control meets the 44px tap target', async t => {
     if (!await ready(t)) return;
     await load('#ecg');

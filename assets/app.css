@@ -18,12 +18,20 @@
    REVERSES the precedence of !important — in an earlier layer wins. Source order
    makes the last one win. This file still carries 984 of them, so wrapping the
    ascending sections in layers would silently invert every one. Measured, not
-   assumed: stripping all 984 changes 513 computed values across the six sampled
-   views (header labels go from display:block to flex, 10.56px to 11.04px). The
-   !important have to come out first, in batches, verified with:
+   assumed: stripping all 984 changes 513 computed values across the sampled
+   views (header labels go from display:block to flex, 10.56px to 11.04px).
+
+   The !important are not mechanical to remove either. Stripping the first 24
+   rules that carry them looks clean on screen, but it restores every transition
+   under prefers-reduced-motion and shifts print typography — 9,477 changed
+   values once those media states are compared. They are holding up real
+   conflicts, so removing one means resolving the rules it is fighting, rule by
+   rule. Verify any attempt with:
      node dev/style-snapshot.js /tmp/base.json
      node dev/style-snapshot.js /tmp/after.json --diff /tmp/base.json
-   which compares 6,330 element samples and exits non-zero on any change.
+   which compares every element across six views in three media states
+   (screen, reduced-motion, print) and exits non-zero on any change.
+   dev/important-batch.js enumerates the affected rules by index.
 
    Consequences to keep in mind when editing here:
      • A selector is often declared in several layers. Change the LAST one.
@@ -47,7 +55,7 @@
    first paint on the system stack, which matters on a slow hospital link. */
 @font-face {
     font-family: "Plus Jakarta Sans";
-    src: url("fonts/PlusJakartaSans-Variable.ttf?v=20260928-modules-r1") format("truetype");
+    src: url("fonts/PlusJakartaSans-Variable.ttf?v=20260928-a11yprint-r1") format("truetype");
     font-weight: 200 800;
     font-style: normal;
     font-display: swap;
@@ -3125,6 +3133,9 @@ html[data-theme="dark"] .rf-progress { background: #3d1c1c; }
     .sidebar, .topbar, .toast, .side-backdrop, .back-btn, .home-btn, .pref-tools, .accent-tools, .case-rail,
     .sec-head .arrow, .pager, .related, .rf-tools, .shift-topline, .study-tabs, .study-actions,
     .personal-controls, .note-actions, .reveal-btn, .ecg-filters, .ecg-step-nav, .step-rail-meter, .ecg-killers, .ecg-entry { display: none !important; }
+    /* A modal dialog is not document content: the first-run notice and the
+       enlarged ECG dialog must never end up on paper. */
+    .disclaimer-overlay, .explorer-dialog { display: none !important; }
     .main { margin: 0; }
     .section-card { break-inside: avoid; box-shadow: none; border-color: #ddd; }
     .sec-body { display: block !important; }

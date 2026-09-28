@@ -60,8 +60,21 @@ const wait = ms => new Promise(r2 => setTimeout(r2, ms));
   const PROPS = ['display','position','top','left','right','bottom','width','height','marginTop','marginBottom','paddingTop','paddingBottom','gap','fontSize','fontWeight','lineHeight','color','backgroundColor','borderTopWidth','borderBottomWidth','borderRadius','boxShadow','opacity','zIndex','flexDirection','justifyContent','alignItems','gridTemplateColumns','visibility','overflow','textAlign','letterSpacing','textTransform','whiteSpace','minHeight','maxHeight'];
   const SELECTORS = [];
 
+  /* Media states matter as much as viewports: an !important inside
+     prefers-reduced-motion or @media print is what keeps those states working,
+     and a screen-only diff reports "clean" while accessibility silently breaks.
+     Screen is captured for every view; the states are sampled on the views where
+     they actually change something, which keeps a full pass to a few minutes. */
+  const STATES = [
+    { id: 'screen', media: null, features: [] },
+    { id: 'reduced-motion', media: null, features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] },
+    { id: 'print', media: 'print', features: [] }
+  ];
+  const VIEWS = [['home-phone',393,'#'],['presentation-phone',393,'#chest-pain'],['ecg-phone',393,'#ecg'],['explorer-desktop',1280,'#ecg-explorer~normal'],['presentation-desktop',1280,'#chest-pain'],['shift-desktop',1280,'#shift~chest-pain']];
+  const COVERAGE = { screen: VIEWS.map(v => v[0]), 'reduced-motion': ['home-phone','ecg-phone','shift-desktop'], print: ['presentation-phone','ecg-phone','shift-desktop'] };
+
   const snapshot = { views: {} };
-  for (const [label, wpx, hash] of [['home-phone',393,'#'],['presentation-phone',393,'#chest-pain'],['ecg-phone',393,'#ecg'],['explorer-desktop',1280,'#ecg-explorer~normal'],['presentation-desktop',1280,'#chest-pain'],['shift-desktop',1280,'#shift~chest-pain']]) {
+  for (const [label, wpx, hash] of VIEWS) {
     await send('Emulation.setDeviceMetricsOverride', { width: wpx, height: 900, deviceScaleFactor: 2, mobile: wpx < 900 }, true);
     await send('Page.navigate', { url: url + hash }, true);
     await wait(3200);
@@ -94,6 +107,39 @@ const wait = ms => new Promise(r2 => setTimeout(r2, ms));
       return out;
     })()`);
     snapshot.views[label] = data;
+    for (const st of STATES.slice(1)) {
+      if (!COVERAGE[st.id].includes(label)) continue;
+      await send('Emulation.setEmulatedMedia', st.media ? { media: st.media } : { features: st.features }, true);
+      await wait(400);
+      snapshot.views[label + ' @ ' + st.id] = await ev(`(function(){
+        var props=${JSON.stringify(PROPS)}, out={};
+        function path(el){
+          var parts=[], n=0;
+          while(el && el.nodeType===1 && n++<6){
+            var seg=el.tagName.toLowerCase();
+            if(el.id) { seg+='#'+el.id; parts.unshift(seg); break; }
+            var cls=(el.getAttribute('class')||'').trim().split(/\s+/).filter(Boolean).slice(0,2).join('.');
+            if(cls) seg+='.'+cls;
+            var sib=el.parentNode?Array.prototype.indexOf.call(el.parentNode.children,el):0;
+            parts.unshift(seg+'['+sib+']');
+            el=el.parentElement;
+          }
+          return parts.join('>');
+        }
+        var all=document.querySelectorAll('body, body *');
+        for(var i=0;i<all.length;i++){
+          var el=all[i], k=path(el);
+          if(out[k]) continue;
+          var cs=getComputedStyle(el), o={_t:cs.transitionDuration, _a:cs.animationName, _d:cs.display};
+          for(var j=0;j<props.length;j++){o[props[j]]=cs[props[j]]}
+          out[k]=o;
+        }
+        out.__doc={count:all.length};
+        return out;
+      })()`);
+    }
+    await send('Emulation.setEmulatedMedia', { media: '' }, true);
+    await wait(200);
   }
   const n = Object.values(snapshot.views).reduce((a, v) => a + Object.keys(v).length, 0);
   if (diffMode && baselinePath) {
