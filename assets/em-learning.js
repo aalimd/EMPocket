@@ -141,8 +141,23 @@
         const marks=[80,110,140,170,200].map(y=>'<path d="M180 100L90 '+y+' M180 115L150 '+(y+30)+' M260 100L'+(variant?285:350)+' '+y+'" stroke="#8494a8" stroke-width="2"/>').join('');
         return frame+lungs+marks+(variant?'<path d="M290 49Q334 115 320 221" fill="none" stroke="#fff" stroke-width="3"/>':'')+'<text x="24" y="28" fill="white" font-size="16">Anatomy simplified · not a radiograph</text></svg>';
     }
+    /* The recorded-ECG library is 232KB gzipped and only the "recordings"
+       visual lesson needs it, so it is no longer a startup dependency: the home
+       screen and every other view used to wait on it before first paint. The
+       worker still precaches it, so this stays fully available offline. The
+       query matches the precached URL exactly, otherwise the same file would be
+       fetched and cached twice under two different URLs. */
+    let recordingsPromise = null;
+    function loadRecordings() {
+        if (!recordingsPromise) {
+            recordingsPromise = import('./ecg-recordings.js?v=20260928-modules-r1')
+                .catch(function () { recordingsPromise = null; });
+        }
+        return recordingsPromise || Promise.resolve();
+    }
+
     function mountVisual(body,id) {
-        if(id==='recordings'){mountRecordings(body);return;}const v=visuals.find(v=>v[0]===id);if(!v){body.innerHTML='<p>Visual lesson not found.</p>';return;}
+        if(id==='recordings'){loadRecordings().then(function(){mountRecordings(body);});return;}const v=visuals.find(v=>v[0]===id);if(!v){body.innerHTML='<p>Visual lesson not found.</p>';return;}
         let source='lung',content='';
         if(id==='abg') {
             source='abg';content='<p>Both fictional arterial samples have bicarbonate 12 mmol/L. Decide whether the respiratory response fits before revealing the interpretation.</p><div class="workspace-grid">'+[['A','7.29','26'],['B','7.10','40']].map(([label,ph,co2])=>'<section class="workspace-card"><h3>Sample '+label+'</h3><dl class="gas-values"><div><dt>pH</dt><dd>'+ph+'</dd></div><div><dt>PaCO₂</dt><dd>'+co2+' mmHg</dd></div><div><dt>HCO₃⁻</dt><dd>12 mmol/L</dd></div></dl></section>').join('')+'</div><details class="workspace-callout"><summary>Reveal the interpretation</summary><p>Both show acidemia with a metabolic acidosis. Expected PaCO₂ ≈ 1.5 × 12 + 8 ± 2 = 24–28 mmHg.</p><p>A fits the expected respiratory compensation. B has a higher PaCO₂ than expected, suggesting an additional respiratory acidosis.</p><p>This comparison does not establish the cause. Assess the clinical context, electrolytes, albumin-adjusted anion gap and relevant investigations. Approximate values are rounded for teaching; this is not a patient calculator.</p></details>';

@@ -205,7 +205,9 @@
     function iconForId(id) {
         if (id === 'ecg' || id === 'ecg-explorer') return '<span class="ios-emoji-badge" aria-hidden="true">📈</span>';
         if (id === 'learn' || id === 'study') return '<span class="ios-emoji-badge" aria-hidden="true">🎯</span>';
-        var cp = BY_ID[id] || (Array.isArray(CP_DATA) ? CP_DATA.find(function (c) { return c.id === id; }) : null);
+        /* Qualified: the scripts are ES modules, so a bare CP_DATA is no longer
+           a global and would throw a ReferenceError. */
+        var cp = BY_ID[id] || (Array.isArray(window.CP_DATA) ? window.CP_DATA.find(function (c) { return c.id === id; }) : null);
         if (cp && cp.icon) return '<span class="ios-emoji-badge" aria-hidden="true">' + cp.icon + '</span>';
         return '<span class="ios-emoji-badge" aria-hidden="true">🩺</span>';
     }
@@ -2662,7 +2664,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20260928-stickyfix-r1').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20260928-modules-r1').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
                     registration.addEventListener('updatefound', () => {

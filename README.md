@@ -52,7 +52,7 @@ See Cloudflare's official [static HTML settings](https://developers.cloudflare.c
 
 ## Release and offline updates
 
-The current asset token is `20260928-stickyfix-r1`; `CACHE_VERSION` is `v196` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
+The current asset token is `20260928-modules-r1`; `CACHE_VERSION` is `v197` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
 
 The worker precaches the canonical `./` shell because Pages redirects `/index.html` to `/`. Direct hash routes and offline `/index.html` requests fall back to that shell. Required asset failure or an HTML fallback returned instead of required JavaScript/CSS prevents a new worker from activating; optional icon failure does not prevent core offline use. A new worker claims the app and notifies users to refresh. The worker handles only this app's entry points and shipped asset paths, including at the domain root. New cache names encode the exact installation path, preserving case and punctuation. Cleanup touches only that exact namespace; it does not clear saved progress or other apps' caches. Ambiguous legacy cache names are intentionally retained during this one-time naming change.
 
@@ -71,6 +71,10 @@ Do not change the installation origin/path when replacing an existing Hostinger 
 ## Local verification
 
 Run `node --test tests/*.test.js`. Deployment tests check local references, PNG dimensions, release-token consistency, header parity and worker offline/install behavior. The rule matcher is a local model, not Cloudflare’s production parser. Serve `dev/explorer.html` locally for ECG interaction checks. The older `dev/audit.html` uses `new Function` and is blocked by the production CSP; do not weaken CSP to run it. See [deployment verification](docs/DEPLOYMENT-VERIFICATION-2026-09-10.md) for results and manual checks.
+
+`dev/style-snapshot.js` captures the computed style of **every** element in six views (phone and desktop, home / presentation / ECG / Explorer / shift) and can diff a refactor against a baseline, exiting non-zero on any change. Arrays are normalised, because `===` on two equal arrays is always false. It is how the module and deferral work below was proven inert, and it is the tool to use before touching `!important` in `app.css`.
+
+The runtime scripts are ES modules, so they are fetched in parallel and no longer block first paint, and the 232KB recorded-ECG library is loaded on demand rather than at startup while staying in the worker precache for offline use.
 
 `tests/style-audit.test.js` renders the real app in a phone viewport and asserts computed styles, because source-level tests cannot see what the cascade resolves to — that is how the printable step rail and the collapsed severity popup were found. It drives Chrome over `--remote-debugging-pipe` so it needs no dependency, and skips itself when no Chrome build is present. `tests/style-hygiene.test.js` keeps the stylesheet's unused-class count from growing; the layer order and z-index scale are documented at the top of `assets/app.css`, which is append-only and therefore order-dependent.
 

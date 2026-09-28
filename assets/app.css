@@ -14,6 +14,17 @@
      iOS27 bottom tab bar, liquid glass, accordions, shift view       (~7710)
      print final overrides                                            (end of file)
 
+   Why there is no @layer yet: layering is the right end state, but @layer
+   REVERSES the precedence of !important — in an earlier layer wins. Source order
+   makes the last one win. This file still carries 984 of them, so wrapping the
+   ascending sections in layers would silently invert every one. Measured, not
+   assumed: stripping all 984 changes 513 computed values across the six sampled
+   views (header labels go from display:block to flex, 10.56px to 11.04px). The
+   !important have to come out first, in batches, verified with:
+     node dev/style-snapshot.js /tmp/base.json
+     node dev/style-snapshot.js /tmp/after.json --diff /tmp/base.json
+   which compares 6,330 element samples and exits non-zero on any change.
+
    Consequences to keep in mind when editing here:
      • A selector is often declared in several layers. Change the LAST one.
      • ~980 !important declarations are load-bearing; grep the selector before
@@ -36,7 +47,7 @@
    first paint on the system stack, which matters on a slow hospital link. */
 @font-face {
     font-family: "Plus Jakarta Sans";
-    src: url("fonts/PlusJakartaSans-Variable.ttf?v=20260928-stickyfix-r1") format("truetype");
+    src: url("fonts/PlusJakartaSans-Variable.ttf?v=20260928-modules-r1") format("truetype");
     font-weight: 200 800;
     font-style: normal;
     font-display: swap;
