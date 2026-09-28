@@ -464,6 +464,34 @@ test('modal dialogs never print', async t => {
     assert.equal(printed.disclaimer, 'none', 'the first-run notice must not appear on paper');
 });
 
+test('the heading outline descends without skipping a level', async t => {
+    if (!await ready(t)) return;
+    /* A presentation used to run h1 -> h4: section titles were spans inside the
+       accordion button, so a screen reader saw the topic and then a level four.
+       The heading now wraps the button and section items are h3. */
+    await load('#chest-pain');
+    const res = await evaluate(`(function () {
+        var hs = [].slice.call(document.querySelectorAll('h1,h2,h3,h4,h5,h6'));
+        var jumps = [];
+        for (var i = 1; i < hs.length; i++) {
+            var a = +hs[i - 1].tagName[1], b = +hs[i].tagName[1];
+            if (b - a > 1) jumps.push(hs[i - 1].tagName + ' -> ' + hs[i].tagName);
+        }
+        return {
+            jumps: jumps,
+            first: hs.length ? hs[0].tagName : null,
+            hasSectionHeading: !!document.querySelector('.section-card > h2.sec-heading > .sec-head'),
+            headingInsideButton: !!document.querySelector('.sec-head h2, .sec-head h3')
+        };
+    })()`);
+    assert.deepEqual(res.jumps, [], 'heading levels skip a level: ' + res.jumps.join(', '));
+    assert.equal(res.first, 'H1', 'a topic view should start at h1');
+    assert.ok(res.hasSectionHeading,
+        'each section should expose a level-2 heading wrapping the accordion button');
+    assert.ok(!res.headingInsideButton,
+        'a heading inside the button is invalid ARIA and is not reliably exposed');
+});
+
 test('every primary control meets the 44px tap target', async t => {
     if (!await ready(t)) return;
     await load('#ecg');

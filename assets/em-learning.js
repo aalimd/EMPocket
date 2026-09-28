@@ -150,7 +150,7 @@
     let recordingsPromise = null;
     function loadRecordings() {
         if (!recordingsPromise) {
-            recordingsPromise = import('./ecg-recordings.js?v=20260928-a11yprint-r1')
+            recordingsPromise = import('./ecg-recordings.js?v=20260928-outline-r1')
                 .catch(function () { recordingsPromise = null; });
         }
         return recordingsPromise || Promise.resolve();

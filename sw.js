@@ -1,37 +1,37 @@
 /* EM Pocket service worker — resilient app-shell caching for offline clinical reference. */
-const CACHE_VERSION = 'v198';
+const CACHE_VERSION = 'v199';
 // Preserve case, separators and the full path: sibling installations must never share caches.
 const SCOPE_KEY = encodeURIComponent(new URL(self.registration.scope).pathname);
 const CACHE_PREFIX = 'em-cps-scope-' + SCOPE_KEY + '-';
 const CACHE = CACHE_PREFIX + CACHE_VERSION;
 const CORE_ASSETS = [
     './',
-    './assets/app.css?v=20260928-a11yprint-r1',
-    './assets/em-learning-data.js?v=20260928-a11yprint-r1',
-    './assets/ecg-recordings.js?v=20260928-a11yprint-r1',
+    './assets/app.css?v=20260928-outline-r1',
+    './assets/em-learning-data.js?v=20260928-outline-r1',
+    './assets/ecg-recordings.js?v=20260928-outline-r1',
     './assets/ptb-xl-LICENSE.txt',
-    './assets/em-learning.js?v=20260928-a11yprint-r1',
-    './assets/student-learning.js?v=20260928-a11yprint-r1',
-    './assets/app.js?v=20260928-a11yprint-r1',
-    './assets/data.js?v=20260928-a11yprint-r1',
-    './assets/evidence.js?v=20260928-a11yprint-r1',
-    './assets/ecg-svg.js?v=20260928-a11yprint-r1',
-    './assets/ecg-engine.js?v=20260928-a11yprint-r1',
-    './assets/ecg-case-tracings.js?v=20260928-a11yprint-r1',
-    './assets/ecg-interactive.js?v=20260928-a11yprint-r1',
-    './assets/ecg-curriculum.js?v=20260928-a11yprint-r1',
-  './assets/ecg-explorer.js?v=20260928-a11yprint-r1'
+    './assets/em-learning.js?v=20260928-outline-r1',
+    './assets/student-learning.js?v=20260928-outline-r1',
+    './assets/app.js?v=20260928-outline-r1',
+    './assets/data.js?v=20260928-outline-r1',
+    './assets/evidence.js?v=20260928-outline-r1',
+    './assets/ecg-svg.js?v=20260928-outline-r1',
+    './assets/ecg-engine.js?v=20260928-outline-r1',
+    './assets/ecg-case-tracings.js?v=20260928-outline-r1',
+    './assets/ecg-interactive.js?v=20260928-outline-r1',
+    './assets/ecg-curriculum.js?v=20260928-outline-r1',
+  './assets/ecg-explorer.js?v=20260928-outline-r1'
 ];
 const OPTIONAL_ASSETS = [
-    './manifest.json?v=20260928-a11yprint-r1',
-    './assets/icon.svg?v=20260928-a11yprint-r1',
-    './assets/icon-192.png?v=20260928-a11yprint-r1',
-    './assets/icon-512.png?v=20260928-a11yprint-r1',
-    './assets/icon-maskable-512.png?v=20260928-a11yprint-r1',
-    './assets/apple-touch-icon.png?v=20260928-a11yprint-r1',
+    './manifest.json?v=20260928-outline-r1',
+    './assets/icon.svg?v=20260928-outline-r1',
+    './assets/icon-192.png?v=20260928-outline-r1',
+    './assets/icon-512.png?v=20260928-outline-r1',
+    './assets/icon-maskable-512.png?v=20260928-outline-r1',
+    './assets/apple-touch-icon.png?v=20260928-outline-r1',
     // Optional on purpose: a missing or mis-typed font must never block the
     // offline install, and the UI stays fully usable on the system stack.
-    './assets/fonts/PlusJakartaSans-Variable.ttf?v=20260928-a11yprint-r1'
+    './assets/fonts/PlusJakartaSans-Variable.ttf?v=20260928-outline-r1'
 ];
 
 // Cache the canonical directory URL: Pages redirects index.html to this URL.

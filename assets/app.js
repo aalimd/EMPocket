@@ -1037,11 +1037,15 @@
         const safeKey = key || '';
         const emoji = sectionEmojiFor(safeKey, icon);
         const iconMarkup = '<span class="ios-emoji-badge sec-badge" aria-hidden="true">' + emoji + '</span>';
+        /* The heading wraps the button rather than living inside it: a heading
+           nested in a button is invalid ARIA and is not reliably exposed. This is
+           the standard accordion pattern and closes the h1 -> h4 jump in the
+           document outline without touching any existing heading. */
         return '<section class="section-card ' + (closed ? 'closed' : '') + '" id="' + sectionId + '" data-section="' + safeKey + '">' +
-            '<button class="sec-head" type="button" aria-expanded="' + (!closed) + '" aria-controls="' + sectionId + '-body">' +
+            '<h2 class="sec-heading"><button class="sec-head" type="button" aria-expanded="' + (!closed) + '" aria-controls="' + sectionId + '-body">' +
             '<span class="sec-ico" data-section-ico="' + safeKey + '" aria-hidden="true">' + iconMarkup + '</span>' +
             '<span class="sec-title">' + title + '</span>' +
-            '<span class="arrow"><svg class="sec-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></span></button>' +
+            '<span class="arrow"><svg class="sec-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></span></button></h2>' +
             '<div class="sec-body" id="' + sectionId + '-body">' + bodyHtml + '</div></section>';
     }
 
@@ -1174,7 +1178,7 @@
             const s = String(h);
             const cut = s.indexOf(': ');
             if (cut > 0 && cut < 52) {
-                return '<div class="cluster"><h4>' + esc(s.slice(0, cut)) + '</h4><p>' + esc(s.slice(cut + 2)) + '</p></div>';
+                return '<div class="cluster"><h3>' + esc(s.slice(0, cut)) + '</h3><p>' + esc(s.slice(cut + 2)) + '</p></div>';
             }
             return '<div class="cluster"><p>' + esc(s) + '</p></div>';
         }).join('') + '</div>';
@@ -1185,7 +1189,7 @@
         if (!items.length) return '<p style="font-size:.84rem;color:var(--ink-soft);padding:6px 0">No diagnoses in this severity tier.</p>';
         return '<div class="dx-grid">' + items.map(d => {
             const name = d[0], sev = d[1], key = d[2];
-            return '<div class="dx-card sev-' + sev + '"><h4>' + sevDot(sev) + esc(name) +
+            return '<div class="dx-card sev-' + sev + '"><h3>' + sevDot(sev) + esc(name) +
                 ' <span class="sev-tag">' + (SEV_LABEL[sev] || sev) + '</span></h4>' +
                 '<div class="dx-key"><strong>Key:</strong> ' + esc(key) + '</div></div>';
         }).join('') + '</div>';
@@ -1277,25 +1281,25 @@
 
             sectionCard('', 'Workup',
                 '<div class="wu-grid">' + cp.workup.map(w =>
-                    '<div class="wu-col"><h4>' + esc(w[0]) + '</h4><ul>' +
+                    '<div class="wu-col"><h3>' + esc(w[0]) + '</h3><ul>' +
                     w[1].map(i => '<li>' + esc(i) + '</li>').join('') + '</ul></div>').join('') + '</div>' +
                 '<details class="medication-safety"><summary>Medication safety reminder</summary><p>Use this as a first-pass prompt; verify all medications, doses, concentrations, contraindications, weight, pregnancy status, and local protocols before administration.</p><p>Check indication, allergy, route, renal/hepatic risk, interactions, monitoring, and local formulary.</p></details>', isClosed('workup'), 'workup') +
 
             sectionCard('', 'Disposition Pathway',
                 '<div class="disp-grid">' + cp.disposition.map(d => {
                     const cls = dispClass(d[0]);
-                    return '<div class="disp-col ' + cls + '"><h4>' + esc(d[0]) +
-                        '</h4><ul><li>' + esc(d[1]) + '</li></ul></div>';
+                    return '<div class="disp-col ' + cls + '"><h3>' + esc(d[0]) +
+                        '</h3><ul><li>' + esc(d[1]) + '</li></ul></div>';
                 }).join('') + '</div><p class="clinical-safety-note">Use objective reassessment and the local pathway.</p>' + (window.EM_LEARNING ? window.EM_LEARNING.reassessmentHtml(cp) : ''), isClosed('disposition'), 'disposition') +
 
             sectionCard('', 'Pearls & Pitfalls',
-                '<div class="pp-grid"><div class="pp-box pearls"><h4>Clinical Pearls</h4><ul class="plain-list">' +
+                '<div class="pp-grid"><div class="pp-box pearls"><h3>Clinical Pearls</h3><ul class="plain-list">' +
                 (Array.isArray(cp.pearls) && cp.pearls.length
                     ? cp.pearls.map(p => '<li>' + esc(p) + '</li>')
                     : cp.dontMiss.filter(d => d[1] === 'critical').slice(0, 4).map(d =>
                         '<li><strong>' + esc(d[0]) + ':</strong> ' + esc(d[2]) + '</li>')
                 ).join('') +
-                '</ul></div><div class="pp-box pitfalls"><h4>Pitfalls</h4><ul class="plain-list">' +
+                '</ul></div><div class="pp-box pitfalls"><h3>Pitfalls</h3><ul class="plain-list">' +
                 cp.pitfalls.map(p => '<li>' + esc(p) + '</li>').join('') +
                 '</ul></div></div>', isClosed('pearls-pitfalls', true), 'pearls-pitfalls') +
 
@@ -2664,7 +2668,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20260928-a11yprint-r1').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20260928-outline-r1').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
                     registration.addEventListener('updatefound', () => {
