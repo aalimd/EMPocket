@@ -12189,3 +12189,17 @@ html[data-theme="dark"] .learning-workspace .practice-hero {
         font-size: 0.78rem !important;
     }
 }
+
+/* ── micro-interactions ────────────────────────────────────── */
+.learning-workspace .workspace-tabs a.active,
+.learning-workspace .workspace-tabs a:hover {
+    border-bottom: 2px solid rgb(20, 107, 92);
+    color: rgb(20, 107, 92);
+}
+
+.learning-workspace .workspace-tabs a:focus-visible,
+.learning-workspace .practice-card:focus-visible {
+    outline: 2px solid rgb(20, 107, 92);
+    outline-offset: 2px;
+}
+/*─────────────────────────────────────────────────────────────*/
