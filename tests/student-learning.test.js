@@ -5,3 +5,18 @@ test('authored practice scenarios have facts, distinct choices and option-specif
 test('shuffle preserves stable option IDs and uses all correct-answer positions',()=>{const S=load(),options=S.cases[0].questions[0].options,seen=new Set();for(let seed=0;seed<100;seed++){const result=S.shuffled(options,seed);seen.add(result.findIndex(o=>o.correct));assert.deepEqual(Array.from(result,o=>o.id).sort(),Array.from(options,o=>o.id).sort());}assert.equal(seen.size,3);assert.equal(options[0].id,'best');});
 test('self-rating storage failures retain session progress without saving answers',()=>{const S=load(true);assert.equal(S.rate('ecg:normal','again'),false);assert.equal(S.read().ratings['ecg:normal'].value,'again');S.remember('ecg-explorer~normal');assert.equal(S.read().last,'ecg-explorer~normal');assert.equal(S.rate('ecg:normal','made-up'),false);assert.deepEqual(Object.keys(S.read()).sort(),['last','ratings']);});
 test('learning depth is optional, validates preferences and retains blocked-storage choices',()=>{for(const blocked of [false,true]){const S=load(blocked);assert.equal(S.getFocus(),'core');assert.equal(S.setFocus('advanced'),!blocked);assert.equal(S.getFocus(),'advanced');assert.equal(S.setFocus('__proto__'),false);assert.equal(S.getFocus(),'advanced');const html=S.guidedHtml('chest-pain');assert.match(html,/Advanced/);assert.match(html,/#chest-pain~references/);assert.doesNotMatch(html,/<details[^>]+open/);assert.equal((html.match(/data-learning-focus=/g)||[]).length,3);assert.ok(!S.guidedHtml('<img>').includes('<img>'));}});
+test('practice opens the case that belongs to the topic',()=>{
+ const context={window:{},document:{readyState:'loading',addEventListener(){}}};
+ vm.createContext(context);
+ vm.runInContext(fs.readFileSync('assets/em-learning-data.js','utf8'),context);
+ vm.runInContext(fs.readFileSync('assets/student-learning.js','utf8'),context);
+ const S=context.window.STUDENT_LEARNING;
+ const ecg=S.practiceFor('ecg');
+ assert.equal(ecg.href,'#ecg-explorer~practice');
+ assert.equal(ecg.label,'Practice ECGs');
+ assert.equal(S.practiceFor('palpitations').href,'#learn~case-resus');
+ assert.equal(S.practiceFor('chest-pain').href,'#study~case-chest-pain');
+ assert.equal(S.practiceFor('abdominal-pain').href,'#learn~practice');
+ assert.equal(S.practiceFor('abdominal-pain').label,'All cases');
+ assert.match(fs.readFileSync('assets/student-learning.js','utf8'),/#study~case-chest-pain/);
+});

@@ -12,6 +12,10 @@
      v5.1  tighten and unify                                          (~6659)
      v6    modern polish, depth                                       (~6770)
      iOS27 bottom tab bar, liquid glass, accordions, shift view       (~7710)
+     clinical UX cards, section rail, quick actions, ECG polish       (~10254)
+      v7    night-shift identity, dark header/heroes, wired cards      (~10536)
+     v8    reading-first layout: search, filter, practice tabs       (before print)
+     practice list                                                    (before print)
      print final overrides                                            (end of file)
 
    Why there is no @layer yet: layering is the right end state, but @layer
@@ -55,7 +59,7 @@
    first paint on the system stack, which matters on a slow hospital link. */
 @font-face {
     font-family: "Plus Jakarta Sans";
-    src: url("fonts/PlusJakartaSans-Variable.ttf?v=20260928-outline-r1") format("truetype");
+    src: url("fonts/PlusJakartaSans-Variable.ttf?v=20261002-v19") format("truetype");
     font-weight: 200 800;
     font-style: normal;
     font-display: swap;
@@ -182,62 +186,62 @@ html {
 
 html[data-theme="dark"] {
     color-scheme: dark;
-    --glass-bg-primary: rgba(15, 23, 42, 0.75);
-    --glass-bg-card: rgba(30, 41, 59, 0.45);
-    --glass-bg-pill: rgba(255, 255, 255, 0.06);
-    --glass-bg-bar: rgba(11, 17, 15, 0.97);
-    --glass-border-subtle: rgba(255, 255, 255, 0.08);
-    --glass-border-highlight: rgba(255, 255, 255, 0.18);
-    --surface-1: rgba(255, 255, 255, 0.04);
-    --surface-2: rgba(255, 255, 255, 0.08);
-    --bg: #0b110f;
-    --ink: #edf7f3;
-    --ink-soft: #9bb5ab;
-    --line: #1c2f28;
-    --line-subtle: #14231d;
-    --card: #111e18;
-    --card-elevated: #162720;
-    --card-rgb: 17, 30, 24;
-    --card-elevated-rgb: 22, 39, 32;
-    --brand: #6ee7b7;
-    --brand-2: #34d399;
-    --accent: #2dd4a8;
-    --accent-2: #10b981;
-    --accent-light: rgba(var(--accent-rgb), 0.14);
-    --accent-rgb: 45, 212, 168;
-    --shadow-rgb: 45, 212, 168;
-    --on-fill: #05241a;
-    --gold: #fbbf24;
-    --gold-bg: rgba(251, 191, 36, 0.14);
-    --critical: #f87171;
-    --critical-bg: #2d1414;
-    --critical-line: #5c2222;
-    --emergent: #fb923c;
-    --emergent-bg: #2d1d12;
-    --emergent-line: #5c381a;
-    --common: #4ade80;
-    --common-bg: #122818;
-    --common-line: #225230;
-    --topbar-bg: rgba(11, 17, 15, 0.82);
-    --foot-bg: #0d1714;
-    --hover-line: #2e5f50;
-    --home-hover: #162a22;
-    --ov-job-bg: linear-gradient(135deg, #132b22 0%, #0f221b 100%);
-    --ov-job-line: #244d3f;
-    --rf-box-bg: #241313;
-    --rf-box-line: #6b2828;
-    --rf-mid-bg: #291c10;
-    --rf-mid-ink: #fdba74;
-    --pearls-bg: #122920;
-    --pearls-line: #234f3e;
-    --pitfalls-bg: #262010;
-    --pitfalls-line: #54441e;
-    --pitfalls-ink: #fde68a;
+    --glass-bg-primary: rgba(22, 22, 24, 0.75);
+    --glass-bg-card: rgba(28, 28, 30, 0.65);
+    --glass-bg-pill: rgba(255, 255, 255, 0.08);
+    --glass-bg-bar: rgba(18, 18, 20, 0.97);
+    --glass-border-subtle: rgba(255, 255, 255, 0.10);
+    --glass-border-highlight: rgba(255, 255, 255, 0.20);
+    --surface-1: rgba(255, 255, 255, 0.05);
+    --surface-2: rgba(255, 255, 255, 0.09);
+    --bg: #000000;
+    --ink: #f5f5f7;
+    --ink-soft: #8e8e93;
+    --line: #2c2c2e;
+    --line-subtle: #242426;
+    --card: #1c1c1e;
+    --card-elevated: #2c2c2e;
+    --card-rgb: 28, 28, 30;
+    --card-elevated-rgb: 44, 44, 46;
+    --brand: #0a84ff;
+    --brand-2: #2997ff;
+    --accent: #0a84ff;
+    --accent-2: #0071e3;
+    --accent-light: rgba(10, 132, 255, 0.15);
+    --accent-rgb: 10, 132, 255;
+    --shadow-rgb: 0, 0, 0;
+    --on-fill: #ffffff;
+    --gold: #ffd60a;
+    --gold-bg: rgba(255, 214, 10, 0.15);
+    --critical: #ff453a;
+    --critical-bg: rgba(255, 69, 58, 0.15);
+    --critical-line: rgba(255, 69, 58, 0.35);
+    --emergent: #ff9f0a;
+    --emergent-bg: rgba(255, 159, 10, 0.15);
+    --emergent-line: rgba(255, 159, 10, 0.35);
+    --common: #30d158;
+    --common-bg: rgba(48, 209, 88, 0.15);
+    --common-line: rgba(48, 209, 88, 0.35);
+    --topbar-bg: rgba(28, 28, 30, 0.85);
+    --foot-bg: #161618;
+    --hover-line: #3a3a3c;
+    --home-hover: #2c2c2e;
+    --ov-job-bg: #2c2c2e;
+    --ov-job-line: #3a3a3c;
+    --rf-box-bg: rgba(255, 69, 58, 0.08);
+    --rf-box-line: rgba(255, 69, 58, 0.25);
+    --rf-mid-bg: rgba(255, 159, 10, 0.08);
+    --rf-mid-ink: #ff9f0a;
+    --pearls-bg: rgba(48, 209, 88, 0.08);
+    --pearls-line: rgba(48, 209, 88, 0.25);
+    --pitfalls-bg: rgba(255, 214, 10, 0.08);
+    --pitfalls-line: rgba(255, 214, 10, 0.25);
+    --pitfalls-ink: #ffd60a;
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45);
-    --shadow: 0 4px 16px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     --shadow-float: 0 20px 48px rgba(0, 0, 0, 0.75);
-    --grad-brand: linear-gradient(135deg, #093829 0%, #0d4a37 55%, #106e53 100%);
+    --grad-brand: linear-gradient(135deg, #0a84ff 0%, #0071e3 100%);
 }
 
 /* ══════════ Accent themes — user-selectable, light + dark ══════════
@@ -6064,12 +6068,7 @@ html[data-theme="dark"] .shift-sheet { background: linear-gradient(180deg, rgba(
 .study-page::before,
 .case-practice::before,
 .learning-workspace::before {
-    content: "";
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+    display: none !important;
 }
 .study-page-head,
 .case-practice-head { padding-top: 24px; }
@@ -8486,15 +8485,9 @@ html[data-theme="dark"] .home-intro {
     }
     html[data-theme="dark"] .learning-workspace,
     html[data-theme="dark"] .study-page {
-        background: linear-gradient(140deg,
-            rgba(var(--accent-rgb), 0.18) 0%,
-            rgba(var(--accent-rgb), 0.04) 55%,
-            rgba(26, 30, 36, 0.88) 95%),
-            var(--card) !important;
-        border-color: color-mix(in srgb, var(--accent) 35%, rgba(255, 255, 255, 0.12)) !important;
-        box-shadow:
-            0 18px 46px -10px rgba(0, 0, 0, 0.55),
-            0 0 0 1px rgba(255, 255, 255, 0.08) inset !important;
+        background: var(--card) !important;
+        border-color: var(--line) !important;
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45) !important;
     }
 }
 @media (max-width: 920px) {
@@ -8556,17 +8549,18 @@ html[data-theme="dark"] .home-intro {
 .workspace-tabs a[aria-current="page"],
 .study-tabs button.active,
 .study-tabs button[aria-current="page"] {
-    background: var(--card) !important;
-    color: var(--brand-2) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 0 1px color-mix(in srgb, var(--brand-2) 18%, transparent) !important;
-    font-weight: 750 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08) !important;
+    font-weight: 700 !important;
 }
 html[data-theme="dark"] .workspace-tabs a[aria-current="page"],
 html[data-theme="dark"] .study-tabs button.active,
 html[data-theme="dark"] .study-tabs button[aria-current="page"] {
-    background: var(--card-elevated, #242930) !important;
-    color: var(--accent) !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(var(--accent-rgb), 0.3) !important;
+    background: #3a3a3c !important;
+    color: #ffffff !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35) !important;
+    font-weight: 700 !important;
 }
 
 /* Practice Filter Bar & Session Note */
@@ -8692,23 +8686,30 @@ html[data-theme="dark"] .workspace-card {
     margin-bottom: 8px !important;
 }
 .workspace-card .study-kicker {
-    font-size: 0.68rem !important;
+    display: inline-flex !important;
+    align-self: flex-start !important;
+    width: fit-content !important;
+    font-size: 0.72rem !important;
     font-weight: 750 !important;
     letter-spacing: 0.06em !important;
     color: var(--brand-2) !important;
     text-transform: uppercase !important;
-    padding: 3px 8px !important;
-    border-radius: 6px !important;
+    padding: 4px 10px !important;
+    border-radius: 9999px !important;
     background: rgba(var(--accent-rgb), 0.12) !important;
-    margin: 0 !important;
+    border: 1px solid rgba(var(--accent-rgb), 0.2) !important;
+    margin: 0 0 10px 0 !important;
 }
 .workspace-card .case-badge {
-    font-size: 0.68rem !important;
-    font-weight: 600 !important;
-    color: var(--ink-soft) !important;
-    padding: 3px 8px !important;
+    font-size: 0.72rem !important;
+    font-weight: 650 !important;
+    /* 0.68rem on --ink-soft measured 3.73:1, under the 4.5:1 that small text
+       needs. Darkening the ink and thickening the pill fixes it. */
+    color: color-mix(in srgb, var(--ink) 78%, transparent) !important;
+    padding: 4px 10px !important;
     border-radius: 999px !important;
-    background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
+    background: color-mix(in srgb, var(--ink) 7%, transparent) !important;
+    border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent) !important;
     white-space: nowrap !important;
 }
 .workspace-card .case-badge.badge-progress {
@@ -9441,6 +9442,18 @@ details > summary::-webkit-details-marker {
     gap: 2px !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
+    /* One stable row on every tab. The board forced this with nowrap while the
+       other three wrapped to two rows, so the control jumped 46px on switch.
+       The four labels are short, so a single row always fits. */
+    flex-wrap: nowrap !important;
+    scrollbar-width: none;
+}
+.workspace-tabs::-webkit-scrollbar { display: none; }
+.workspace-tabs a {
+    flex: 1 1 0 !important;
+    min-width: max-content !important;
+    min-height: 44px !important;
+    white-space: nowrap !important;
 }
 
 .study-tabs button,
@@ -9716,24 +9729,6 @@ html[data-theme="dark"] .practice-case-card {
 html[data-theme="dark"] .practice-case-card:hover {
     border-color: rgba(var(--accent-rgb), 0.45) !important;
     box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5) !important;
-}
-.practice-domain-wrap {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-}
-.practice-card-emoji {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
-    font-size: 1.3rem;
-    flex: none;
 }
 .evolving-case-header {
     display: flex;
@@ -10251,20 +10246,1946 @@ html[data-theme="dark"] .workspace-card .case-badge.badge-progress {
     }
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   Clinical UX & Visual Modernization Layer — Home, Presentation & ECG
+   ──────────────────────────────────────────────────────────────────
+   1 · Presentation Entry Cards (.cp-grid, .cp-card, .cp-ico, .cp-count)
+   2 · Desktop Section Rail (.pres-rail, .pres-rail-label, .rail-jump, .rail-dot)
+   3 · Presentation Content Layout & Quick Actions (.pres-layout, .student-intro, .student-actions)
+   4 · ECG View Controls & Typography (.ecg-step-chip, .ex-button, .explorer-controls)
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Presentation Entry Cards ──
+   The v5 layer reaches these cards through `html[data-theme] .cp-grid .cp-card`
+   (0,3,1), so the modernisation below repeats that scope: same specificity, later
+   in the file, therefore the winner — the same technique the earlier layers use.
+   Mobile keeps its own tuned paddings because the iOS27 block pins them with
+   !important and it also owns the phone gap (10px !important). */
+.cp-grid {
+    gap: 14px;
+}
+
+html[data-theme] .cp-grid .cp-card {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px 20px;
+    min-height: 94px;
+    background: var(--card);
+    box-shadow: 0 1px 2px rgba(var(--shadow-rgb, 16, 89, 68), 0.05), 0 8px 22px -14px rgba(var(--shadow-rgb, 16, 89, 68), 0.35);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.2s ease,
+                border-color 0.2s ease,
+                background 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+html[data-theme] .cp-grid .cp-card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--accent) 46%, var(--line));
+    box-shadow: 0 2px 4px rgba(var(--shadow-rgb, 16, 89, 68), 0.06), 0 14px 32px -16px rgba(var(--shadow-rgb, 16, 89, 68), 0.45);
+}
+
+html[data-theme] .cp-grid .cp-card:active {
+    transform: scale(0.985);
+}
+
+html[data-theme] .cp-grid .cp-card .cp-ico {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+
+html[data-theme] .cp-grid .cp-card:hover .cp-ico {
+    transform: scale(1.06);
+    box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.18);
+}
+
+html[data-theme] .cp-grid .cp-card h3 {
+    font-size: 1.02rem;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    color: var(--ink);
+}
+
+html[data-theme] .cp-grid .cp-card p {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--ink-soft);
+}
+
+html[data-theme] .cp-grid .cp-card .cp-count {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
+    border: 1px solid color-mix(in srgb, var(--ink) 9%, transparent);
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+html[data-theme] .cp-grid .cp-card:hover .cp-count {
+    border-color: color-mix(in srgb, var(--accent) 42%, var(--line));
+    color: var(--brand-2);
+    background: color-mix(in srgb, var(--accent) 8%, var(--card));
+}
+
+html[data-theme="dark"] .cp-grid .cp-card {
+    background: var(--card);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+html[data-theme="dark"] .cp-grid .cp-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 50%, rgba(255, 255, 255, 0.15));
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+
+html[data-theme="dark"] .cp-grid .cp-card:hover .cp-count {
+    color: var(--accent);
+    background: rgba(var(--accent-rgb), 0.12);
+}
+
+/* ── 2. Desktop Section Rail ── */
+@media (min-width: 960px) {
+    .pres-rail-wrap {
+        padding-inline-end: 6px;
+    }
+}
+
+.pres-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+}
+
+.pres-rail-label {
+    font-size: 0.70rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 6px 10px 8px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--line-subtle);
+}
+
+.rail-jump {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 36px;
+    padding: 7px 11px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: start;
+    line-height: 1.3;
+    cursor: pointer;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rail-jump:hover {
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
+    color: var(--ink);
+    transform: translateX(2px);
+}
+
+.rail-dot {
+    flex: none;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--ink) 25%, transparent);
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.rail-jump.current {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 26%, transparent);
+    color: var(--brand-2);
+    font-weight: 750;
+}
+
+.rail-jump.current .rail-dot {
+    background: var(--accent);
+    transform: scale(1.6);
+    box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.5);
+}
+
+.rail-critical.current {
+    color: var(--critical);
+    background: color-mix(in srgb, var(--critical) 10%, transparent);
+    border-color: color-mix(in srgb, var(--critical) 24%, transparent);
+}
+
+.rail-critical.current .rail-dot {
+    background: var(--critical);
+    box-shadow: 0 0 6px rgba(220, 38, 38, 0.5);
+}
+
+html[data-theme="dark"] .pres-rail {
+    background: rgba(22, 27, 34, 0.78);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .rail-jump.current {
+    color: var(--accent);
+    background: rgba(var(--accent-rgb), 0.16);
+    border-color: rgba(var(--accent-rgb), 0.32);
+}
+
+/* ── 3. Quick Action Glass Bar & Objectives ── */
+.student-intro {
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 6%, transparent) 0%, var(--card) 100%);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+    padding: 18px 22px;
+    margin: 16px 0 20px;
+}
+
+.student-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 0 14px;
+    flex-wrap: wrap;
+}
+
+.student-actions a {
+    min-height: 44px;
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-size: 0.86rem;
+    font-weight: 650;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    box-shadow: var(--shadow-xs);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.student-actions a:hover {
+    transform: translateY(-1px);
+    border-color: var(--hover-line);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ── 4. ECG Guide & Explorer Polish ── */
+.ecg-step-chip {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ex-button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
 
 
 
 
 
 
-/* ══════════ Print: final overrides ══════════
-   Several layout layers use !important on display, and narrow paper (A5, or a
-   phone's own "Print to PDF" at ~390px) matches the max-width: 920/700px blocks
-   too. This block is last so it wins on order as well as on !important. */
+
+
+/* v7 night-shift identity, part 2: wired cards, status edges, dark bar. */
+@media screen {
+html[data-theme] .cp-grid .cp-card { border: 1px solid var(--line) !important; border-inline-start: 5px solid rgb(var(--cat,100,116,139)) !important; border-radius: 10px !important; box-shadow: none !important; }
+html[data-theme] .cp-grid .cp-card:hover { border-color: rgb(var(--cat,100,116,139)) !important; box-shadow: 0 10px 26px -16px rgba(4,32,24,0.55) !important; }
+html[data-theme] .cp-grid .cp-card .cp-ico { border-radius: 8px !important; }
+.section-card { border-radius: 10px !important; border-inline-start: 5px solid var(--accent) !important; box-shadow: none !important; }
+.section-card:hover { box-shadow: 0 12px 28px -18px rgba(4,32,24,0.5) !important; }
+.section-card[data-section="dont-miss"] { border-inline-start-color: var(--critical) !important; }
+.section-card[data-section="red-flags"], .section-card[data-section="ecg-red-flags"] { border-inline-start-color: var(--critical) !important; }
+.section-card[data-section="disposition"] { border-inline-start-color: var(--common) !important; }
+.sec-head .sec-ico { border-radius: 8px !important; }
+.rail-jump { border-radius: 8px !important; }
+.rail-jump.current { border-inline-start: 4px solid var(--accent) !important; }
+.ios-tabbar-inner { border-radius: 18px !important; border: 1px solid rgba(255,255,255,0.14) !important; box-shadow: 0 12px 30px rgba(0,0,0,0.45) !important; }
+}
+/* Apple iOS Design System: Translucent Navigation & Inset Cards */
+@media screen {
+.topbar { background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(20px) saturate(180%) !important; -webkit-backdrop-filter: blur(20px) saturate(180%) !important; border-bottom: 1px solid var(--line) !important; box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important; }
+html[data-theme="dark"] .topbar { background: rgba(28, 28, 30, 0.85) !important; backdrop-filter: blur(20px) saturate(180%) !important; -webkit-backdrop-filter: blur(20px) saturate(180%) !important; border-bottom: 1px solid rgba(255,255,255,0.10) !important; box-shadow: 0 1px 8px rgba(0,0,0,0.4) !important; }
+.topbar > .burger, .topbar > .tools-toggle { color: var(--ink) !important; }
+.topbar > .burger:hover, .topbar > .tools-toggle:hover { background: rgba(120,120,128,0.12) !important; color: var(--ink) !important; }
+html[data-theme] .primary-nav .home-btn { color: var(--ink-soft) !important; }
+html[data-theme] .primary-nav .home-btn:hover { background: rgba(120,120,128,0.08) !important; color: var(--ink) !important; }
+html[data-theme] .primary-nav .home-btn.active-nav, html[data-theme="dark"] .primary-nav .home-btn.active-nav { background: rgba(120,120,128,0.16) !important; color: var(--ink) !important; font-weight: 700 !important; }
+html[data-theme="dark"] .primary-nav .home-btn.active-nav { background: rgba(255,255,255,0.18) !important; color: #ffffff !important; }
+.topbar > .searchwrap { background: rgba(120,120,128,0.10) !important; border-color: transparent !important; }
+#searchInput { color: var(--ink) !important; }
+#searchInput::placeholder { color: var(--ink-soft) !important; }
+.topbar > .context-filters > summary { color: var(--ink) !important; }
+.topbar > .context-filters > summary:hover { background: rgba(120,120,128,0.12) !important; color: var(--ink) !important; }
+.topbar > .context-filters[open] > summary { background: rgba(var(--accent-rgb), 0.15) !important; color: var(--accent) !important; }
+.home-intro, html[data-theme="dark"] .home-intro { background: var(--card) !important; border: 1px solid var(--line) !important; border-inline-start: 4px solid var(--accent) !important; border-radius: 18px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important; }
+html[data-theme="dark"] .home-intro { box-shadow: 0 4px 20px rgba(0,0,0,0.35) !important; }
+.home-intro h1 { color: var(--ink) !important; letter-spacing: -0.02em !important; font-weight: 750 !important; }
+.home-intro p { color: var(--ink-soft) !important; }
+.home-intro > span.study-kicker { background: rgba(var(--accent-rgb),0.12) !important; border-color: rgba(var(--accent-rgb),0.25) !important; color: var(--accent) !important; font-weight: 700 !important; }
+.cp-hero { background: var(--card) !important; border: 1px solid var(--line) !important; border-inline-start: 4px solid var(--accent) !important; border-radius: 20px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important; }
+html[data-theme="dark"] .cp-hero { box-shadow: 0 4px 20px rgba(0,0,0,0.35) !important; }
+.cp-hero h1 { color: var(--ink) !important; font-weight: 750 !important; }
+.cp-hero .tag, .cp-hero .ecg-subhead { color: var(--ink-soft) !important; }
+.cp-hero .back-btn { color: var(--accent) !important; }
+.cp-hero .back-btn:hover { background: rgba(var(--accent-rgb),0.12) !important; color: var(--accent) !important; }
+}
+
+/* v8 reading-first layout.
+   The cascade above already paints the night-shift chrome. These rules only
+   pull clinical content up: a search field that can show its placeholder,
+   a shorter phone hero, the severity control beside the list it filters,
+   and practice tabs that stay fully readable. */
+@media screen {
+    .topbar .search-kbd { display: none !important; }
+    #searchInput { min-width: 0; text-overflow: ellipsis; }
+    .severity-slot { display: flex; flex-wrap: wrap; margin: 0 0 12px; }
+    .severity-slot .context-filters { margin: 0; }
+    .student-intro {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 12px;
+        padding: 10px 12px !important;
+        margin: 12px 0 !important;
+    }
+    .student-intro .student-actions { margin: 0 !important; flex: 1 1 220px; }
+    .student-intro .student-actions a { flex: 1 1 auto; min-height: 44px; }
+    .student-intro .student-glossary { margin: 0; flex: 1 1 160px; }
+    .student-intro .student-glossary > summary {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 8px 0;
+    }
+}
+@media screen and (max-width: 700px) {
+    .home-intro { padding: 16px 16px 14px !important; margin-bottom: 14px !important; }
+    .home-intro h1 { font-size: 1.42rem !important; margin: 6px 0 6px !important; }
+    .home-intro p { font-size: 0.9rem !important; line-height: 1.45 !important; }
+    .home-actions { margin-top: 12px !important; }
+    .home-meta { margin-top: 10px !important; padding-top: 10px !important; }
+    .cp-hero { padding: 14px 14px 12px !important; }
+    .cp-hero h1 { font-size: 1.45rem !important; }
+    .workspace-entry { gap: 8px !important; margin: 12px 0 8px !important; }
+    .workspace-entry > a { padding: 14px !important; }
+    .workspace-entry > a > p { display: none !important; }
+    .workspace-tabs { flex-wrap: wrap !important; overflow: visible !important; }
+    .workspace-tabs a {
+        flex: 1 1 calc(50% - 4px) !important;
+        min-width: 0 !important;
+        min-height: 44px !important;
+        white-space: normal !important;
+        padding: 8px 10px !important;
+    }
+}
+
+/* Practice list. The other learning pages keep the shared shell.
+   This board drops the glass page and shows each case by its story. */
+.practice-hero { display: contents; }
+.workspace-lead { max-width: 62ch; margin: 0 0 4px; color: var(--ink-soft); line-height: 1.5; }
+.learning-workspace.practice-board {
+    max-width: 980px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+.practice-board .practice-hero {
+    display: block;
+    margin: 0 0 14px;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+}
+.practice-board .workspace-hero-nav { margin: 0 0 4px !important; }
+.practice-board .workspace-hero-nav .back-btn {
+    color: var(--brand-2) !important;
+    background: var(--card) !important;
+    border: 1px solid var(--line) !important;
+    box-shadow: none !important;
+    min-height: 44px;
+}
+.practice-board .practice-hero h1 {
+    color: var(--ink) !important;
+    font-size: 1.65rem !important;
+    letter-spacing: -0.03em;
+    margin: 4px 0 12px !important;
+}
+/* The board only changes the surface colour now; geometry is shared so the
+   control cannot change shape between tabs. */
+.practice-board .workspace-tabs {
+    margin: 16px 0 24px !important;
+    background: color-mix(in srgb, var(--ink) 5%, var(--card)) !important;
+    border: 1px solid var(--line) !important;
+}
+.practice-board .workspace-tabs a {
+    color: var(--ink-soft) !important;
+    padding-inline: 12px !important;
+}
+.practice-board .workspace-tabs a[aria-current="page"] {
+    background: var(--card) !important;
+    color: var(--ink) !important;
+}
+.practice-board .workspace-filter-bar {
+    margin: 0 0 24px !important;
+}
+.practice-board .workspace-body > p:first-child {
+    margin: 0 0 24px !important;
+    color: var(--ink-soft);
+    font-size: 0.96rem;
+    line-height: 1.6;
+    max-width: 72ch;
+}
+.practice-board .workspace-body > h2:first-child {
+    margin: 0 0 10px !important;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+.practice-filter-chips {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    padding: 2px !important;
+    align-items: center !important;
+    width: 100%;
+}
+.practice-filter-chips .practice-chip {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    min-height: 44px !important;
+    padding: 8px 16px !important;
+    border-radius: 9999px !important;
+    border: 1px solid var(--line) !important;
+    border-style: solid !important;
+    background: color-mix(in srgb, var(--ink) 4%, var(--card)) !important;
+    color: var(--ink) !important;
+    font-size: 0.85rem !important;
+    font-weight: 550 !important;
+    font-variant-numeric: tabular-nums !important;
+    cursor: pointer !important;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+.practice-filter-chips .practice-chip:hover {
+    background: color-mix(in srgb, var(--ink) 8%, var(--card)) !important;
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--line)) !important;
+}
+.practice-filter-chips .practice-chip.active {
+    background: rgba(var(--accent-rgb), 0.16) !important;
+    color: var(--brand-2) !important;
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent) !important;
+    font-weight: 650 !important;
+    box-shadow: 0 2px 8px rgba(var(--accent-rgb), 0.2) !important;
+}
+.practice-chip .chip-label { white-space: nowrap; }
+.practice-chip .chip-count {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    padding: 0 6px !important;
+    border-radius: 9999px !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    font-variant-numeric: tabular-nums !important;
+    background: color-mix(in srgb, var(--ink) 8%, transparent) !important;
+    color: inherit !important;
+}
+.practice-chip.active .chip-count {
+    background: rgba(var(--accent-rgb), 0.25) !important;
+    color: var(--brand-2) !important;
+}
+.practice-chip[data-empty="true"] {
+    color: var(--ink-soft) !important;
+    opacity: 0.65;
+    border-style: solid !important;
+    border-color: var(--line) !important;
+    background: transparent !important;
+}
+.practice-chip[data-empty="true"] .chip-count {
+    background: color-mix(in srgb, var(--ink) 5%, transparent) !important;
+    color: var(--ink-soft) !important;
+}
+.practice-chip[data-empty="true"].active {
+    opacity: 1 !important;
+    background: rgba(var(--accent-rgb), 0.16) !important;
+    border-style: solid !important;
+    color: var(--brand-2) !important;
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent) !important;
+}
+.practice-board .workspace-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)) !important;
+    gap: 18px !important;
+    margin-top: 0 !important;
+    margin-bottom: 24px !important;
+}
+@media screen and (min-width: 800px) {
+    .learning-workspace[data-learn-tab="practice"] .workspace-grid,
+    .learning-workspace[data-learn-tab="skills"] .workspace-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+}
+@media screen and (min-width: 960px) {
+    .learning-workspace[data-learn-tab="visuals"] .workspace-grid,
+    .progress-stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+.practice-board .practice-case {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 22px 24px !important;
+    border-radius: 18px !important;
+    border: 1px solid var(--line) !important;
+    border-style: solid !important;
+    background: var(--card) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease !important;
+    text-decoration: none !important;
+    color: inherit !important;
+}
+.practice-board .practice-case:hover {
+    transform: translateY(-2px) !important;
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--line)) !important;
+    box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.12) !important;
+}
+html[data-theme="dark"] .practice-board .practice-case {
+    background: rgba(26, 30, 36, 0.75) !important;
+    border: 1px solid rgba(255, 255, 255, 0.09) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
+}
+html[data-theme="dark"] .practice-board .practice-case:hover {
+    border-color: rgba(var(--accent-rgb), 0.45) !important;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5) !important;
+}
+.practice-board .practice-case h2 {
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.35 !important;
+    color: var(--ink) !important;
+    margin: 0 !important;
+}
+.practice-stem {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.94rem;
+    line-height: 1.55;
+}
+.practice-empty {
+    display: grid;
+    justify-items: start;
+    gap: 8px;
+    margin: 14px 0 24px;
+    padding: 24px;
+    border: 1px solid var(--line) !important;
+    border-style: solid !important;
+    border-radius: 18px !important;
+    background: color-mix(in srgb, var(--ink) 3%, transparent) !important;
+    color: var(--ink-soft);
+    text-align: left;
+}
+html[data-theme="dark"] .practice-empty {
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+}
+.practice-empty strong {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px;
+}
+.practice-empty p {
+    margin: 0;
+    max-width: 52ch;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+}
+.practice-empty .ex-button { margin-top: 8px; }
+.practice-more {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 8px 0 16px;
+}
+.practice-more a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px 18px;
+    border-radius: 9999px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--brand-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.18s ease;
+}
+.practice-more a:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+    transform: translateY(-1px);
+}
+.workspace-detail .workspace-lead,
+.workspace-detail > .practice-hero > .study-kicker { display: none !important; }
+.workspace-detail .workspace-tabs {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+}
+.workspace-detail .workspace-tabs a {
+    flex: 1 1 auto !important;
+    min-width: max-content !important;
+    white-space: nowrap !important;
+    min-height: 44px !important;
+}
+@media screen and (max-width: 700px) {
+    .practice-board .practice-hero h1 { font-size: 1.45rem !important; }
+}
 @media print {
     .ecg-step-nav,
     .step-rail-meter,
     .ios-tabbar {
         display: none !important;
+    }
+    .practice-board,
+    .practice-board .practice-hero {
+        background: none !important;
+        box-shadow: none !important;
+        color: #000 !important;
+    }
+    .practice-board .practice-hero h1,
+    .practice-board .workspace-lead,
+    .practice-board .workspace-hero-nav .back-btn,
+    .practice-board .study-kicker {
+        color: #000 !important;
+        background: none !important;
+    }
+}
+
+/* ══════════ Learning workspace: one stable frame on every tab ══════════
+   Switching between Practice, Visuals, Procedures and Progress used to move
+   the page: the board path dropped the kicker and lead, and the tab bar itself
+   changed shape — one nowrap row on the board, a two-by-two grid elsewhere,
+   because the phone breakpoint forces wrap and a 50% basis. A control that
+   reshapes when you tap a sibling tab reads as a bug, so the frame is pinned
+   here, last in the file, to beat every earlier !important. The four labels
+   are short enough to share one row at 320px. */
+.learning-workspace .practice-hero > .study-kicker { display: block !important; }
+.learning-workspace .workspace-tabs {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    margin: 16px 0 24px !important;
+}
+.learning-workspace .workspace-tabs a {
+    flex: 1 1 0 !important;
+    min-width: max-content !important;
+    min-height: 44px !important;
+    white-space: nowrap !important;
+    justify-content: center !important;
+    padding-inline: 8px !important;
+}
+.learning-workspace .practice-hero h1,
+.learning-workspace .workspace-lead { font-size: inherit; }
+.learning-workspace .practice-hero h1 {
+    font-size: 1.6rem !important;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+.learning-workspace .workspace-lead {
+    margin: 0 0 14px !important;
+    font-size: 0.95rem !important;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 62ch;
+}
+
+/* ══════════ iOS Design System Layer: Apple Health / Books Medical Reference ══════════ */
+:root {
+    --ios-system-bg: #f2f2f7;
+    --ios-secondary-bg: #ffffff;
+    --ios-tertiary-bg: #e5e5ea;
+    --ios-label: #000000;
+    --ios-secondary-label: #8e8e93;
+    --ios-separator: rgba(60, 60, 67, 0.18);
+    --ios-blue: #007aff;
+    --ios-tint: var(--accent);
+}
+
+html[data-theme="dark"] {
+    --ios-system-bg: #000000;
+    --ios-secondary-bg: #1c1c1e;
+    --ios-tertiary-bg: #2c2c2e;
+    --ios-label: #ffffff;
+    --ios-secondary-label: #8e8e93;
+    --ios-separator: rgba(84, 84, 88, 0.36);
+}
+
+/* Vector icon system standardization */
+svg.ui-icon {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+    stroke-width: 1.8;
+}
+
+/* Squircle Icon Badges */
+.ios-icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(var(--accent-rgb), 0.10);
+    color: var(--accent);
+    flex-shrink: 0;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.ios-icon-badge svg.ui-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.group-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    margin-inline-end: 10px;
+}
+
+.group-badge svg.ui-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.sec-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+}
+
+.sec-badge svg.ui-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.sec-badge-sm {
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    margin-inline-end: 6px;
+}
+
+.sec-badge-sm svg.ui-icon {
+    width: 14px;
+    height: 14px;
+}
+
+.shift-hero-badge,
+.explorer-hero-badge,
+.practice-hero-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--accent-rgb), 0.12);
+    color: var(--accent);
+}
+
+.shift-hero-badge svg.ui-icon,
+.explorer-hero-badge svg.ui-icon,
+.practice-hero-badge svg.ui-icon {
+    width: 28px;
+    height: 28px;
+}
+
+.finding-badge,
+.shift-select-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.finding-badge svg.ui-icon,
+.shift-select-badge svg.ui-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.warning-badge {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.warning-badge svg.ui-icon {
+    width: 14px;
+    height: 14px;
+}
+
+.rail-ico {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(var(--accent-rgb), 0.12);
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rail-ico svg.ui-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* Apple Medical Design: Unified Category Color System */
+[data-cat="cardio"] .group-badge, [data-cat="cardio"] .cp-ico, [data-cat="cardio"] .cp-ico-lg, [data-cat="cardio"] .study-topic-ico, [data-cat="cardio"] .chip-ico, [data-cat="cardio"] .res-ico, [data-cat="cardio"] .shift-hero-badge, .side-item .ico[data-cat="cardio"], [class*="cat-cardio"] {
+    background: rgba(255, 69, 58, 0.12) !important;
+    color: #ff453a !important;
+}
+
+[data-cat="pulm"] .group-badge, [data-cat="pulm"] .cp-ico, [data-cat="pulm"] .cp-ico-lg, [data-cat="pulm"] .study-topic-ico, [data-cat="pulm"] .chip-ico, [data-cat="pulm"] .res-ico, [data-cat="pulm"] .shift-hero-badge, .side-item .ico[data-cat="pulm"], [class*="cat-pulm"],
+[data-cat="airway"] .group-badge, [data-cat="airway"] .cp-ico, [data-cat="airway"] .cp-ico-lg, [data-cat="airway"] .study-topic-ico, [data-cat="airway"] .chip-ico, [data-cat="airway"] .res-ico, [data-cat="airway"] .shift-hero-badge, .side-item .ico[data-cat="airway"], [class*="cat-airway"] {
+    background: rgba(10, 132, 255, 0.12) !important;
+    color: #0a84ff !important;
+}
+
+[data-cat="neuro"] .group-badge, [data-cat="neuro"] .cp-ico, [data-cat="neuro"] .cp-ico-lg, [data-cat="neuro"] .study-topic-ico, [data-cat="neuro"] .chip-ico, [data-cat="neuro"] .res-ico, [data-cat="neuro"] .shift-hero-badge, .side-item .ico[data-cat="neuro"], [class*="cat-neuro"] {
+    background: rgba(191, 90, 242, 0.12) !important;
+    color: #bf5af2 !important;
+}
+
+[data-cat="gi"] .group-badge, [data-cat="gi"] .cp-ico, [data-cat="gi"] .cp-ico-lg, [data-cat="gi"] .study-topic-ico, [data-cat="gi"] .chip-ico, [data-cat="gi"] .res-ico, [data-cat="gi"] .shift-hero-badge, .side-item .ico[data-cat="gi"], [class*="cat-gi"] {
+    background: rgba(255, 159, 10, 0.12) !important;
+    color: #ff9f0a !important;
+}
+
+[data-cat="gu"] .group-badge, [data-cat="gu"] .cp-ico, [data-cat="gu"] .cp-ico-lg, [data-cat="gu"] .study-topic-ico, [data-cat="gu"] .chip-ico, [data-cat="gu"] .res-ico, [data-cat="gu"] .shift-hero-badge, .side-item .ico[data-cat="gu"], [class*="cat-gu"] {
+    background: rgba(100, 210, 255, 0.12) !important;
+    color: #64d2ff !important;
+}
+
+[data-cat="obgyn"] .group-badge, [data-cat="obgyn"] .cp-ico, [data-cat="obgyn"] .cp-ico-lg, [data-cat="obgyn"] .study-topic-ico, [data-cat="obgyn"] .chip-ico, [data-cat="obgyn"] .res-ico, [data-cat="obgyn"] .shift-hero-badge, .side-item .ico[data-cat="obgyn"], [class*="cat-obgyn"] {
+    background: rgba(255, 55, 95, 0.12) !important;
+    color: #ff375f !important;
+}
+
+[data-cat="toxic"] .group-badge, [data-cat="toxic"] .cp-ico, [data-cat="toxic"] .cp-ico-lg, [data-cat="toxic"] .study-topic-ico, [data-cat="toxic"] .chip-ico, [data-cat="toxic"] .res-ico, [data-cat="toxic"] .shift-hero-badge, .side-item .ico[data-cat="toxic"], [class*="cat-toxic"],
+[data-cat="environ"] .group-badge, [data-cat="environ"] .cp-ico, [data-cat="environ"] .cp-ico-lg, [data-cat="environ"] .study-topic-ico, [data-cat="environ"] .chip-ico, [data-cat="environ"] .res-ico, [data-cat="environ"] .shift-hero-badge, .side-item .ico[data-cat="environ"], [class*="cat-environ"] {
+    background: rgba(48, 209, 88, 0.12) !important;
+    color: #30d158 !important;
+}
+
+[data-cat="trauma"] .group-badge, [data-cat="trauma"] .cp-ico, [data-cat="trauma"] .cp-ico-lg, [data-cat="trauma"] .study-topic-ico, [data-cat="trauma"] .chip-ico, [data-cat="trauma"] .res-ico, [data-cat="trauma"] .shift-hero-badge, .side-item .ico[data-cat="trauma"], [class*="cat-trauma"],
+[data-cat="critical"] .group-badge, [data-cat="critical"] .cp-ico, [data-cat="critical"] .cp-ico-lg, [data-cat="critical"] .study-topic-ico, [data-cat="critical"] .chip-ico, [data-cat="critical"] .res-ico, [data-cat="critical"] .shift-hero-badge, .side-item .ico[data-cat="critical"], [class*="cat-critical"] {
+    background: rgba(255, 105, 97, 0.14) !important;
+    color: #ff6961 !important;
+}
+
+[data-cat="peds"] .group-badge, [data-cat="peds"] .cp-ico, [data-cat="peds"] .cp-ico-lg, [data-cat="peds"] .study-topic-ico, [data-cat="peds"] .chip-ico, [data-cat="peds"] .res-ico, [data-cat="peds"] .shift-hero-badge, .side-item .ico[data-cat="peds"], [class*="cat-peds"] {
+    background: rgba(48, 176, 199, 0.12) !important;
+    color: #30b0c7 !important;
+}
+
+[data-cat="psych"] .group-badge, [data-cat="psych"] .cp-ico, [data-cat="psych"] .cp-ico-lg, [data-cat="psych"] .study-topic-ico, [data-cat="psych"] .chip-ico, [data-cat="psych"] .res-ico, [data-cat="psych"] .shift-hero-badge, .side-item .ico[data-cat="psych"], [class*="cat-psych"] {
+    background: rgba(94, 92, 230, 0.12) !important;
+    color: #5e5ce6 !important;
+}
+
+[data-cat="ent"] .group-badge, [data-cat="ent"] .cp-ico, [data-cat="ent"] .cp-ico-lg, [data-cat="ent"] .study-topic-ico, [data-cat="ent"] .chip-ico, [data-cat="ent"] .res-ico, [data-cat="ent"] .shift-hero-badge, .side-item .ico[data-cat="ent"], [class*="cat-ent"] {
+    background: rgba(255, 214, 10, 0.12) !important;
+    color: #ffd60a !important;
+}
+
+[data-cat="ecg"] .group-badge, [data-cat="ecg"] .cp-ico, [data-cat="ecg"] .cp-ico-lg, [data-cat="ecg"] .study-topic-ico, [data-cat="ecg"] .chip-ico, [data-cat="ecg"] .res-ico, [data-cat="ecg"] .shift-hero-badge, .side-item .ico[data-cat="ecg"], [class*="cat-ecg"] {
+    background: rgba(255, 59, 48, 0.12) !important;
+    color: #ff3b30 !important;
+}
+
+[data-cat="home"] .group-badge, [data-cat="home"] .cp-ico, [data-cat="home"] .cp-ico-lg, [data-cat="home"] .study-topic-ico, [data-cat="home"] .chip-ico, [data-cat="home"] .res-ico, [data-cat="home"] .shift-hero-badge, .side-item .ico[data-cat="home"], [class*="cat-generic"] {
+    background: rgba(142, 142, 147, 0.12) !important;
+    color: #8e8e93 !important;
+}
+
+.side-item .ico {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 8px !important;
+    flex-shrink: 0 !important;
+    padding: 0 !important;
+    font-style: normal !important;
+}
+.side-item .ico svg.ui-icon {
+    width: 17px !important;
+    height: 17px !important;
+}
+.side-item {
+    gap: 10px !important;
+    padding: 7px 10px !important;
+    border-radius: 9px !important;
+    transition: background 0.15s ease, color 0.15s ease !important;
+}
+.side-item:hover {
+    background: rgba(120, 120, 128, 0.08) !important;
+    color: var(--ink) !important;
+    transform: none !important;
+}
+.side-item.active {
+    background: rgba(10, 132, 255, 0.12) !important;
+    color: #0a84ff !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+}
+html[data-theme="dark"] .side-item.active {
+    background: rgba(10, 132, 255, 0.18) !important;
+    color: #2997ff !important;
+}
+
+/* Inset Grouped Presentation Card Rows (Apple Books / Health style) */
+.cp-card {
+    border-radius: 14px !important;
+    position: relative;
+    transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease !important;
+}
+
+.cp-card:active {
+    transform: scale(0.985) !important;
+}
+
+.cp-card .cp-ico {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cp-card .cp-ico svg.ui-icon {
+    width: 22px;
+    height: 22px;
+}
+
+.cp-disclosure {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-inline-start: auto;
+    color: var(--ink-soft);
+    opacity: 0.45;
+    transition: transform 0.14s ease, opacity 0.14s ease;
+}
+
+.cp-disclosure svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.2;
+}
+
+.cp-card:hover .cp-disclosure {
+    opacity: 0.9;
+    transform: translateX(2px);
+}
+
+.cp-reviewed svg {
+    width: 12px;
+    height: 12px;
+    stroke-width: 2.4;
+    display: inline-block;
+    vertical-align: -1px;
+    margin-inline-end: 2px;
+}
+
+/* Stat & Chip Icons */
+.stat-icon svg.ui-icon {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.8;
+}
+
+.chip-icon svg.ui-icon {
+    width: 15px;
+    height: 15px;
+    stroke-width: 1.9;
+    margin-inline-end: 4px;
+    display: inline-block;
+    vertical-align: -2px;
+}
+
+.btn-icon svg.ui-icon {
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.9;
+    display: inline-block;
+    vertical-align: -2px;
+    margin-inline-end: 4px;
+}
+
+/* Section Disclosure Cards */
+.section-card {
+    border-radius: 13px !important;
+    overflow: hidden;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease !important;
+}
+
+.sec-head {
+    min-height: 46px;
+    padding-inline: 14px;
+    transition: background 0.12s ease;
+}
+
+.sec-head:active {
+    background: rgba(var(--accent-rgb), 0.05);
+}
+
+.sec-head .arrow svg.sec-chevron {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section-card:not(.closed) .sec-head .arrow svg.sec-chevron {
+    transform: rotate(180deg);
+}
+
+/* RTL Directional Support */
+[dir="rtl"] .cp-disclosure svg,
+[dir="rtl"] .ios-nav-back svg {
+    transform: scaleX(-1);
+}
+
+[dir="rtl"] .cp-card:hover .cp-disclosure {
+    transform: translateX(-2px);
+}
+
+/* Safe area insets for notched iPhones */
+@supports (padding-top: env(safe-area-inset-top)) {
+    .topbar {
+        padding-top: calc(env(safe-area-inset-top) + 4px);
+    }
+    .ios-tabbar {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+/* ══════════ v9 UI/UX stitch — gap closures (append-only, last wins) ══════════
+   1. Phone topbar keeps the tested 6-track grid: the Explorer entry lives in
+      the bottom tab bar + sidebar on phones, so it leaves the topbar grid
+      instead of overflowing it as an unplaced 7th control.
+   2. Severity popup never offsets off-screen; reading panel clips vertically
+      only so the popup is not cut off.
+   3. Toast clears the bottom tab bar on phones and respects left/right notches.
+   4. Keyboard focus stays visible on every accent in both themes. */
+:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+@media (max-width: 920px) {
+    .topbar > .primary-nav > #explorerBtn {
+        display: none;
+    }
+    .toast {
+        bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+.toast {
+    max-width: min(90vw, 560px);
+    margin-inline: max(12px, env(safe-area-inset-left, 0px)) max(12px, env(safe-area-inset-right, 0px));
+}
+
+@media (max-width: 700px) {
+    .context-filters .chips {
+        right: 0;
+        left: auto;
+    }
+    .topbar-tools.open {
+        overflow: visible;
+    }
+}
+
+/* ══════════ v9.2 icon language — confirmed states ══════════
+   A scheduled review and a module marked read were confirmed with a text
+   tick, which carries no stroke weight, no optical size and no selected
+   state. They now reuse the `completed` vector — the same icon every other
+   confirmed state already uses — so one meaning has one mark. Sized in em so
+   it tracks the label, and hung off the shared .ui-icon base rather than a
+   new class. */
+.review-btn > .ui-icon,
+.learning-workspace button[data-module-read] > .ui-icon {
+    display: inline-block;
+    vertical-align: -0.15em;
+    width: 1em;
+    height: 1em;
+    margin-inline-end: 0.42em;
+    stroke-width: 2.1;
+    flex: none;
+    color: var(--common);
+}
+.review-btn > .ui-icon + span,
+.learning-workspace button[data-module-read] > .ui-icon + span {
+    display: inline;
+}
+   The authored-case view (#study~case) renders its <h1> and the
+   completion panel's <h2> bare, without the .case-practice-head /
+   .case-complete wrappers every other study view uses. Both fell
+   back to browser defaults: the title measured 2em (32px) — larger
+   than the system's clamped view titles (1.4–1.9rem) and without
+   the negative tracking every other heading carries — while the
+   completion title inherited a default 1.5em with no tracking.
+   Both now match the designed study-page scale. */
+.case-practice h1 {
+    font-size: 1.65rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin: 8px 0 4px;
+    color: var(--ink);
+}
+.case-complete h2 {
+    font-size: 1.25rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    margin: 0 0 6px;
+    color: var(--ink);
+}
+.case-complete p {
+    margin: 0 0 10px;
+}
+@media (max-width: 600px) {
+    .case-practice h1 { font-size: 1.5rem; }
+}
+
+/* ══════════ v9.3 practice board — readable categories, vector affordance ══════════
+   The per-domain label colours were raw Apple system hues printed straight onto
+   the card surface. Measured against it in light mode they read 2.06:1 (Trauma),
+   2.02:1 (Toxicology), 2.57:1 (Pediatric), 3.41:1 (Resuscitation) and 3.52:1
+   (Obstetric) — all under the 4.5:1 that an 11.8px label needs. Colour was doing
+   two jobs at once: naming the clinical domain and carrying the text, and it
+   could not do both.
+
+   Each domain keeps its hue, now as a token the label is mixed against the
+   theme ink. In light mode the mix darkens toward the text colour; in dark mode
+   it lightens toward white. The hue still separates the domains at a glance, the
+   label is legible in both themes, and the states below stay neutral. */
+.practice-case .workspace-card-kind { --domain-hue: var(--ink-soft); }
+.practice-case[data-domain="Resuscitation"] .workspace-card-kind { --domain-hue: #e5484d; }
+.practice-case[data-domain="Trauma"] .workspace-card-kind { --domain-hue: #b25e09; }
+.practice-case[data-domain="Pediatric"] .workspace-card-kind { --domain-hue: #0d7490; }
+.practice-case[data-domain="Obstetric"] .workspace-card-kind { --domain-hue: #7c3aed; }
+.practice-case[data-domain="Toxicology"] .workspace-card-kind { --domain-hue: #157f52; }
+.practice-case[data-domain="Behavioral emergency"] .workspace-card-kind { --domain-hue: #4f46e5; }
+html[data-theme="dark"] .practice-case[data-domain="Resuscitation"] .workspace-card-kind { --domain-hue: #ff8a85; }
+html[data-theme="dark"] .practice-case[data-domain="Trauma"] .workspace-card-kind { --domain-hue: #f5b04d; }
+html[data-theme="dark"] .practice-case[data-domain="Pediatric"] .workspace-card-kind { --domain-hue: #6fd3e8; }
+html[data-theme="dark"] .practice-case[data-domain="Obstetric"] .workspace-card-kind { --domain-hue: #c4b0ff; }
+html[data-theme="dark"] .practice-case[data-domain="Toxicology"] .workspace-card-kind { --domain-hue: #6ee7a8; }
+html[data-theme="dark"] .practice-case[data-domain="Behavioral emergency"] .workspace-card-kind { --domain-hue: #a5a3ff; }
+
+/* The card affordance is now the shared chevron vector, sized in em so it tracks
+   the label, and mirrored with the text in RTL. */
+.practice-case .case-cta .cta-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.practice-case .case-cta .cta-arrow .ui-icon {
+    width: 1.05em;
+    height: 1.05em;
+    stroke-width: 2.2;
+}
+[dir="rtl"] .practice-case .case-cta .cta-arrow .ui-icon {
+    transform: scaleX(-1);
+}
+
+/* ══════════ v9.4 learning workspace — one card, four tabs ══════════
+   Measured across the four tabs, the same role was drawn four different ways:
+
+     tab         heading      body     icon   meta row            affordance
+     Practice    h2 @18.4px   15.04px  yes    domain + state      labelled row
+     Visuals     h2 @18.4px   16px     no     none                bare 16px span
+     Procedures  h2 @18.4px   16px     no     tinted pill         bare 16px span
+     Progress    h3 @16.8px   16px     no     none                none
+
+   plus a padding/radius split (22/24 at 18px against 18/20 at 20px), so tapping a
+   sibling tab changed the shape of the page rather than its contents. All four
+   grids are built from one component now, so the card carries a leading semantic
+   icon, a quiet category label, an optional state badge, a title, a body and one
+   labelled affordance — the same object with different content. */
+.workspace-card {
+    padding: 20px !important;
+    border-radius: 18px !important;
+}
+.practice-board .practice-case {
+    padding: 20px !important;
+    border-radius: 18px !important;
+}
+/* Practice shrank its body copy to 15px while the other tabs used 16px. One
+   measure across the workspace. */
+.workspace-card-body,
+.practice-stem {
+    font-size: 0.95rem !important;
+    line-height: 1.55 !important;
+    color: var(--ink-soft) !important;
+}
+/* Progress cards sit under a page-level h2, so their title stays an h3 and is
+   sized to the same measure as every other card title. */
+.workspace-card h3 {
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.35 !important;
+    color: var(--ink) !important;
+}
+
+/* Leading icon: the same squircle language the section and category badges use,
+   so a card, a section header and a list row read as one family. */
+.workspace-card-ico {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 30px !important;
+    height: 30px !important;
+    flex: none !important;
+    border-radius: 9px !important;
+    background: color-mix(in srgb, var(--accent) 12%, transparent) !important;
+    color: var(--brand-2) !important;
+}
+.workspace-card-ico .ui-icon {
+    width: 17px !important;
+    height: 17px !important;
+    stroke-width: 1.9;
+}
+.practice-case .workspace-card-ico {
+    background: color-mix(in srgb, var(--domain-hue, var(--accent)) 14%, transparent) !important;
+    color: color-mix(in srgb, var(--domain-hue, var(--accent)) 78%, var(--ink)) !important;
+}
+html[data-theme="dark"] .practice-case .workspace-card-ico {
+    background: color-mix(in srgb, var(--domain-hue, var(--accent)) 20%, transparent) !important;
+    color: color-mix(in srgb, var(--domain-hue, var(--accent)) 70%, #ffffff) !important;
+}
+
+/* Category label: quiet metadata, no pill and no border. The procedures tab used
+   a tinted capsule here while practice used plain coloured text for the same
+   job, so one tab shouted and the other whispered. */
+.workspace-card-kind {
+    font-size: 0.74rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+    color: var(--ink-soft) !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+.practice-case .workspace-card-kind {
+    font-weight: 750 !important;
+    letter-spacing: 0.05em !important;
+    color: color-mix(in srgb, var(--domain-hue) 74%, var(--ink)) !important;
+}
+html[data-theme="dark"] .practice-case .workspace-card-kind {
+    color: color-mix(in srgb, var(--domain-hue) 82%, #ffffff) !important;
+}
+
+/* Top row: icon and category read as one leading group, the state badge is the
+   only thing pushed away because it is the only changing element. */
+.workspace-card-top {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-bottom: 10px !important;
+}
+.workspace-card-top .case-badge {
+    margin-inline-start: auto !important;
+}
+
+/* One affordance everywhere: a label plus the shared chevron. The visuals and
+   procedures tabs carried a bare 16px span — the same size as body copy, so it
+   never read as an action — and a typed arrow with no stroke weight or RTL
+   mirroring. */
+.workspace-card .case-cta {
+    margin-top: auto !important;
+    padding-top: 12px !important;
+    border-top: 1px solid var(--line) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    color: var(--brand-2) !important;
+}
+.workspace-card .case-cta .cta-label {
+    font-size: 0.84rem !important;
+    font-weight: 650 !important;
+}
+.workspace-card .case-cta .cta-arrow {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: none !important;
+}
+.workspace-card .case-cta .cta-arrow .ui-icon {
+    width: 1.05em !important;
+    height: 1.05em !important;
+    stroke-width: 2.2 !important;
+}
+[dir="rtl"] .workspace-card .case-cta .cta-arrow .ui-icon {
+    transform: scaleX(-1);
+}
+/* A card with no action should not grow a divider to sit above nothing. */
+.workspace-card:not(:has(.case-cta)) h2 + .workspace-card-body {
+    margin-bottom: 0;
+}
+
+/* ══════════ v9.5 learning workspace — one frame, one rhythm ══════════
+   Measured after v9.4, three problems remained that a single card component
+   cannot fix on its own:
+
+   1. The internal rhythm still moved between tabs. The shared component gave
+      every card the same padding and type, but older per-tab rules kept their
+      own title and body margins, so the gaps between the leading row, the title,
+      the body and the action measured 22/22/22 on Practice, 14/16/10 on Visuals
+      and 20/20 on Progress. Same object, three vertical cadences.
+
+   2. Every card carried a 1px border *and* a shadow. Two frames around one
+      object reads as a floating chip rather than a considered surface, and the
+      shadow on each of six cards is paint the page does not need. The hairline
+      stays because it defines the surface; the resting shadow goes, and motion
+      is spent on the press and hover states where it actually communicates.
+
+   3. The gap between cards (18px) was larger than the padding inside one
+      (20px at the time), so items read as a single block with seams. The gap is
+      now clearly tighter than the padding, which is what separates a grid into
+      objects instead of a wall.
+
+   Spacing runs on a 4px scale declared once below rather than being retyped per
+   tab, so the rhythm is a property of the workspace, not of each screen. */
+:root {
+    --ws-space-1: 4px;
+    --ws-space-2: 8px;
+    --ws-space-3: 12px;
+    --ws-space-4: 16px;
+    --ws-space-5: 20px;
+    --ws-space-6: 24px;
+    --ws-card-gap: 14px;
+    --ws-card-pad: 18px;
+    --ws-card-radius: 16px;
+    --ws-rule: color-mix(in srgb, var(--ink) 11%, transparent);
+}
+
+/* ── the frame ─────────────────────────────────────────────────────────── */
+.workspace-card,
+.practice-board .practice-case {
+    padding: var(--ws-card-pad) !important;
+    border-radius: var(--ws-card-radius) !important;
+    border: 1px solid var(--ws-rule) !important;
+    box-shadow: none !important;
+    background: var(--card) !important;
+}
+html[data-theme="dark"] .workspace-card,
+html[data-theme="dark"] .practice-board .practice-case {
+    border-color: color-mix(in srgb, var(--ink) 16%, transparent) !important;
+    background: var(--card) !important;
+    box-shadow: none !important;
+}
+/* Lift is now the hover's job: a frame that only appears on approach keeps the
+   resting page flat, which is what a reference app wants while reading. */
+.workspace-card:hover,
+.practice-board .practice-case:hover {
+    box-shadow: 0 6px 20px -8px color-mix(in srgb, var(--ink) 26%, transparent) !important;
+    border-color: color-mix(in srgb, var(--accent) 42%, var(--ws-rule)) !important;
+    transform: none !important;
+}
+.workspace-card:active,
+.practice-board .practice-case:active {
+    transform: scale(0.985) !important;
+}
+
+/* ── the gap between cards ─────────────────────────────────────────────── */
+.workspace-grid {
+    gap: var(--ws-card-gap) !important;
+    margin-block: var(--ws-space-6) !important;
+}
+
+/* ── the rhythm inside one card ───────────────────────────────────────────
+   Three deliberate steps rather than one repeated value: the leading row sits
+   close to the title it labels, the title sits close to the body it introduces,
+   and the action is a separate zone held off by a hairline. */
+.workspace-card .workspace-card-top {
+    margin-bottom: var(--ws-space-3) !important;
+}
+.workspace-card h2,
+.workspace-card h3 {
+    margin: 0 !important;
+}
+.workspace-card-body,
+.practice-stem {
+    margin: var(--ws-space-1) 0 0 !important;
+}
+.workspace-card .case-cta {
+    margin-top: var(--ws-space-4) !important;
+    padding-top: var(--ws-space-3) !important;
+    border-top-color: var(--ws-rule) !important;
+}
+
+/* ── the flow between blocks of a page ─────────────────────────────────── */
+.workspace-body > * + * {
+    margin-top: var(--ws-space-6);
+}
+.workspace-body > .workspace-section-intro {
+    margin-bottom: 0 !important;
+}
+.workspace-body > .workspace-section-intro + .workspace-filter-bar,
+.workspace-body > .workspace-filter-bar + .workspace-grid {
+    margin-top: var(--ws-space-5) !important;
+}
+.workspace-body > .workspace-grid {
+    margin-bottom: 0 !important;
+}
+.workspace-body .practice-more {
+    margin-top: var(--ws-space-5) !important;
+    margin-bottom: 0 !important;
+}
+/* Progress stacked its heading, lead, list, actions and callout on five
+   different values (0/10/18/20). One rhythm for the whole body. */
+.workspace-body h2:first-child {
+    margin-bottom: var(--ws-space-2) !important;
+}
+.workspace-body .workspace-progress-list,
+.workspace-body .workspace-actions,
+.workspace-body .workspace-callout {
+    margin-block: 0 !important;
+}
+.workspace-body .workspace-progress-list {
+    padding-top: var(--ws-space-1) !important;
+}
+
+/* ── v9.5b one spacing mechanism ──────────────────────────────────────────
+   Practice spaced its children with flex `gap: 12px` while the other three tabs
+   used margins, so the two stacked: the leading row sat 24px from its title, the
+   title 16px from its body and the body 28px from the action, against 12/4/16
+   elsewhere. Two mechanisms for one rhythm is how a shared component drifts
+   again, so the workspace now spaces entirely with flex gap and carries no
+   child margins. The action keeps its own inner padding, which is what holds it
+   off the hairline above it. */
+.workspace-card,
+.practice-board .practice-case {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+}
+.workspace-card .workspace-card-top {
+    margin-bottom: 0 !important;
+}
+.workspace-card h2,
+.workspace-card h3 {
+    margin: 0 !important;
+}
+.workspace-card-body,
+.practice-stem {
+    margin: 0 !important;
+}
+.workspace-card .case-cta {
+    margin-top: 0 !important;
+    padding-top: 12px !important;
+}
+/* The grid gap was pinned to 18px on the practice board only; both grids now
+   take the same token. */
+.workspace-grid,
+.practice-board .workspace-grid {
+    gap: var(--ws-card-gap) !important;
+}
+
+/* ── v9.5c the flow between blocks ─────────────────────────────────────────
+   Zeroing the margins on the progress tab's list, actions and callout left
+   them jammed against the grid above them — measured gaps of 10/0/0/10/0
+   against 24 everywhere else. They now take the same rhythm as every other
+   block. The one exception is deliberate: a page heading and the lede under it
+   are a single unit, so they sit closer than two unrelated sections do. */
+.workspace-body > .workspace-progress-list,
+.workspace-body > .workspace-actions,
+.workspace-body > .workspace-callout {
+    margin-top: var(--ws-space-6) !important;
+    margin-bottom: 0 !important;
+}
+.workspace-body > h2:first-child {
+    margin-bottom: var(--ws-space-2) !important;
+}
+.workspace-body > .workspace-section-intro {
+    margin-top: 0 !important;
+}
+
+/* ── v9.5d deterministic block flow ────────────────────────────────────────
+   Letting each block keep its own margin meant the progress tab inherited a
+   different value per block and rendered gaps of 10 and 0 where the other tabs
+   showed 24. Every block's outer margin is now stated here once, so the rhythm
+   cannot be changed by an unrelated rule further up the file. 20px separates
+   unrelated sections; the 6px pair is a heading and the lede beneath it, which
+   read as one unit. */
+.workspace-body > h2:first-child {
+    margin: 0 0 6px !important;
+}
+.workspace-body > .workspace-section-intro,
+.workspace-body > .workspace-filter-bar,
+.workspace-body > .workspace-grid,
+.workspace-body > .practice-more,
+.workspace-body > .workspace-progress-list,
+.workspace-body > .workspace-actions,
+.workspace-body > .workspace-callout {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+.workspace-body > * + * {
+    margin-top: 20px !important;
+}
+.workspace-body > h2:first-child + .workspace-section-intro {
+    margin-top: 0 !important;
+}
+
+/* ── v9.5e one rule owns the outer rhythm ──────────────────────────────────
+   The wildcard `* + *` lost to the per-block rules on specificity, and the
+   per-block reset then left every gap at zero. Stating the top margin on the
+   blocks themselves, at the same specificity as the rules it has to beat and
+   last in the file, makes the flow a single decision instead of a contest. */
+.workspace-body > .workspace-section-intro,
+.workspace-body > .workspace-filter-bar,
+.workspace-body > .workspace-grid,
+.workspace-body > .practice-more,
+.workspace-body > .workspace-progress-list,
+.workspace-body > .workspace-actions,
+.workspace-body > .workspace-callout {
+    margin: var(--ws-space-5) 0 0 !important;
+}
+/* A page heading and its lede are one unit, and the first block on the page
+   follows the tab bar rather than another block. */
+.workspace-body > h2:first-child {
+    margin: 0 0 6px !important;
+}
+.workspace-body > h2:first-child + .workspace-section-intro,
+.workspace-body > .workspace-section-intro:first-child {
+    margin-top: 0 !important;
+}
+
+/* The lede under a page heading takes its 6px from the heading's own bottom
+   margin, but `.workspace-body p { margin: 10px 0 }` was setting the top of the
+   paragraph to 10 and the larger of the two wins a collapsed gap. Stating both
+   halves on one selector removes the ambiguity. */
+.workspace-body > h2:first-child + .workspace-section-intro {
+    margin: 0 !important;
+}
+.workspace-body > h2:first-child {
+    margin: 0 0 6px !important;
+}
+
+/* ── v9.5f the title/lede pair, stated at the specificity it needs ────────
+   `practice-board` is really the shared workspace frame — it carries the hero,
+   the segmented tab bar and the 980px measure for all four tabs — so it is
+   present on every one of them and its rules outrank a bare `.workspace-body`
+   selector. That frame sets a 10px gap under a body heading, which is the right
+   value for a heading and its lede: tighter than the 20px that separates
+   unrelated sections. Stated here at matching specificity so the rhythm is a
+   decision rather than a side effect of the frame's naming. */
+.practice-board .workspace-body > h2:first-child,
+.workspace-body > h2:first-child {
+    margin: 0 0 10px !important;
+}
+.practice-board .workspace-body > h2:first-child + .workspace-section-intro,
+.workspace-body > h2:first-child + .workspace-section-intro {
+    margin: 0 !important;
+}
+
+/* The frame gives the first paragraph a 24px bottom margin, which made the gap
+   after the intro 24 on the tabs without a filter bar and 24-then-20 on the one
+   with it. The intro now clears its own margin so every block separation is the
+   same 20px everywhere. */
+.practice-board .workspace-body > p:first-child,
+.practice-board .workspace-body > .workspace-section-intro,
+.workspace-body > .workspace-section-intro {
+    margin: 0 0 0 !important;
+}
+
+/* ══════════ v10 learning workspace — rebuilt shell ══════════
+   Measured on the desktop view this replaces, four things were wrong:
+
+   1. The destination control was a toolbar, not a segmented control. Four tabs
+      stretched to 242px each across a 980px measure, so it read as the widest,
+      heaviest element on the page and pushed the content below it. Segments now
+      hug their labels on wide screens and only go full-width on a phone, which
+      is the case where the idiom belongs.
+   2. The active segment painted a muddy neutral (`#3a3a3c`, the dark theme's
+      hover tone), so the current destination looked like a stuck hover rather
+      than a selection.
+   3. The back link rendered underlined — `.back-btn` is an <a> and the rule
+      never cancelled the decoration, so a navigation control looked like body
+      copy. It is now a proper nav-back: chevron and accent label, no chrome.
+   4. Cards on a wide screen were 477px wide and 266px tall. Two wide, short
+      boxes per row read as a layout accident; a third column at this width keeps
+      them closer to a readable measure. */
+
+/* ── the destination control ──────────────────────────────────────────── */
+.workspace-tabs {
+    display: inline-flex !important;
+    flex-wrap: nowrap !important;
+    max-width: 100%;
+    padding: 3px !important;
+    gap: 2px !important;
+    border-radius: 12px !important;
+}
+.practice-board .workspace-tabs {
+    margin: 0 0 20px !important;
+}
+.workspace-tabs a,
+.study-tabs button {
+    flex: 0 0 auto !important;
+    min-height: 34px !important;
+    padding: 6px 14px !important;
+    border-radius: 9px !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+}
+/* The current destination reads as a raised segment on the track, in the same
+   surface family as the cards rather than as a hover tint. */
+.workspace-tabs a[aria-current="page"] {
+    background: var(--card) !important;
+    color: var(--ink) !important;
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--ink) 14%, transparent),
+                0 0 0 1px color-mix(in srgb, var(--ink) 7%, transparent) !important;
+}
+html[data-theme="dark"] .workspace-tabs a[aria-current="page"] {
+    background: color-mix(in srgb, var(--ink) 12%, var(--card)) !important;
+    color: var(--ink) !important;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent) !important;
+}
+/* A phone keeps the full-width segmented control: four destinations read as one
+   control there, and 44px is the floor for a tap target. */
+@media (max-width: 700px) {
+    .workspace-tabs {
+        display: flex !important;
+        width: 100%;
+    }
+    .workspace-tabs a {
+        flex: 1 1 0 !important;
+        min-height: 44px !important;
+    }
+}
+
+/* ── navigation back ──────────────────────────────────────────────────── */
+.practice-board .workspace-hero-nav { margin: 0 0 8px !important; }
+.practice-board .workspace-hero-nav .back-btn {
+    min-height: 34px !important;
+    padding: 4px 10px 4px 6px !important;
+    gap: 4px !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--brand-2) !important;
+    font-size: 0.82rem !important;
+    font-weight: 650 !important;
+    text-decoration: none !important;
+}
+.practice-board .workspace-hero-nav .back-btn:hover {
+    background: color-mix(in srgb, var(--accent) 10%, transparent) !important;
+    transform: none !important;
+}
+@media (max-width: 700px) {
+    .practice-board .workspace-hero-nav .back-btn {
+        min-height: 44px !important;
+    }
+}
+
+/* ── a tighter header ─────────────────────────────────────────────────── */
+.practice-board .practice-hero h1 {
+    font-size: 1.55rem !important;
+    margin: 2px 0 6px !important;
+}
+.practice-board .practice-hero .workspace-lead {
+    margin: 0 !important;
+    max-width: 62ch;
+    font-size: 0.92rem !important;
+    color: var(--ink-soft) !important;
+}
+
+/* ── three columns once a card would otherwise be a wide, short box ───── */
+@media (min-width: 1180px) {
+    .learning-workspace[data-learn-tab="practice"] .workspace-grid,
+    .learning-workspace[data-learn-tab="skills"] .workspace-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+}
+
+/* ── v10b a predictable rhythm inside a stretched card ────────────────────
+   The cards use space-between to line the actions up across a row, but in a grid
+   row every card is stretched to the tallest one, so the leftover height was
+   being distributed between all four children. Widening the board to three
+   columns made that visible: the leading row sat 22px from its title instead of
+   14. The action is now pinned with an auto margin, which leaves the first two
+   gaps exact and puts the only variable space where it belongs — above the
+   hairline, below the content. */
+.workspace-card,
+.practice-board .practice-case {
+    justify-content: flex-start !important;
+}
+.workspace-card .case-cta {
+    margin-top: auto !important;
+}
+/* The lead and the destination control had no gap between them once the tab
+   margin was reset. */
+.practice-board .practice-hero .workspace-tabs {
+    margin-top: 14px !important;
+}
+
+/* ── v10c the nav-back on every workspace view ─────────────────────────────
+   The back control was fixed only on the board, so a case, visual or procedure
+   detail page still rendered it underlined — the same <a> without a cancelled
+   decoration. It also sat at 34px between 700px and 920px, below the 44px floor,
+   in the range where the sidebar has become a drawer and the app is being driven
+   by touch. Scoped to the workspace so both problems are gone everywhere. */
+.learning-workspace .workspace-hero-nav { margin: 0 0 8px !important; }
+.learning-workspace .workspace-hero-nav .back-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    min-height: 44px !important;
+    padding: 4px 10px 4px 6px !important;
+    gap: 4px !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--brand-2) !important;
+    font-size: 0.82rem !important;
+    font-weight: 650 !important;
+    text-decoration: none !important;
+    -webkit-text-decoration: none !important;
+}
+.learning-workspace .workspace-hero-nav .back-btn:hover {
+    background: color-mix(in srgb, var(--accent) 10%, transparent) !important;
+    transform: none !important;
+}
+/* The chevron is directional, so it mirrors with the text in RTL. */
+[dir="rtl"] .learning-workspace .workspace-hero-nav .back-btn svg {
+    transform: scaleX(-1);
+}
+
+/* ── v10d the selected segment has to be findable ──────────────────────────
+   The active segment was painted 12% of the ink over the card while its own
+   track was 5%: a 1.11:1 difference, which is why the current destination read
+   as a smudge rather than a choice. A recessed track and a raised segment —
+   measured against the page rather than the card — put real separation between
+   them in both themes, with the ring and lift reinforcing it. */
+.practice-board .workspace-tabs,
+.learning-workspace .workspace-tabs {
+    background: color-mix(in srgb, var(--ink) 7%, var(--bg)) !important;
+    border-color: color-mix(in srgb, var(--ink) 9%, transparent) !important;
+}
+.practice-board .workspace-tabs a[aria-current="page"],
+.learning-workspace .workspace-tabs a[aria-current="page"] {
+    background: color-mix(in srgb, var(--ink) 24%, var(--bg)) !important;
+    color: var(--ink) !important;
+    box-shadow: 0 1px 3px color-mix(in srgb, #000 30%, transparent),
+                0 0 0 1px color-mix(in srgb, var(--ink) 12%, transparent) !important;
+}
+html[data-theme="dark"] .practice-board .workspace-tabs a[aria-current="page"],
+html[data-theme="dark"] .learning-workspace .workspace-tabs a[aria-current="page"] {
+    background: color-mix(in srgb, var(--ink) 30%, var(--bg)) !important;
+}
+
+/* ══════════ v11 the outer frame of the workspace ══════════
+   Measured, the workspace carried `padding: 0` at every width and simply
+   inherited the stage gutter: 12px on a phone, 20px on a tablet, 32px on a
+   desktop. Twelve pixels is why the content read as glued to the edge of the
+   section — the frame had no thickness of its own, so the only space between
+   the copy and anything around it belonged to the app shell rather than to the
+   section.
+
+   The workspace now carries its own gutter, sized to the viewport, and its
+   max-width is the content column plus that gutter, so the readable measure
+   stays at 980px on a desktop while the frame gains real edges. Padding is
+   inside the border box, so the column never overflows the stage. */
+.learning-workspace,
+.learning-workspace.practice-board,
+.learning-workspace.workspace-detail {
+    box-sizing: border-box !important;
+    max-width: 1036px !important;
+    padding-inline: 28px !important;
+    margin-inline: auto !important;
+}
+@media (max-width: 900px) {
+    .learning-workspace,
+    .learning-workspace.practice-board,
+    .learning-workspace.workspace-detail {
+        max-width: none !important;
+        padding-inline: 20px !important;
+    }
+}
+@media (max-width: 700px) {
+    .learning-workspace,
+    .learning-workspace.practice-board,
+    .learning-workspace.workspace-detail {
+        padding-inline: 16px !important;
+    }
+}
+
+/* ══════════ v12 match the app's own section language ══════════
+   Measured against the rest of the application, the workspace was the only
+   section drawn as bare text on the page:
+
+     section        hero panel                       title        kicker
+     # home         card, white, 1px, r18, shadow     46.4px/750   11.52px/800
+     #chest-pain    card, white, 1px, r20, shadow     37.6px/750   —
+     #shift         plain                             35.2px/700   11.52px/800
+     #learn~        plain, no bg, no border, no r     24.8px/600   10.72px/600
+
+   A 24.8px title at weight 600 on an unframed header is why this section read as
+   unfinished next to everything around it, however correct its own rhythm was. It
+   now uses the same hero card as the other sections, the same title weight and
+   tracking, and the same kicker scale — so the workspace is recognisably part of
+   this application rather than a separate product dropped into it. */
+.learning-workspace .practice-hero {
+    display: block;
+    margin: 0 0 20px;
+    padding: 22px 26px 20px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+html[data-theme="dark"] .learning-workspace .practice-hero {
+    background: var(--card);
+    border-color: color-mix(in srgb, var(--ink) 14%, transparent);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
+}
+.learning-workspace .practice-hero .study-kicker {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--brand-2);
+    margin: 0 0 2px;
+}
+.learning-workspace .practice-hero h1 {
+    font-size: clamp(1.5rem, 2.6vw, 2rem) !important;
+    font-weight: 750 !important;
+    letter-spacing: -0.03em !important;
+    line-height: 1.15 !important;
+    color: var(--ink) !important;
+    margin: 0 0 8px !important;
+}
+.learning-workspace .practice-hero .workspace-lead {
+    margin: 0 !important;
+    max-width: 64ch;
+    font-size: 0.95rem !important;
+    line-height: 1.55 !important;
+    color: var(--ink-soft) !important;
+}
+
+/* The navigation control carries the app's own back-button treatment, minus the
+   underline that made it read as body copy. */
+.learning-workspace .workspace-hero-nav { margin: 0 0 10px !important; }
+.learning-workspace .workspace-hero-nav .back-btn {
+    min-height: 44px !important;
+    padding: 6px 14px 6px 8px !important;
+    gap: 5px !important;
+    border: 1.5px solid var(--line) !important;
+    border-radius: var(--radius-md) !important;
+    background: var(--card) !important;
+    box-shadow: var(--shadow-sm) !important;
+    color: var(--brand-2) !important;
+    font-size: 0.8rem !important;
+    font-weight: 800 !important;
+    text-decoration: none !important;
+    -webkit-text-decoration: none !important;
+}
+.learning-workspace .workspace-hero-nav .back-btn:hover {
+    border-color: var(--accent) !important;
+    background: var(--home-hover) !important;
+}
+
+/* Cards take the same corner radius the app's panels use. */
+.workspace-card,
+.practice-board .practice-case {
+    border-radius: 18px !important;
+}
+
+/* ── v12b the hero card has to yield width on a phone ──────────────────────
+   At 26px of side padding the header ate 52px of a 337px content column and left
+   283px — narrower than four segments plus their labels, so the control could
+   not span the frame it now sits in. The card keeps the app's radius, border and
+   shadow at every width; only its padding follows the viewport. */
+@media (max-width: 900px) {
+    .learning-workspace .practice-hero {
+        padding: 20px 22px 18px;
+        border-radius: 18px;
+    }
+}
+@media (max-width: 700px) {
+    .learning-workspace .practice-hero {
+        padding: 18px 18px 16px;
+        border-radius: 16px;
+    }
+    /* Four destinations across ~300px: the labels need the room more than the
+       segments need their own breathing space. */
+    .workspace-tabs a {
+        padding: 6px 8px !important;
+        font-size: 0.78rem !important;
     }
 }

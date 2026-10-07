@@ -102,24 +102,25 @@ test('every learn sub-view selects the Practice tab', () => {
         'progress, skills and visuals all live in the Practice workspace and must not light the Presentations tab');
 });
 
-/* Regression: SECTION_EMOJIS carried short keys (rhythm, axis, ischemia-territories,
-   tox-lytes) that never matched the real step ids, so 5 of 7 ECG steps rendered the
-   generic clipboard emoji. */
-test('every ECG step id resolves to a distinct emoji', () => {
+/* Regression: the badge map carried short keys (rhythm, axis,
+   ischemia-territories, tox-lytes) that never matched the real step ids, so 5 of
+   7 ECG steps rendered the generic section badge. The badges are drawn from
+   SEMANTIC_ICONS now, so that registry is what has to cover every step. */
+test('every ECG step id resolves to a distinct vector icon', () => {
     const stepsBlock = dataJs.match(/steps: \[([\s\S]*?)\n {4}\],/);
     assert.ok(stepsBlock, 'data.js must declare the ECG steps array');
     const stepIds = [...stepsBlock[1].matchAll(/^\s*id: '([a-z-]+)',$/gm)].map(m => m[1]);
     const sevenSteps = ['rate-calibration', 'rhythm-axis', 'intervals', 'hypertrophy', 'ischemia-map', 'omi-equivalents', 'toxic-metabolic-mimics'];
     for (const id of sevenSteps) assert.ok(stepIds.includes(id), `data.js must still define step ${id}`);
 
-    const stepMap = appJs.match(/const ECG_STEP_EMOJIS = \{([\s\S]*?)\n {4}\};/);
-    assert.ok(stepMap, 'ECG_STEP_EMOJIS map must exist');
-    const mapped = new Map([...stepMap[1].matchAll(/'([a-z-]+)':\s*'([^']+)'/g)].map(m => [m[1], m[2]]));
+    const iconBlock = appJs.match(/const SEMANTIC_ICONS = \{([\s\S]*?)\n {4}\};/);
+    assert.ok(iconBlock, 'SEMANTIC_ICONS must exist');
+    const icons = new Map([...iconBlock[1].matchAll(/'([a-z-]+)':\s*'([^']*)'/g)].map(m => [m[1], m[2]]));
     for (const id of sevenSteps) {
-        assert.ok(mapped.has(id), `ECG step "${id}" must have an emoji entry, otherwise it renders the generic fallback`);
+        assert.ok(icons.has(id), `ECG step "${id}" must have an icon entry, otherwise it renders the generic fallback`);
     }
-    const emojis = new Set(sevenSteps.map(id => mapped.get(id)));
-    assert.equal(emojis.size, sevenSteps.length, 'each ECG step should have its own emoji');
+    const distinct = new Set(sevenSteps.map(id => icons.get(id)));
+    assert.equal(distinct.size, sevenSteps.length, 'each ECG step should have its own icon');
 });
 
 test('the unreachable SVG icon maps are gone', () => {
@@ -168,15 +169,28 @@ function curriculumCategories() {
     return found;
 }
 
-test('all ECG Explorer categories carry an emoji', () => {
-    const mapBlock = explorerJs.match(/EXPLORER_CAT_EMOJIS = \{([\s\S]*?)\n {2}\};/);
-    assert.ok(mapBlock, 'EXPLORER_CAT_EMOJIS must exist');
-    const mapped = [...mapBlock[1].matchAll(/'([^']+)':\s*'([^']+)'/g)].map(m => m[1]);
+test('ECG Explorer groups its cases by curriculum category, labelled in prose', () => {
+    /* The explorer used to prefix each optgroup with an emoji. An optgroup label
+       is a text string by spec, so that glyph was decoration rather than an icon
+       system: it had no stroke weight, no optical size and no selected state.
+       The category name now has to identify the group on its own. */
+    const curriculumCategories = () => {
+        const found = new Set();
+        const src = fs.readFileSync(path.join(root, 'assets/ecg-curriculum.js'), 'utf8');
+        for (const m of src.matchAll(/add\('[a-z0-9-]+','(?:[^'\\]|\\.)*','((?:[^'\\]|\\.)*)'/g)) found.add(m[1]);
+        const panels = src.match(/const panels=\[([\s\S]*?)\n \];/);
+        assert.ok(panels, 'ecg-curriculum.js must declare a panels array');
+        for (const m of panels[1].matchAll(/\['[a-z0-9-]+','(?:[^'\\]|\\.)*','([^']*)'/g)) found.add(m[1]);
+        return found;
+    };
     const used = curriculumCategories();
     assert.ok(used.size >= 5, `expected the curriculum category set to be discovered, got ${[...used]}`);
-    for (const cat of used) {
-        assert.ok(mapped.includes(cat), `explorer category "${cat}" must have an emoji entry`);
-    }
+    assert.doesNotMatch(explorerJs, /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u,
+        'the explorer must not reintroduce pictographs into its labels');
+    assert.match(explorerJs, /catLabel\(category\)/,
+        'the explorer still groups its case select by category');
+    assert.match(explorerJs, /<optgroup label=/,
+        'the explorer case select still renders category groups');
 });
 
 test('print cancels the tab-bar clearance padding', () => {

@@ -102,92 +102,169 @@
     const SEV_LABEL = { critical: 'Critical', emergent: 'Emergent', common: 'Common' };
     /* Micro-glass SVG Clinical Icons — raw emoji in data.js kept for reference, never rendered in UI. */
     function monoSvg(inner) {
-        return '<svg class="mono-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + inner + '</svg>';
+        return '<svg class="mono-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + inner + '</svg>';
     }
     const GROUP_SVG = {
-        generic: monoSvg('<path d="M4 6h16M4 12h16M4 18h10"/>'),
-        ecg: monoSvg('<path d="M2 12h5l3-8 4 16 3-8h5"/>'),
+        generic: monoSvg('<rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M7 8h10M7 12h10M7 16h6"/>'),
+        ecg: monoSvg('<path d="M2.5 12h4.5l2.5-6.5 4 13 3-8.5 2.5 4h5"/>'),
         home: monoSvg('<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-8H9v8H4a1 1 0 0 1-1-1z"/>'),
-        bolt: monoSvg('<path d="m13 2-9 12h7l-1 8 10-12h-7z"/>'),
-        learn: monoSvg('<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/>')
+        bolt: monoSvg('<path d="m13 2.5-8 10.5h6.5l-1.5 8.5 8.5-11.5H12z"/>'),
+        learn: monoSvg('<circle cx="12" cy="12" r="8.5"/><path d="m9 12 2 2 4-4"/>')
     };
     const THEME_SVG = {
         moon: monoSvg('<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'),
         sun: monoSvg('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>')
     };
     const STAR_SVG = {
-        outline: '<svg class="save-ico" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
-        filled: '<svg class="save-ico filled" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
+        outline: '<svg class="save-ico bookmark-ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>',
+        filled: '<svg class="save-ico bookmark-ico filled" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'
     };
     function saveButtonContent(saved) {
         return (saved ? STAR_SVG.filled : STAR_SVG.outline) + '<span>' + (saved ? 'Saved topic' : 'Save topic') + '</span>';
     }
-    const CHEVRON_BACK_SVG = '<svg class="ios-back-ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>';
+    const CHEVRON_BACK_SVG = '<svg class="ios-back-ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>';
     function backButtonHtml(extraAttr) {
         return '<button type="button" class="back-btn ios-nav-back"' + (extraAttr ? ' ' + extraAttr : '') + '>' + CHEVRON_BACK_SVG + '<span>All presentations</span></button>';
     }
-    function colorSvg(inner) {
-        return '<svg class="color-ico" viewBox="0 0 32 32" aria-hidden="true" focusable="false">' + inner + '</svg>';
+
+    /* ══════════ Centralized Semantic Vector Icon System (Apple HIG / SF-Symbol inspired) ══════════ */
+    function semanticSvg(pathMarkup, cls, extraAttr) {
+        return '<svg class="ui-icon' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"' + (extraAttr ? ' ' + extraAttr : '') + '>' + pathMarkup + '</svg>';
     }
-    const CP_COLOR_SVG = {
-        'chest-pain': colorSvg('<path d="M13 4c0-1.5 1-2.5 2.5-2.5h1C18 1.5 19 2.5 19 4v3h-6V4Z" fill="#3b82f6"/><path d="M19 5c1.5-.5 3 .5 3.5 2s-.5 3-2 3.5l-1.5.5V5Z" fill="#06b6d4"/><path d="M16 29S5 21 5 12.5C5 7.8 8.8 4 13.5 4c2.2 0 4.2.8 5.7 2.2A7.5 7.5 0 0 1 25 4c4.7 0 8.5 3.8 8.5 8.5 0 8.5-11 16.5-17.5 16.5Z" fill="#dc2626"/><path d="M16 29S9 20 9 12.5C9 8.5 11.5 6 13.5 6c2.5 0 2.5 4 2.5 4s0-4 2.5-4c2 0 4.5 2.5 4.5 6.5 0 7.5-7 16.5-7 16.5Z" fill="#ef4444"/><path d="M7 14h5l1.8-3.5 2.4 7 1.8-5.5 1.5 2H24" stroke="#fef08a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'),
-        'dyspnea': colorSvg('<path d="M14 2h4v7h-4V2Z" fill="#93c5fd"/><path d="M13 4h6M13 6h6M13 8h6" stroke="#1e40af" stroke-width="1.2" stroke-linecap="round"/><path d="M14 9c-2 2-6 3-8 6s-2 8 0 11 7 3 9 0V11c0-1-.5-2-1-2Z" fill="#0ea5e9"/><path d="M18 9c2 2 6 3 8 6s2 8 0 11-7 3-9 0V11c0-1 .5-2 1-2Z" fill="#0284c7"/><path d="M14 13c-2 2-4 4-6 5M12 18c-2 1-3 3-4 3" stroke="#e0f2fe" stroke-width="1.6" stroke-linecap="round"/><path d="M18 13c2 2 4 4 6 5M20 18c2 1 3 3 4 3" stroke="#e0f2fe" stroke-width="1.6" stroke-linecap="round"/>'),
-        'hemoptysis': colorSvg('<path d="M14 2h4v7h-4V2Z" fill="#93c5fd"/><path d="M14 9c-2 2-6 3-8 6s-2 8 0 11 7 3 9 0V11c0-1-.5-2-1-2Z" fill="#38bdf8"/><path d="M18 9c2 2 6 3 8 6s2 8 0 11-7 3-9 0V11c0-1 .5-2 1-2Z" fill="#0284c7"/><path d="M16 11c-1.5 2-3 4-3 6a3 3 0 0 0 6 0c0-2-1.5-4-3-6Z" fill="#e11d48"/><circle cx="12" cy="22" r="2" fill="#e11d48"/><circle cx="20" cy="23" r="1.5" fill="#f43f5e"/>'),
-        'cyanosis': colorSvg('<circle cx="16" cy="16" r="13" fill="#1e3a8a"/><path d="M16 5a11 11 0 0 1 11 11c0 6-5 11-11 11S5 22 5 16 10 5 16 5Z" fill="#2563eb"/><circle cx="11.5" cy="13.5" r="2.2" fill="#93c5fd"/><circle cx="20.5" cy="13.5" r="2.2" fill="#93c5fd"/><path d="M11 20c1.5 2 3.5 2.5 5 2.5s3.5-.5 5-2.5" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/><path d="M16 7v3M7 16h3M22 16h3" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"/>'),
-        'shock': colorSvg('<circle cx="16" cy="16" r="14" fill="#fee2e2"/><path d="M16 3a13 13 0 1 0 13 13A13 13 0 0 0 16 3Z" fill="#ef4444"/><path d="M16 7l3 6h-6l3-6Z" fill="#fef08a"/><path d="M16 14v6M16 23h.01" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round"/><path d="M8 24l3-3M24 24l-3-3" stroke="#fca5a5" stroke-width="2.5" stroke-linecap="round"/>'),
-        'palpitations': colorSvg('<path d="M16 27S6 19 6 12a6 6 0 0 1 10-4.5A6 6 0 0 1 26 12c0 7-10 15-10 15Z" fill="#f43f5e"/><path d="M16 24S9 17 9 12a4 4 0 0 1 7-2.6A4 4 0 0 1 23 12c0 5-7 12-7 12Z" fill="#fb7185"/><path d="M4 14c-1.5-3 0-6.5 3-8M28 14c1.5-3 0-6.5-3-8" stroke="#fb7185" stroke-width="2" stroke-linecap="round"/><path d="M10 14h2.5l1.5-4 2 8 1.5-5 1.5 2H21" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'),
-        'edema': colorSvg('<path d="M11 3h7l-1 10c0 3 2 5 3 7 1.5 2.5 3 4 3 6.5 0 2-1.5 3.5-3.5 3.5H9a4 4 0 0 1-4-4c0-2 1.5-4 3-6.5 1-2 3-4 3-7V3Z" fill="#bae6fd"/><path d="M16 13c1 2 2.5 4 3 6 1.5 2.5 3 4 3 6.5 0 2-1.5 3.5-3.5 3.5H9c-2 0-3-1-3-2.5 0-2 1.5-4 3-6.5 1-2 2-4 3-6" fill="#38bdf8"/><path d="M7 21c2 0 4 1 6 1s4-1 6-1M7 24c2 0 4 1 6 1s4-1 6-1" stroke="#0284c7" stroke-width="2" stroke-linecap="round"/>'),
-        'limb-ischemia': colorSvg('<path d="M9 3h8l1 9-2 7 1 7c0 2-2 4-4 4H9c-2 0-3-1.5-3-3.5l1-6.5-2-8 4-9Z" fill="#e0e7ff"/><path d="M9 3h8l-1 8h-6l-1-8Z" fill="#fca5a5"/><path d="M10 11h6l-1 8h-4l-1-8Z" fill="#cbd5e1"/><path d="M10 19h5l1 6c0 2-2 4-4 4H9c-2 0-3-1.5-3-3.5l1-6.5h3Z" fill="#93c5fd"/><path d="M13 4v6M13 10l-1.5 3M13 10l1.5 3" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/><path d="M19 18l3 3M22 18l-3 3" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>'),
-        'headache': colorSvg('<circle cx="16" cy="16" r="14" fill="#f3e8ff"/><path d="M16 6a9.5 9.5 0 0 0-9.5 9.5c0 3.5 2 6.5 5 8v3.5h9V23.5c3-1.5 5-4.5 5-8A9.5 9.5 0 0 0 16 6Z" fill="#a855f7"/><path d="M16 6c-3 0-5.5 2-6.5 4.5 1.5 1 3.5.5 4.5 2s0 3.5-1 4.5c2 1 4 0 5-1.5 1 1.5 3 2.5 5 1.5-1-1-2-3-1-4.5s3-1 4.5-2C21.5 8 19 6 16 6Z" fill="#c084fc"/><path d="M7 6l2.5 2.5M25 6l-2.5 2.5M16 2v3M4 14h3M25 14h3" stroke="#eab308" stroke-width="2.5" stroke-linecap="round"/>'),
-        'dizziness': colorSvg('<circle cx="16" cy="16" r="14" fill="#e0f2fe"/><path d="M24 12a8 8 0 1 0-4 7" stroke="#8b5cf6" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M21 7l4 4-4 4" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="16" cy="16" r="4" fill="#0284c7"/><circle cx="16" cy="16" r="1.8" fill="#ffffff"/>'),
-        'ams': colorSvg('<circle cx="16" cy="16" r="14" fill="#ede9fe"/><path d="M16 7a8.5 8.5 0 1 0 8.5 8.5A8.5 8.5 0 0 0 16 7Z" fill="#6366f1"/><path d="M16 9a6.5 6.5 0 1 1-6.5 6.5A6.5 6.5 0 0 1 16 9Z" fill="#818cf8"/><circle cx="16" cy="15.5" r="3" fill="#fde047"/><path d="M16 7c2 0 4.5 1.5 5.5 3.5M16 24c-2 0-4.5-1.5-5.5-3.5" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>'),
-        'coma': colorSvg('<circle cx="16" cy="16" r="14" fill="#1e1b4b"/><path d="M16 6a9.5 9.5 0 0 0-9.5 9.5c0 4 2.5 7 6 8.5v2.5h6v-2.5c3.5-1.5 6-4.5 6-8.5a9 9 0 0 0-9-9Z" fill="#4338ca"/><path d="M6 16h6c1.5-2 3-2 4 0s2.5 2 4 0h6" stroke="#a5b4fc" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M12 11h4M13 13h2" stroke="#818cf8" stroke-width="1.8" stroke-linecap="round"/>'),
-        'seizures': colorSvg('<path d="M16 6a9.5 9.5 0 0 0-9.5 9.5c0 4 2.5 7.5 6.5 9v2.5h6v-2.5c4-1.5 6.5-5 6.5-9A9.5 9.5 0 0 0 16 6Z" fill="#7c3aed"/><path d="M18 2l-7 12h6l-3 14 11-15h-6l4-11Z" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" stroke-linejoin="round"/>'),
-        'weakness': colorSvg('<rect x="4" y="20" width="24" height="8" rx="3" fill="#fca5a5"/><path d="M16 3v10c-3 0-5 2-5 5h10c0-3-2-5-5-5V3Z" fill="#3b82f6"/><circle cx="13" cy="15" r="1.5" fill="#60a5fa"/><circle cx="16" cy="14" r="1.5" fill="#60a5fa"/><circle cx="19" cy="15" r="1.5" fill="#60a5fa"/><path d="M13 18v1M16 18v1M19 18v1" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>'),
-        'syncope': colorSvg('<circle cx="16" cy="7" r="4" fill="#f97316"/><path d="M12 13h8c1 0 2 1 2 2v6h-3v8h-6v-8H9v-6c0-1 1-2 3-2Z" fill="#fb923c"/><path d="M4 16l4-4M4 12h5" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/><path d="M23 6l2 2-2 2-2-2Z" fill="#fde047"/><path d="M26 12l1.5 1.5-1.5 1.5-1.5-1.5Z" fill="#fde047"/>'),
-        'diplopia': colorSvg('<path d="M4 14s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6Z" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/><circle cx="14" cy="14" r="3.5" fill="#0284c7"/><circle cx="14" cy="14" r="1.5" fill="#ffffff"/><path d="M8 18s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6Z" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="2 2"/><circle cx="18" cy="18" r="3" fill="#38bdf8"/>'),
-        'focal-neurologic-deficit': colorSvg('<path d="M16 6a9.5 9.5 0 0 0-9.5 9.5c0 4 2.5 7.5 6.5 9v2.5h6v-2.5c4-1.5 6.5-5 6.5-9A9.5 9.5 0 0 0 16 6Z" fill="#ddd6fe"/><path d="M16 6c-3 0-5.5 2-6.5 4.5 1.5 1 3.5.5 4.5 2s0 3.5-1 4.5c2 1 4 0 5-1.5 1 1.5 3 2.5 5 1.5-1-1-2-3-1-4.5s3-1 4.5-2C21.5 8 19 6 16 6Z" fill="#c084fc"/><path d="M18 10c2 0 4 1 4.5 3s0 4-2 4.5-3-.5-4-2c-.5-1 .5-4.5 1.5-5.5Z" fill="#dc2626"/><circle cx="20" cy="14" r="1.5" fill="#ffffff"/>'),
-        'abdominal-pain': colorSvg('<path d="M14 3c-1 0-2 1-2 2v4c0 1.5-.5 2.5-1.5 3.5C8.5 14.5 7 17 7 20c0 5 4 8 9 8s8.5-3 8.5-7.5c0-4-3-6.5-5-8.5V5c0-1-1-2-2-2h-3.5Z" fill="#fb923c"/><path d="M15 8c-2 3-5 5-5 8 0 3.5 2.5 6 6 6s5.5-2 5.5-5.5c0-3-2.5-5-4.5-6.5V8Z" fill="#ea580c"/><circle cx="15.5" cy="18.5" r="4.5" fill="#fef08a"/><circle cx="15.5" cy="18.5" r="2" fill="#ef4444"/>'),
-        'gib': colorSvg('<path d="M11 4h5v5c2 1.5 4 3.5 4 6 0 4.5-3.5 7-7.5 7S5 19.5 5 15c0-3 1.5-5 3.5-6.5V4h2.5Z" fill="#fed7aa"/><path d="M19 16c0-3-3.5-7-3.5-7S12 13 12 16a3.5 3.5 0 0 0 7 0Z" fill="#e11d48"/><path d="M15 14.5a1.5 1.5 0 0 1 2 1" stroke="#fda4af" stroke-width="1.2" stroke-linecap="round"/>'),
-        'nausea-vomiting': colorSvg('<circle cx="16" cy="16" r="14" fill="#dcfce7"/><path d="M14 5c-3 0-5 2.5-5 5.5 0 3 2 5 4 6.5s3 3 3 5-1.5 3.5-3.5 3.5-3.5-1-4-2.5" stroke="#16a34a" stroke-width="3.5" stroke-linecap="round" fill="none"/><path d="M10 7l4-2-2 4" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="21" cy="9" r="2.5" fill="#22c55e"/><circle cx="24" cy="14" r="1.8" fill="#4ade80"/>'),
-        'diarrhea': colorSvg('<path d="M10 4c-3 0-5 2-5 4.5s2 4.5 4.5 4.5h13c2.5 0 4.5 2 4.5 4.5s-2 4.5-4.5 4.5H8" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M9 25c2 0 4 1.5 7 1.5s5-1.5 7-1.5" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/><circle cx="16" cy="28" r="1.5" fill="#0284c7"/>'),
-        'constipation': colorSvg('<path d="M7 26V11a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v15" stroke="#d97706" stroke-width="4.5" stroke-linecap="round" fill="none"/><rect x="11" y="10" width="10" height="11" rx="3" fill="#92400e"/><path d="M13 13h6M13 16h6" stroke="#fcd34d" stroke-width="1.5" stroke-linecap="round"/>'),
-        'jaundice': colorSvg('<path d="M6 9c5-3 15-3 20 2s1 11-4 13-13 1-16-5c-2-4-2-8 0-10Z" fill="#f59e0b"/><path d="M9 11c4-2 11-2 15 1s1 8-2 10-10 1-13-4c-2-3-2-5 0-7Z" fill="#d97706"/><circle cx="19" cy="18" r="3.5" fill="#10b981"/><path d="M19 14v4" stroke="#059669" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="19" r="2" fill="#fef08a"/>'),
-        'pelvic-pain': colorSvg('<path d="M16 9c-3 0-5 2.5-5 5.5v7h10v-7c0-3-2-5.5-5-5.5Z" fill="#f472b6"/><path d="M11 11c-2.5 0-5-1.5-6-3.5s0-3.5 2-3.5 3.5 1.5 4 3.5" stroke="#db2777" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M21 11c2.5 0 5-1.5 6-3.5s0-3.5-2-3.5-3.5 1.5-4 3.5" stroke="#db2777" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="5" cy="8" r="2.5" fill="#f43f5e"/><circle cx="27" cy="8" r="2.5" fill="#f43f5e"/><circle cx="16" cy="16" r="2" fill="#ffffff"/>'),
-        'vaginal-bleeding': colorSvg('<path d="M16 6c-4 0-7 3-7 7v9h14v-9c0-4-3-7-7-7Z" fill="#fbcfe8"/><path d="M16 11c-2 2-3.5 4.5-3.5 6.5a3.5 3.5 0 0 0 7 0c0-2-1.5-4.5-3.5-6.5Z" fill="#e11d48"/><path d="M15 15.5a1.2 1.2 0 0 1 1.8 1" stroke="#fda4af" stroke-width="1.2" stroke-linecap="round"/>'),
-        'scrotal-pain': colorSvg('<path d="M16 3c-1 3 2 5 0 8s-3 3-3 7a6 6 0 0 0 12 0c0-4-2-4-2-7s2-5 0-8h-7Z" fill="#ddd6fe"/><circle cx="16" cy="18" r="5" fill="#8b5cf6"/><path d="M15 4c1 2-1 4 1 6" stroke="#6d28d9" stroke-width="2" stroke-linecap="round"/><path d="M13 14l3-3-1.5 5h3.5l-4 6 1-4H12l1-4Z" fill="#ef4444"/>'),
-        'flank-pain': colorSvg('<path d="M19 4c-5 0-9 4-9 9 0 4 2 6.5 2 9.5 0 3.5-3 5.5-3 5.5s4.5.5 7.5-1.5 5.5-5 5.5-9c0-8-1-13.5-3-13.5Z" fill="#f87171"/><path d="M18 6c-4 0-7 3.5-7 7.5 0 3.5 1.5 5.5 1.5 8 0 3-2 4.5-2 4.5s3.5.5 6-1 4.5-4 4.5-7.5c0-6.5-1-11.5-3-11.5Z" fill="#dc2626"/><path d="M12 18c0 3-1 6-1 9" stroke="#fed7aa" stroke-width="3" stroke-linecap="round"/><circle cx="11" cy="22" r="2.8" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>'),
-        'urinary-retention': colorSvg('<circle cx="16" cy="15" r="11" fill="#bae6fd"/><circle cx="16" cy="15" r="9" fill="#38bdf8"/><path d="M13 25l3 4 3-4" stroke="#1d4ed8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 13h8M14 17h4" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>'),
-        'back-pain': colorSvg('<rect x="10" y="4" width="12" height="5" rx="2" fill="#94a3b8"/><rect x="11" y="9" width="10" height="3" rx="1" fill="#38bdf8"/><rect x="10" y="12" width="12" height="5" rx="2" fill="#94a3b8"/><rect x="11" y="17" width="10" height="3" rx="1" fill="#ef4444"/><rect x="10" y="20" width="12" height="5" rx="2" fill="#94a3b8"/><path d="M21 18.5c2 0 4 .5 5 2" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>'),
-        'joint-pain': colorSvg('<path d="M11 3h10v6c-2 1-3 3-3 5s1 4 3 5v7H11v-7c2-1 3-3 3-5s-1-4-3-5V3Z" fill="#cbd5e1"/><ellipse cx="16" cy="14" rx="8" ry="4" fill="#fecdd3" stroke="#f43f5e" stroke-width="2"/><path d="M13 14h6" stroke="#e11d48" stroke-width="2" stroke-linecap="round"/>'),
-        'airway-stridor': colorSvg('<path d="M7 4h18v6c-3 1-5 4-5 8v10H12V18c0-4-2-7-5-8V4Z" fill="#fecaca"/><path d="M10 4h12v5c-2 1-3 3-3 6v13h-6V15c0-3-1-5-3-6V4Z" fill="#ef4444"/><path d="M16 6v14" stroke="#ffffff" stroke-width="2" stroke-dasharray="2 2" stroke-linecap="round"/>'),
-        'anaphylaxis': colorSvg('<path d="M16 3l11 4v8c0 7-5 12-11 14C10 27 5 22 5 15V7l11-4Z" fill="#ef4444"/><path d="M16 5.5l8.5 3v6.5c0 5.5-4 9.5-8.5 11-4.5-1.5-8.5-5.5-8.5-11V8.5l8.5-3Z" fill="#dc2626"/><path d="M16 9v7M16 20h.01" stroke="#fef08a" stroke-width="3" stroke-linecap="round"/>'),
-        'rash': colorSvg('<rect x="4" y="6" width="24" height="20" rx="4" fill="#fee2e2" stroke="#f43f5e" stroke-width="1.5"/><circle cx="10" cy="12" r="3" fill="#ef4444"/><circle cx="21" cy="13" r="2.5" fill="#f43f5e"/><circle cx="15" cy="18" r="3.5" fill="#e11d48"/><circle cx="10" cy="21" r="1.5" fill="#991b1b"/><circle cx="22" cy="20" r="1.8" fill="#be123c"/>'),
-        'fever': colorSvg('<path d="M16 3a3 3 0 0 0-3 3v13.5a5.5 5.5 0 1 0 6 0V6a3 3 0 0 0-3-3Z" fill="#fed7aa" stroke="#ea580c" stroke-width="1.5"/><path d="M16 7v14" stroke="#ea580c" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="22.5" r="3.5" fill="#ef4444"/><path d="M6 10c-2 2-2 5 0 7M26 10c2 2 2 5 0 7" stroke="#f97316" stroke-width="2.5" stroke-linecap="round"/>'),
-        'pediatric-fever': colorSvg('<circle cx="16" cy="17" r="11" fill="#fbcfe8"/><circle cx="12" cy="15.5" r="1.8" fill="#475569"/><circle cx="20" cy="15.5" r="1.8" fill="#475569"/><circle cx="9" cy="18.5" r="2.2" fill="#f43f5e" opacity="0.6"/><circle cx="23" cy="18.5" r="2.2" fill="#f43f5e" opacity="0.6"/><path d="M13 22c1.5 1.5 4.5 1.5 6 0" stroke="#475569" stroke-width="1.8" stroke-linecap="round"/><rect x="8" y="5" width="16" height="5" rx="2" fill="#38bdf8"/>'),
-        'pediatric-respiratory-distress': colorSvg('<circle cx="16" cy="16" r="11" fill="#e0f2fe"/><circle cx="12" cy="14" r="1.8" fill="#334155"/><circle cx="20" cy="14" r="1.8" fill="#334155"/><ellipse cx="16" cy="20" rx="2.5" ry="3" fill="#0284c7"/><path d="M6 17h6M20 17h6" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/><path d="M13 8l3-3 3 3" stroke="#0284c7" stroke-width="2" stroke-linecap="round"/>'),
-        'sore-throat': colorSvg('<path d="M8 5C5 12 5 21 8 27h16c3-6 3-15 0-22H8Z" fill="#fed7aa"/><path d="M10 8c2 4 3 9 3 13h6c0-4 1-9 3-13H10Z" fill="#991b1b"/><path d="M16 9v5" stroke="#f43f5e" stroke-width="3" stroke-linecap="round"/><circle cx="11" cy="16" r="3" fill="#ef4444"/><circle cx="21" cy="16" r="3" fill="#ef4444"/>'),
-        'red-eye': colorSvg('<path d="M2 16s5.5-9 14-9 14 9 14 9-5.5 9-14 9-14-9-14-9Z" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/><path d="M5 13c3 1 5 0 7 2M5 19c3-1 5 0 7-1M27 13c-3 1-5 0-7 2M27 19c-3-1-5 0-7-1" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round"/><circle cx="16" cy="16" r="6" fill="#0284c7"/><circle cx="16" cy="16" r="3" fill="#0f172a"/><circle cx="14.5" cy="14.5" r="1.2" fill="#ffffff"/>'),
-        'overdose': colorSvg('<g transform="rotate(-35 14 14)"><rect x="9" y="4" width="10" height="18" rx="5" fill="#10b981"/><path d="M9 13h10v4a5 5 0 0 1-10 0v-4Z" fill="#f43f5e"/><line x1="12" y1="6" x2="12" y2="18" stroke="#ffffff" stroke-width="1.2" opacity="0.6" stroke-linecap="round"/></g><circle cx="23" cy="22" r="5" fill="#a78bfa"/><line x1="20" y1="22" x2="26" y2="22" stroke="#6d28d9" stroke-width="1.2"/>'),
-        'suicidal': colorSvg('<circle cx="16" cy="16" r="12" fill="#6366f1"/><circle cx="16" cy="16" r="6" fill="#ffffff"/><path d="M16 4v6M16 22v6M4 16h6M22 16h6" stroke="#ffffff" stroke-width="3.5"/><circle cx="16" cy="16" r="3.5" fill="#fde047"/>'),
-        'hyperglycemia': colorSvg('<rect x="9" y="3" width="14" height="22" rx="3" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/><rect x="12" y="6" width="8" height="6" rx="1" fill="#1e293b"/><path d="M13 9h4" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/><path d="M16 17v7" stroke="#d97706" stroke-width="3" stroke-linecap="round"/><circle cx="16" cy="27" r="2.5" fill="#dc2626"/>'),
-        'heat-cold': colorSvg('<path d="M16 3v26" stroke="#94a3b8" stroke-width="1.5"/><path d="M16 4a3 3 0 0 0-3 3v13a5 5 0 0 0 3 4.5V4Z" fill="#38bdf8"/><path d="M16 4a3 3 0 0 1 3 3v13a5 5 0 0 1-3 4.5V4Z" fill="#f97316"/><path d="M7 8l4 4M7 16l4-4" stroke="#0284c7" stroke-width="2" stroke-linecap="round"/><circle cx="23" cy="10" r="3" fill="#facc15"/>'),
-        'multiple-trauma': colorSvg('<rect x="4" y="4" width="24" height="24" rx="7" fill="#dc2626"/><path d="M13 9h6v4h4v6h-4v4h-6v-4h-4v-6h4V9Z" fill="#ffffff"/><path d="M16 11v10M11 16h10" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>'),
-        'falls-geriatric-trauma': colorSvg('<path d="M22 6a4 4 0 0 0-8 0v21h3V6a1 1 0 0 1 2 0v2h3V6Z" fill="#b45309"/><circle cx="9" cy="12" r="3" fill="#cbd5e1"/><path d="M9 15v8" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/><path d="M7 18l4 2" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>'),
-        'pregnancy-emergency': colorSvg('<circle cx="14" cy="7" r="4" fill="#f43f5e"/><path d="M14 12c-4 0-6 3-6 7v10h5v-6c0-1 .5-2 1.5-2 4 0 7.5 2.5 7.5 7v1h4v-2c0-6-4.5-11-10-11l-2-4Z" fill="#fb7185"/><path d="M18 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" fill="#fef08a"/>'),
-        'ecg': colorSvg('<rect x="3" y="4" width="26" height="24" rx="5" fill="#052e16" stroke="#15803d" stroke-width="1.5"/><path d="M3 16h6l2.5-6 3.5 14 2.5-9 2 4h6.5" stroke="#4ade80" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="15" cy="10" r="1.5" fill="#86efac"/>'),
-        'learn': colorSvg('<path d="M4 6a3 3 0 0 1 3-3h18v22H7a3 3 0 0 1-3-3V6Z" fill="#0284c7"/><path d="M7 4h16v18H7a2 2 0 0 0-2 2V6a2 2 0 0 1 2-2Z" fill="#38bdf8"/><path d="M14 3v10l3-2 3 2V3h-6Z" fill="#fde047"/>')
+
+    const SEMANTIC_ICONS = {
+        /* Systems & Specialties */
+        'cardio': '<path d="M19 14c1.5-1.5 2.5-3.5 2.5-5.5 0-3-2.5-5.5-5.5-5.5-2 0-3.5 1-4 2.5-.5-1.5-2-2.5-4-2.5-3 0-5.5 2.5-5.5 5.5 0 2 1 4 2.5 5.5l7 7z"/><path d="M12 5.5V2.5M9.5 3.5h5"/>',
+        'pulm': '<path d="M12 3v7M9.5 4.5h5M12 10c-2.5 1.5-6 4-6 7.5 0 2 1.5 3.5 3.5 3.5 2.5 0 3.5-2 3.5-3.5v-1M12 10c2.5 1.5 6 4 6 7.5 0 2-1.5 3.5-3.5 3.5-2.5 0-3.5-2-3.5-3.5v-1"/>',
+        'vascular': '<path d="M4 12h5l2-4 3 8 2-4h4M3 6h18M3 18h18"/>',
+        'critical': '<path d="M12 2v20M2 12h20M7 7l10 10M17 7L7 17"/>',
+        'neuro': '<path d="M9.5 4a4.5 4.5 0 0 0-4.5 4.5c0 1 .3 2 .8 2.8A4.5 4.5 0 0 0 5 15a4.5 4.5 0 0 0 4.5 4.5c.8 0 1.5-.2 2.2-.6M14.5 4a4.5 4.5 0 0 1 4.5 4.5c0 1-.3 2-.8 2.8A4.5 4.5 0 0 1 19 15a4.5 4.5 0 0 1-4.5 4.5c-.8 0-1.5-.2-2.2-.6M12 3.5v16.5M7 11h4M13 11h4M7.5 15h3.5M13 15h3.5"/>',
+        'gi': '<path d="M12 3v3c0 2-1.5 3.5-3 5-2 2-3 4-2 6.5s3.5 3.5 6 3.5 7-1.5 7-6-3.5-7.5-6-8.5c-1.5-.5-2-1.5-2-3.5z"/>',
+        'gu': '<path d="M12 3s5 3 5 8c0 4-3 7-5 10-2-3-5-6-5-10 0-5 5-8 5-8zM12 8v5M10 11h4"/>',
+        'msk': '<path d="M8 4h8M8 20h8M12 4v16M9 9h6M9 15h6"/>',
+        'airway': '<path d="M12 3v7M9.5 4.5h5M12 10c-2.5 1.5-6 4-6 7.5 0 2 1.5 3.5 3.5 3.5 2.5 0 3.5-2 3.5-3.5v-1M12 10c2.5 1.5 6 4 6 7.5 0 2-1.5 3.5-3.5 3.5-2.5 0-3.5-2-3.5-3.5v-1"/>',
+        'ent': '<path d="M12 3a4 4 0 0 0-4 4v5a4 4 0 0 0 8 0V7a4 4 0 0 0-4-4zM6 10v2a6 6 0 0 0 12 0v-2M12 18v3M9 21h6"/>',
+        'derm': '<rect x="4" y="6" width="16" height="12" rx="3"/><circle cx="9" cy="11" r="1.5"/><circle cx="15" cy="13" r="1.5"/><circle cx="12" cy="10" r="1"/>',
+        'peds': '<circle cx="12" cy="8" r="3.5"/><path d="M6 19.5c0-3 2.5-5.5 6-5.5s6 2.5 6 5.5"/>',
+        'toxic': '<path d="M10 3h4M10 3v4.5L5 18a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-10.5V3M7.5 15h9"/>',
+        'psych': '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+        'endocrine': '<rect x="7" y="3" width="10" height="18" rx="3"/><path d="M10 7h4M10 11h4M12 14v4M10 16h4"/>',
+        'environ': '<path d="M12 3v18M12 4a3 3 0 0 0-3 3v8a5 5 0 1 0 6 0V7a3 3 0 0 0-3-3z"/>',
+        'trauma': '<path d="M12 3s7 2.5 7 8c0 5-4.5 8.5-7 10-2.5-1.5-7-5-7-10 0-5.5 7-8 7-8z"/><path d="M12 8v6M9 11h6"/>',
+        'obgyn': '<circle cx="12" cy="5" r="2.5"/><path d="M9 10c1.5 0 2.5.5 3 2 1.5 4 4.5 3.5 4.5 6.5 0 1.5-1 2.5-3 2.5-2 0-3.5-1.5-4-3.5L8 14l-1 5H5l2-9h2z"/>',
+        'infect': '<path d="M14 14.76V5a2 2 0 0 0-4 0v9.76a4 4 0 1 0 4 0zM12 8v5M12 17a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>',
+        'generic': '<rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M7 8h10M7 12h10M7 16h6"/>',
+        'home': '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10"/>',
+        'ecg': '<path d="M2.5 12h4.5l2.5-6.5 4 13 3-8.5 2.5 4h5"/>',
+        /* Practising was a checkmark in a circle, which is what `completed`
+           already meant: two concepts, one shape. Practice is working through
+           a set of decisions, so it carries a checked list instead. */
+        'practice': '<path d="M4 7h2M4 12h2M4 17h2"/><path d="m9.5 6.5 1.8 1.8 3.4-3.4"/><path d="M9.5 15.5 12 18l4.5-4.5"/>',
+        'due': '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5l3 3"/>',
+        'saved': '<path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
+        'check': '<path d="m5 12 5 5L20 7"/>',
+        'completed': '<circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-4.5"/>',
+        'chevron-right': '<path d="m9 18 6-6-6-6"/>',
+        'chevron-left': '<path d="m15 18-6-6 6-6"/>',
+        'chevron-down': '<path d="m6 9 6 6 6-6"/>',
+
+        /* Individual Emergency Presentations (Each with a UNIQUE, authentic medical icon) */
+        'chest-pain': '<path d="M19 14c1.5-1.5 2.5-3.5 2.5-5.5 0-3-2.5-5.5-5.5-5.5-2 0-3.5 1-4 2.5-.5-1.5-2-2.5-4-2.5-3 0-5.5 2.5-5.5 5.5 0 2 1 4 2.5 5.5l7 7z"/><path d="M8 12h2l1.5-3 2 6 1.5-3h2.5"/>',
+        'dyspnea': '<path d="M12 3v7M9.5 4.5h5M12 10c-2.5 1.5-6 4-6 7.5 0 2 1.5 3.5 3.5 3.5 2.5 0 3.5-2 3.5-3.5v-1M12 10c2.5 1.5 6 4 6 7.5 0 2-1.5 3.5-3.5 3.5-2.5 0-3.5-2-3.5-3.5v-1"/>',
+        'hemoptysis': '<path d="M12 3v7M9.5 4.5h5M6.5 10c-2 1.5-4.5 4-4.5 7 0 2 1.5 3.5 3.5 3.5 2.5 0 3.5-2 3.5-3.5v-1M12 10c2 1.5 4.5 4 4.5 7 0 2-1.5 3.5-3.5 3.5-2 0-3-1.5-3.3-2.8M10 16a2 2 0 1 0 3.5 0c0-1.2-1.8-2.5-1.8-2.5S10 14.8 10 16z"/>',
+        'cyanosis': '<path d="M12 3a9 9 0 0 0-9 9c0 5 4 9 9 9s9-4 9-9a9 9 0 0 0-9-9z"/><path d="M12 8a3 3 0 0 0-3 3c0 2 3 5 3 5s3-3 3-5a3 3 0 0 0-3-3zM8 18h8"/>',
+        'shock': '<path d="M19.5 12.572l-7.5 7.428l-7.5-7.428a5 5 0 1 1 7.5-6.566a5 5 0 1 1 7.5 6.572"/><path d="M12 7l-2 4h4l-2 5"/>',
+        'palpitations': '<path d="M2 12h3l1.5-4 1.5 8 2-11 2 14 2-7 1.5 4 1.5-4 2 7 1.5-3H22"/>',
+        'edema': '<path d="M16 3v9a5 5 0 0 1-5 5H6a2 2 0 0 0-2 2v2h14a4 4 0 0 0 4-4V3zM9 11a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/>',
+        'limb-ischemia': '<path d="M15 3v10a4 4 0 0 1-4 4H7a2 2 0 0 0-2 2v2h12a4 4 0 0 0 4-4V3zM7 7l6 6M13 7l-6 6"/>',
+        'headache': '<circle cx="12" cy="14" r="7"/><path d="M12 7V3M7.5 8.5 4.5 5.5M16.5 8.5l3-3M2 14h3M19 14h3M9 14h.01M15 14h.01M9.5 18a3.5 3.5 0 0 0 5 0"/>',
+        'dizziness': '<path d="M12 3a9 9 0 1 0 9 9M21 3v6h-6M12 7a5 5 0 1 0 5 5M17 7v4h-4"/>',
+        'ams': '<path d="M12 3c-4.97 0-9 4.03-9 9 0 3.12 1.59 5.88 4 7.5V21h10v-1.5c2.41-1.62 4-4.38 4-7.5 0-4.97-4.03-9-9-9z"/><path d="M12 8a4 4 0 0 0-4 4c0 2 2 3 4 3s3-1 3-2.5c0-1.5-1.5-1.5-1.5-2.5"/>',
+        'coma': '<path d="M3 13h4l2-3 2 6 2-3h8"/><path d="M6 8c1-1 3-1 4 0M14 8c1-1 3-1 4 0"/><path d="M3 19h18"/>',
+        'seizures': '<path d="M9.5 4a4.5 4.5 0 0 0-4.5 4.5c0 1 .3 2 .8 2.8A4.5 4.5 0 0 0 5 15a4.5 4.5 0 0 0 4.5 4.5c.8 0 1.5-.2 2.2-.6M14.5 4a4.5 4.5 0 0 1 4.5 4.5c0 1-.3 2-.8 2.8A4.5 4.5 0 0 1 19 15a4.5 4.5 0 0 1-4.5 4.5c-.8 0-1.5-.2-2.2-.6"/><path d="m13 7-3 5h4l-2 5"/>',
+        'weakness': '<path d="M5 19l8-8M9 7l4 4M13 3l8 8-3 3-8-8 3-3zM3 21l3-3"/>',
+        'diplopia': '<path d="M2 13s3.5-5 8-5 8 5 8 5-3.5 5-8 5-8-5-8-5z"/><circle cx="10" cy="13" r="2.5"/><path d="M6 9s3.5-5 8-5 8 5 8 5"/><circle cx="14" cy="9" r="2.5"/>',
+        'focal-neurologic-deficit': '<path d="M12 3v18M9.5 4a4.5 4.5 0 0 0-4.5 4.5c0 1 .3 2 .8 2.8A4.5 4.5 0 0 0 5 15a4.5 4.5 0 0 0 4.5 4.5c.8 0 1.5-.2 2.2-.6M14.5 4a4.5 4.5 0 0 1 4.5 4.5c0 1-.3 2-.8 2.8A4.5 4.5 0 0 1 19 15a4.5 4.5 0 0 1-4.5 4.5c-.8 0-1.5-.2-2.2-.6"/><circle cx="15.5" cy="12" r="2.5"/>',
+        'abdominal-pain': '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 4v16M4 12h16"/><circle cx="8" cy="8" r="2"/>',
+        'gib': '<path d="M12 3v3c0 2-1.5 3.5-3 5-2 2-3 4-2 6.5s3.5 3.5 6 3.5 7-1.5 7-6-3.5-7.5-6-8.5c-1.5-.5-2-1.5-2-3.5z"/><circle cx="13" cy="14" r="2"/>',
+        'nausea-vomiting': '<path d="M12 3v3c0 2-1.5 3.5-3 5-2 2-3 4-2 6.5s3.5 3.5 6 3.5 7-1.5 7-6-3.5-7.5-6-8.5c-1.5-.5-2-1.5-2-3.5z"/><path d="M12 16v-4m-2 2l2-2 2 2"/>',
+        'diarrhea': '<path d="M5 8c0-2 2-3 4-3h6c2 0 4 1 4 3s-2 3-4 3H9c-2 0-4 1-4 3s2 3 4 3h6c2 0 4 1 4 3"/><path d="m14 18 3 3-3 3"/>',
+        'constipation': '<path d="M5 8c0-2 2-3 4-3h6c2 0 4 1 4 3s-2 3-4 3H9c-2 0-4 1-4 3s2 3 4 3h6c2 0 4 1 4 3"/><rect x="10.5" y="9.5" width="4" height="4" rx="1"/>',
+        'jaundice': '<path d="M4 6c5-2 13-1 16 3 1.5 2 1.5 6 0 9-3 6-9 6-13 4C5 21 3 17 3 13c0-3 0-5 1-7z"/><circle cx="12" cy="12" r="2.5"/>',
+        'pelvic-pain': '<path d="M6 5c2 0 4 1 5 3 1-2 3-3 5-3 3 0 5 2 5 5 0 5-7 11-7 11S7 15 7 10c0-3 2-5 5-5zM12 11v4M10 13h4"/>',
+        'vaginal-bleeding': '<path d="M12 4a5 5 0 0 0-5 5v3c0 3 2 6 5 8 3-2 5-5 5-8V9a5 5 0 0 0-5-5z"/><circle cx="12" cy="12" r="2"/>',
+        'scrotal-pain': '<circle cx="9" cy="14" r="4"/><circle cx="15" cy="14" r="4"/><path d="M9 10V4M15 10V4M12 9v4M12 16h.01"/>',
+        'flank-pain': '<path d="M12 3C8 3 5 6 5 11c0 6 3 10 7 10 3 0 4-1 4-3 0-3-2-4-2-7 0-3 2-4 2-6 0-1-2-2-4-2z"/><circle cx="10" cy="12" r="2.5"/>',
+        'urinary-retention': '<path d="M12 4c-4.5 0-8 3.5-8 8 0 5 3.5 8 8 8s8-3 8-8c0-4.5-3.5-8-8-8z"/><path d="M12 16v4M10 18h4M8 12h8"/>',
+        'back-pain': '<rect x="9" y="3" width="6" height="3" rx="1"/><rect x="8" y="7.5" width="8" height="3" rx="1"/><rect x="8" y="12" width="8" height="3" rx="1"/><rect x="9" y="16.5" width="6" height="3" rx="1"/><path d="M12 3v18"/>',
+        'red-eye': '<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3.5"/><path d="M12 10.5v3M10.5 12h3"/>',
+        'joint-pain': '<path d="M8 3v5a4 4 0 0 0 3 3.87V19M16 3v5a4 4 0 0 1-3 3.87"/><rect x="9" y="19" width="6" height="2" rx="1"/><circle cx="12" cy="12" r="2"/>',
+        'sore-throat': '<path d="M7 3v6a5 5 0 0 0 10 0V3M6 9h12M12 14v7M9 21h6"/>',
+        'airway-stridor': '<path d="M8 3h8M8 21h8M10 3v5c0 2-2 3-2 4s2 2 2 4v5M14 3v5c0 2 2 3 2 4s-2 2-2 4v5M11 12h2"/>',
+        'anaphylaxis': '<path d="M18 3l3 3-2 2-3-3 2-2zM16 5l-9 9v3h3l9-9-3-3zM7 14l-4 4v3h3l4-4M3 21l3-3M13 7l4 4"/>',
+        'rash': '<rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="8" cy="8" r="1.5"/><circle cx="15" cy="9" r="2"/><circle cx="10" cy="14" r="1.5"/><circle cx="16" cy="15" r="1"/>',
+        'fever': '<path d="M14 14.76V5a2 2 0 0 0-4 0v9.76a4 4 0 1 0 4 0zM12 8v5M12 17a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>',
+        'overdose': '<rect x="6" y="7" width="12" height="14" rx="2.5"/><path d="M9 3h6v4H9zM10 13h4M12 11v4"/>',
+        'suicidal': '<circle cx="12" cy="7" r="4"/><path d="M5 21v-3a5 5 0 0 1 10 0v3M17 11l2 2 4-4"/>',
+        'hyperglycemia': '<rect x="6" y="4" width="12" height="16" rx="3"/><path d="M9 4V2h6v2M10 9h4M12 13a2 2 0 1 0 2 0c0-1-1-2-1-2s-1 1-1 2z"/>',
+        'heat-cold': '<path d="M10 14.5V5a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"/><path d="M18 5l2-2M18 10h3M18 15l2 2M5 5l2 2M4 10h3M5 15l2-2"/>',
+        'multiple-trauma': '<path d="M12 2v20M2 12h20M7 7l10 10M17 7L7 17"/>',
+        'falls-geriatric-trauma': '<circle cx="13" cy="5" r="2.5"/><path d="M10 10h4l2 5-2 6M10 10l-2 5 2 6M19 12v9M17 12h4"/>',
+        'pregnancy-emergency': '<circle cx="12" cy="4" r="2"/><path d="M9 8h4c2 0 4 2 4 5 0 3.5-2.5 5.5-4 5.5v3.5M10 12c1.5 0 2.5 1 2.5 2.5S11.5 17 10 17"/>',
+        'pediatric-fever': '<circle cx="12" cy="9" r="4"/><path d="M6 19c0-3 2.5-5 6-5s6 2 6 5M16 4v5M18 6.5h-4"/>',
+        'pediatric-respiratory-distress': '<circle cx="12" cy="6" r="3"/><path d="M7 19c0-2.5 2-4 5-4s5 1.5 5 4M10 11l2 2 2-2M12 13v3"/>',
+
+        /* Clinical Framework Sections */
+        'how-to-think': '<circle cx="12" cy="12" r="9"/><polygon points="12 7.5 14.5 12 12 16.5 9.5 12"/>',
+        'dont-miss': '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="3" x2="12" y2="6.5"/><line x1="12" y1="17.5" x2="12" y2="21"/><line x1="3" y1="12" x2="6.5" y2="12"/><line x1="17.5" y1="12" x2="21" y2="12"/>',
+        'red-flags': '<path d="M12 3.5 2.5 20h19L12 3.5z"/><path d="M12 9v5M12 17.5h.01"/>',
+        'first-minutes': '<path d="m13 2.5-8 10.5h6.5l-1.5 8.5 8.5-11.5H12z"/>',
+        'history': '<rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1M8.5 10h7M8.5 14h7M8.5 18h4"/>',
+        'exam': '<path d="M5 4v6a4 4 0 0 0 8 0V4M5 4h2M11 4h2M9 14v2a4 4 0 0 0 8 0v-1.5M17 14.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>',
+        'workup': '<path d="M9 3v8a3 3 0 0 0 6 0V3M6 21h12M12 14v7M8 7h8"/>',
+        'disposition': '<path d="M4 4v16a1 1 0 0 0 1 1h7V3H5a1 1 0 0 0-1 1zM15 12h6M18 9l3 3-3 3M9 12h.01"/>',
+        'pearls-pitfalls': '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.45V15a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-1.55A6 6 0 0 0 12 3z"/>',
+        'see-also': '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+        'references': '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20v-14H6.5A2.5 2.5 0 0 0 4 5.5v14zM4 5.5V19.5M8 6h8M8 10h8M8 14h5"/>',
+        'study': '<path d="M16.5 3.5 20.5 7.5 9 19l-5 1 1-5 11.5-11.5zM14 6l4 4"/>',
+        'ecg-patterns': '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M4 12h4l2-4 3 8 2-4h5"/>',
+        'ecg-how': '<circle cx="12" cy="12" r="9"/><polygon points="12 7.5 14.5 12 12 16.5 9.5 12"/>',
+        'ecg-red-flags': '<path d="M12 3.5 2.5 20h19L12 3.5z"/><path d="M12 9v5M12 17.5h.01"/>',
+        /* The ECG guide reuses the framework section names, so these two keys
+           have to resolve too. Without them getSectionSvg fell through to the
+           `history` fallback and the ECG reference and related sections were
+           badged with a clipboard — a different meaning for the same control. */
+        'ecg-references': '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20v-14H6.5A2.5 2.5 0 0 0 4 5.5v14zM4 5.5V19.5M8 6h8M8 10h8M8 14h5"/>',
+        'ecg-related': '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+
+        /* Patient Contexts */
+        'patient-all': '<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><line x1="3" y1="12" x2="21" y2="12"/>',
+        'patient-pediatric': '<circle cx="12" cy="8" r="3.5"/><path d="M6 19.5c0-3 2.5-5.5 6-5.5s6 2.5 6 5.5"/>',
+        'patient-pregnancy': '<circle cx="12" cy="5" r="2.5"/><path d="M9 10c1.5 0 2.5.5 3 2 1.5 4 4.5 3.5 4.5 6.5 0 1.5-1 2.5-3 2.5-2 0-3.5-1.5-4-3.5L8 14l-1 5H5l2-9h2z"/>',
+        'patient-geriatric': '<circle cx="11" cy="7" r="3"/><path d="M6 19.5c0-2.5 2-4.5 5-4.5s5 2 5 4.5M17 13v7.5"/>',
+        'patient-immunocompromised': '<path d="M12 3s6 2.5 6 7c0 5-3.5 8.5-6 10-2.5-1.5-6-5-6-10 0-4.5 6-7 6-7zM12 8v6M9 11h6"/>',
+        'patient-trauma': '<rect x="4.5" y="8.5" width="15" height="7" rx="3.5" transform="rotate(-45 12 12)"/><circle cx="12" cy="12" r="1.5"/><circle cx="9.5" cy="9.5" r="1"/><circle cx="14.5" cy="14.5" r="1"/>',
+
+        /* ECG Steps */
+        'rate-calibration': '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M12 2v3M10 2h4"/>',
+        'rhythm-axis': '<circle cx="12" cy="12" r="8.5"/><path d="M12 6.5v11M6.5 12h11M8 8l8 8"/>',
+        'intervals': '<path d="M4 7h16M4 17h16M7 7v10M17 7v10M12 9v6"/>',
+        'hypertrophy': '<path d="M5 19V5h4v14zM11 19V9h4v10zM17 19V3h4v16z"/>',
+        'ischemia-map': '<rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M3.5 10h17M3.5 16h17M9 4v16M15 4v16"/>',
+        'omi-equivalents': '<path d="M3 13h4l2-4 2 8 3-11 2 9 4-2h1"/>',
+        'toxic-metabolic-mimics': '<path d="M10 3h4M10 3v4.5L5 18a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-10.5V3M8.5 14h7M12 11v.01M10 17v.01M14 17v.01"/>'
     };
+    if (typeof window !== 'undefined') window.EM_ICONS = { svg: semanticSvg, map: SEMANTIC_ICONS };
 
     const TOPIC_CATS = {
         'chest-pain': 'cardio', 'palpitations': 'cardio', 'syncope': 'cardio',
-        'dyspnea': 'pulm', 'hemoptysis': 'pulm',
-        'cyanosis': 'vascular', 'edema': 'vascular', 'limb-ischemia': 'vascular', 'shock': 'critical',
+        'dyspnea': 'pulm', 'hemoptysis': 'pulm', 'cyanosis': 'pulm',
+        'shock': 'critical', 'limb-ischemia': 'vascular', 'edema': 'vascular',
         'headache': 'neuro', 'dizziness': 'neuro', 'ams': 'neuro', 'coma': 'neuro', 'seizures': 'neuro', 'weakness': 'neuro', 'diplopia': 'neuro', 'focal-neurologic-deficit': 'neuro',
         'abdominal-pain': 'gi', 'gib': 'gi', 'nausea-vomiting': 'gi', 'diarrhea': 'gi', 'constipation': 'gi', 'jaundice': 'gi',
-        'pelvic-pain': 'gu', 'vaginal-bleeding': 'gu', 'scrotal-pain': 'gu', 'flank-pain': 'gu', 'urinary-retention': 'gu',
+        'pelvic-pain': 'gu', 'vaginal-bleeding': 'obgyn', 'scrotal-pain': 'gu', 'flank-pain': 'gu', 'urinary-retention': 'gu',
         'back-pain': 'msk', 'joint-pain': 'msk',
-        'airway-stridor': 'airway', 'anaphylaxis': 'airway', 'rash': 'derm',
+        'airway-stridor': 'airway', 'anaphylaxis': 'critical', 'rash': 'derm',
         'fever': 'infect', 'sore-throat': 'ent', 'red-eye': 'ent',
         'pediatric-fever': 'peds', 'pediatric-respiratory-distress': 'peds',
         'overdose': 'toxic', 'suicidal': 'psych', 'hyperglycemia': 'endocrine', 'heat-cold': 'environ',
@@ -202,20 +279,60 @@
         return group ? group.title : '';
     }
 
-    function iconForId(id) {
-        if (id === 'ecg' || id === 'ecg-explorer') return '<span class="ios-emoji-badge" aria-hidden="true">📈</span>';
-        if (id === 'learn' || id === 'study') return '<span class="ios-emoji-badge" aria-hidden="true">🎯</span>';
-        /* Qualified: the scripts are ES modules, so a bare CP_DATA is no longer
-           a global and would throw a ReferenceError. */
-        var cp = BY_ID[id] || (Array.isArray(window.CP_DATA) ? window.CP_DATA.find(function (c) { return c.id === id; }) : null);
-        if (cp && cp.icon) return '<span class="ios-emoji-badge" aria-hidden="true">' + cp.icon + '</span>';
-        return '<span class="ios-emoji-badge" aria-hidden="true">🩺</span>';
+    function catIconKey(cat, id) {
+        if (id && SEMANTIC_ICONS[id]) return id;
+        return cat || 'generic';
     }
+
     function iconFor(cp) {
-        if (!cp) return '<span class="ios-emoji-badge" aria-hidden="true">🩺</span>';
-        if (cp.icon) return '<span class="ios-emoji-badge" aria-hidden="true">' + cp.icon + '</span>';
-        return iconForId(cp.id);
+        if (!cp) return '<span class="ios-icon-badge cat-generic" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['generic'], 'badge-svg') + '</span>';
+        const id = cp.id;
+        const cat = catFor(id);
+        const iconKey = catIconKey(cat, id);
+        const svgContent = SEMANTIC_ICONS[iconKey] || SEMANTIC_ICONS[cat] || SEMANTIC_ICONS['generic'];
+        return '<span class="ios-icon-badge cat-' + cat + '" data-id="' + id + '" aria-hidden="true">' + semanticSvg(svgContent, 'badge-svg') + '</span>';
     }
+
+    function iconForId(id) {
+        if (id === 'ecg' || id === 'ecg-explorer') return '<span class="ios-icon-badge cat-ecg" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['ecg'], 'badge-svg') + '</span>';
+        if (id === 'learn' || id === 'study') return '<span class="ios-icon-badge cat-learn" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['practice'], 'badge-svg') + '</span>';
+        var cp = BY_ID[id] || (Array.isArray(window.CP_DATA) ? window.CP_DATA.find(function (c) { return c.id === id; }) : null);
+        if (cp) return iconFor(cp);
+        return '<span class="ios-icon-badge cat-generic" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['generic'], 'badge-svg') + '</span>';
+    }
+
+    function getGroupSvg(title) {
+        const map = {
+            'Cardiorespiratory & vascular': 'cardio',
+            'Neurologic': 'neuro',
+            'Abdomen, pelvis & GU': 'gi',
+            'Airway, allergy, skin & pediatrics': 'pulm',
+            'Toxic, metabolic & environmental': 'toxic',
+            'Trauma, pregnancy & older adults': 'trauma'
+        };
+        const key = map[title] || 'generic';
+        return semanticSvg(SEMANTIC_ICONS[key] || SEMANTIC_ICONS['generic'], 'group-svg');
+    }
+
+    function getSectionSvg(safeKey) {
+        if (!safeKey) return semanticSvg(SEMANTIC_ICONS['history'], 'sec-svg');
+        if (safeKey.startsWith('ecg-step-')) {
+            const step = safeKey.replace('ecg-step-', '');
+            if (SEMANTIC_ICONS[step]) return semanticSvg(SEMANTIC_ICONS[step], 'sec-svg');
+        }
+        if (SEMANTIC_ICONS[safeKey]) return semanticSvg(SEMANTIC_ICONS[safeKey], 'sec-svg');
+        return semanticSvg(SEMANTIC_ICONS['history'], 'sec-svg');
+    }
+
+    function sectionBadgeClass(safeKey) {
+        if (!safeKey) return 'sec-badge-generic';
+        if (safeKey === 'dont-miss' || safeKey === 'red-flags' || safeKey === 'first-minutes' || safeKey === 'ecg-red-flags') return 'sec-badge-critical';
+        if (safeKey.startsWith('ecg-step-') || safeKey === 'ecg-patterns') return 'sec-badge-ecg';
+        if (safeKey === 'how-to-think' || safeKey === 'pearls-pitfalls') return 'sec-badge-pearl';
+        if (safeKey === 'references') return 'sec-badge-ref';
+        return 'sec-badge-' + safeKey;
+    }
+
     function sevDot(sev) { return '<span class="sev-dot sev-' + sev + '" aria-hidden="true"></span>'; }
     let currentId = null;
     let severityFilter = 'all';
@@ -317,7 +434,7 @@
         return _ecgCache;
     }
     function topicRecord(id) {
-        if (id === ECG_TOPIC_ID) return { id: ECG_TOPIC_ID, name: 'Emergency ECG Guide', icon: '📈', tag: 'Systematic ECG interpretation' };
+        if (id === ECG_TOPIC_ID) return { id: ECG_TOPIC_ID, name: 'Emergency ECG Guide', icon: 'ecg', tag: 'Systematic ECG interpretation' };
         return BY_ID[id] || null;
     }
     function stripTags(s) {
@@ -338,8 +455,26 @@
         const t = document.getElementById('toast');
         t.textContent = msg;
         t.classList.add('show');
+        t.style.pointerEvents = '';
         clearTimeout(t._h);
         t._h = setTimeout(() => t.classList.remove('show'), 2200);
+    }
+    function toastWithAction(msg, actionLabel, onAction) {
+        const t = document.getElementById('toast');
+        t.textContent = msg + ' ';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = actionLabel;
+        btn.style.cssText = 'margin-left:8px;padding:6px 12px;border-radius:999px;border:1px solid var(--accent);background:var(--accent);color:var(--on-fill);font:inherit;font-size:.8rem;cursor:pointer;';
+        btn.addEventListener('click', () => {
+            t.classList.remove('show');
+            if (onAction) onAction();
+        });
+        t.appendChild(btn);
+        t.classList.add('show');
+        t.style.pointerEvents = 'auto';
+        clearTimeout(t._h);
+        t._h = setTimeout(() => { t.classList.remove('show'); t.style.pointerEvents = ''; }, 8000);
     }
     function setTitle(name) {
         document.title = name ? name + ' — EM Pocket' : 'EM Pocket — Emergency Medicine Reference';
@@ -425,9 +560,12 @@
         const item = loadLearning().reviewPlan[id];
         return !!item && Number(item.dueAt) <= Date.now();
     }
+    /* The scheduled state is a state, not a different action, so it reuses the
+       same button and the `completed` icon rather than a text tick. */
     function reviewActionLabel(id) {
         if (!isReviewed(id)) return 'Mark reviewed';
-        return isReviewDue(id) ? 'Complete review' : '✓ Review scheduled';
+        if (isReviewDue(id)) return 'Complete review';
+        return semanticSvg(SEMANTIC_ICONS['completed']) + '<span>Review scheduled</span>';
     }
     function setReviewed(id, value) {
         const learning = loadLearning();
@@ -493,7 +631,7 @@
             if (!items.length) return '';
             return '<details class="side-group"' + (groupIndex === 0 ? ' open' : '') + '><summary class="side-label">' + esc(g.title) + ' <span class="side-count">' + items.length + '</span></summary>' +
                 items.map(cp =>
-                    '<button type="button" class="side-item" data-id="' + cp.id + '"><i class="ico" data-cat="' + catFor(cp.id) + '" aria-hidden="true">' + iconFor(cp) + '</i>' + esc(cp.name) + '</button>'
+                    '<button type="button" class="side-item" data-id="' + cp.id + '"><i class="ico" data-cat="' + catFor(cp.id) + '" data-id="' + cp.id + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(cp.id), cp.id)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</i>' + esc(cp.name) + '</button>'
                 ).join('') + '</details>';
         }).join('');
         list.addEventListener('click', (e) => {
@@ -587,7 +725,17 @@
         }
         if (!sidebarIsMobile()) {
             const burger = document.getElementById('burgerBtn');
-            if (burger) burger.setAttribute('aria-expanded', String(!collapsed));
+            if (burger) {
+                burger.setAttribute('aria-expanded', String(!collapsed));
+                burger.setAttribute('aria-label', collapsed ? 'Expand presentations sidebar' : 'Collapse presentations sidebar');
+                burger.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+            }
+        } else {
+            const burger = document.getElementById('burgerBtn');
+            if (burger) {
+                burger.setAttribute('aria-label', 'Open presentations menu');
+                burger.title = 'Open presentations menu';
+            }
         }
     }
     function setSidebarCollapsed(collapsed) {
@@ -604,12 +752,14 @@
     function cardHtml(cp) {
         const count = severityCount(cp);
         const label = severityFilter === 'all' ? 'critical' : SEV_LABEL[severityFilter].toLowerCase();
-        return '<button type="button" class="cp-card" data-id="' + cp.id + '">' +
+        return '<button type="button" class="cp-card" data-id="' + cp.id + '" data-cat="' + catFor(cp.id) + '">' +
             '<span class="cp-count">' + count + ' ' + label + '</span>' +
-            '<div class="cp-ico" data-cat="' + catFor(cp.id) + '" aria-hidden="true">' + iconFor(cp) + '</div>' +
+            '<div class="cp-ico" data-cat="' + catFor(cp.id) + '" data-id="' + cp.id + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(cp.id), cp.id)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</div>' +
             '<h3>' + esc(cp.name) + '</h3><p>' + esc(cp.tag) + '</p>' +
-            (isReviewed(cp.id) ? '<span class="cp-reviewed">✓ ' + esc(reviewLabel(cp.id)) + '</span>' : '') +
-            (isSaved(cp.id) ? '<span class="cp-saved">' + STAR_SVG.filled + ' Saved</span>' : '') + '</button>';
+            (isReviewed(cp.id) ? '<span class="cp-reviewed">' + semanticSvg(SEMANTIC_ICONS['completed'], 'review-check') + ' ' + esc(reviewLabel(cp.id)) + '</span>' : '') +
+            (isSaved(cp.id) ? '<span class="cp-saved">' + STAR_SVG.filled + ' Saved</span>' : '') +
+            '<span class="cp-disclosure" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['chevron-right']) + '</span>' +
+            '</button>';
     }
     function bindCards(root) {
         root.querySelectorAll('.cp-card').forEach(card =>
@@ -627,41 +777,34 @@
             el.classList.toggle('on-home', on);
             el.classList.toggle('active-nav', on);
             el.classList.toggle('active', on);
-            el.setAttribute('aria-current', on ? 'page' : 'false');
+            if (on) el.setAttribute('aria-current', 'page');
+            else el.removeAttribute('aria-current');
         });
     }
 
-    const GROUP_EMOJIS = {
-        'Cardiorespiratory & vascular': '🫀',
-        'Neurologic': '🧠',
-        'Abdomen, pelvis & GU': '🎯',
-        'Airway, allergy, skin & pediatrics': '👶',
-        'Toxic, metabolic & environmental': '🧪',
-        'Trauma, pregnancy & older adults': '🚑'
-    };
 
     function studyDashboardHtml() {
         const due = dueIds();
         const saved = savedIds();
         return '<section class="study-dashboard study-dashboard-compact" aria-label="Personal study tools">' +
             '<div class="study-stats">' +
-            '<button type="button" class="study-stat" data-study="due"><span class="stat-emoji" aria-hidden="true">⏱️</span><strong>' + due.length + '</strong><span>due now</span></button>' +
-            '<button type="button" class="study-stat" data-study="saved"><span class="stat-emoji" aria-hidden="true">⭐</span><strong>' + saved.length + '</strong><span>saved topics</span></button>' +
-            '<button type="button" class="study-stat" data-study="case"><span class="stat-emoji" aria-hidden="true">🎯</span><strong>Practice</strong><span>Work through a case</span></button>' +
+            '<button type="button" class="study-stat" data-study="due"><span class="stat-emoji stat-icon" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['due']) + '</span><strong>' + due.length + '</strong><span>due now</span></button>' +
+            '<button type="button" class="study-stat" data-study="saved"><span class="stat-emoji stat-icon" aria-hidden="true">' + STAR_SVG.filled + '</span><strong>' + saved.length + '</strong><span>saved topics</span></button>' +
+            '<button type="button" class="study-stat" data-study="evolving"><span class="stat-emoji stat-icon" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['practice']) + '</span><strong>Practice</strong><span>Work through a case</span></button>' +
             '</div></section>';
     }
 
     function patientFiltersHtml() {
         const filters = [
-            ['all', 'All patients', '🌐'],
-            ['pediatric', 'Pediatric', '👶'],
-            ['pregnancy', 'Pregnancy', '🤰'],
-            ['geriatric', 'Older adult', '🧓'],
-            ['immunocompromised', 'Immunocompromised', '🛡️'],
-            ['trauma', 'Trauma', '🩹']
+            ['all', 'All patients', 'patient-all'],
+            ['pediatric', 'Pediatric', 'patient-pediatric'],
+            ['pregnancy', 'Pregnancy', 'patient-pregnancy'],
+            ['geriatric', 'Older adult', 'patient-geriatric'],
+            ['immunocompromised', 'Immunocompromised', 'patient-immunocompromised'],
+            ['trauma', 'Trauma', 'patient-trauma']
         ];
         return '<div class="patient-filter" role="group" aria-label="Patient context filter"><span>Patient context</span>' + filters.map(function (f) {
-            return '<button type="button" class="patient-chip' + (patientFilter === f[0] ? ' active' : '') + '" data-patient="' + f[0] + '" aria-pressed="' + (patientFilter === f[0]) + '"><span class="chip-emoji" aria-hidden="true">' + f[2] + '</span>' + f[1] + '</button>';
+            return '<button type="button" class="patient-chip' + (patientFilter === f[0] ? ' active' : '') + '" data-patient="' + f[0] + '" aria-pressed="' + (patientFilter === f[0]) + '"><span class="chip-emoji chip-icon" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[f[2]]) + '</span>' + f[1] + '</button>';
         }).join('') + '</div>';
     }
 
@@ -678,8 +821,9 @@
         const groupsHtml = GROUPS.map(g => {
             const items = g.ids.map(id => BY_ID[id]).filter(cp => cp && cpMatchesFilter(cp) && patientMatches(cp));
             if (!items.length) return '';
-            return '<section class="home-group" data-cat="' + catFor(items[0].id) + '">' +
-                '<h3 class="group-title"><span class="ios-emoji-badge group-badge" aria-hidden="true">' + (GROUP_EMOJIS[g.title] || '📋') + '</span>' + esc(g.title) + ' <span>' + items.length + '</span></h3>' +
+            const cat = catFor(items[0].id);
+            return '<section class="home-group" data-cat="' + cat + '">' +
+                '<h3 class="group-title"><span class="ios-icon-badge ios-emoji-badge group-badge cat-' + cat + '" aria-hidden="true">' + getGroupSvg(g.title) + '</span>' + esc(g.title) + ' <span>' + items.length + '</span></h3>' +
                 '<div class="cp-grid">' + items.map(cardHtml).join('') + '</div></section>';
         }).join('');
         const visibleCount = DATA.filter(cp => cpMatchesFilter(cp) && patientMatches(cp)).length;
@@ -691,12 +835,12 @@
             '<div class="home-actions"><button type="button" class="home-start" data-browse-library="1">Browse presentations <span aria-hidden="true">↓</span></button>' +
             (getEcg() ? '<button type="button" class="home-ecg" id="ecgEntryBtn">Learn ECGs <span aria-hidden="true">→</span></button>' : '') +
             '</div><div class="home-meta"><span>' + DATA.length + ' presentations</span><span>' + reviewedIds().length + ' reviewed</span><span id="offlineStatus">' + esc(offlineStatus) + '</span></div></section>' +
-            (window.EM_LEARNING ? window.EM_LEARNING.homeHtml() : '') +
             studyDashboardHtml() +
             '<section class="presentation-library" id="presentationLibrary" aria-labelledby="presentationLibraryTitle" tabindex="-1">' +
             '<div class="library-head"><div><h2 id="presentationLibraryTitle">Presentation library</h2><p>' + visibleCount + ' of ' + DATA.length + ' presentations · grouped by clinical system</p></div>' +
             '<details class="library-filters"' + (libraryFiltersOpen ? ' open' : '') + '><summary>Filter by patient context' + (patientFilter !== 'all' ? ' · active' : '') + '</summary>' + patientFiltersHtml() + '</details></div>' +
-            (groupsHtml || '<p class="empty-filter">No presentations match these filters. Try another patient context or severity.</p>') + '</section>';
+            (groupsHtml || '<p class="empty-filter">No presentations match these filters. Try another patient context or severity.</p>') + '</section>' +
+            (window.EM_LEARNING ? window.EM_LEARNING.homeHtml() : '');
         bindCards(stage);
         const ecgEntry = document.getElementById('ecgEntryBtn');
         if (ecgEntry) ecgEntry.addEventListener('click', function () { showEcg(); });
@@ -716,6 +860,7 @@
             if (selected) selected.focus({ preventScroll: true });
         }));
         stage.querySelectorAll('[data-study]').forEach(btn => btn.addEventListener('click', function () {
+            if (btn.dataset.study === 'evolving') { location.hash = 'learn~practice'; return; }
             if (btn.dataset.study === 'case') showStudy('case');
             else showStudy(btn.dataset.study);
         }));
@@ -736,7 +881,7 @@
         if (!unique.length) return '<p class="study-empty">' + esc(empty) + '</p>';
         return '<div class="study-topic-list">' + unique.map(function (id) {
             const cp = topicRecord(id);
-            return '<button type="button" class="study-topic" data-id="' + cp.id + '"' + (cp.id === ECG_TOPIC_ID ? ' data-ecg="1"' : '') + '><span class="study-topic-ico" data-cat="' + catFor(cp.id) + '" aria-hidden="true">' + iconFor(cp) + '</span><div><strong>' + esc(cp.name) + '</strong><small>' + esc(isReviewed(cp.id) ? reviewLabel(cp.id) : 'Not yet reviewed') + (noteFor(cp.id) ? ' · note saved' : '') + '</small></div><b>→</b></button>';
+            return '<button type="button" class="study-topic" data-id="' + cp.id + '"' + (cp.id === ECG_TOPIC_ID ? ' data-ecg="1"' : '') + '><span class="study-topic-ico" data-cat="' + catFor(cp.id) + '" data-id="' + cp.id + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(cp.id), cp.id)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</span><div><strong>' + esc(cp.name) + '</strong><small>' + esc(isReviewed(cp.id) ? reviewLabel(cp.id) : 'Not yet reviewed') + (noteFor(cp.id) ? ' · note saved' : '') + '</small></div><b>→</b></button>';
         }).join('') + '</div>';
     }
     function caseHtml() {
@@ -757,7 +902,7 @@
         const body = chosen === 'case' ? caseHtml() :
             '<section class="study-page"><div class="study-page-head">' + backButtonHtml('data-home="1"') + '<span class="study-kicker">PERSONAL STUDY SPACE</span><h1>' + (chosen === 'due' ? 'Review queue' : 'Saved topics') + '</h1><p>' + (chosen === 'due' ? 'Topics return after 1, 3, 7, and 14 days of review. Complete a review to move it to the next interval.' : 'Use saved topics for weak areas, upcoming rotations, or cases you want to discuss.') + '</p></div>' +
             topicListHtml(chosen === 'due' ? dueIds() : savedIds(), chosen === 'due' ? 'Nothing is due yet. Mark a topic reviewed to start its spaced-review schedule.' : 'No saved topics yet. Save one from any presentation.') + '</section>';
-        stage.innerHTML = '<div class="workspace-actions study-workspace-links"><a href="#learn~practice">Evolving cases →</a><a href="#learn~progress">Progress & backup →</a><a href="#learn~skills">Procedures & teams →</a></div><nav class="study-tabs" aria-label="Study views"><button type="button" data-study="due" aria-current="' + (chosen === 'due' ? 'page' : 'false') + '" class="' + (chosen === 'due' ? 'active' : '') + '">Review queue <span>' + dueIds().length + '</span></button><button type="button" data-study="saved" aria-current="' + (chosen === 'saved' ? 'page' : 'false') + '" class="' + (chosen === 'saved' ? 'active' : '') + '">Saved</button><button type="button" data-study="case" aria-current="' + (chosen === 'case' ? 'page' : 'false') + '" class="' + (chosen === 'case' ? 'active' : '') + '">Practice case</button></nav>' + body;
+        stage.innerHTML = '<div class="workspace-actions study-workspace-links"><a href="#learn~practice">Evolving cases →</a><a href="#learn~progress">Progress & backup →</a><a href="#learn~skills">Procedures & teams →</a></div><nav class="study-tabs" aria-label="Study views"><button type="button" data-study="due"' + (chosen === 'due' ? ' aria-current="page"' : '') + ' class="' + (chosen === 'due' ? 'active' : '') + '">Review queue <span>' + dueIds().length + '</span></button><button type="button" data-study="saved"' + (chosen === 'saved' ? ' aria-current="page"' : '') + ' class="' + (chosen === 'saved' ? 'active' : '') + '">Saved</button><button type="button" data-study="case"' + (chosen === 'case' ? ' aria-current="page"' : '') + ' class="' + (chosen === 'case' ? 'active' : '') + '">Practice case</button></nav>' + body;
         stage.querySelectorAll('[data-home]').forEach(btn => btn.addEventListener('click', showHome));
         stage.querySelectorAll('[data-study]').forEach(btn => btn.addEventListener('click', () => showStudy(btn.dataset.study)));
         stage.querySelectorAll('[data-next-case]').forEach(btn => btn.addEventListener('click', () => { caseCursor += 1; renderStudy('case'); }));
@@ -780,27 +925,34 @@
         else location.hash = route;
     }
 
+    function practiceTarget(id) {
+        if (window.STUDENT_LEARNING && window.STUDENT_LEARNING.practiceFor) return window.STUDENT_LEARNING.practiceFor(id);
+        return { href: '#learn~practice', label: 'Practice' };
+    }
+
     /* ---------- shift-ready view ---------- */
-    const SHIFT_STEP_EMOJIS = ['⚡', '🚨', '🧪', '🎯', '🚪'];
+    const SHIFT_STEP_KEYS = ['first-minutes', 'red-flags', 'workup', 'dont-miss', 'disposition'];
     function shiftHtml(cp) {
         const immediateWorkup = (cp.workup && cp.workup[0]) ? cp.workup[0][1].slice(0, 4) : [];
         const critical = cp.dontMiss.filter(d => d[1] === 'critical').slice(0, 5);
         const escalation = (cp.disposition || []).slice(-2);
+        const practice = practiceTarget(cp.id);
         const step = function (n, title) {
-            const emoji = SHIFT_STEP_EMOJIS[n - 1] || '📋';
-            return '<h2><span class="shift-step-n">' + n + '</span><span class="ios-emoji-badge shift-step-badge" aria-hidden="true">' + emoji + '</span><span class="shift-step-t">' + title + '</span></h2>';
+            const iconKey = SHIFT_STEP_KEYS[n - 1] || 'generic';
+            return '<h2><span class="shift-step-n">' + n + '</span><span class="ios-icon-badge ios-emoji-badge shift-step-badge" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[iconKey] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</span><span class="shift-step-t">' + title + '</span></h2>';
         };
         return '<section class="shift-sheet" data-cat="' + catFor(cp.id) + '">' +
             '<div class="shift-sheet-head">' +
             '<div class="shift-head-main">' +
-            '<span class="ios-emoji-badge shift-hero-badge" aria-hidden="true">' + (cp.icon || '🩺') + '</span>' +
-            '<div><span class="shift-kicker">⚡ FOCUSED SHIFT VIEW</span><h1>' + esc(cp.name) + '</h1><p>' + esc(cp.tag) + '</p></div>' +
+            '<span class="ios-icon-badge ios-emoji-badge shift-hero-badge cat-' + catFor(cp.id) + '" data-id="' + cp.id + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(cp.id), cp.id)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</span>' +
+            '<div><span class="shift-kicker">' + semanticSvg(SEMANTIC_ICONS['first-minutes'], 'kicker-svg') + ' FOCUSED SHIFT VIEW</span><h1>' + esc(cp.name) + '</h1><p>' + esc(cp.tag) + '</p></div>' +
             '</div>' +
             '<div class="shift-head-actions">' +
-            '<button type="button" class="handover-btn" id="copyHandoverBtn" title="Copy handover summary"><span class="btn-emoji" aria-hidden="true">📋</span><span>Copy handover</span></button>' +
-            '<button type="button" class="review-btn" data-full-id="' + cp.id + '"><span class="btn-emoji" aria-hidden="true">📖</span><span>Open full pathway</span></button>' +
+            '<button type="button" class="handover-btn" id="copyHandoverBtn" title="Copy handover summary"><span class="btn-icon btn-emoji" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['references'], 'btn-svg') + '</span><span>Copy handover</span></button>' +
+            '<button type="button" class="review-btn" data-full-id="' + cp.id + '"><span class="btn-icon btn-emoji" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['generic'], 'btn-svg') + '</span><span>Open full pathway</span></button>' +
+            '<a class="review-btn" href="' + esc(practice.href) + '"><span>' + esc(practice.label) + '</span></a>' +
             '</div></div>' +
-            '<div class="shift-warning"><span class="ios-emoji-badge warning-badge" aria-hidden="true">⚠️</span><span>Educational first-pass aid. Reassess the patient, confirm doses and use local protocols.</span></div>' +
+            '<div class="shift-warning"><span class="ios-icon-badge ios-emoji-badge warning-badge" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['red-flags'], 'warning-svg') + '</span><span>Educational first-pass aid. Reassess the patient, confirm doses and use local protocols.</span></div>' +
             '<div class="shift-grid"><section>' + step(1, 'First minutes') + '<ol>' + (cp.approach || []).slice(0, 3).map(x => '<li>' + esc(x) + '</li>').join('') + '</ol></section>' +
             '<section class="shift-red">' + step(2, 'Escalate now if') + '<ul>' + (cp.redFlags || []).slice(0, 6).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></section>' +
             '<section>' + step(3, 'Immediate workup') + '<ul>' + immediateWorkup.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></section>' +
@@ -886,11 +1038,11 @@
         stage.innerHTML = '<div class="shift-topline">' +
             backButtonHtml('data-home="1"') +
             '<div class="shift-select-wrap">' +
-            '<span class="ios-emoji-badge shift-select-badge" aria-hidden="true">' + (cp.icon || '🩺') + '</span>' +
+            '<span class="ios-icon-badge ios-emoji-badge shift-select-badge cat-' + catFor(cp.id) + '" data-id="' + cp.id + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(cp.id), cp.id)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</span>' +
             '<label for="shiftSelect" class="sr-only">Presentation</label>' +
             '<select id="shiftSelect">' + orderedIds().map(function (pid) {
                 const item = BY_ID[pid];
-                return '<option value="' + item.id + '"' + (item.id === cp.id ? ' selected' : '') + '>' + (item.icon ? item.icon + ' ' : '') + esc(item.name) + '</option>';
+                return '<option value="' + item.id + '"' + (item.id === cp.id ? ' selected' : '') + '>' + esc(item.name) + '</option>';
             }).join('') + '</select>' +
             '</div></div>' + shiftHtml(cp) +
             '<div class="handover-fallback" id="handoverFallback" hidden></div>';
@@ -899,6 +1051,8 @@
         stage.querySelector('[data-full-id]').addEventListener('click', function () { showPresentation(this.dataset.fullId); });
         setupHandoverCopy(cp);
         window.scrollTo({ top: 0 });
+        announce('Shift view: ' + cp.name);
+        stage.focus({ preventScroll: true });
     }
 
     function showShift(id) {
@@ -974,69 +1128,11 @@
     }
 
     /* ---------- presentation view ---------- */
-    const SECTION_EMOJIS = {
-        'how-to-think': '🧭',
-        'dont-miss': '🎯',
-        'red-flags': '🚨',
-        'history': '📋',
-        'exam': '🩺',
-        'workup': '🧪',
-        'disposition': '🚪',
-        'pearls-pitfalls': '💡',
-        'see-also': '🔗',
-        'references': '📚',
-        'study': '📝',
-        'first-minutes': '⚡',
-        'ecg-patterns': '📊',
-        'ecg-how': '🧭',
-        'ecg-red-flags': '🚨',
-        'ecg-references': '📚',
-        'ecg-related': '🔗',
-        'rate-calibration': '⏱️',
-        'rhythm': '💓',
-        'axis': '📐',
-        'hypertrophy': '🫀',
-        'ischemia-territories': '⚡',
-        'tox-lytes': '🧪',
-        'ecg-step-rate-calibration': '⏱️',
-        'ecg-step-rhythm-axis': '💓',
-        'ecg-step-intervals': '📏',
-        'ecg-step-hypertrophy': '🫀',
-        'ecg-step-ischemia-map': '🗺️',
-        'ecg-step-omi-equivalents': '🚨',
-        'ecg-step-toxic-metabolic-mimics': '🧪'
-    };
-
-    /* Step ids in assets/data.js carry their own icon; this map is the fallback so a
-       newly added step never degrades to the generic clipboard emoji. */
-    const ECG_STEP_EMOJIS = {
-        'rate-calibration': '⏱️',
-        'rhythm-axis': '💓',
-        'intervals': '📏',
-        'hypertrophy': '🫀',
-        'ischemia-map': '🗺️',
-        'omi-equivalents': '🚨',
-        'toxic-metabolic-mimics': '🧪'
-    };
-
-    function sectionEmojiFor(key, defaultIcon) {
-        if (key && SECTION_EMOJIS[key]) return SECTION_EMOJIS[key];
-        if (key && key.startsWith('ecg-step-')) {
-            const stepId = key.replace('ecg-step-', '');
-            if (ECG_STEP_EMOJIS[stepId]) return ECG_STEP_EMOJIS[stepId];
-            if (SECTION_EMOJIS[stepId]) return SECTION_EMOJIS[stepId];
-        }
-        if (typeof defaultIcon === 'string' && !defaultIcon.startsWith('<')) {
-            return defaultIcon;
-        }
-        return '📋';
-    }
-
     function sectionCard(icon, title, bodyHtml, closed, key) {
         const sectionId = 'section-' + (key || title.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
         const safeKey = key || '';
-        const emoji = sectionEmojiFor(safeKey, icon);
-        const iconMarkup = '<span class="ios-emoji-badge sec-badge" aria-hidden="true">' + emoji + '</span>';
+        const badgeClass = sectionBadgeClass(safeKey);
+        const iconMarkup = '<span class="ios-icon-badge ios-emoji-badge sec-badge ' + badgeClass + '" aria-hidden="true">' + getSectionSvg(safeKey) + '</span>';
         /* The heading wraps the button rather than living inside it: a heading
            nested in a button is invalid ARIA and is not reliably exposed. This is
            the standard accordion pattern and closes the h1 -> h4 jump in the
@@ -1052,7 +1148,7 @@
     function firstMinutesHtml(cp) {
         const steps = (cp.approach || []).slice(0, 3);
         return '<aside class="case-rail" aria-label="First five minutes">' +
-            '<div class="case-rail-title"><span class="ios-emoji-badge" aria-hidden="true">⚡</span><div><strong>First 5 minutes</strong><small>Start here, then work the case</small></div></div>' +
+            '<div class="case-rail-title"><span class="ios-icon-badge ios-emoji-badge rail-ico" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['first-minutes']) + '</span><div><strong>First 5 minutes</strong><small>Start here, then work the case</small></div></div>' +
             '<ol class="case-steps">' + steps.map((step, i) =>
                 '<li><span>' + (i + 1) + '</span>' + esc(step) + '</li>').join('') + '</ol>' +
             '</aside>';
@@ -1198,13 +1294,13 @@
     function relatedHtml(id, closed) {
         const ids = (RELATED[id] || []).filter(x => BY_ID[x]);
         const ecgChip = (getEcg() && ECG_FROM_PRESENTATIONS[id])
-            ? '<button type="button" class="related-chip" data-ecg="1"><span class="chip-ico" data-cat="ecg" aria-hidden="true">' + iconForId('ecg') + '</span>ECG Guide</button>'
+            ? '<button type="button" class="related-chip" data-ecg="1"><span class="chip-ico" data-cat="ecg" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['ecg'], 'badge-svg') + '</span>ECG Guide</button>'
             : '';
         if (!ids.length && !ecgChip) return '';
         return sectionCard('', 'See also',
             '<div class="related">' + ids.map(rid => {
                 const r = BY_ID[rid];
-                return '<button type="button" class="related-chip" data-id="' + r.id + '"><span class="chip-ico" data-cat="' + catFor(r.id) + '" aria-hidden="true">' + iconFor(r) + '</span>' + esc(r.name) + '</button>';
+                return '<button type="button" class="related-chip" data-id="' + r.id + '"><span class="chip-ico" data-cat="' + catFor(r.id) + '" data-id="' + r.id + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(r.id), r.id)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</span>' + esc(r.name) + '</button>';
             }).join('') + ecgChip + '</div>', closed, 'see-also');
     }
 
@@ -1256,7 +1352,7 @@
             '</div>' +
             '<div class="cp-hero" data-cat="' + catFor(cp.id) + '">' +
             '<div class="cp-hero-inner">' +
-            '<div class="cp-ico-lg" data-cat="' + catFor(cp.id) + '" aria-hidden="true">' + iconFor(cp) + '</div>' +
+            '<div class="cp-ico-lg" data-cat="' + catFor(cp.id) + '" data-id="' + cp.id + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(cp.id), cp.id)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</div>' +
             '<div class="cp-hero-text">' +
             (groupTitle ? '<div class="cp-hero-badge-row"><span class="cp-cat-badge" data-cat="' + catFor(cp.id) + '">' + esc(groupTitle) + '</span></div>' : '') +
             '<h1 id="presentationTitle" tabindex="-1">' + esc(cp.name) + '</h1>' +
@@ -1267,7 +1363,7 @@
             sectionCard('', 'How to think', overviewHtml(cp), isClosed('how-to-think', false), 'how-to-think') +
             firstMinutesHtml(cp) +
 
-            sectionCard('', dxTitle, dxCards(cp), isClosed('dont-miss'), 'dont-miss') +
+            sectionCard('', dxTitle, '<div class="severity-slot" data-severity-slot></div>' + dxCards(cp), isClosed('dont-miss'), 'dont-miss') +
 
             sectionCard('', 'Interactive Red-Flag Checklist',
                 '<div class="rf-box"><div class="rf-banner" id="rfBanner"></div>' +
@@ -1341,7 +1437,7 @@
             if (alreadyScheduled && !isReviewDue(cp.id)) {
                 const removal = setReviewed(cp.id, false);
                 reviewBtn.setAttribute('aria-pressed', 'false');
-                reviewBtn.textContent = reviewActionLabel(cp.id);
+                reviewBtn.innerHTML = reviewActionLabel(cp.id);
                 const status = document.querySelector('.review-status');
                 if (status) status.textContent = 'Review schedule starts when marked reviewed';
                 toast('Removed from your review schedule.' + (removal.persisted ? '' : ' This change lasts for this session only.'));
@@ -1349,7 +1445,7 @@
             }
             const result = setReviewed(cp.id, true);
             reviewBtn.setAttribute('aria-pressed', 'true');
-            reviewBtn.textContent = reviewActionLabel(cp.id);
+            reviewBtn.innerHTML = reviewActionLabel(cp.id);
             const status = document.querySelector('.review-status');
             if (status) status.textContent = reviewLabel(cp.id);
             const days = result.plan ? REVIEW_INTERVALS[Math.max(0, Number(result.plan.stage) - 1)] : 1;
@@ -1587,7 +1683,7 @@
             if (alreadyScheduled && !isReviewDue(ECG_TOPIC_ID)) {
                 const removal = setReviewed(ECG_TOPIC_ID, false);
                 reviewBtn.setAttribute('aria-pressed', 'false');
-                reviewBtn.textContent = reviewActionLabel(ECG_TOPIC_ID);
+                reviewBtn.innerHTML = reviewActionLabel(ECG_TOPIC_ID);
                 const status = document.querySelector('.review-status');
                 if (status) status.textContent = 'Review schedule starts when marked reviewed';
                 toast('Removed from your review schedule.' + (removal.persisted ? '' : ' This change lasts for this session only.'));
@@ -1595,7 +1691,7 @@
             }
             const result = setReviewed(ECG_TOPIC_ID, true);
             reviewBtn.setAttribute('aria-pressed', 'true');
-            reviewBtn.textContent = reviewActionLabel(ECG_TOPIC_ID);
+            reviewBtn.innerHTML = reviewActionLabel(ECG_TOPIC_ID);
             const status = document.querySelector('.review-status');
             if (status) status.textContent = reviewLabel(ECG_TOPIC_ID);
             const days = result.plan ? REVIEW_INTERVALS[Math.max(0, Number(result.plan.stage) - 1)] : 1;
@@ -1672,7 +1768,7 @@
                 return '<button type="button" class="ecg-killer" data-ecg-pattern="' + p.id + '"><strong>' + esc(p.name) + '</strong><small>' + esc(p.tag) + '</small></button>';
             }).join('') + '</div></details>';
         const stepsHtml = ecg.steps.map(function (s) {
-            return sectionCard(ECG_STEP_EMOJIS[s.id] || s.icon || '', 'Step ' + s.num + ' · ' + s.name,
+            return sectionCard('', 'Step ' + s.num + ' · ' + s.name,
                 '<p class="ecg-summary">' + esc(s.summary) + '</p>' +
                 ecgFigure(s.id) + (s.id === 'rate-calibration' ? ecgFigure('normal-12lead') : '') +
                 ecgDetailList(s.details) +
@@ -1680,19 +1776,19 @@
                 '<div class="pp-box pitfalls"><h4>Pitfall</h4><p>' + esc(s.pitfall || '') + '</p></div></div>',
                 s.num !== 1, 'ecg-step-' + s.id);
         }).join('');
-        const ECG_CAT_EMOJIS = {
-            'all': '🌐',
-            'stemi': '⚡',
-            'ischemia': '🎯',
-            'rhythm': '💓',
-            'conduction': '🔀',
-            'metabolic': '🧪'
+        const ECG_CAT_ICON_KEYS = {
+            'all': 'patient-all',
+            'stemi': 'first-minutes',
+            'ischemia': 'cardio',
+            'rhythm': 'ecg',
+            'conduction': 'rhythm-axis',
+            'metabolic': 'toxic'
         };
         const cats = [['all', 'All patterns']].concat(Object.keys(ECG_CAT_LABEL).map(function (k) { return [k, ECG_CAT_LABEL[k]]; }));
         const filters = '<div class="ecg-filters" role="group" aria-label="ECG pattern category">' +
             cats.map(function (c) {
-                const emo = ECG_CAT_EMOJIS[c[0]] || '📊';
-                return '<button type="button" class="chip' + (ecgCategory === c[0] ? ' active' : '') + '" data-ecg-cat="' + c[0] + '" aria-pressed="' + String(ecgCategory === c[0]) + '"><span class="chip-emoji" aria-hidden="true">' + emo + '</span>' + esc(c[1]) + '</button>';
+                const iconKey = ECG_CAT_ICON_KEYS[c[0]] || 'generic';
+                return '<button type="button" class="chip' + (ecgCategory === c[0] ? ' active' : '') + '" data-ecg-cat="' + c[0] + '" aria-pressed="' + String(ecgCategory === c[0]) + '"><span class="chip-emoji chip-icon" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[iconKey] || SEMANTIC_ICONS['generic']) + '</span>' + esc(c[1]) + '</button>';
             }).join('') + '</div>';
         const visible = ecg.patterns.filter(ecgPatternVisible);
         const patternsHtml = '<div class="ecg-pattern-grid">' + (visible.length ? visible.map(function (p) {
@@ -1711,7 +1807,7 @@
                 '</article>';
         }).join('') : '<p class="empty-filter">No patterns in this filter. Choose All, or another severity/category.</p>') + '</div>';
         const recallHtml = '<section class="learning-loop" aria-label="ECG rapid recall">' +
-            '<div class="learning-head"><div><span class="learning-kicker">⚡ PRACTICE REFRESHER</span><h2><span class="ios-emoji-badge sec-badge-sm" aria-hidden="true">💡</span>Rapid recall</h2><p>Test your first action and the dangerous patterns before revealing the answer.</p></div>' +
+            '<div class="learning-head"><div><span class="learning-kicker">RAPID RECALL REFRESHER</span><h2><span class="ios-icon-badge ios-emoji-badge sec-badge-sm" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['pearls-pitfalls']) + '</span>Rapid recall</h2><p>Test your first action and the dangerous patterns before revealing the answer.</p></div>' +
             '<button type="button" class="review-btn" id="reviewBtn" aria-pressed="' + isReviewed(ECG_TOPIC_ID) + '">' + reviewActionLabel(ECG_TOPIC_ID) + '</button></div>' +
             '<div class="recall-grid">' +
             '<div class="recall-card"><span>01 · First move</span><p>The patient is hypotensive with a wide-complex tachycardia. What happens before a prettier 12-lead?</p><button type="button" class="reveal-btn" data-reveal="ecg-action">Reveal answer</button><div class="reveal-answer" id="recall-ecg-action" hidden>' + esc(first) + '</div></div>' +
@@ -1721,7 +1817,7 @@
             ? sectionCard('', 'See also',
                 '<div class="related">' + ecg.related.map(function (rid) {
                     const r = BY_ID[rid];
-                    return '<button type="button" class="related-chip" data-id="' + r.id + '"><span class="chip-ico" data-cat="' + catFor(r.id) + '" aria-hidden="true">' + iconFor(r) + '</span>' + esc(r.name) + '</button>';
+                    return '<button type="button" class="related-chip" data-id="' + r.id + '"><span class="chip-ico" data-cat="' + catFor(r.id) + '" data-id="' + r.id + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(r.id), r.id)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</span>' + esc(r.name) + '</button>';
                 }).join('') + '</div>', true, 'ecg-related')
             : '';
 
@@ -1731,7 +1827,7 @@
             '</div>' +
             '<div class="cp-hero" data-cat="ecg">' +
             '<div class="cp-hero-inner">' +
-            '<div class="cp-ico-lg" data-cat="ecg" aria-hidden="true">' + iconForId('ecg') + '</div>' +
+            '<div class="cp-ico-lg" data-cat="ecg" data-id="ecg" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['ecg'], 'badge-svg') + '</div>' +
             '<div class="cp-hero-text">' +
             '<div class="cp-hero-badge-row"><span class="cp-cat-badge" data-cat="ecg">Cardiovascular · Diagnostic</span></div>' +
             '<h1 id="ecgTitle" tabindex="-1">ECG interpretation</h1>' +
@@ -1743,8 +1839,9 @@
             '<p class="student-safety">'+esc(ecg.firstPass[0])+'</p><details class="reference-firstpass"><summary>Urgent ECG assessment · reference checklist</summary>'+firstPassHtml+'</details>'+
             stepsHtml +
             killerHtml +
+            '<div class="severity-slot" data-severity-slot></div>' +
             sectionCard('', 'Pattern library',
-                '<p class="ecg-summary">Choose a category, or use the severity filter above.</p>' +
+                '<p class="ecg-summary">Choose a category. Severity narrows this library.</p>' +
                 filters + patternsHtml, true, 'ecg-patterns') +
             sectionCard('', 'How to think',
                 '<div class="ov"><p class="ov-job"><span class="ov-kicker">The job</span>' + esc(ecg.tag) + '</p>' +
@@ -2023,7 +2120,7 @@
         pop.innerHTML = hits.length
             ? hits.map((h, i) =>
                 '<button type="button" class="res-item" id="search-result-' + i + '" data-id="' + h.cpId + '" data-target="' + h.target + '" role="option" aria-selected="false">' +
-                '<span class="res-ico" data-cat="' + catFor(h.cpId) + '" aria-hidden="true">' + iconForId(h.cpId) + '</span>' +
+                '<span class="res-ico" data-cat="' + catFor(h.cpId) + '" data-id="' + h.cpId + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(h.cpId), h.cpId)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</span>' +
                 '<div class="res-body"><div class="r-title">' + esc(h.title) + '</div>' +
                 '<div class="r-sub">' + (h.sub ? esc(h.sub) : '') + '</div></div>' +
                 '<span class="r-tag">' + esc(h.kind) + '</span></button>').join('')
@@ -2213,6 +2310,14 @@
         overlay.hidden = false;
         overlay.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
+        ['.main', '.sidebar'].forEach(function (sel) {
+            const node = document.querySelector(sel);
+            if (!node) return;
+            try {
+                if ('inert' in node) node.inert = true;
+                else node.setAttribute('inert', '');
+            } catch (e) {}
+        });
 
         const btnText = btn.querySelector('span');
         if (isReviewOnly && isDisclaimerAgreed()) {
@@ -2237,6 +2342,14 @@
         overlay.hidden = true;
         overlay.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
+        ['.main', '.sidebar'].forEach(function (sel) {
+            const node = document.querySelector(sel);
+            if (!node) return;
+            try {
+                if ('inert' in node) node.inert = false;
+                else node.removeAttribute('inert');
+            } catch (e) {}
+        });
         // Do not focus the search field here: on phones that opens the keyboard
         // immediately after the learner accepts the disclaimer.
         if (stage && stage.focus) stage.focus({ preventScroll: true });
@@ -2474,6 +2587,15 @@
             else setSidebarCollapsed(!sidebarCollapsed());
         });
         document.getElementById('sideBackdrop').addEventListener('click', () => closeSidebar(true));
+        const backdrop = document.getElementById('sideBackdrop');
+        if (backdrop) {
+            backdrop.setAttribute('role', 'button');
+            backdrop.setAttribute('tabindex', '0');
+            backdrop.setAttribute('aria-label', 'Close presentations menu');
+            backdrop.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); closeSidebar(true); }
+            });
+        }
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && sidebarIsMobile() &&
                 document.getElementById('sidebar').classList.contains('open')) closeSidebar(true);
@@ -2567,9 +2689,15 @@
 
         const input = document.getElementById('searchInput');
         const clearBtn = document.getElementById('searchClearBtn');
-        input.addEventListener('input', () => runSearch(input.value.trim()));
+        let searchTimer = 0;
+        input.addEventListener('input', () => {
+            clearTimeout(searchTimer);
+            const value = input.value.trim();
+            searchTimer = setTimeout(() => runSearch(value), 120);
+        });
         if (clearBtn) {
             clearBtn.addEventListener('click', () => {
+                clearTimeout(searchTimer);
                 input.value = '';
                 runSearch('');
                 input.focus();
@@ -2579,10 +2707,11 @@
             const pop = document.querySelector('.results-pop');
             const items = pop ? pop.querySelectorAll('.res-item[data-id]') : [];
             if (e.key === 'Escape') {
+                clearTimeout(searchTimer);
                 input.value = '';
                 if (clearBtn) clearBtn.hidden = true;
-                input.blur();
                 hideSearchResults(pop);
+                input.blur();
                 return;
             }
             if (pop && pop.style.display === 'block' && items.length) {
@@ -2594,11 +2723,20 @@
                     e.preventDefault();
                     searchCursor = Math.max(0, searchCursor - 1);
                     paintSearchCursor(pop);
-                } else if (e.key === 'Enter' && searchCursor >= 0) {
+                } else if (e.key === 'Enter') {
                     e.preventDefault();
-                    const selected = items[searchCursor];
+                    const selected = searchCursor >= 0 ? items[searchCursor] : items[0];
                     hideSearchResults(pop);
                     openSearchHit(selected.dataset.id, selected.dataset.target);
+                }
+            } else if (e.key === 'Enter' && input.value.trim().length >= 2) {
+                e.preventDefault();
+                runSearch(input.value.trim());
+                const fresh = document.querySelector('.results-pop');
+                const first = fresh ? fresh.querySelector('.res-item[data-id]') : null;
+                if (first) {
+                    hideSearchResults(fresh);
+                    openSearchHit(first.dataset.id, first.dataset.target);
                 }
             }
         });
@@ -2668,14 +2806,21 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20260928-outline-r1').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261002-v19').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
-                    if (registration.waiting) toast('An updated offline bundle is ready. Refresh when convenient.');
+                    const applyUpdate = () => {
+                        const waiting = registration.waiting;
+                        if (waiting) {
+                            try { waiting.postMessage({ type: 'SKIP_WAITING' }); } catch (e) {}
+                        }
+                        window.location.reload();
+                    };
+                    if (registration.waiting) toastWithAction('An updated offline bundle is ready.', 'Reload', applyUpdate);
                     registration.addEventListener('updatefound', () => {
                         const worker = registration.installing;
                         if (worker) worker.addEventListener('statechange', () => {
                             if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-                                toast('An updated offline bundle is ready. Refresh when convenient.');
+                                toastWithAction('An updated offline bundle is ready.', 'Reload', applyUpdate);
                             }
                             if (worker.state === 'redundant' && !navigator.serviceWorker.controller) {
                                 setOfflineStatus('Online only');

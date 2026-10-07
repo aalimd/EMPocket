@@ -37,16 +37,13 @@
         const source=D.sources[key];
         return source?'<details class="workspace-source"><summary>Source and scope</summary><p>Supporting teaching points checked '+D.checked+'. This is an educational synthesis, not an independently peer-reviewed protocol.</p><a href="'+esc(source[1])+'" target="_blank" rel="noopener noreferrer">'+esc(source[0])+'</a><p>Confirm patient context, full recommendations and local policy. External sources need an internet connection.</p></details>':'';
     }
-    const DOMAIN_EMOJIS = {
-        'Resuscitation': '⚡',
-        'Trauma': '🩹',
-        'Pediatric': '👶',
-        'Obstetric': '🤰',
-        'Toxicology': '🧪',
-        'Behavioral emergency': '🧠'
-    };
-    function shell(title,description,active) {
-        return '<section class="learning-workspace"><div class="workspace-hero-nav"><a class="back-btn ios-nav-back" href="#"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span>Presentations</span></a></div><p class="study-kicker">EM POCKET · LEARNING WORKSPACE</p><h1 tabindex="-1">'+esc(title)+'</h1><p class="workspace-lead">'+esc(description)+'</p><nav class="workspace-tabs" aria-label="Learning workspace">'+[['practice','🎯 Practice'],['visuals','📊 Visual learning'],['skills','🩺 Procedures & teams'],['progress','📈 My progress']].map(([id,label])=>'<a href="#learn~'+id+'"'+(id===active?' aria-current="page"':'')+'>'+label+'</a>').join('')+'</nav><div class="workspace-body"></div></section>';
+    function shell(title,description,active,board) {
+        /* The board used to render without the kicker or the lead, so moving
+           between the four tabs changed the page header itself. The board is a
+           denser card surface, not a different page. */
+        const kicker = '<p class="study-kicker">EM POCKET · LEARNING WORKSPACE</p>';
+        const lead = '<p class="workspace-lead">'+esc(description)+'</p>';
+        return '<section class="learning-workspace"><div class="practice-hero"><div class="workspace-hero-nav"><a class="back-btn ios-nav-back" href="#"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span>Presentations</span></a></div>'+kicker+'<h1 tabindex="-1">'+esc(title)+'</h1>'+lead+'<nav class="workspace-tabs" aria-label="Learning workspace">'+[['practice','Practice'],['visuals','Visuals'],['skills','Procedures'],['progress','Progress']].map(([id,label])=>'<a href="#learn~'+id+'"'+(id===active?' aria-current="page"':'')+'>'+label+'</a>').join('')+'</nav></div><div class="workspace-body"></div></section>';
     }
     function homeHtml() {
         return '<section class="workspace-entry" aria-label="Choose how to use EM Pocket">' +
@@ -55,56 +52,138 @@
             '<a href="#learn~practice"><span>03 · Decision Practice</span><strong>Simulated Patient Scenarios</strong><p>Test your reasoning in evolving clinical cases, manage deterioration, and review debriefs.</p></a>' +
             '</section>';
     }
+    function caseMatches(c, p) {
+        const record = p.cases[c.id];
+        const open = sessions.has(c.id) && !sessions.get(c.id).done;
+        if (caseFilter === 'continue') return open;
+        if (caseFilter === 'review') return !!(record && record.correct < record.total);
+        if (caseFilter === 'new') return !record;
+        return true;
+    }
+    /* An empty board used to dead-end on "No cases in this filter." Each filter
+       now says why it is empty and offers the way out. */
+    function emptyFilterState() {
+        const notes = {
+            'continue': ['No case in progress yet', 'Open a case and it will appear here so you can pick it back up.'],
+            'review': ['Nothing to review yet', 'Finish a case and any answer you want to revisit will be listed here.'],
+            'new': ['Every case has been started', 'Switch back to all cases to revise one, or keep your record going.']
+        };
+        const note = notes[caseFilter];
+        const heading = note ? note[0] : 'No cases match this filter';
+        const body = note ? note[1] : 'Try a different filter to see the rest of the cases.';
+        return '<div class="practice-empty" role="status">' +
+            '<strong>' + heading + '</strong>' +
+            '<p>' + body + '</p>' +
+            '<button type="button" class="ex-button" data-case-filter-reset>Show all cases</button>' +
+        '</div>';
+    }
+
+    /* ══════════ One card, one anatomy ══════════
+       The four tabs each grew their own card: Practice had a meta row, an icon
+       and a bordered CTA; Visuals had a bare title and a typed arrow; Procedures
+       used a tinted pill; Progress had neither an affordance nor an icon. Tapping
+       a sibling tab therefore changed the shape of the page, not just its
+       contents. Every grid in this workspace is built from this one component,
+       so a case, a visual lesson, a procedure and a progress record read as the
+       same object with different content. */
+    const CARD_DOMAIN_ICONS = {
+        'Resuscitation': 'first-minutes', 'Trauma': 'trauma', 'Pediatric': 'peds',
+        'Obstetric': 'obgyn', 'Toxicology': 'toxic', 'Behavioral emergency': 'psych'
+    };
+    const VISUAL_ICONS = {
+        'recordings': 'ecg-patterns', 'abg': 'workup', 'lung': 'pulm',
+        'chest': 'ischemia-map', 'ecg-pairs': 'ecg'
+    };
+    const VISUAL_KINDS = {
+        'recordings': 'Recorded ECG', 'abg': 'Blood gas', 'lung': 'Ultrasound',
+        'chest': 'Imaging', 'ecg-pairs': 'Pattern comparison'
+    };
+    function cardIcon(key) {
+        var I = window.EM_ICONS;
+        return I && I.svg ? I.svg(I.map[key] || I.map['generic']) : '';
+    }
+    function chevronSvg() {
+        var I = window.EM_ICONS;
+        return I && I.svg ? I.svg(I.map['chevron-right']) : '';
+    }
+    /* headingTag keeps the document outline honest: a card that is a section of a
+       longer page takes an h3, a card that heads its own grid takes an h2. */
+    function workspaceCard(o) {
+        var cls = 'workspace-card' + (o.extra ? ' ' + o.extra : '');
+        var top = (o.icon || o.kind || o.state)
+            ? '<div class="workspace-card-top">' +
+                (o.icon ? '<span class="workspace-card-ico" aria-hidden="true">' + cardIcon(o.icon) + '</span>' : '') +
+                (o.kind ? '<span class="workspace-card-kind">' + esc(o.kind) + '</span>' : '') +
+                (o.state ? '<span class="case-badge ' + (o.stateClass || '') + '">' + esc(o.state) + '</span>' : '') +
+              '</div>'
+            : '';
+        var heading = o.headingTag === 'h3' ? 'h3' : 'h2';
+        return '<' + (o.href ? 'a href="' + esc(o.href) + '"' : 'div') + ' class="' + cls + '"' +
+            (o.attrs || '') + '>' +
+            top +
+            '<' + heading + '>' + esc(o.title) + '</' + heading + '>' +
+            (o.body ? '<p class="workspace-card-body' + (o.bodyClass ? ' ' + o.bodyClass : '') + '">' + esc(o.body) + '</p>' : '') +
+            (o.action ? '<div class="case-cta"><span class="cta-label">' + esc(o.action) + '</span>' +
+                '<span class="cta-arrow" aria-hidden="true">' + chevronSvg() + '</span></div>' : '') +
+            '</' + (o.href ? 'a' : 'div') + '>';
+    }
+
+    function caseCountFor(filter, p) {
+        return D.cases.filter(function (c) {
+            const record = p.cases[c.id];
+            const open = sessions.has(c.id) && !sessions.get(c.id).done;
+            if (filter === 'continue') return open;
+            if (filter === 'review') return !!(record && record.correct < record.total);
+            if (filter === 'new') return !record;
+            return true;
+        }).length;
+    }
     function caseCards() {
         const p=progress();
         const filters = [
-            ['all', 'All cases'],
+            ['all', 'All'],
             ['continue', 'In progress'],
             ['review', 'Needs review'],
-            ['new', 'Unattempted']
+            ['new', 'Not started']
         ];
+        const cards = D.cases.filter(c => caseMatches(c, p)).map(c => {
+            const done = p.cases[c.id];
+            const inProg = sessions.has(c.id) && !sessions.get(c.id).done;
+            const stepCount = c.steps.length;
+            const status = inProg ? 'In progress' : done ? 'Completed' : stepCount + ' decisions';
+            const action = inProg ? 'Continue' : done ? done.correct + '/' + done.total + ' correct' : 'Start';
+            return workspaceCard({
+                href: '#learn~case-' + c.id,
+                extra: 'practice-case-card practice-case',
+                /* The per-domain hue is set from data-domain on the card itself. */
+                attrs: ' data-domain="' + esc(c.domain) + '"',
+                icon: CARD_DOMAIN_ICONS[c.domain] || 'generic',
+                kind: c.domain,
+                state: status,
+                stateClass: inProg ? 'badge-progress' : done ? 'badge-done' : '',
+                title: c.title,
+                body: c.stem,
+                bodyClass: 'practice-stem',
+                action: action
+            });
+        }).join('');
         return '<div class="workspace-filter-bar">' +
             '<div class="practice-filter-chips" role="group" aria-label="Filter cases">' +
-            filters.map(([id, label]) => '<button type="button" class="practice-chip' + (caseFilter === id ? ' active' : '') + '" data-case-filter="' + id + '" aria-pressed="' + (caseFilter === id) + '">' + label + '</button>').join('') +
+            filters.map(([id, label]) => {
+                const n = caseCountFor(id, p);
+                return '<button type="button" class="practice-chip' + (caseFilter === id ? ' active' : '') + '" data-case-filter="' + id + '" data-empty="' + (n === 0) + '" aria-pressed="' + (caseFilter === id) + '">' +
+                    '<span class="chip-label">' + label + '</span>' +
+                    '<span class="chip-count" aria-hidden="true">' + n + '</span>' +
+                    '<span class="sr-only">, ' + n + (n === 1 ? ' case' : ' cases') + '</span>' +
+                '</button>';
+            }).join('') +
             '</div>' +
             '<div class="select-wrap" style="display:none;"><label for="caseFilter" class="filter-label">Show cases</label><select id="caseFilter">' +
             filters.map(([id, label]) => '<option value="' + id + '"' + (caseFilter === id ? ' selected' : '') + '>' + label + '</option>').join('') +
             '</select></div>' +
             '</div>' +
-            '<p class="workspace-session-note"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><span>Unfinished decisions resume automatically. Completed attempts are saved on this device.</span></p>' +
-            '<div class="workspace-grid">' +
-            D.cases.filter(c => caseFilter === 'all' || (caseFilter === 'continue' ? sessions.has(c.id) && !sessions.get(c.id).done : caseFilter === 'review' ? p.cases[c.id] && p.cases[c.id].correct < p.cases[c.id].total : !p.cases[c.id])).map(c => {
-                const done = p.cases[c.id];
-                const inProg = sessions.has(c.id) && !sessions.get(c.id).done;
-                const emoji = DOMAIN_EMOJIS[c.domain] || '🩺';
-                return '<a class="workspace-card practice-case-card" href="#learn~case-' + c.id + '">' +
-                    '<div class="workspace-card-top">' +
-                        '<div class="practice-domain-wrap">' +
-                            '<span class="ios-emoji-badge practice-card-emoji" aria-hidden="true">' + emoji + '</span>' +
-                            '<span class="study-kicker">' + esc(c.domain) + '</span>' +
-                        '</div>' +
-                        '<span class="case-badge ' + (inProg ? 'badge-progress' : done ? 'badge-done' : '') + '">' +
-                            (inProg ? 'In progress' : done ? 'Completed' : '3 Decisions') +
-                        '</span>' +
-                    '</div>' +
-                    '<h2>' + esc(c.title) + '</h2>' +
-                    '<p class="case-desc">3 decisions · evolving fictional case</p>' +
-                    '<div class="case-cta">' +
-                        '<span class="cta-label">' + (inProg ? 'Continue this session' : done ? 'Latest attempt: ' + done.correct + '/' + done.total + ' correct' : 'Start case') + '</span>' +
-                        '<span class="cta-arrow" aria-hidden="true">→</span>' +
-                    '</div>' +
-                '</a>';
-            }).join('') +
-            '</div>' +
-            '<div class="workspace-callout">' +
-                '<h2>Prefer a short question set?</h2>' +
-                '<p>The original 12 clinical cases and the ECG practice library are still available.</p>' +
-                '<div class="workspace-actions">' +
-                    '<a href="#study~case">Short clinical cases →</a>' +
-                    '<a href="#ecg-explorer~practice">ECG practice →</a>' +
-                    '<a href="#study~due">Review queue →</a>' +
-                '</div>' +
-            '</div>';
+            (cards ? '<div class="workspace-grid">' + cards + '</div>' : emptyFilterState()) +
+            '<nav class="practice-more" aria-label="Other practice"><a href="#study~case">Short cases</a><a href="#ecg-explorer~practice">ECG practice</a><a href="#study~due">Review queue</a></nav>';
     }
     function newSession() { return {index:0,answers:[],done:false,seed:Math.floor(Math.random()*100000)}; }
     function mountCase(body,id) {
@@ -114,7 +193,11 @@
         function draw(focus=false) {
             const q=c.steps[s.index], selected=s.answers[s.index], complete=s.done;const depth=window.STUDENT_LEARNING.getFocus();const objective=depth==='core'?'Identify the immediate threat and explain your first action.':depth==='applied'?'Connect each change to reassessment, escalation and disposition.':'Explain the failed alternatives and lead a debrief using this case’s three discussion questions.';
             const letters = ['A', 'B', 'C', 'D'];
-            body.innerHTML='<article class="evolving-case"><div class="evolving-case-header"><span class="ios-emoji-badge practice-hero-emoji" aria-hidden="true">' + (DOMAIN_EMOJIS[c.domain] || '🩺') + '</span><div><p class="study-kicker">'+esc(c.domain)+' · FICTIONAL TEACHING CASE</p><h2 tabindex="-1">'+esc(c.title)+'</h2></div></div><p class="case-prompt">'+esc(c.stem)+'</p><p class="workspace-session-note">'+esc(depth.charAt(0).toUpperCase()+depth.slice(1))+' focus · '+objective+'</p>'+(complete?'<section class="workspace-result"><div class="result-header"><span class="ios-emoji-badge result-emoji" aria-hidden="true">' + (s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length === c.steps.length ? '🎉' : '📋') + '</span><h3>Case debrief</h3></div><p>'+s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length+' / '+c.steps.length+' first choices correct in this attempt. This is a learning result, not a competency score.</p><ol>'+c.steps.map((x,i)=>'<li><strong>'+esc(x.prompt)+'</strong><p>Your choice: '+esc(x.options.find(o=>o.id===s.answers[i]).text)+'</p><p>'+esc(x.options.find(o=>o.correct).why)+'</p></li>').join('')+'</ol><h3>Discuss with a colleague</h3><ul>'+c.debrief.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul><p role="status">'+(s.saved?'Attempt saved on this device.':'Attempt available for this session only; storage is unavailable.')+'</p></section>':'<div class="workspace-stepper-wrap"><div class="stepper-track"><div class="stepper-fill" style="width: '+Math.round(((s.index+1)/c.steps.length)*100)+'%"></div></div><p class="workspace-step">Decision '+(s.index+1)+' of '+c.steps.length+'</p></div><div class="case-update"><strong>Teaching update</strong><p>'+esc(q.update)+'</p></div><fieldset class="quiz-question"><legend>'+esc(q.prompt)+'</legend><div class="quiz-options">'+window.STUDENT_LEARNING.shuffled(q.options,s.seed+s.index*97).map((o, idx)=>'<button type="button" data-evolving-choice="'+o.id+'"'+(selected?' disabled':'')+' class="quiz-option'+(selected&&o.id===selected?(o.correct?' correct':' incorrect'):'')+'"><span class="option-pill" aria-hidden="true">'+(letters[idx]||(idx+1))+'</span><span class="option-label">'+esc(o.text)+'</span></button>').join('')+'</div></fieldset>'
+            const domainKey = c.domain==='Resuscitation'?'emergency':c.domain==='Trauma'?'trauma':c.domain==='Pediatric'?'pediatric':c.domain==='Obstetric'?'pregnancy':c.domain==='Toxicology'?'toxicology':c.domain==='Behavioral emergency'?'psych':'generic';
+            const domainSvg = (window.EM_ICONS && window.EM_ICONS.map) ? window.EM_ICONS.svg(window.EM_ICONS.map[domainKey] || window.EM_ICONS.map['generic'], 'badge-svg') : '';
+            const perfectScore = s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length === c.steps.length;
+            const resultSvg = (window.EM_ICONS && window.EM_ICONS.map) ? window.EM_ICONS.svg(window.EM_ICONS.map[perfectScore ? 'practice' : 'generic'], 'result-svg') : '';
+            body.innerHTML='<article class="evolving-case"><div class="evolving-case-header"><span class="ios-icon-badge practice-hero-badge practice-hero-emoji" aria-hidden="true">' + domainSvg + '</span><div><p class="study-kicker">'+esc(c.domain)+' · FICTIONAL TEACHING CASE</p><h2 tabindex="-1">'+esc(c.title)+'</h2></div></div><p class="case-prompt">'+esc(c.stem)+'</p><p class="workspace-session-note">'+esc(depth.charAt(0).toUpperCase()+depth.slice(1))+' focus · '+objective+'</p>'+(complete?'<section class="workspace-result"><div class="result-header"><span class="ios-icon-badge result-emoji" aria-hidden="true">' + resultSvg + '</span><h3>Case debrief</h3></div><p>'+s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length+' / '+c.steps.length+' first choices correct in this attempt. This is a learning result, not a competency score.</p><ol>'+c.steps.map((x,i)=>'<li><strong>'+esc(x.prompt)+'</strong><p>Your choice: '+esc(x.options.find(o=>o.id===s.answers[i]).text)+'</p><p>'+esc(x.options.find(o=>o.correct).why)+'</p></li>').join('')+'</ol><h3>Discuss with a colleague</h3><ul>'+c.debrief.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul><p role="status">'+(s.saved?'Attempt saved on this device.':'Attempt available for this session only; storage is unavailable.')+'</p></section>':'<div class="workspace-stepper-wrap"><div class="stepper-track"><div class="stepper-fill" style="width: '+Math.round(((s.index+1)/c.steps.length)*100)+'%"></div></div><p class="workspace-step">Decision '+(s.index+1)+' of '+c.steps.length+'</p></div><div class="case-update"><strong>Teaching update</strong><p>'+esc(q.update)+'</p></div><fieldset class="quiz-question"><legend>'+esc(q.prompt)+'</legend><div class="quiz-options">'+window.STUDENT_LEARNING.shuffled(q.options,s.seed+s.index*97).map((o, idx)=>'<button type="button" data-evolving-choice="'+o.id+'"'+(selected?' disabled':'')+' class="quiz-option'+(selected&&o.id===selected?(o.correct?' correct':' incorrect'):'')+'"><span class="option-pill" aria-hidden="true">'+(letters[idx]||(idx+1))+'</span><span class="option-label">'+esc(o.text)+'</span></button>').join('')+'</div></fieldset>'
 +(selected?'<div class="workspace-feedback" role="status"><h3>'+(q.options.find(o=>o.id===selected).correct?'Correct for this scenario':'Review this decision')+'</h3><p>'+esc(q.options.find(o=>o.id===selected).why)+'</p><details><summary>Compare all options</summary>'+q.options.map(o=>'<p><strong>'+esc(o.text)+'</strong> '+esc(o.why)+'</p>').join('')+'</details><p>Each next update describes the teaching team’s actions, independently of your choice.</p><button class="workspace-primary" type="button" data-case-next>'+(s.index===c.steps.length-1?'Open debrief':'Continue case')+'</button></div>':''))+'<div class="workspace-actions">'+(complete?'<button type="button" data-case-retry>Start a new attempt</button>':'')+'<a href="#'+esc(c.topic)+'">Full presentation →</a><a href="#learn~practice">All evolving cases →</a></div>'+sourceHtml(c.source)+'</article>';
             body.querySelectorAll('[data-evolving-choice]').forEach(b=>b.addEventListener('click',()=>{if(s.answers[s.index])return;s.answers[s.index]=b.dataset.evolvingChoice;const retained=persistSessions();draw();if(!retained)body.querySelector('.workspace-feedback').insertAdjacentHTML('beforeend','<p>Reload recovery is unavailable; keep this tab open.</p>');body.querySelector('.workspace-feedback h3').setAttribute('tabindex','-1');body.querySelector('.workspace-feedback h3').focus();}));
             body.querySelector('[data-case-next]')?.addEventListener('click',()=>{if(!s.answers[s.index])return;if(s.index<c.steps.length-1)s.index++;else if(!s.done){s.done=true;const p=progress();p.cases[id]={correct:s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length,total:c.steps.length,runs:(p.cases[id]?.runs||0)+1,last:Date.now()};s.saved=saveProgress(p);}persistSessions();draw(true);});
@@ -124,16 +207,46 @@
         draw();
     }
     function moduleCards() {
-        return '<p>Preparation and discussion exercises. Practical skills still require supervised training and local credentialing.</p><div class="workspace-grid">'+D.modules.map(m=>'<a class="workspace-card" href="#learn~module-'+m.id+'"><span class="study-kicker">'+esc(m.kind)+'</span><h2>'+esc(m.title)+'</h2><p>'+esc(m.intro)+'</p><span>Open exercise →</span></a>').join('')+'</div>';
+        return '<div class="workspace-grid">' + D.modules.map(function (m) {
+                return workspaceCard({
+                    href: '#learn~module-' + m.id,
+                    /* Procedure preparation is a written brief, team skills are
+                       rehearsed against a list: two meanings, two icons. */
+                    icon: m.kind === 'Team skills' ? 'practice' : 'study',
+                    kind: m.kind,
+                    title: m.title,
+                    body: m.intro,
+                    action: 'Open exercise'
+                });
+            }).join('') + '</div>';
     }
-    function readButton(id) {return '<button type="button" data-module-read="'+esc(id)+'">'+(progress().viewed.includes(id)?'✓ Read on this device':'Mark as read')+'</button><p class="module-save" role="status"></p>';}
-    function bindRead(body) {body.querySelector('[data-module-read]')?.addEventListener('click',e=>{const p=progress();p.viewed.push(e.target.dataset.moduleRead);const ok=saveProgress(p);e.target.textContent='✓ Read';body.querySelector('.module-save').textContent=ok?'Reading activity saved. This does not certify a skill.':'Reading activity remembered for this session only.';});}
+    /* The card affordance is the shared chevron, not a typed arrow glyph: a
+       text arrow has no stroke weight, optical size or RTL mirroring, and
+       the chevron already means "forward" everywhere else in the app. */
+    function chevronSvg() {
+        var I = window.EM_ICONS;
+        return I && I.svg ? I.svg(I.map['chevron-right']) : '';
+    }
+    function readIcon(){return window.EM_ICONS && window.EM_ICONS.svg ? window.EM_ICONS.svg(window.EM_ICONS.map['completed']) : '';}
+    function readButton(id) {return '<button type="button" data-module-read="'+esc(id)+'">'+(progress().viewed.includes(id)?readIcon()+'<span>Read on this device</span>':'Mark as read')+'</button><p class="module-save" role="status"></p>';}
+    function bindRead(body) {body.querySelector('[data-module-read]')?.addEventListener('click',e=>{const p=progress();p.viewed.push(e.target.dataset.moduleRead);const ok=saveProgress(p);e.target.innerHTML=readIcon()+'<span>Read</span>';body.querySelector('.module-save').textContent=ok?'Reading activity saved. This does not certify a skill.':'Reading activity remembered for this session only.';});}
     function mountModule(body,id) {
         const m=D.modules.find(m=>m.id===id);if(!m){body.innerHTML='<p>Module not found.</p>';return;}
         body.innerHTML='<article><p class="study-kicker">'+esc(m.kind)+'</p><h2>'+esc(m.title)+'</h2><p>'+esc(m.intro)+'</p><div class="workspace-grid">'+m.sections.map(([title,points])=>'<section class="workspace-card"><h3>'+esc(title)+'</h3><ul>'+points.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul></section>').join('')+'</div><fieldset class="workspace-readiness"><legend>Preparation rehearsal</legend><p>Tick each section after explaining it aloud. This is a temporary rehearsal, not a clinical checklist or sign-off.</p>'+m.sections.map(([title],i)=>'<label><input type="checkbox" data-readiness="'+i+'"> I can explain '+esc(title.toLowerCase())+'</label>').join('')+'<p data-readiness-status role="status">0 / '+m.sections.length+' sections rehearsed</p></fieldset><section class="workspace-callout"><h3>Pause and explain</h3><p>'+esc(m.question)+'</p><details><summary>Compare your explanation</summary><p>'+esc(m.answer)+'</p></details></section><div class="workspace-actions">'+readButton(id)+'<a href="#'+esc(m.topic)+'">Related presentation →</a></div>'+sourceHtml(m.source)+'</article>';body.querySelectorAll('[data-readiness]').forEach(box=>box.addEventListener('change',()=>{body.querySelector('[data-readiness-status]').textContent=body.querySelectorAll('[data-readiness]:checked').length+' / '+m.sections.length+' sections rehearsed';}));bindRead(body);
     }
     const visuals=[['recordings','Recorded ECGs: compare real examples','Four anonymized 12-lead recordings with original signals and source labels.'],['abg','Blood gases: primary and mixed processes','Compare two fictional arterial samples and their expected compensation.'],['lung','Lung ultrasound: artifacts and limits','Compare schematic A-lines and B-lines; discuss what a static picture cannot establish.'],['chest','Chest imaging: look beyond the obvious','Compare diagrammed peripheral markings with a pleural-line pattern.'],['ecg-pairs','ECG: compare related patterns','Inspect existing examples together and explain similarities and differences.']];
-    function visualCards(){return '<p>Choose real recorded ECGs or clearly labelled teaching diagrams. Compare observations before opening the explanation.</p><div class="workspace-grid">'+visuals.map(([id,title,text])=>'<a class="workspace-card" href="#learn~visual-'+id+'"><h2>'+title+'</h2><p>'+text+'</p><span>Explore →</span></a>').join('')+'</div>';}
+    function visualCards(){
+        return '<div class="workspace-grid">' + visuals.map(function (v) {
+                return workspaceCard({
+                    href: '#learn~visual-' + v[0],
+                    icon: VISUAL_ICONS[v[0]] || 'generic',
+                    kind: VISUAL_KINDS[v[0]] || 'Visual lesson',
+                    title: v[1],
+                    body: v[2],
+                    action: 'Explore'
+                });
+            }).join('') + '</div>';
+    }
     function diagram(type,variant) {
         const frame='<svg viewBox="0 0 440 270" role="img" aria-label="'+(type==='lung'?'Schematic ultrasound artifacts':'Schematic chest markings')+'"><rect width="440" height="270" rx="10" fill="#111b28"/>';
         if(type==='lung')return frame+'<path d="M20 48H420" stroke="#fff" stroke-width="4"/>'+[98,148,198,248].map(y=>'<path d="M20 '+y+'H420" stroke="#94a3b8" stroke-width="2"/>').join('')+(variant?[105,220,335].map(x=>'<path d="M'+x+' 48V268" stroke="#fff" stroke-width="12"/>').join(''):'')+'<text x="22" y="32" fill="white" font-size="18">Pleural interface (schematic)</text></svg>';
@@ -150,7 +263,7 @@
     let recordingsPromise = null;
     function loadRecordings() {
         if (!recordingsPromise) {
-            recordingsPromise = import('./ecg-recordings.js?v=20260928-outline-r1')
+            recordingsPromise = import('./ecg-recordings.js?v=20261002-v19')
                 .catch(function () { recordingsPromise = null; });
         }
         return recordingsPromise || Promise.resolve();
@@ -247,7 +360,17 @@
     function download(data,name) {const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
     function mountProgress(body) {
         const p=progress(),done=Object.keys(p.cases),review=done.filter(id=>p.cases[id].correct<p.cases[id].total);
-        body.innerHTML='<h2>Your learning record</h2><p>Reading, attempted decisions and self-confidence describe different activities. None is a certification of clinical competence.</p><div class="workspace-grid"><section class="workspace-card"><h3>'+done.length+' / '+D.cases.length+' evolving cases attempted</h3><p>Results below show the latest completed attempt.</p></section><section class="workspace-card"><h3>'+p.viewed.length+' modules marked read</h3><p>Reading is recorded separately from correct answers.</p></section><section class="workspace-card"><h3>'+review.length+' cases to revisit</h3><p>Suggested from incorrect first choices.</p>'+(review.length?'<a href="#learn~case-'+esc(review[0])+'">Revisit a case →</a>':'<p>No incorrect completed cases to revisit.</p>')+'</section></div><ul class="workspace-progress-list">'+D.cases.map(c=>'<li><a href="#learn~case-'+c.id+'">'+esc(c.title)+'</a><span>'+(p.cases[c.id]?p.cases[c.id].correct+'/'+p.cases[c.id].total+' correct · '+p.cases[c.id].runs+' completed attempt(s)':'Not yet attempted')+'</span></li>').join('')+'</ul><div class="workspace-actions"><a href="#study~due">Scheduled topic reviews →</a><a href="#study~saved">Saved topics & notes →</a><a href="#ecg-explorer">ECG learning record →</a></div><section class="workspace-callout"><h2>Back up your learning</h2><p>Export saved progress, reading preferences and notes to a local JSON file. Session-only activity is not included. The file may contain your personal study notes; keep it private and avoid patient details.</p><div class="workspace-actions"><button type="button" data-backup-export>Export backup</button><label class="backup-label">Choose a backup to import<input type="file" accept=".json,application/json" data-backup-file></label></div><p>Import adds missing records and keeps existing values when they conflict. It does not transfer an agreement or clear existing progress.</p><div data-backup-preview></div><p data-backup-status role="status"></p></section>';
+        body.innerHTML='<h2>Your learning record</h2><p class="workspace-section-intro">Reading, attempted decisions and self-confidence describe different activities. None is a certification of clinical competence.</p><div class="workspace-grid progress-stats-grid">'
+        + workspaceCard({ icon: 'completed', kind: 'Attempted', headingTag: 'h3', title: done.length + ' / ' + D.cases.length + ' evolving cases attempted', body: 'Results below show the latest completed attempt.' })
+        + workspaceCard({ icon: 'references', kind: 'Reading', headingTag: 'h3', title: p.viewed.length + ' modules marked read', body: 'Reading is recorded separately from correct answers.' })
+        + workspaceCard({
+            icon: 'due', kind: 'To revisit', headingTag: 'h3',
+            title: review.length + ' cases to revisit',
+            body: 'Suggested from incorrect first choices.',
+            href: review.length ? '#learn~case-' + review[0] : null,
+            action: review.length ? 'Revisit a case' : null
+        })
+        + '</div><ul class="workspace-progress-list">'+D.cases.map(c=>'<li><a href="#learn~case-'+c.id+'">'+esc(c.title)+'</a><span>'+(p.cases[c.id]?p.cases[c.id].correct+'/'+p.cases[c.id].total+' correct · '+p.cases[c.id].runs+' completed attempt(s)':'Not yet attempted')+'</span></li>').join('')+'</ul><div class="workspace-actions"><a href="#study~due">Scheduled topic reviews →</a><a href="#study~saved">Saved topics & notes →</a><a href="#ecg-explorer">ECG learning record →</a></div><section class="workspace-callout"><h2>Back up your learning</h2><p>Export saved progress, reading preferences and notes to a local JSON file. Session-only activity is not included. The file may contain your personal study notes; keep it private and avoid patient details.</p><div class="workspace-actions"><button type="button" data-backup-export>Export backup</button><label class="backup-label">Choose a backup to import<input type="file" accept=".json,application/json" data-backup-file></label></div><p>Import adds missing records and keeps existing values when they conflict. It does not transfer an agreement or clear existing progress.</p><div data-backup-preview></div><p data-backup-status role="status"></p></section>';
         const status=body.querySelector('[data-backup-status]'),preview=body.querySelector('[data-backup-preview]');let pending=null;
         body.querySelector('[data-backup-export]').addEventListener('click',()=>{try{download(exportBackup(),'em-pocket-learning-'+new Date().toISOString().slice(0,10)+'.json');status.textContent='Backup prepared for download.';}catch(_){status.textContent='Backup could not be read. Storage may be unavailable or contain an invalid record. Nothing was changed.';}});
         let selection=0;
@@ -255,8 +378,13 @@
     }
     function mount(stage,target='practice') {
         const active=target.startsWith('case-')?'practice':target.startsWith('module-')?'skills':target.startsWith('visual-')?'visuals':['practice','visuals','skills','progress'].includes(target)?target:'practice';
-        const titles={practice:['Practice decisions that evolve','From first assessment to reassessment, disposition and debrief.'],visuals:['Learn to interpret, then explain','Use visual comparisons to connect findings with their limitations.'],skills:['Prepare the procedure. Prepare the team.','Short exercises for supervised practice, handover and teaching.'],progress:['Keep your learning connected','Review your attempts and keep a portable copy of your saved learning.']};
-        stage.innerHTML=shell(...titles[active],active);const body=stage.querySelector('.workspace-body');
+        const titles={practice:['Practice','Six fictional cases. Read the situation, choose a decision, then see what changes.'],visuals:['Visuals','Choose real recorded ECGs or clearly labelled teaching diagrams to connect findings with limitations.'],skills:['Procedures','Preparation and discussion exercises for supervised practice, handover and clinical teaching.'],progress:['Progress','Track your completed attempts, review notes, and maintain your private local backup.']};
+        const board=!/^(case|module|visual)-/.test(target);
+        stage.innerHTML=shell(titles[active][0],titles[active][1],active,board);
+        const ws = stage.querySelector('.learning-workspace');
+        if(board)ws.classList.add('practice-board');
+        ws.setAttribute('data-learn-tab', active);
+        const body=stage.querySelector('.workspace-body');
         if(/^(case|module|visual)-/.test(target))stage.querySelector('.learning-workspace').classList.add('workspace-detail');if(target.startsWith('case-'))mountCase(body,target.slice(5));else if(target.startsWith('module-'))mountModule(body,target.slice(7));else if(target.startsWith('visual-'))mountVisual(body,target.slice(7));else if(active==='progress')mountProgress(body);else body.innerHTML=active==='practice'?caseCards():active==='skills'?moduleCards():visualCards();
         body.querySelectorAll('[data-case-filter]').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -264,6 +392,13 @@
                 mount(stage, 'practice');
             });
         });
+        const reset = body.querySelector('[data-case-filter-reset]');
+        if (reset) {
+            reset.addEventListener('click', () => {
+                caseFilter = 'all';
+                mount(stage, 'practice');
+            });
+        }
         body.querySelector('#caseFilter')?.addEventListener('change',e=>{caseFilter=e.target.value;mount(stage,'practice');stage.querySelector('#caseFilter')?.focus();});
         stage.querySelector('h1').focus({preventScroll:true});window.scrollTo({top:0});
     }
