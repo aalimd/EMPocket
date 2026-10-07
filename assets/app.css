@@ -12183,8 +12183,9 @@ html[data-theme="dark"] .learning-workspace .practice-hero {
         border-radius: 16px;
     }
     /* Four destinations across ~300px: the labels need the room more than the
-       segments need their own breathing space. */
-    .workspace-tabs a {
+       segments need their own breathing space. Scoped to this workspace so the
+       student workspaces keep their own sizing. */
+    .learning-workspace .workspace-tabs a {
         padding: 6px 8px !important;
         font-size: 0.78rem !important;
     }
@@ -12201,5 +12202,43 @@ html[data-theme="dark"] .learning-workspace .practice-hero {
 .learning-workspace .practice-card:focus-visible {
     outline: 2px solid rgb(20, 107, 92);
     outline-offset: 2px;
+}
+/*─────────────────────────────────────────────────────────────*/
+
+/* ── the four destinations must fit the frame they sit in ─────────────────────
+   The segments carry min-width: max-content and nowrap, so at 320px their sum
+   (287px) exceeded the card's 226px content box and the strip fell back to a
+   scrollbar with the bar itself hidden — the last tab sat off-screen with no
+   affordance that it existed. A grid gives each destination an equal share and
+   lets the labels wrap instead of the row. Below 360px four across would force
+   a mid-word break, so it becomes two rows of two, which stays stable on switch
+   because every tab uses the same grid. */
+@media (max-width: 700px) {
+    .learning-workspace .workspace-tabs {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        width: 100%;
+        overflow-x: visible !important;
+        gap: 4px !important;
+        padding: 4px !important;
+    }
+    .learning-workspace .workspace-tabs a {
+        min-width: 0 !important;
+        flex: none !important;
+        white-space: normal !important;
+        padding: 6px 4px !important;
+        font-size: 0.76rem !important;
+        text-align: center;
+        overflow-wrap: break-word;
+    }
+}
+@media (max-width: 360px) {
+    .learning-workspace .workspace-tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .learning-workspace .workspace-tabs a {
+        font-size: 0.8rem !important;
+        padding: 6px 6px !important;
+    }
 }
 /*─────────────────────────────────────────────────────────────*/
