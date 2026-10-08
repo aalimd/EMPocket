@@ -2942,6 +2942,13 @@
         const clearBtn = document.getElementById('searchClearBtn');
         let searchTimer = 0;
         let searchPending = false;
+        input.addEventListener('focus', () => {
+            const value = input.value.trim();
+            if (value.length < 2 || document.querySelector('dialog[open]')) return;
+            clearTimeout(searchTimer);
+            searchPending = false;
+            runSearch(value);
+        });
         input.addEventListener('input', () => {
             clearTimeout(searchTimer);
             const value = input.value.trim();
@@ -3067,7 +3074,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261008-reading-panel-v37').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261008-search-refocus-v38').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Ready for offline use'));
                     const applyUpdate = () => {
                         if(window.POCKET_DESIGN && !window.POCKET_DESIGN.beforeRoute(() => window.location.reload()))return;

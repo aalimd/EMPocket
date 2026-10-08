@@ -739,6 +739,20 @@ test('search closes when tabbing away and does not submit during input compositi
     assert.equal(state.expanded,'false',JSON.stringify(state));
 });
 
+test('returning to a retained search query reopens current results without editing or navigation',async t=>{
+    if(!await ready(t))return;await load('#library');
+    await evaluate(`(()=>{const input=document.getElementById('searchInput');input.focus();input.value='chest';input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+    await evaluate(`(async()=>{const deadline=Date.now()+1500;while(document.getElementById('searchInput').getAttribute('aria-expanded')!=='true'&&Date.now()<deadline)await new Promise(r=>setTimeout(r,25));})()`);
+    assert.equal(await evaluate(`document.getElementById('searchInput').getAttribute('aria-expanded')`),'true');
+    await evaluate(`document.getElementById('toolsToggle').focus()`);
+    assert.equal(await evaluate(`document.getElementById('searchInput').getAttribute('aria-expanded')`),'false');
+    await evaluate(`document.getElementById('searchInput').focus()`);await wait(180);
+    const r=await evaluate(`({query:document.getElementById('searchInput').value,expanded:document.getElementById('searchInput').getAttribute('aria-expanded'),results:document.querySelectorAll('.results-pop .res-item[data-id]').length,active:document.getElementById('searchInput').getAttribute('aria-activedescendant'),hash:location.hash})`);
+    assert.equal(r.query,'chest');assert.equal(r.expanded,'true');assert.ok(r.results>0);assert.equal(r.active,null);assert.equal(r.hash,'#library');
+    await evaluate(`document.getElementById('searchClearBtn').click();document.getElementById('toolsToggle').focus();document.getElementById('searchInput').focus()`);await wait(180);
+    assert.equal(await evaluate(`document.getElementById('searchInput').getAttribute('aria-expanded')`),'false');
+});
+
 test('reading size limits are announced through disabled controls',async t=>{
     if(!await ready(t))return;await load('#settings');
     await evaluate(`document.getElementById('toolsToggle').click();for(let i=0;i<5;i++)document.getElementById('fontUp').click()`);
