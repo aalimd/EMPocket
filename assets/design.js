@@ -16,12 +16,17 @@
     const byId = id => topics().find(t=>t.id===id);
     const notes = new WeakMap();
     let stableUrl = location.href, pending = null;
+    let settingsReturn = null, returningFromSettings = null;
     const header = (k,title,text) => '<header class="design-header"><span class="study-kicker">'+esc(k)+'</span><h1 tabindex="-1">'+esc(title)+'</h1><p>'+esc(text)+'</p></header>';
     const action = (url,label,primary=false) => '<a class="design-action'+(primary?' primary':'')+'" href="'+esc(url)+'">'+esc(label)+' <span aria-hidden="true">→</span></a>';
     const card = (stat,title,text,url,label) => '<article class="design-card"><span class="design-stat">'+esc(stat)+'</span><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+action(url,label)+'</article>';
     function park() {
+        if (location.hash.split('~')[0] === '#settings' && new URL(stableUrl).hash.split('~')[0] !== '#settings') {
+            settingsReturn = { hash: new URL(stableUrl).hash || '#library', y: window.scrollY, title: stage.querySelector('h1')?.textContent || 'Library' };
+        }
+        ui.closeReadingPanel(false);
         const parking=document.getElementById('settingsParking');
-        for(const id of ['topbarTools','installBtn']) { const el=document.getElementById(id);if(el && parking && el.parentElement!==parking)parking.append(el); }
+        const install=document.getElementById('installBtn');if(install && parking && install.parentElement!==parking)parking.append(install);
         // Severity controls are shared with the reader: park them before replacing stage.
         const filters=document.querySelector('.context-filters');
         if(filters && stage.contains(filters)) {document.querySelector('.topbar').append(filters);filters.hidden=true;}
@@ -95,8 +100,11 @@
         stage.querySelector('[data-search-more]').onclick=()=>{shown+=40;draw();};draw();
     }
     function settings() {
-        stage.innerHTML=header('THE EM POCKET · ON THIS DEVICE','Settings','Adjust reading preferences and check offline access. Your saved preferences and free learning records stay on this device.')+'<section class="settings-section"><h2>Reading preferences</h2><p>Text size, bold text, light or dark appearance, and six colour accents.</p><div id="settingsPreferences"></div></section><section class="settings-section"><h2>Offline access & installation</h2><p class="settings-offline" id="offlineStatus">'+esc(ui.offlineStatus)+'</p><p>After offline setup succeeds, presentations, learning activities and ECG data are available without a connection. External reference links require internet access.</p><div id="settingsInstall"></div><details><summary>Install instructions</summary><p>On iPhone or iPad, open this site in Safari, choose Share, then Add to Home Screen. On supported desktop and Android browsers, use the browser’s Install app option.</p></details></section><section class="settings-section"><h2>Your learning records</h2><p>Export a backup or review an import before adding missing records. Existing records and preferences are preserved.</p>'+action('#learn~progress','Progress & backup')+'</section><section class="settings-section"><h2>About The EM Pocket</h2><p>An independent, free emergency medicine learning reference. No account is required.</p><div class="design-links"><button type="button" class="design-action" data-clinical-notice>Clinical notice</button><a class="design-action" href="mailto:apps@aamd.sa?subject=The%20EM%20Pocket%20feedback">Send feedback</a><button type="button" class="design-action" data-print>Print / Save as PDF</button></div><p>Release 20261008-clear-icons-v36 · Content sources and review dates are listed with each presentation.</p></section>';
-        const prefs=document.getElementById('topbarTools');if(prefs)stage.querySelector('#settingsPreferences').append(prefs);
+        stage.innerHTML=header('THE EM POCKET · ON THIS DEVICE','Settings','Manage offline access, installation and your learning records on this device.')+'<section class="settings-section"><h2>Reading &amp; appearance</h2><p>Use Aa in the top bar to change text size, appearance and colour without leaving your page.</p><button type="button" class="design-action" data-display-options>Open display options</button></section><section class="settings-section"><h2>Offline access & installation</h2><p class="settings-offline" id="offlineStatus">'+esc(ui.offlineStatus)+'</p><p>After offline setup succeeds, presentations, learning activities and ECG data are available without a connection. External reference links require internet access.</p><div id="settingsInstall"></div><details><summary>Install instructions</summary><p>On iPhone or iPad, open this site in Safari, choose Share, then Add to Home Screen. On supported desktop and Android browsers, use the browser’s Install app option.</p></details></section><section class="settings-section"><h2>Your learning records</h2><p>Export a backup or review an import before adding missing records. Existing records and preferences are preserved.</p>'+action('#learn~progress','Progress & backup')+'</section><section class="settings-section"><h2>About The EM Pocket</h2><p>An independent, free emergency medicine learning reference. No account is required.</p><div class="design-links"><button type="button" class="design-action" data-clinical-notice>Clinical notice</button><a class="design-action" href="mailto:apps@aamd.sa?subject=The%20EM%20Pocket%20feedback">Send feedback</a><button type="button" class="design-action" data-print>Print / Save as PDF</button></div><p>Release 20261008-reading-panel-v37 · Content sources and review dates are listed with each presentation.</p></section>';
+        const back=settingsReturn || {hash:'#library',y:0,title:'Library'};
+        const backButton=document.createElement('button');backButton.type='button';backButton.className='back-btn settings-return';backButton.textContent='Back to '+back.title;
+        backButton.onclick=()=>{returningFromSettings=back;location.hash=back.hash;};stage.prepend(backButton);
+        stage.querySelector('[data-display-options]').onclick=e=>ui.openReadingPanel(e.currentTarget);
         const install=document.getElementById('installBtn');if(install)stage.querySelector('#settingsInstall').append(install);
         stage.querySelector('[data-clinical-notice]').onclick=()=>ui.showDisclaimer(true);
         stage.querySelector('[data-print]').onclick=()=>window.print();
@@ -119,7 +127,10 @@
             ui.syncNav('ecg');
         }
         if(changed && ['learn','settings','ecg-hub','study','search'].includes(route[0])) {window.scrollTo({top:0});const heading=stage.querySelector('h1');if(heading && !document.querySelector('dialog[open]')){heading.tabIndex=-1;heading.focus({preventScroll:true});}}
-        if(route[0]==='settings')document.getElementById('toolsToggle').setAttribute('aria-current','page');else document.getElementById('toolsToggle').removeAttribute('aria-current');
+        if(returningFromSettings) {
+            const back=returningFromSettings;returningFromSettings=null;
+            if(location.hash===back.hash)requestAnimationFrame(()=>{if(location.hash===back.hash){window.scrollTo({top:back.y,behavior:'instant'});stage.focus({preventScroll:true});}});
+        }
         const filterLabel=document.querySelector('.context-filters .cf-label');
         const selection=document.querySelector('#filterChips [aria-pressed="true"]');
         if(filterLabel)filterLabel.textContent='Severity'+(selection&&selection.dataset.sev!=='all'?' · '+selection.textContent.trim():'');

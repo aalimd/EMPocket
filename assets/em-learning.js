@@ -263,7 +263,7 @@
     let recordingsPromise = null;
     function loadRecordings() {
         if (!recordingsPromise) {
-            recordingsPromise = import('./ecg-recordings.js?v=20261008-clear-icons-v36')
+            recordingsPromise = import('./ecg-recordings.js?v=20261008-reading-panel-v37')
                 .catch(function () { recordingsPromise = null; });
         }
         return recordingsPromise || Promise.resolve();

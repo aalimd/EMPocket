@@ -336,7 +336,6 @@
         learn: { hash: '#learn~home', label: 'Learn' },
         study: { hash: '#learn~home', label: 'Learn' },
         shift: { hash: '#shift', label: 'Quick' },
-        settings: { hash: '#settings', label: 'Settings' },
         ecg: { hash: '#ecg-hub', label: 'ECG' },
         explorer: { hash: '#ecg-explorer', label: 'Explorer' }
     };
@@ -2013,6 +2012,7 @@
     }
 
     function applyRoute(preservePosition, approved) {
+        closeReadingPanel(false);
         const requested = location.href;
         const design = window.POCKET_DESIGN;
         if (design && !approved && !design.beforeRoute(() => { history.replaceState(null, '', requested); applyRoute(preservePosition, true); })) return;
@@ -2020,7 +2020,7 @@
         const route = (location.hash || '').replace('#', '').split('~');
         const id = route[0], target = route[1];
         if (id === 'search' && design) {recordBackContext('search', location.hash);currentId=null;syncNav('home');setTitle('Search');setStageContext('Search results');let query='';try{query=decodeURIComponent(route.slice(1).join('~')||'');}catch(_){}design.search(query);}
-        else if (id === 'settings' && design) { recordBackContext('settings'); currentId=null; syncNav('settings'); setTitle('Settings'); setStageContext('Settings and offline'); design.settings(); }
+        else if (id === 'settings' && design) { currentId=null; syncNav('settings'); setTitle('Settings'); setStageContext('Settings and offline'); design.settings(); }
         else if (id === 'learn' && window.EM_LEARNING) {
             recordBackContext('learn', location.hash);
             currentId=null; markActive('study'); syncNav(target==='visual-recordings'?'ecg':'study'); setTitle(target==='visual-recordings'?'Recorded ECGs':'Learn'); setStageContext(target==='visual-recordings'?'Recorded ECG learning':'Learning workspace');
@@ -2341,6 +2341,111 @@
             return false;
         }
     }
+    // Keep the first visible character in place when text reflows behind the panel.
+    function readingAnchor() {
+        const header = document.querySelector('.topbar').getBoundingClientRect().bottom;
+        const edge = header + 12;
+        for (const element of stage.querySelectorAll('p, li, h1, h2, h3, h4')) {
+            const box = element.getBoundingClientRect();
+            if (!box.height || box.bottom <= edge || box.top >= innerHeight) continue;
+            const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                if (!node.textContent.trim()) continue;
+                const range = document.createRange();
+                range.selectNodeContents(node);
+                const bounds = range.getBoundingClientRect();
+                if (!bounds.height || bounds.bottom <= edge || bounds.top >= innerHeight) continue;
+                let low = 0, high = node.length - 1;
+                while (low < high) {
+                    const mid = Math.floor((low + high) / 2);
+                    range.setStart(node, mid); range.setEnd(node, mid + 1);
+                    if (range.getBoundingClientRect().bottom <= edge) low = mid + 1;
+                    else high = mid;
+                }
+                range.setStart(node, low); range.setEnd(node, low + 1);
+                return { range, top: range.getBoundingClientRect().top, header };
+            }
+        }
+        return { y: window.scrollY };
+    }
+    function restoreReadingAnchor(anchor) {
+        if (!anchor) return;
+        if (!anchor.range || !anchor.range.startContainer.isConnected) {
+            if (Number.isFinite(anchor.y)) window.scrollTo({ top: anchor.y, behavior: 'instant' });
+            return;
+        }
+        const header = document.querySelector('.topbar').getBoundingClientRect().bottom;
+        const delta = anchor.range.getBoundingClientRect().top - anchor.top - (header - anchor.header);
+        window.scrollTo({ top: window.scrollY + delta, behavior: 'instant' });
+    }
+    function positionReadingPanel() {
+        const panel = document.getElementById('readingPanel');
+        if (!panel || !panel.open) return;
+        const button = document.getElementById('toolsToggle').getBoundingClientRect();
+        panel.style.setProperty('--reading-panel-top', Math.round(button.bottom + 12) + 'px');
+        panel.style.setProperty('--reading-panel-right', Math.max(16, innerWidth - button.right) + 'px');
+    }
+    let readingReturnFocus = null;
+    function closeReadingPanel(restoreFocus = true) {
+        const panel = document.getElementById('readingPanel');
+        if (!panel || !panel.open) return;
+        if (!restoreFocus) readingReturnFocus = null;
+        panel.close();
+    }
+    function openReadingPanel(opener) {
+        const panel = document.getElementById('readingPanel');
+        if (!panel || panel.open || document.querySelector('dialog[open]')) return;
+        hideSearchResults();
+        document.querySelectorAll('.context-filters[open], .library-filters[open]').forEach(el => { el.open = false; });
+        readingReturnFocus = opener || document.getElementById('toolsToggle');
+        document.getElementById('readingStatus').textContent = prefsStorageAvailable ? 'Changes apply immediately.' : 'Changes apply for this session. Device storage is unavailable.';
+        document.body.classList.add('reading-panel-open');
+        panel.showModal();
+        document.getElementById('toolsToggle').setAttribute('aria-expanded', 'true');
+        positionReadingPanel();
+    }
+    function bindReadingPanel() {
+        const panel = document.getElementById('readingPanel');
+        if (!panel) return;
+        const trigger = document.getElementById('toolsToggle');
+        trigger.addEventListener('click', () => openReadingPanel(trigger));
+        for (const id of ['readingClose', 'readingDone']) document.getElementById(id).addEventListener('click', () => closeReadingPanel());
+        document.getElementById('readingSettings').addEventListener('click', () => closeReadingPanel(false));
+        panel.addEventListener('cancel', event => { event.preventDefault(); closeReadingPanel(); });
+        panel.addEventListener('close', () => {
+            document.body.classList.remove('reading-panel-open');
+            trigger.setAttribute('aria-expanded', 'false');
+            const previous = readingReturnFocus; readingReturnFocus = null;
+            if (previous && previous.isConnected) previous.focus({ preventScroll: true });
+        });
+        const outside = event => {
+            const box = panel.getBoundingClientRect();
+            return event.target === panel && (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom);
+        };
+        let backdropPress = false;
+        panel.addEventListener('pointerdown', event => { backdropPress = outside(event); });
+        panel.addEventListener('pointercancel', () => { backdropPress = false; });
+        panel.addEventListener('click', event => { if (backdropPress && outside(event)) closeReadingPanel(); backdropPress = false; });
+        panel.addEventListener('keydown', event => {
+            if (event.key !== 'Tab') return;
+            const items = [...panel.querySelectorAll('button:not([disabled]), a[href]')].filter(el => el.getClientRects().length);
+            const first = items[0], last = items[items.length - 1];
+            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        });
+        window.addEventListener('resize', positionReadingPanel, { passive: true });
+        window.addEventListener('beforeprint', () => closeReadingPanel(false));
+    }
+    function changeReadingPrefs(p) {
+        const panel = document.getElementById('readingPanel');
+        const anchor = panel && panel.open ? readingAnchor() : null;
+        const saved = savePrefs(p);
+        applyPrefs(p);
+        restoreReadingAnchor(anchor);
+        positionReadingPanel();
+        document.getElementById('readingStatus').textContent = saved ? 'Saved on this device.' : 'Applied for this session. Device storage is unavailable.';
+    }
     function applyPrefs(p) {
         const r = document.documentElement;
         const dark = p.theme === 'dark';
@@ -2354,14 +2459,15 @@
         const scale = nearestScale(p.scale);
         r.style.setProperty('--type-scale', String(scale));
         const themeBtn = document.getElementById('themeBtn');
+        const themeLight = document.getElementById('themeLight');
         const boldBtn = document.getElementById('boldBtn');
         const label = document.getElementById('fontLabel');
         if (themeBtn) {
             themeBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
-            themeBtn.innerHTML = '<span class="theme-ico" aria-hidden="true">' + (dark ? THEME_SVG.sun : THEME_SVG.moon) + '</span>';
-            themeBtn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
-            themeBtn.title = dark ? 'Light mode' : 'Dark mode';
+            themeBtn.innerHTML = THEME_SVG.moon + '<span>Dark</span>';
+            themeBtn.setAttribute('aria-label', 'Dark appearance');
         }
+        if (themeLight) { themeLight.innerHTML = THEME_SVG.sun + '<span>Light</span>'; themeLight.setAttribute('aria-label', 'Light appearance'); themeLight.setAttribute('aria-pressed', String(!dark)); }
         if (boldBtn) boldBtn.setAttribute('aria-pressed', p.bold === true ? 'true' : 'false');
         if (label) label.textContent = Math.round(scale * 100) + '%';
         const fontDown = document.getElementById('fontDown');
@@ -2383,37 +2489,39 @@
         let p = loadPrefs();
         applyPrefs(p);
         const themeBtn = document.getElementById('themeBtn');
+        const themeLight = document.getElementById('themeLight');
         const boldBtn = document.getElementById('boldBtn');
         const up = document.getElementById('fontUp');
         const down = document.getElementById('fontDown');
         if (themeBtn) themeBtn.addEventListener('click', function () {
             p = loadPrefs();
-            p.theme = (document.documentElement.getAttribute('data-theme') === 'dark') ? 'light' : 'dark';
-            savePrefs(p); applyPrefs(p);
+            p.theme = 'dark';
+            changeReadingPrefs(p);
         });
+        if (themeLight) themeLight.addEventListener('click', function () { p = loadPrefs(); p.theme = 'light'; changeReadingPrefs(p); });
         if (boldBtn) boldBtn.addEventListener('click', function () {
             p = loadPrefs();
             p.bold = !p.bold;
-            savePrefs(p); applyPrefs(p);
+            changeReadingPrefs(p);
         });
         if (up) up.addEventListener('click', function () {
             p = loadPrefs();
             const i = SCALE_STEPS.indexOf(nearestScale(p.scale));
             p.scale = SCALE_STEPS[Math.min(SCALE_STEPS.length - 1, i + 1)];
-            savePrefs(p); applyPrefs(p);
+            changeReadingPrefs(p);
         });
         if (down) down.addEventListener('click', function () {
             p = loadPrefs();
             const i = SCALE_STEPS.indexOf(nearestScale(p.scale));
             p.scale = SCALE_STEPS[Math.max(0, i - 1)];
-            savePrefs(p); applyPrefs(p);
+            changeReadingPrefs(p);
         });
         document.querySelectorAll('.accent-dot').forEach(function (dot) {
             dot.addEventListener('click', function () {
                 p = loadPrefs();
                 p.accent = normalizeAccent(dot.getAttribute('data-accent'));
-                savePrefs(p); applyPrefs(p);
-                toast('App color: ' + (ACCENT_LABELS[p.accent] || p.accent) + '.');
+                changeReadingPrefs(p);
+                document.getElementById('readingStatus').textContent = (ACCENT_LABELS[p.accent] || p.accent) + (prefsStorageAvailable ? ' · Saved on this device.' : ' · Applied for this session.');
             });
         });
     }
@@ -2715,6 +2823,7 @@
         syncSidebarAccessibility();
         bindFilters();
         bindPrefs();
+        bindReadingPanel();
         const skipLink = document.querySelector('.skip-link');
         if (skipLink) skipLink.addEventListener('click', (e) => {
             e.preventDefault();
@@ -2797,10 +2906,6 @@
             if (e.shiftKey && (document.activeElement === first || document.activeElement.id === 'disclaimerTitle')) { e.preventDefault(); last.focus(); }
             else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
         });
-        const toolsToggle = document.getElementById('toolsToggle');
-        const topbarTools = document.getElementById('topbarTools');
-        if (toolsToggle && topbarTools) toolsToggle.addEventListener('click', () => { location.hash='settings'; });
-
         const installBtn = document.getElementById('installBtn');
         function isInstalled() {
             return window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -2924,20 +3029,11 @@
             if (e.key === '/') { e.preventDefault(); input.focus(); }
             if (e.key === 'Escape') {
                 const pop = document.querySelector('.results-pop');
-                const tools = document.getElementById('topbarTools');
                 if (pop && pop.style.display === 'block') {
                     hideSearchResults(pop);
                     input.value = '';
                     if (clearBtn) clearBtn.hidden = true;
                     input.focus();
-                    return;
-                }
-                if (tools && tools.classList.contains('open')) {
-                    tools.classList.remove('open');
-                    document.body.classList.remove('tools-open');
-                    toolsToggle.setAttribute('aria-expanded', 'false');
-                    toolsToggle.setAttribute('aria-label', 'Open reading settings');
-                    toolsToggle.focus();
                     return;
                 }
                 closeSidebar(true);
@@ -2971,7 +3067,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261008-clear-icons-v36').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261008-reading-panel-v37').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Ready for offline use'));
                     const applyUpdate = () => {
                         if(window.POCKET_DESIGN && !window.POCKET_DESIGN.beforeRoute(() => window.location.reload()))return;
@@ -3006,7 +3102,7 @@
         }
     }
 
-    window.EM_POCKET_UI = { stage, esc, dueIds, savedIds, reviewedIds, noteFor, toast, findSearchHits, setStageContext, syncNav, showDisclaimer, get offlineStatus(){return offlineStatus;} };
+    window.EM_POCKET_UI = { stage, esc, dueIds, savedIds, reviewedIds, noteFor, toast, findSearchHits, setStageContext, syncNav, showDisclaimer, openReadingPanel, closeReadingPanel, get offlineStatus(){return offlineStatus;} };
     if (document.readyState !== 'complete') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

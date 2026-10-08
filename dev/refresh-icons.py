@@ -59,16 +59,13 @@ EXPLORER = {
     'bookmark': 'bookmark', 'compass': 'explore', 'shuffle': 'shuffle',
     'checklist': 'checklist', 'check': 'check', 'scale': 'balance',
 }
-SHELL = ['chevron_left', 'menu', 'library_books', 'menu_book', 'monitor_heart', 'bolt',
-         'search', 'close', 'filter_list', 'expand_more', 'settings', 'dark_mode',
-         'library_books', 'menu_book', 'monitor_heart', 'bolt', 'warning',
-         'info', 'verified_user', 'menu_book']
 EXTRA = ['bookmark_fill1', 'dark_mode', 'light_mode', 'chevron_left', 'expand_more']
 
 def main():
     cache = Path(tempfile.gettempdir()) / ('em-pocket-material-' + REVISION)
     cache.mkdir(exist_ok=True)
-    names = sorted(set(SEMANTIC.values()) | set(EXPLORER.values()) | set(SHELL) | set(EXTRA))
+    shell_names = re.findall(r'<svg\b[^>]*data-icon="([^"]+)"', (ROOT / 'index.html').read_text())
+    names = sorted(set(SEMANTIC.values()) | set(EXPLORER.values()) | set(shell_names) | set(EXTRA))
     def fetch(name):
         target = cache / (name + '.svg')
         if not target.exists():
@@ -117,8 +114,8 @@ def main():
     p = ROOT / 'index.html'
     html = p.read_text()
     matches = list(re.finditer(r'<svg\b[^>]*>.*?</svg>',html,re.S))
-    assert len(matches) == len(SHELL), 'Shell icon inventory changed; review the mapping before refreshing.'
-    for match,name in reversed(list(zip(matches,SHELL))):
+    for match in reversed(matches):
+        name = re.search(r'data-icon="([^"]+)"', match[0])[1]
         cls = re.search(r'class="([^"]*)"', match[0])[1]
         html = html[:match.start()] + icon(name,cls) + html[match.end():]
     p.write_text(html)

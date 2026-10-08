@@ -480,9 +480,9 @@ test('ECG finding regions are attached to the tracing and match authored coordin
     assert.deepEqual(result.errors, []);
 });
 
-test('the redesigned phone header has search and settings without clipped or duplicated navigation', async t => {
+test('the phone header has search and display options without clipped or duplicated navigation', async t => {
     if(!await ready(t))return; await load('#library');
-    const r=await evaluate(`(()=>{const bar=document.querySelector('.topbar');return {clipped:bar.scrollHeight>bar.clientHeight+1,search:document.querySelector('.searchwrap input').getBoundingClientRect().height,settings:document.getElementById('toolsToggle').getBoundingClientRect().height,visible:[...document.querySelectorAll('[data-nav]')].filter(e=>e.getClientRects().length).map(e=>e.dataset.nav),parked:document.getElementById('settingsParking').contains(document.getElementById('topbarTools'))};})()`);
+    const r=await evaluate(`(()=>{const bar=document.querySelector('.topbar');return {clipped:bar.scrollHeight>bar.clientHeight+1,search:document.querySelector('.searchwrap input').getBoundingClientRect().height,settings:document.getElementById('toolsToggle').getBoundingClientRect().height,visible:[...document.querySelectorAll('[data-nav]')].filter(e=>e.getClientRects().length).map(e=>e.dataset.nav),parked:document.getElementById('readingPanel').contains(document.getElementById('topbarTools'))};})()`);
     assert.equal(r.clipped,false);assert.equal(r.search,48);assert.equal(r.settings,44);assert.deepEqual(r.visible,['home','study','ecg','shift']);assert.equal(r.parked,true);
 });
 
@@ -561,10 +561,10 @@ test('unsaved notes retain their text and support stay, save and discard during 
 
 test('reading settings preserve their event bindings across repeated route changes',async t=>{
     if(!await ready(t))return;await load('#settings');
-    await evaluate(`document.getElementById('fontUp').click();document.getElementById('themeBtn').click();document.querySelector('[data-accent="ocean"].accent-dot').click();`);
+    await evaluate(`document.getElementById('toolsToggle').click();document.getElementById('fontUp').click();document.getElementById('themeBtn').click();document.querySelector('[data-accent="ocean"].accent-dot').click();`);
     const initial=await evaluate(`JSON.parse(localStorage.getItem('em-cps-prefs'))`);assert.equal(initial.scale,1.12);assert.equal(initial.accent,'ocean');assert.equal(initial.theme,'dark');
     for(const route of ['library','settings','learn~home','settings']){await evaluate(`location.hash='${route}'`);await wait(60);}
-    await evaluate(`document.getElementById('fontDown').click()`);assert.equal(await evaluate(`JSON.parse(localStorage.getItem('em-cps-prefs')).scale`),1);
+    await evaluate(`document.getElementById('toolsToggle').click();document.getElementById('fontDown').click()`);assert.equal(await evaluate(`JSON.parse(localStorage.getItem('em-cps-prefs')).scale`),1);
     assert.equal(await evaluate(`document.querySelectorAll('#topbarTools').length`),1);
 });
 
@@ -572,7 +572,7 @@ test('bold preference changes rendered fonts across routes and survives reload a
     if(!await ready(t))return;await load('#settings');
     const weight=selector=>evaluate(`getComputedStyle(document.querySelector(${JSON.stringify(selector)})).fontWeight`);
     assert.equal(await weight('.settings-section p'),'400');
-    await evaluate(`document.getElementById('boldBtn').click()`);
+    await evaluate(`document.getElementById('toolsToggle').click();document.getElementById('boldBtn').click()`);
     assert.equal(await weight('.settings-section p'),'700');
     assert.equal(await evaluate(`document.getElementById('boldBtn').getAttribute('aria-pressed')`),'true');
     assert.equal(await evaluate(`JSON.parse(localStorage.getItem('em-cps-prefs')).bold`),true);
@@ -584,7 +584,7 @@ test('bold preference changes rendered fonts across routes and survives reload a
     await cdp('Page.navigate',{url:baseUrl+'#settings'});await wait(450);
     assert.equal(await weight('.settings-section p'),'700');
     assert.equal(await evaluate(`document.getElementById('boldBtn').getAttribute('aria-pressed')`),'true');
-    await evaluate(`document.getElementById('boldBtn').click()`);
+    await evaluate(`document.getElementById('toolsToggle').click();document.getElementById('boldBtn').click()`);
     assert.equal(await weight('.settings-section p'),'400');
     assert.equal(await evaluate(`JSON.parse(localStorage.getItem('em-cps-prefs')).bold`),false);
     await evaluate(`location.hash='chest-pain'`);await wait(100);
@@ -741,10 +741,90 @@ test('search closes when tabbing away and does not submit during input compositi
 
 test('reading size limits are announced through disabled controls',async t=>{
     if(!await ready(t))return;await load('#settings');
-    await evaluate(`for(let i=0;i<5;i++)document.getElementById('fontUp').click()`);
+    await evaluate(`document.getElementById('toolsToggle').click();for(let i=0;i<5;i++)document.getElementById('fontUp').click()`);
     assert.equal(await evaluate(`document.getElementById('fontUp').disabled`),true);
     await evaluate(`for(let i=0;i<5;i++)document.getElementById('fontDown').click()`);
     assert.equal(await evaluate(`document.getElementById('fontDown').disabled`),true);
+});
+
+test('display changes keep the current reader, history and unsaved learning note intact',async t=>{
+    if(!await ready(t))return;await load('#chest-pain');
+    const result=await evaluate(`(()=>{
+        const note=document.getElementById('studyNote'),page=document.querySelector('#stage h1'),url=location.href,length=history.length;
+        note.value='Draft retained while adjusting display';note.dispatchEvent(new Event('input',{bubbles:true}));
+        document.getElementById('toolsToggle').click();
+        document.getElementById('fontUp').click();document.getElementById('boldBtn').click();document.getElementById('themeBtn').click();document.querySelector('.accent-dot[data-accent="ocean"]').click();
+        return {same:page===document.querySelector('#stage h1')&&note===document.getElementById('studyNote'),draft:note.value,url:location.href===url,history:history.length===length,modal:document.getElementById('readingPanel').matches(':modal'),guard:!!document.querySelector('#unsavedNoteDialog[open]'),theme:document.documentElement.dataset.theme,accent:document.documentElement.dataset.accent,bold:document.documentElement.dataset.weight,scale:document.getElementById('fontLabel').textContent,status:document.getElementById('readingStatus').textContent};
+    })()`);
+    assert.equal(result.same,true);assert.equal(result.draft,'Draft retained while adjusting display');assert.equal(result.url,true);assert.equal(result.history,true);assert.equal(result.modal,true);assert.equal(result.guard,false);assert.equal(result.theme,'dark');assert.equal(result.accent,'ocean');assert.equal(result.bold,'bold');assert.equal(result.scale,'112%');assert.match(result.status,/Saved on this device/);
+    // A history/navigation request must release this modal before the note guard opens.
+    await evaluate(`location.hash='settings'`);await wait(100);
+    assert.deepEqual(await evaluate(`({display:document.getElementById('readingPanel').open,lock:document.body.classList.contains('reading-panel-open'),guard:document.getElementById('unsavedNoteDialog').matches(':modal')})`),{display:false,lock:false,guard:true});
+    await evaluate(`document.querySelector('[data-note-stay]').click()`);
+    assert.equal(await evaluate(`document.getElementById('studyNote').value`),'Draft retained while adjusting display');
+    await evaluate(`const note=document.getElementById('studyNote');note.value='';note.dispatchEvent(new Event('input',{bubbles:true}))`);
+});
+
+test('display panel preserves the visible reading line as text size and weight reflow',async t=>{
+    if(!await ready(t))return;
+    try {
+        for(const width of [390,1280]){
+            await cdp('Emulation.setDeviceMetricsOverride',{width,height:844,deviceScaleFactor:1,mobile:width<921});
+            await load('#chest-pain');
+            await evaluate(`(()=>{const p=[...document.querySelectorAll('#stage p')].find(e=>e.textContent.startsWith('The task is'));window.scrollTo({top:p.getBoundingClientRect().top+scrollY-document.querySelector('.topbar').getBoundingClientRect().bottom-5,behavior:'instant'});})()`);
+            await wait(80);
+            const result=await evaluate(`(()=>{
+                const p=[...document.querySelectorAll('#stage p')].find(e=>e.textContent.startsWith('The task is')),node=p.firstChild,range=document.createRange();range.setStart(node,0);range.setEnd(node,1);
+                const top=()=>range.getBoundingClientRect().top-document.querySelector('.topbar').getBoundingClientRect().bottom;
+                const before=top(),y=scrollY;document.getElementById('toolsToggle').click();const opened=scrollY;
+                document.getElementById('fontUp').click();const enlarged=top();document.getElementById('boldBtn').click();
+                return {before,enlarged,bold:top(),openingShift:opened-y,hash:location.hash};
+            })()`);
+            assert.ok(Math.abs(result.openingShift)<2,JSON.stringify(result));assert.ok(Math.abs(result.enlarged-result.before)<2,width+' '+JSON.stringify(result));assert.ok(Math.abs(result.bold-result.before)<2,width+' '+JSON.stringify(result));assert.equal(result.hash,'#chest-pain');
+            await evaluate(`document.getElementById('readingDone').click()`);await wait(40);
+            assert.equal(await evaluate(`document.activeElement.id`),'toolsToggle');
+        }
+    } finally {await cdp('Emulation.setDeviceMetricsOverride',{...VIEWPORT,deviceScaleFactor:2,mobile:true});}
+});
+
+test('display panel contains keyboard focus and dismisses with Escape, close and backdrop',async t=>{
+    if(!await ready(t))return;await load('#library');
+    await evaluate(`document.getElementById('toolsToggle').click();document.getElementById('readingDone').focus();document.getElementById('readingDone').dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true}))`);
+    assert.equal(await evaluate(`document.activeElement.id`),'readingClose');
+    await evaluate(`document.getElementById('readingClose').dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',shiftKey:true,bubbles:true,cancelable:true}))`);
+    assert.equal(await evaluate(`document.activeElement.id`),'readingDone');
+    await cdp('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+    await cdp('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await wait(40);
+    assert.deepEqual(await evaluate(`({open:document.getElementById('readingPanel').open,lock:document.body.classList.contains('reading-panel-open'),focus:document.activeElement.id})`),{open:false,lock:false,focus:'toolsToggle'});
+    await evaluate(`document.getElementById('toolsToggle').click();document.getElementById('readingClose').click()`);await wait(40);
+    assert.equal(await evaluate(`document.getElementById('readingPanel').open`),false);
+    await evaluate(`document.getElementById('toolsToggle').click()`);
+    await cdp('Input.dispatchMouseEvent',{type:'mousePressed',x:10,y:10,button:'left',clickCount:1});
+    await cdp('Input.dispatchMouseEvent',{type:'mouseReleased',x:10,y:10,button:'left',clickCount:1});await wait(40);
+    assert.equal(await evaluate(`document.getElementById('readingPanel').open`),false);
+});
+
+test('display options fit short and narrow screens with every control reachable at maximum text size',async t=>{
+    if(!await ready(t))return;
+    try {
+        for(const [width,height] of [[320,568],[390,844],[844,390],[1280,720]]){
+            await cdp('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:width<921});await load('#chest-pain',200);
+            const r=await evaluate(`(()=>{document.getElementById('toolsToggle').click();for(let i=0;i<5;i++)document.getElementById('fontUp').click();const p=document.getElementById('readingPanel'),box=p.getBoundingClientRect(),controls=[...p.querySelectorAll('button,a')],bad=controls.filter(e=>{const b=e.getBoundingClientRect();return b.width<43||b.height<43||b.left<box.left||b.right>box.right+1}).map(e=>e.id||e.textContent);document.getElementById('readingDone').scrollIntoView({block:'nearest'});const done=document.getElementById('readingDone').getBoundingClientRect();return {top:box.top,bottom:box.bottom,left:box.left,right:box.right,done:done.top>=box.top&&done.bottom<=box.bottom+1,scroll:getComputedStyle(p).overflowY,bad,selected:[...p.querySelectorAll('.accent-dot[aria-pressed="true"]')].map(e=>e.textContent.trim())};})()`);
+            assert.ok(r.top>=-1&&r.bottom<=height+1&&r.left>=-1&&r.right<=width+1,JSON.stringify(r));assert.equal(r.done,true,JSON.stringify(r));assert.equal(r.scroll,'auto');assert.deepEqual(r.bad,[]);assert.deepEqual(r.selected,['Emerald']);
+        }
+    } finally {await cdp('Emulation.setDeviceMetricsOverride',{...VIEWPORT,deviceScaleFactor:2,mobile:true});}
+});
+
+test('general settings return to the previous reading route and scroll position',async t=>{
+    if(!await ready(t))return;await load('#chest-pain~workup');
+    const previousBack=await evaluate(`document.querySelector('#stage .back-btn').textContent`);
+    await evaluate(`window.scrollBy({top:85,behavior:'instant'})`);await wait(80);const y=await evaluate(`scrollY`);
+    await evaluate(`document.getElementById('toolsToggle').click();document.getElementById('readingSettings').click()`);await wait(100);
+    assert.equal(await evaluate(`document.querySelector('.settings-return').textContent`),'Back to Chest Pain');
+    assert.equal(await evaluate(`document.getElementById('readingPanel').open`),false);
+    await evaluate(`document.querySelector('.settings-return').click()`);await wait(150);
+    assert.equal(await evaluate(`location.hash`),'#chest-pain~workup');assert.ok(Math.abs(await evaluate(`scrollY`)-y)<2);
+    assert.equal(await evaluate(`document.querySelector('#stage .back-btn').textContent`),previousBack);
 });
 
 test('reader severity menus dismiss with Escape and short phone popups remain reachable',async t=>{

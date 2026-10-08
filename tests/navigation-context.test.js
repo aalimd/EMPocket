@@ -32,10 +32,11 @@ test('every back button returns to the destination that opened the screen', () =
 test('destinations record their context and topics only record what opened them', () => {
     for (const branch of [
         "recordBackContext('search', location.hash)",
-        "recordBackContext('settings')",
         "recordBackContext('learn', location.hash)",
         "recordBackContext('ecg')"
     ]) assert.ok(applyRoute.includes(branch), branch + ' must record its destination');
+    assert.doesNotMatch(applyRoute, /recordBackContext\('settings'\)/,
+        'a utility settings visit must preserve the original reading destination');
     assert.match(appJs, /function renderHome\(preservePosition\) \{\n\s*const position = window\.scrollY;\n\s*recordBackContext\('library'\);/);
     assert.match(renderStudy, /recordBackContext\('study', location\.hash/);
     assert.match(appJs, /function renderShift\(id\) \{\n\s*recordBackContext\('shift'\);/);
