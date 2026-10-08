@@ -43,7 +43,7 @@
            denser card surface, not a different page. */
         const kicker = '<p class="study-kicker">THE EM POCKET · LEARNING WORKSPACE</p>';
         const lead = '<p class="workspace-lead">'+esc(description)+'</p>';
-        return '<section class="learning-workspace"><div class="practice-hero"><div class="workspace-hero-nav"><a class="back-btn ios-nav-back" href="#learn~home"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span>Learn</span></a><nav class="workspace-personal" aria-label="Personal study tools"><a href="#study~due" aria-label="Review queue">Review</a><a href="#study~saved" aria-label="Saved topics">Saved</a></nav></div>'+kicker+'<h1 tabindex="-1">'+esc(title)+'</h1>'+lead+'<nav class="workspace-tabs" aria-label="Learning workspace">'+[['practice','Practice'],['visuals','Visuals'],['skills','Preparation'],['progress','Progress']].map(([id,label])=>'<a href="#learn~'+id+'"'+(id===active?' aria-current="page"':'')+'>'+label+'</a>').join('')+'</nav></div><div class="workspace-body"></div></section>';
+        return '<section class="learning-workspace"><div class="practice-hero"><div class="workspace-hero-nav"><a class="back-btn ios-nav-back" href="#learn~home"><svg class="ui-icon" data-icon="chevron_left" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false" fill="currentColor" stroke="none"><g transform="translate(0 24) scale(.025)" fill="currentColor" stroke="none"><path d="m432-480 156 156q11 11 11 28t-11 28q-11 11-28 11t-28-11L348-452q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l184-184q11-11 28-11t28 11q11 11 11 28t-11 28L432-480Z"/></g></svg><span>Learn</span></a><nav class="workspace-personal" aria-label="Personal study tools"><a href="#study~due" aria-label="Review queue">Review</a><a href="#study~saved" aria-label="Saved topics">Saved</a></nav></div>'+kicker+'<h1 tabindex="-1">'+esc(title)+'</h1>'+lead+'<nav class="workspace-tabs" aria-label="Learning workspace">'+[['practice','Practice'],['visuals','Visuals'],['skills','Preparation'],['progress','Progress']].map(([id,label])=>'<a href="#learn~'+id+'"'+(id===active?' aria-current="page"':'')+'>'+label+'</a>').join('')+'</nav></div><div class="workspace-body"></div></section>';
     }
     function homeHtml() {
         return '<section class="workspace-entry" aria-label="Choose how to use The EM Pocket">' +
@@ -263,7 +263,7 @@
     let recordingsPromise = null;
     function loadRecordings() {
         if (!recordingsPromise) {
-            recordingsPromise = import('./ecg-recordings.js?v=20261008-the-em-pocket-v35')
+            recordingsPromise = import('./ecg-recordings.js?v=20261008-clear-icons-v36')
                 .catch(function () { recordingsPromise = null; });
         }
         return recordingsPromise || Promise.resolve();
