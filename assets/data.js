@@ -1,6 +1,6 @@
 /* ══════════ EM-CPs clinical data ══════════
    Framework: Rosen's Emergency Medicine 10th ed. (2023) — approach to cardinal presentations.
-   Educational synthesis with targeted source checks on 7 Sep 2026; see docs/CONTENT-AUDIT-2026-09-07.md for scope and remaining review needs.
+   Educational synthesis; content and selected evidence reviewed 8 Oct 2026. See docs/CLINICAL-AUDIT-2026-10-08.md for scope and limits.
    Severity: critical = life/limb/sight threat now · emergent = time-sensitive morbidity · common = high-frequency.
    Educational reference only — never replaces clinical judgment or local protocols.
 */
@@ -33,14 +33,14 @@ workup: [
 ['Labs', ['hs-Troponin 0/1h (preferred) or 0/2h assay-specific ESC/ACC-AHA algorithm — not a legacy 6-hour wait when an hs-cTn CDP is in use; with conventional troponin, use the validated serial timing and risk score in the local pathway', 'HEART or EDACS as adjuncts — essential if using contemporary (non-hs) troponin', 'D-dimer only when PE pretest is not high (PERC if very-low gestalt; a validated age-adjusted or YEARS cutoff; do not combine thresholds ad hoc)', 'CBC, BMP, coagulation if antiplatelet/anticoagulation planned']],
 ['Imaging', ['CXR: mediastinum, PTX, edema, free air', 'CTA chest for dissection or PE; echo for RWMA/tamponade']]
 ],
-redFlags: ['Hypotension, syncope or pre-syncope', 'ST elevation, hyperacute T waves, De Winter, Wellens, or posterior STE (isolated ST depression V1–V3)', 'Sgarbossa / Smith-modified criteria in LBBB or paced rhythm', 'Pain radiating to the back with pulse/BP asymmetry', 'New murmur or pulsus paradoxus', 'Unilateral absent breath sounds or tracheal deviation', 'Subcutaneous emphysema after vomiting', 'Ongoing pain despite antianginals'],
+redFlags: ['Hypotension, syncope or pre-syncope', 'ST elevation, hyperacute T waves, De Winter, Wellens, or suspected posterior injury (ST depression maximal in V1–V3)', 'Sgarbossa / Smith-modified criteria in LBBB or paced rhythm', 'Pain radiating to the back with pulse/BP asymmetry', 'New murmur or pulsus paradoxus', 'Unilateral absent breath sounds or tracheal deviation', 'Subcutaneous emphysema after vomiting', 'Ongoing pain despite antianginals'],
 disposition: [
 ['Discharge', 'hs-cTn rule-out (0/1h or 0/2h) + non-ischemic ECG + no high-risk features; or HEART 0–3 with serial negative troponin on a score-based pathway. Arrange follow-up ± outpatient CTA/stress per local CDP.'],
 ['Admit (observation / telemetry)', 'Observe-zone troponin kinetics, HEART 4–6, new AF, ongoing atypical symptoms, or incomplete rule-out.'],
 ['ICU / cath lab activation', 'STEMI or occlusion-MI pattern, hemodynamic instability, suspected dissection/tamponade, refractory ischemic symptoms, arrhythmia.']
 ],
-pitfalls: ['Isolated ST depression V1–V3 = posterior OMI until proven otherwise (V7–V9).', 'Wellens / De Winter = critical LAD disease even when pain-free.', 'New or presumed-new LBBB alone is not a STEMI equivalent (2025 ACC/AHA ACS) — use Sgarbossa/Smith criteria and clinical context.', 'Dissection mislabelled as NSTEMI and anticoagulated — check pulses/BP in both arms.', 'Do not default to a 6-hour troponin wait when an hs-cTn 0/1h or 0/2h protocol is available.', 'PE in the young and pregnant — non-tachycardic PE is common.', '\u201CMusculoskeletal\u201D + risk factors = the classic anchoring error.', 'A cold, pulseless limb with chest or back pain is dissection until the aorta is seen.'],
-pearls: ['The six killers first — ACS, dissection, PE, tension PTX, Boerhaave, tamponade — then the hs-cTn 0/1h or 0/2h algorithm.', 'Isolated ST depression V1–V3 is posterior OMI until V7–V9 say otherwise.', 'New LBBB alone is not a STEMI equivalent (2025 ACC/AHA); use Sgarbossa/Smith and the patient.', 'Selected patients can meet a validated single very-low hs-cTn rule-out; early presenters or ongoing clinical concern require serial assessment.'],
+pitfalls: ['ST depression maximal in V1–V3 raises concern for posterior occlusion: record V7–V9, repeat ECGs and escalate when clinically indicated. Negative posterior leads do not exclude occlusion.', 'Wellens and de Winter patterns need urgent ACS assessment even when pain-free; the ECG does not establish exact culprit anatomy or current artery patency.', 'New or presumed-new LBBB alone is not a STEMI equivalent (2025 ACC/AHA ACS) — use Sgarbossa/Smith criteria and clinical context.', 'Dissection mislabelled as NSTEMI and anticoagulated — check pulses/BP in both arms.', 'Do not default to a 6-hour troponin wait when an hs-cTn 0/1h or 0/2h protocol is available.', 'PE in the young and pregnant — non-tachycardic PE is common.', '\u201CMusculoskeletal\u201D + risk factors = the classic anchoring error.', 'A cold, pulseless limb with chest or back pain is dissection until the aorta is seen.'],
+pearls: ['The six killers first — ACS, dissection, PE, tension PTX, Boerhaave, tamponade — then the hs-cTn 0/1h or 0/2h algorithm.', 'ST depression maximal in V1–V3 may reflect posterior occlusion; negative V7–V9 do not exclude it.', 'New LBBB alone is not a STEMI equivalent (2025 ACC/AHA); use Sgarbossa/Smith and the patient.', 'Selected patients can meet a validated single very-low hs-cTn rule-out; early presenters or ongoing clinical concern require serial assessment.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — cardiac & chest pain chapters', '2021 AHA/ACC Chest Pain Guideline; 2022 ACC Expert Consensus Pathway (ED chest pain)', '2025 ACC/AHA/ACEP ACS Guideline', '2023 ESC ACS Guidelines (0/1h and 0/2h hs-cTn algorithms)', '2026 AHA/ACC Acute PE Guideline']
 },
 {
@@ -73,12 +73,12 @@ workup: [
 ],
 redFlags: ['Silent chest, exhaustion, or falling respiratory rate in asthma/COPD', 'Rising CO₂ or falling pH on VBG', 'SpO₂ <90% despite high-flow oxygen', 'Hemodynamic instability or stridor at rest', 'Absent lung sliding with shock', 'New confusion or drowsiness (CO₂ narcosis)'],
 disposition: [
-['Discharge', 'Asthma/COPD back to baseline, room-air saturations acceptable, reliable follow-up. Asthma: prescribe an ICS-containing regimen — GINA 2026 does not recommend SABA-only therapy at any step.'],
+['Discharge', 'Asthma/COPD back to baseline, room-air saturations acceptable, reliable follow-up. Asthma: prescribe an ICS-containing regimen — GINA 2026 recommends ICS-containing treatment for adults, adolescents and children 6–11 years; younger children need the preschool pathway.'],
 ['Admit (ward / HDU)', 'Persistent hypoxia on therapy, moderate exacerbation, PE or pneumonia requiring inpatient therapy; selected low-risk PE can be treated at home after Hestia/PESI-based assessment, bleeding-risk and follow-up checks; use PSI plus clinical judgment for pneumonia.'],
 ['ICU / NIV-ventilation', 'NIV failure or exhaustion; COPD with pH <7.25 or falling despite NIV; tension physiology; high-risk PE (shock/hypotension) — PERT/reperfusion, not RV strain alone.']
 ],
 pitfalls: ['Normal SpO₂ excludes neither PE nor early CO poisoning (cherry-red skin is uncommon and unreliable).', 'Wheeze in the elderly is not always asthma — think HF (\u201Ccardiac asthma\u201D).', 'A fatiguing asthmatic with a \u201Cnormal\u201D CO₂ is deteriorating, not improving.', 'Diffuse B-lines are not always edema — integrate context (ARDS, pneumonia, fibrosis).', 'Discharging asthma on albuterol alone is outdated and associated with excess exacerbations and death (GINA 2026).'],
-pearls: ['POCUS (B-lines, sliding, RV) plus a focused history resolves most dyspnea faster than any single lab.', 'Normal SpO₂ excludes neither PE nor early CO — use the pathway and co-oximetry.', 'A fatiguing asthmatic with a \u201Cnormal\u201D CO₂ is deteriorating, not improving.', 'GINA 2026: no SABA-only discharge — every asthmatic leaves with ICS-containing therapy.'],
+pearls: ['POCUS (B-lines, sliding, RV) plus a focused history resolves most dyspnea faster than any single lab.', 'Normal SpO₂ excludes neither PE nor early CO — use the pathway and co-oximetry.', 'A fatiguing asthmatic with a \u201Cnormal\u201D CO₂ is deteriorating, not improving.', 'GINA 2026: adults, adolescents and children 6–11 years need ICS-containing therapy; use the separate preschool pathway for younger children.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — dyspnea & respiratory distress', 'GINA 2026 (ICS-formoterol Track 1; no SABA-only therapy)', 'GOLD 2026', '2019 ESC/ERS PE Guidelines; 2026 AHA/ACC Acute PE Guideline']
 },
 {
@@ -99,7 +99,7 @@ dontMiss: [
 ['Ovarian / testicular torsion', 'critical', 'Acute one-sided pain — Doppler US. Testicular salvage is highest if detorsion is within ~6 h, but operate on suspicion — do not wait out a clock.'],
 ['Abdominal aortic / mesenteric dissection', 'critical', 'Consider in the same breath as chest-dissection presentations.'],
 ['DKA, inferior MI, basal pneumonia', 'emergent', 'Medical mimics — check glucose, ECG, and lungs in every atypical story.'],
-['Appendicitis / cholecystitis / diverticulitis / obstruction', 'common', 'Time-sensitive; score and image. Selected uncomplicated appendicitis may be antibiotics-first per protocol (CODA).']
+['Appendicitis / cholecystitis / diverticulitis / obstruction', 'common', 'Time-sensitive; score and image. Selected imaging-confirmed uncomplicated appendicitis may receive antibiotics after shared decision-making about recurrence and failure (WSES 2025 edition / CODA).']
 ],
 history: ['Onset & migration: periumbilical → RLQ (appendicitis); sudden maximal (perforation, torsion, AAA)', 'Relationship to meals (biliary), defecation (colonic), vomiting first vs pain first (surgical vs medical)', 'Blood: hematemesis, melena, hematochezia; last menstrual period & pregnancy possibility', 'Vascular history: AFib, known AAA, atherosclerosis → ischemia', 'Immunosuppression and steroids blunt peritoneal signs'],
 exam: ['Peritoneal signs: rigidity, rebound, guarding', 'Murphy sign (cholecystitis), McBurney (appendicitis), Rovsing/psoas/obturator', 'Pulsatile mass + bruits; Cullen/Grey-Turner are late and uncommon (retroperitoneal blood)', 'Hernial orifices and genital exam in every male with scrotal/inguinal pain', 'Volume status: tachycardia, dry mucosa, capillary refill'],
@@ -116,7 +116,7 @@ disposition: [
 ],
 pitfalls: ['Analgesia does not mask the diagnosis — treat the pain and re-examine (ACEP).', 'Normal lactate & WBC do not exclude early mesenteric ischemia.', 'Ectopic pregnancy happens with \u201Cno risk factors\u201D and a negative exam — and with a history of tubal ligation.', 'Elderly with soft findings can have catastrophes — lower the threshold for CT.', 'Diaphragmatic irritation (basal pneumonia, inferior MI) presents as upper abdominal pain.'],
 pearls: ['hCG in every patient of childbearing potential — no exceptions for \u201Cno risk factors.\u201D', 'Pain out of proportion with a quiet belly is mesenteric ischemia until CTA says otherwise.', 'Analgesia does not mask the surgical abdomen — treat pain and re-examine.', 'The elderly with a soft abdomen still perforate, infarct, and rupture AAAs — lower the CT threshold.'],
-refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — abdominal pain & surgical abdomen', 'Tintinalli\u2019s Emergency Medicine, 9th ed.', 'WSES 2020 guidelines (appendicitis, diverticulitis); CODA trial (NEJM 2020) for antibiotics-first appendicitis']
+refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — abdominal pain & surgical abdomen', 'Tintinalli\u2019s Emergency Medicine, 9th ed.', 'WSES 2025 edition appendicitis guideline (published 2026); WSES 2020 diverticulitis guideline; CODA trial (NEJM 2020)']
 },
 {
 id: 'headache', name: 'Headache', icon: '🧠',
@@ -152,8 +152,8 @@ disposition: [
 ['Neurosurgery / stroke unit / ICU', 'SAH (aneurysm securing), ICH per protocol, deteriorating meningitis, elevated ICP.']
 ],
 pitfalls: ['A normal third-generation CT within 6 h of onset, read by an experienced radiologist, rules out SAH in neurologically intact patients (ACEP Level B). After 6 h, CT is not sufficient — LP or CTA.', 'Sentinel \u201Cwarning\u201D headaches precede 10–40% of aneurysm ruptures.', 'Ottawa SAH Rule is highly sensitive but poorly specific — any single positive criterion means you cannot rule out SAH without testing.', 'GCA can present without a tender temporal artery and with a normal ESR.', 'Do not relabel a first \u201Cmigraine\u201D after age 50 without considering imaging.', 'Opioids are not first-line for primary headache in the ED (ACEP).'],
-pearls: ['Third-generation CT within 6 h + a normal neuro exam rules out SAH (ACEP 2019). After 6 h: LP or CTA.', 'Ottawa SAH all-negative: you can skip imaging. Any single positive criterion means you cannot.', 'Start glucocorticoids immediately if cranial GCA with visual threat is suspected — do not wait for ESR or biopsy.', 'A first \u201Cmigraine\u201D after age 50 is a red flag, not a diagnosis.'],
-refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — headache', 'ACEP 2019 Clinical Policy: Acute Headache (Ottawa SAH Rule; 6-hour CT rule; LP or CTA after negative CT)', 'AHA/ASA 2023 Guideline for Aneurysmal SAH', 'ACR/EULAR 2018 GCA classification; EULAR GCA management recommendations']
+pearls: ['A high-quality negative CT within 6 h with a normal neurologic exam can exclude SAH in the eligible ACEP pathway; expert interpretation is essential. Residual concern or later presentation needs further testing.', 'An all-negative Ottawa SAH rule can avoid SAH testing only in its eligible population; it does not exclude other causes of headache. A positive criterion requires investigation.', 'Start glucocorticoids immediately if cranial GCA with visual threat is suspected — do not wait for ESR or biopsy.', 'A first \u201Cmigraine\u201D after age 50 is a red flag, not a diagnosis.'],
+refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — headache', 'ACEP 2019 Clinical Policy: Acute Headache (Ottawa SAH Rule; 6-hour CT rule; LP or CTA after negative CT)', 'AHA/ASA 2023 Guideline for Aneurysmal SAH', 'ACR/EULAR 2022 GCA classification (research criteria, not a diagnostic exclusion rule); EULAR GCA management recommendations']
 },
 {
 id: 'ams', name: 'Altered Mental Status', icon: '🌀',
@@ -168,20 +168,20 @@ approach: [
 dontMiss: [
 ['Hypoglycemia / hyperglycemic crises', 'critical', 'Bedside glucose in every AMS patient — before anything else. Never delay dextrose for thiamine.'],
 ['Hypoxia / hypercapnia', 'critical', 'SpO₂, VBG; think CO₂ narcosis in COPD.'],
-['Stroke / intracranial hemorrhage', 'critical', 'Sudden onset, focal signs, anticoagulation — non-contrast CT now. IV tenecteplase or alteplase if eligible within 4.5 h; mechanical thrombectomy up to 24 h in selected patients, including some large-core and basilar occlusions (2026 AHA/ASA) — not a rigid 6-hour wall.'],
+['Stroke / intracranial hemorrhage', 'critical', 'Sudden onset, focal signs, anticoagulation — non-contrast CT now. IV tenecteplase or alteplase if eligible within 4.5 h; selected unknown-onset or 4.5–9 h cases may qualify using advanced imaging; mechanical thrombectomy up to 24 h in selected patients, including some large-core and basilar occlusions (2026 AHA/ASA) — not a rigid 6-hour wall.'],
 ['SAH', 'critical', 'Sudden headache + collapse; CT then LP or CTA as indicated.'],
 ['Meningitis / encephalitis', 'critical', 'Fever, meningismus — empiric therapy must not wait on imaging.'],
 ['Wernicke encephalopathy', 'critical', 'Alcohol use/malnutrition — give thiamine with (or immediately after) glucose; do not withhold glucose.'],
 ['Toxic ingestion (CO, TCA, salicylates, opioids)', 'critical', 'Pupils, skin, ECG (QRS widening), anion gap, temperature. Cherry-red skin is an unreliable CO sign — use CO-oximetry.'],
 ['Severe hyponatremia / hyperammonemia / uremia', 'emergent', 'Metabolic catastrophes — labs before labels.'],
-['Delirium from infection / retention / medications', 'common', 'Find the driver; \u201CUTI\u201D alone is an overused explanation in the elderly (asymptomatic bacteriuria is not a diagnosis).']
+['Delirium from infection / retention / medications', 'common', 'Find the driver; \u201CUTI\u201D alone is an overused explanation in the elderly (asymptomatic bacteriuria does not establish symptomatic UTI).']
 ],
 history: ['Baseline cognition and tempo of change (family, care home, EMS)', 'Medications: sedatives, anticholinergics, insulin, anticoagulants', 'Substance use, alcohol, psychiatric history, toxin access', 'Trauma/falls — subdural in the elderly, especially if anticoagulated', 'Fever, headache, seizure activity, end-organ disease'],
 exam: ['GCS + focused neuro: pupils, focal signs, meningismus', 'Glucose and SpO₂ at the bedside — mandatory first steps', 'Skin: needle tracks, rash, pallor; do not rely on cherry-red colour for CO', 'Breath odor: hepatic, ketotic, alcohol, uremic', 'Trauma stigmata: hemotympanum, raccoon eyes, scalp hematoma'],
 workup: [
-['Bedside', ['Glucose, SpO₂, temperature, VBG', 'ECG (TCA patterns, ischemia, dysrhythmia)', 'POCUS for free fluid / obvious cranial findings as trained']],
+['Bedside', ['Glucose, SpO₂, temperature, VBG', 'ECG (TCA patterns, ischemia, dysrhythmia)', 'POCUS for systemic causes of shock as trained; it cannot exclude intracranial pathology']],
 ['Labs', ['Electrolytes (Na, Ca), renal and hepatic panels; ammonia if liver disease', 'Lactate, CBC, coagulation, targeted toxicology, TSH', 'CO-oximetry if CO is possible']],
-['Imaging', ['Non-contrast head CT before LP when indicated (focal signs, anticoagulation, depressed GCS, papilledema)', 'CXR; LP and EEG per clinical picture']]
+['Imaging', ['Head CT before LP when indicated by focal signs, severe depressed consciousness or raised-ICP concern. Anticoagulation/coagulopathy requires a separate LP safety assessment; a normal CT does not make LP safe', 'CXR; LP and EEG per clinical picture']]
 ],
 redFlags: ['Falling GCS or new focal neurology', 'Hypoglycemia or hypothermia', 'Meningismus, fever, or new seizure', 'Suspected overdose with QRS widening or absent gag reflex', 'Anticoagulation + head injury', 'Hypercapnia or acidosis on VBG'],
 disposition: [
@@ -190,7 +190,7 @@ disposition: [
 ['ICU / stroke pathway', 'Coma, airway compromise, status epilepticus, severe intoxication, massive ICH, fulminant sepsis, large-vessel occlusion within the EVT window.']
 ],
 pitfalls: ['\u201CUTI causing AMS\u201D is overcalled — keep looking for the true driver (IDSA: do not treat asymptomatic bacteriuria).', 'Never delay dextrose for thiamine. Give thiamine concurrently; a single glucose bolus has not been shown to precipitate Wernicke. Prolonged carbohydrate loads without thiamine can.', 'Subdurals in the elderly can be progressive confusion \u201Cwithout trauma\u201D.', 'Hypothermia masks toxidromes and infection signs.', 'Post-ictal states normalize — image when they don\u2019t.'],
-pearls: ['Glucose and oxygen before the mnemonic.', 'Never delay dextrose for thiamine — give them together.', '\u201CUTI causing AMS\u201D is overcalled; asymptomatic bacteriuria is not a diagnosis (IDSA).', 'A changing elderly patient without a clear fall still has a subdural until you look.'],
+pearls: ['Glucose and oxygen before the mnemonic.', 'Never delay dextrose for thiamine — give them together.', '\u201CUTI causing AMS\u201D is overcalled; asymptomatic bacteriuria does not establish symptomatic UTI (IDSA).', 'A changing elderly patient without a clear fall still has a subdural until you look.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — altered mental status & delirium', 'Han JH, Wilber ST. Altered mental status in older patients in the emergency department. Clin Geriatr Med.', '2026 AHA/ASA acute ischemic stroke guideline; IDSA asymptomatic bacteriuria', 'Donnino et al., Ann Emerg Med 2007; Schabelman & Kuo, J Emerg Med 2012 — thiamine/glucose sequence']
 },
 {
@@ -223,10 +223,10 @@ redFlags: ['Exertional syncope or syncope while supine', 'No prodrome / sudden c
 disposition: [
 ['Discharge', 'Reflex/vasovagal pattern, normal ECG, CSRS −3 to 0 (very low / low; 30-day serious outcome <1%) — hydration, counselling, GP follow-up.'],
 ['Admit (telemetry) or shared decision', 'CSRS +1 to +3 (medium, ~8% 30-day serious outcomes): shared decision / brief observation. Abnormal ECG not clearly chronic; frail elderly living alone.'],
-['ICU / expedited cardiac workup', 'CSRS ≥4, documented arrhythmia, exertional syncope with murmur, PE with shock or strain plus biomarkers, positive troponin with ischemic features.']
+['Monitored admission / expedited cardiac workup; ICU if unstable', 'CSRS ≥4, documented arrhythmia, exertional syncope with murmur, PE with shock or strain plus biomarkers, positive troponin with ischemic features.']
 ],
-pitfalls: ['\u201CSyncope + facial injury\u201D is cardiac until proven otherwise (no time to protect the face).', 'Convulsive syncope mimics seizure — weigh the whole story.', 'A normal ED ECG does not exclude intermittent arrhythmia — history drives follow-up.', 'GI bleeding may be occult — look for melena in unexplained syncope.', 'Exertional syncope is cardiac until proven otherwise (rarely a post-exertional reflex faint — do not label it vasovagal in the ED).', 'CSRS ≥1 is medium, not high — do not automatically admit every +1.'],
-pearls: ['ECG for every syncope, no exceptions.', 'CSRS −3 to 0 (very low/low) can go home; +1 to +3 is shared decision; ≥4 is high-risk.', 'Syncope + facial injury means there was no warning — treat as cardiac until proven otherwise.', 'Exertional or supine syncope is cardiac until the opposite is proven.'],
+pitfalls: ['Facial injury can follow cardiac or reflex syncope. Assess the injury and the complete event history; injury alone does not establish a cardiac cause.', 'Convulsive syncope mimics seizure — weigh the whole story.', 'A normal ED ECG does not exclude intermittent arrhythmia — history drives follow-up.', 'GI bleeding may be occult — look for melena in unexplained syncope.', 'Exertional syncope is cardiac until proven otherwise (rarely a post-exertional reflex faint — do not label it vasovagal in the ED).', 'CSRS ≥1 is medium, not high — do not automatically admit every +1.'],
+pearls: ['ECG for every syncope, no exceptions.', 'CSRS −3 to 0 (very low/low) can go home; +1 to +3 is shared decision; ≥4 is high-risk.', 'Facial injury does not establish the mechanism of syncope; combine the history, ECG and cardiovascular findings.', 'Exertional or supine syncope is cardiac until the opposite is proven.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — syncope', 'Canadian Syncope Risk Score: Thiruganasambandamoorthy et al., CMAJ 2016; multicenter validation JAMA Intern Med 2020', '2017 ACC/AHA/HRS and 2018 ESC Syncope Guidelines']
 },
 {
@@ -240,7 +240,7 @@ approach: [
     'Cord/cauda: MRI now. Dexamethasone is for MSCC, not routine discogenic CES.'
 ],
 dontMiss: [
-['Acute stroke / TIA', 'critical', 'Sudden focal weakness — last-known-well, glucose, non-contrast CT. IV TNK/alteplase ≤4.5 h if eligible; EVT ≤24 h in selected patients using current vessel/imaging criteria, including some large-core infarcts (2026 AHA/ASA). Do not exclude EVT solely because 6 hours have passed.'],
+['Acute stroke / TIA', 'critical', 'Sudden focal weakness — last-known-well, glucose, non-contrast CT. IV TNK/alteplase ≤4.5 h if eligible; selected unknown-onset or 4.5–9 h cases may qualify with advanced imaging; EVT ≤24 h in selected patients using current vessel/imaging criteria, including some large-core infarcts (2026 AHA/ASA). Do not exclude EVT solely because 6 hours have passed.'],
 ['Guillain-Barré syndrome', 'critical', 'Ascending (or variant) weakness, areflexia; monitor NIF/VC — intubate before the crash. CSF may be normal in the first week.'],
 ['Cauda equina / cord compression', 'critical', 'Back pain + leg weakness ± saddle anesthesia, urinary retention — emergency MRI + spine surgery. Dexamethasone is for metastatic cord compression (NICE NG234), not routine for discogenic CES.'],
 ['Myasthenic crisis', 'critical', 'Fatigable weakness (ptosis, diplopia worse late in the day); NIF monitoring; avoid macrolides, fluoroquinolones, aminoglycosides.'],
@@ -274,7 +274,7 @@ approach: [
     'Resuscitate first: two large-bore IVs, hemodynamics over the first hematocrit.',
     'Upper vs lower from the story; variceal pathway changes drugs and endoscopy timing.',
     'Risk-stratify: Glasgow-Blatchford 0–1 can leave (ACG 2021).',
-    'Restrictive transfusion (Hb 7; ~8 if CVD); do not over-transfuse varices.'
+    'In stable UGIB, usual Hb trigger 7 g/dL (often 8 with CVD); active shock and ACS need individualized transfusion. Avoid over-transfusing varices.'
 ],
 dontMiss: [
 ['Variceal hemorrhage', 'critical', 'Cirrhosis + hematemesis: vasoactive drug (octreotide; terlipressin where available) + ceftriaxone + endoscopy within 12 h; restrictive transfusion (Hb 7–8 g/dL).'],
@@ -298,8 +298,8 @@ disposition: [
 ['Admit (ward / HDU)', 'GBS ≥2, identified stable source, anticoagulation management needed.'],
 ['ICU / endoscopy-IR activation', 'Hemodynamic instability, active transfusion need, suspected variceal bleed, aortoenteric fistula.']
 ],
-pitfalls: ['The hematocrit lags 12–24 h — a normal first value means nothing acutely.', 'Melena can come from the right colon; hematochezia can be a brisk upper bleed.', 'Restrictive transfusion (Hb 7 g/dL; ~8 g/dL if cardiovascular disease) improves UGIB outcomes (Villanueva NEJM 2013; ACG 2021).', 'Over-transfusing variceal bleeding raises portal pressure and rebleeding (Baveno VII).', 'Pre-endoscopic PPI has no ACG recommendation for or against — do not let it delay endoscopy.', 'NG lavage does not reliably risk-stratify and is not required.'],
-pearls: ['Hemodynamics beat the hematocrit — the first Hb lags 12–24 h.', 'Glasgow-Blatchford 0–1 can leave for outpatient endoscopy (ACG 2021).', 'Restrictive transfusion: Hb 7 g/dL (≈8 if cardiovascular disease).', 'Variceal bleed: vasoactive drug + ceftriaxone + endoscopy within 12 h; do not over-transfuse.'],
+pitfalls: ['Hemoglobin/hematocrit may initially be normal in acute hemorrhage and change with equilibration and fluids. Use perfusion, ongoing loss and serial measurements.', 'Melena can come from the right colon; hematochezia can be a brisk upper bleed.', 'Restrictive transfusion is usual in stable UGIB (Hb 7 g/dL; often 8 with CVD). Hemorrhagic shock and active ACS need individualized decisions rather than waiting for that threshold.', 'Over-transfusing variceal bleeding raises portal pressure and rebleeding (Baveno VII).', 'Pre-endoscopic PPI has no ACG recommendation for or against — do not let it delay endoscopy.', 'NG lavage does not reliably risk-stratify and is not required.'],
+pearls: ['An initially normal hemoglobin does not exclude major acute blood loss; reassess perfusion and serial hemoglobin.', 'Glasgow-Blatchford 0–1 can leave for outpatient endoscopy (ACG 2021).', 'Usual Hb triggers in stable bleeding: 7 g/dL (often 8 with CVD); do not apply a fixed trigger to hemorrhagic shock or active ACS.', 'Variceal bleed: vasoactive drug + ceftriaxone + endoscopy within 12 h; do not over-transfuse.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — GI bleeding', 'ACG 2021 Clinical Guideline: Upper GI and Ulcer Bleeding (Laine et al.) — GBS 0–1 discharge; Hb 7 g/dL', 'Baveno VII (2022) portal hypertension consensus; AASLD variceal hemorrhage guidance']
 },
 {
@@ -405,7 +405,7 @@ workup: [
 ],
 redFlags: ['Urinary retention or saddle anesthesia', 'Bilateral leg weakness or progressive deficit', 'Fever or IVDU with spinal pain', 'Cancer history, unexplained weight loss, night pain', 'Significant trauma — or minor trauma in the osteoporotic/elderly', 'Age >50 with new severe pain + vascular history'],
 disposition: [
-['Discharge', 'Non-specific mechanical pain without red flags: NSAIDs/acetaminophen ± heat, stay active (no bed rest), return precautions and follow-up. Opioids-first is outdated.'],
+['Discharge', 'Non-specific mechanical pain without red flags: consider an NSAID at the lowest effective dose for the shortest period after checking risks, plus heat/activity and follow-up. Do not offer acetaminophen alone as effective first-line treatment (NICE NG59). Opioids-first is outdated.'],
 ['Admit', 'Epidural abscess on IV antibiotics, pathologic fracture needing stabilization, intractable radicular pain, social issues.'],
 ['Emergency MRI + neurosurgery/ortho/oncology', 'Cauda equina, MSCC, unstable fracture, spinal infection with neuro signs.']
 ],
@@ -436,7 +436,7 @@ dontMiss: [
 history: ['Contact lenses (ulcer risk), trauma, ocular surgery/injections, chemical exposure', 'Pain: deep vs superficial; photophobia; discharge character', 'Vision change: blurring, curtain, floaters, halos around lights', 'Systemic disease: autoimmune (scleritis/uveitis), recent shingles'],
 exam: ['Visual acuity in EVERY red eye — with pinhole and correction (except irrigate first in chemical burns)', 'Pupils: swinging-flashlight for afferent defect', 'Fluorescein staining (ulcer, dendrite), chamber depth, cells/flare, hypopyon', 'Everted lids for foreign body (after anesthetic); red reflex', 'Proptosis, painful eye movements, periorbital edema'],
 workup: [
-['Bedside', ['Acuity, fluorescein staining; tonometry when glaucoma is suspected', 'Chemical splash: irrigate first, then measure pH until 7.0–7.4']],
+['Bedside', ['Acuity, fluorescein/slit-lamp examination; tonometry for suspected glaucoma only after excluding open-globe injury', 'Chemical splash: irrigate first, then measure pH until 7.0–7.4']],
 ['Labs', ['As indicated: CBC/inflammatory markers for orbital cellulitis; ophthalmology-led corneal scraping']],
 ['Imaging', ['CT orbits for cellulitis, intraocular foreign body, or fracture', 'None needed for simple conjunctivitis; stroke-protocol imaging for CRAO']]
 ],
@@ -446,7 +446,7 @@ disposition: [
 ['Urgent ophthalmology (same day)', 'Keratitis, uveitis, retinal-detachment symptoms, hyphema, preseptal cellulitis.'],
 ['Emergency ophthalmology / admission / stroke pathway', 'Chemical burn (after irrigation), angle-closure glaucoma, endophthalmitis, orbital cellulitis, CRAO.']
 ],
-pitfalls: ['Never patch or give steroids over a possibly herpetic or ulcerated cornea.', 'Chemical burns: delayed irrigation means permanent damage — triage straight to eye-wash and keep going until pH normalizes.', 'Contact lens + red eye + pain = ulcer until fluorescein proves otherwise.', 'Skipping visual acuity is the universal red-eye pitfall.', 'Periorbital swelling + fever: test eye movement and proptosis to separate preseptal from orbital.', 'CRAO is a stroke until the workup says otherwise — look for GCA in patients ≥50 y with preceding headache/jaw claudication.'],
+pitfalls: ['Never patch or give steroids over a possibly herpetic or ulcerated cornea.', 'Chemical burns: delayed irrigation means permanent damage — triage straight to eye-wash and keep going until pH normalizes.', 'Contact lens + painful red eye warrants urgent keratitis assessment. A negative fluorescein examination alone does not exclude early infection; assess infiltrates, acuity and the slit-lamp examination.', 'Skipping visual acuity is the universal red-eye pitfall.', 'Periorbital swelling + fever: test eye movement and proptosis to separate preseptal from orbital.', 'CRAO is a stroke until the workup says otherwise — look for GCA in patients ≥50 y with preceding headache/jaw claudication.'],
 pearls: ['Visual acuity in every red eye — after you finish irrigating a chemical burn.', 'Irrigate alkali/acid until conjunctival pH is 7.0–7.4, then examine.', 'Contact lens + pain + a white spot is a corneal ulcer until fluorescein proves otherwise.', 'CRAO is a stroke equivalent — call ophthalmology and the stroke pathway together.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — ocular emergencies', 'AAO Preferred Practice Patterns (bacterial keratitis, primary angle closure, CRAO)', 'AHA: CRAO as a stroke equivalent; Tintinalli\u2019s 9th ed. — eye emergencies']
 },
@@ -454,10 +454,10 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — ocular emergencies'
 
 {
 id: 'joint-pain', name: 'Acute Joint Pain', icon: '🦵',
-tag: 'The hot swollen joint is septic until drained otherwise.',
-overview: 'A single hot, swollen joint is septic arthritis until aspiration proves otherwise — delay costs cartilage. Then split the rest: crystal, trauma, degenerative, inflammatory. Multiple joints suggest systemic disease (gout flare, rheumatic, reactive, viral, gonococcal).',
+tag: 'A hot swollen joint needs urgent assessment for infection.',
+overview: 'A single hot, swollen joint requires urgent assessment for septic arthritis — delay costs cartilage. No single synovial finding excludes infection. Then split the rest: crystal, trauma, degenerative, inflammatory. Multiple joints suggest systemic disease (gout flare, rheumatic, reactive, viral, gonococcal).',
 approach: [
-    'A single hot joint is septic until the tap says otherwise.',
+    'Urgently assess a hot swollen joint; a negative Gram stain, low cell count or crystals cannot exclude infection.',
     'Aspirate before antibiotics when safe: Gram stain, culture, crystals, cell count.',
     'Crystals do not exclude infection.',
     'Prosthetic joints belong to orthopedics — do not tap through cellulitis.'
@@ -486,13 +486,13 @@ disposition: [
 ['Emergency aspiration/washout + ortho', 'Purulent joint, prosthetic infection, hemarthrosis with coagulopathy.']
 ],
 pitfalls: ['Antibiotics before aspiration can sterilize the culture — tap first when safe.', 'Gout and septic arthritis coexist — crystals do not exclude infection.', 'Gonococcal arthritis is often a migratory tenosynovitis with skin lesions and a modest synovial WBC.', 'The immunosuppressed patient with a \u201Cmildly\u201D swollen joint can have a septic one — and a synovial WBC well under 50,000.', 'Elderly gout often strikes the knee or midfoot, not the big toe.', 'Do not tap a prosthetic joint through cellulitis; call ortho.'],
-pearls: ['A single hot joint is septic until the tap says otherwise — aspirate before antibiotics when safe.', 'Crystals do not exclude infection; gout and septic arthritis coexist.', 'Synovial WBC >50,000/µL is suggestive, not diagnostic — gonococcal and immunocompromised joints run lower.', 'Do not tap a prosthesis through cellulitis; that aspiration belongs to orthopedics.'],
+pearls: ['Aspirate a concerning hot joint before antibiotics when safe; negative Gram stain, low cell count or crystals do not exclude infection. Do not delay antibiotics in sepsis.', 'Crystals do not exclude infection; gout and septic arthritis coexist.', 'Synovial WBC >50,000/µL is suggestive, not diagnostic — gonococcal and immunocompromised joints run lower.', 'Do not tap a prosthesis through cellulitis; that aspiration belongs to orthopedics.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — arthritis & joint infection', 'IDSA guidance on native and prosthetic joint infection', 'EULAR crystal arthritis recommendations; Tintinalli\u2019s 9th ed. — musculoskeletal emergencies']
 },
 {
 id: 'coma', name: 'Coma & Depressed LOC', icon: '😴',
 tag: 'Protect, correct the two reversible killers, image.',
-overview: 'Coma is failure of both hemispheres or the ascending reticular activating system. Airway, glucose, oxygen, and naloxone/thiamine are given empirically while the exam localizes the lesion (breathing pattern, pupils, brainstem reflexes, motor tone) and imaging defines structure.',
+overview: 'Coma is failure of both hemispheres or the ascending reticular activating system. Support airway and ventilation, check/treat glucose, and give oxygen for hypoxemia, naloxone for suspected opioid respiratory depression and thiamine when indicated while the exam localizes the lesion (breathing pattern, pupils, brainstem reflexes, motor tone) and imaging defines structure.',
 approach: [
     'Airway, glucose, oxygen — naloxone and thiamine as indicated (never delay dextrose).',
     'Pupils, breathing pattern, and brainstem reflexes localise structure vs toxin.',
@@ -510,7 +510,7 @@ dontMiss: [
 ['Toxic-metabolic (CO, TCA, hypothermia)', 'critical', 'ECG, temperature, anion/osmolar gaps; deep coma with intact pupillary reflexes suggests toxin.']
 ],
 history: ['EMS/family: speed of onset, preceding symptoms (headache, seizure, fever, chest pain)', 'Access to medications/toxins; alcohol; psychiatric history', 'Trauma — especially falls in the anticoagulated', 'End-organ disease: liver, renal, diabetes, thyroid'],
-exam: ['ABCDE; GCS with attention to airway reflexes', 'Pupils: metabolic causes = small and reactive; structural = asymmetric/fixed', 'Breathing pattern: Cheyne-Stokes, central hyperventilation, apneustic', 'Brainstem reflexes: oculocephalic/cold caloric, corneal, cough', 'Motor: tone, symmetry, posturing to noxious stimulus', 'Trauma stigmata; skin for cyanosis, tracks, rash'],
+exam: ['ABCDE; GCS with attention to airway reflexes', 'Pupils: asymmetry or fixed dilation raises structural concern, but toxic/metabolic causes can also alter pupils; preserved reactivity does not exclude a structural lesion', 'Breathing pattern: Cheyne-Stokes, central hyperventilation, apneustic', 'Brainstem reflexes: pupils, corneal and cough; do not perform oculocephalic maneuvers until cervical injury is excluded', 'Motor: tone, symmetry, posturing to noxious stimulus', 'Trauma stigmata; skin for cyanosis, tracks, rash'],
 workup: [
 ['Bedside', ['Glucose immediately; naloxone/thiamine as indicated', 'ECG; VBG/ABG; core temperature']],
 ['Labs', ['Electrolytes (Na, Ca), renal/hepatic panels, ammonia, lactate, CBC, coagulation', 'Targeted toxicology; TSH; cortisol if endocrine suspicion']],
@@ -523,7 +523,7 @@ disposition: [
 ['ICU / neurosurgery', 'Undifferentiated coma, herniation signs, ICH/SAH, status epilepticus, need for airway protection.']
 ],
 pitfalls: ['Locked-in syndrome mimics coma — check for vertical eye movements.', 'Small reactive pupils + deep coma = toxin more often than structure.', 'Never attribute coma to \u201Calcohol\u201D without glucose, a CT, and a level.', 'Hypothermia halts almost everything — rewarm before declaring brainstem reflexes lost.', 'Non-convulsive status hides inside \u201Cpost-ictal\u201D labels.', 'Never delay dextrose for thiamine — give them together.'],
-pearls: ['Glucose, oxygen, and naloxone are given empirically while the exam localizes.', 'Basilar artery occlusion can present as coma without lateralizing signs — think CTA/CTP or MRI if CT is unrevealing.', 'The FOUR score captures brainstem findings that GCS misses.', 'Intact pupillary reflexes in deep coma point toward toxin/metabolic more than structure.'],
+pearls: ['Support airway and ventilation, check glucose, and use oxygen, naloxone and thiamine according to the clinical indication.', 'Basilar artery occlusion can present as coma without lateralizing signs — think CTA/CTP or MRI if CT is unrevealing.', 'The FOUR score captures brainstem findings that GCS misses.', 'Intact pupillary reflexes in deep coma point toward toxin/metabolic more than structure.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — coma & depressed level of consciousness', 'FOUR score (Wijdicks et al., Ann Neurol 2005)', 'Neurocritical Care Society guidance']
 },
 {
@@ -556,25 +556,25 @@ workup: [
 redFlags: ['Positive hCG with pain or bleeding — ectopic until excluded', 'Hypotension, syncope, or peritoneal signs', 'Sudden severe unilateral pain (torsion)', 'Fever with adnexal tenderness (TOA)', 'IUD in situ with pain or pregnancy', 'Bleeding at any stage of pregnancy'],
 disposition: [
 ['Discharge', 'Benign/cyclical pain, negative hCG, normal imaging when indicated, reliable follow-up with strict return precautions.'],
-['Admit', 'PID/TOA on IV antibiotics, medically-managed ectopic per criteria, hemorrhagic cyst under observation, uncontrolled pain.'],
+['Admit', 'PID/TOA on IV antibiotics, ectopic needing inpatient treatment/observation (selected methotrexate patients can follow a reliable outpatient pathway), hemorrhagic cyst under observation, uncontrolled pain.'],
 ['Emergency surgery / IR', 'Ruptured ectopic, ovarian torsion, ruptured TOA, unstable hemorrhagic cyst.']
 ],
-pitfalls: ['Ectopic with no risk factors and a normal exam is common — the hCG decides.', 'Preserved Doppler flow does not exclude torsion (dual blood supply).', 'Heterotopic pregnancy in IVF — an IUP does not exclude an ectopic.', 'PID with an IUD can progress rapidly to TOA.', 'Don\u2019t assume threatened abortion — image first.'],
-pearls: ['Pregnancy test first, always — unstable + positive hCG goes to the OR, not the scanner.', 'Ovarian torsion is a clinical diagnosis; Doppler is supportive, not exclusive.', 'Free fluid in the pouch of Douglas with a positive hCG is ruptured ectopic until proven otherwise.', 'IVF patients can have heterotopic pregnancy — seeing an IUP is not enough.'],
+pitfalls: ['Ectopic pregnancy can occur without risk factors or abnormal examination. A single hCG cannot locate a pregnancy; interpret symptoms, ultrasound and follow-up together.', 'Preserved Doppler flow does not exclude torsion (dual blood supply).', 'Heterotopic pregnancy in IVF — an IUP does not exclude an ectopic.', 'IUD-associated PID risk is mainly in the first 3 weeks after insertion. Treat PID and reassess at 48–72 h; routine immediate IUD removal is not required (CDC).', 'Don\u2019t assume threatened abortion — image first.'],
+pearls: ['Pregnancy test first, always — unstable + positive hCG goes to the OR, not the scanner.', 'Ovarian torsion is a clinical diagnosis; Doppler is supportive, not exclusive.', 'Moderate/large or complex free fluid with positive hCG raises concern for hemoperitoneum; fluid alone does not diagnose ectopic rupture. Instability requires immediate obstetric assessment.', 'IVF patients can have heterotopic pregnancy — seeing an IUP is not enough.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — acute pelvic pain', 'ACOG Practice Bulletins (ectopic pregnancy; PID)', 'Tintinalli\u2019s 9th ed. — gynecologic emergencies']
 },
 {
 id: 'vaginal-bleeding', name: 'Vaginal Bleeding', icon: '🌸',
 tag: 'Pregnant or not? Stable or not? Those two answers run the show.',
-overview: 'Vaginal bleeding splits cleanly by pregnancy status. In pregnancy: ectopic, miscarriage, molar, placenta previa (no vaginal exam!), abruption, and postpartum hemorrhage. Outside pregnancy: anovulatory bleeding, fibroids, cervicitis, malignancy — with coagulopathy and massive bleeding managed first.',
+overview: 'Vaginal bleeding splits cleanly by pregnancy status. In pregnancy: ectopic, miscarriage, molar, placenta previa (avoid digital examination before exclusion), abruption, and postpartum hemorrhage. Outside pregnancy: anovulatory bleeding, fibroids, cervicitis, malignancy — with coagulopathy and massive bleeding managed first.',
 approach: [
     'Two questions: pregnant or not, stable or not.',
-    'Resuscitate shock first. TXA within 3 h of PPH (WOMAN).',
+    'Resuscitate shock first. TXA as soon as PPH is diagnosed and within 3 h of birth (WHO/WOMAN).',
     'No digital exam until previa is excluded by US.',
     'Anti-D depends on gestation and event: follow current obstetric guidance; it is not routinely required for every pregnancy loss before 12 weeks. Abruption is clinical.'
 ],
 dontMiss: [
-['Hemorrhagic shock from any source', 'critical', 'Resuscitate before diagnosing: two IVs, crossmatch. TXA within 3 h of PPH (WOMAN trial); TXA is also used for selected non-pregnant heavy bleeding.'],
+['Hemorrhagic shock from any source', 'critical', 'Resuscitate before diagnosing: two IVs, crossmatch. TXA promptly for diagnosed PPH within 3 h of birth (WHO/WOMAN); TXA is also used for selected non-pregnant heavy bleeding.'],
 ['Ectopic pregnancy', 'critical', 'Bleeding + pain + positive hCG — transvaginal US urgently.'],
 ['Placenta previa', 'critical', 'Painless bright-red bleeding in later pregnancy — NO digital vaginal exam; US first.'],
 ['Placental abruption', 'critical', 'Painful woody uterus, fetal distress — obstetric emergency, deliver.'],
@@ -597,7 +597,7 @@ disposition: [
 ['Emergency obstetrics / OR / ICU', 'Placenta previa or abruption in viable pregnancy, postpartum hemorrhage, shock of any source, molar pregnancy.']
 ],
 pitfalls: ['Never do a digital exam when previa is possible — ultrasound first, always. Speculum exam is for obstetrics once previa is excluded or in a controlled setting.', 'A normal early hematocrit reassures falsely — the bleed is ongoing.', 'Anti-D is event- and gestation-specific. ACOG 2024 suggests forgoing routine Rh testing/RhIg for abortion or pregnancy loss before 12 weeks; do not extend this to every ectopic, trauma, or later-pregnancy event. Follow the local obstetric pathway. Kleihauer-Betke quantifies fetomaternal hemorrhage when indicated.', 'Post-coital bleeding in an older patient = cervical cancer screen.', 'Postpartum \u201Clochia\u201D turning bright red with clots is a hemorrhage, not normal.', 'Ultrasound is insensitive for abruption — the diagnosis is clinical (painful woody uterus, fetal distress).'],
-pearls: ['Two questions run the show: pregnant or not, stable or not.', 'Painless bright-red third-trimester bleeding = previa until US says otherwise — no digital exam.', 'TXA reduces PPH death when given within 3 hours (WOMAN).', 'PALM-COEIN organizes non-pregnant AUB; coagulopathy (including vWD) hides in \u201Cheavy periods since menarche.\u201D'],
+pearls: ['Two questions run the show: pregnant or not, stable or not.', 'Painless bright-red third-trimester bleeding = previa until US says otherwise — no digital exam.', 'TXA for diagnosed PPH reduces death from bleeding when given promptly within 3 hours of birth (WHO/WOMAN).', 'PALM-COEIN organizes non-pregnant AUB; coagulopathy (including vWD) hides in \u201Cheavy periods since menarche.\u201D'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — vaginal bleeding', 'ACOG Practice Bulletins (previa, abruption, PPH)', 'WOMAN trial (Lancet 2017) — TXA in PPH; FIGO PALM-COEIN; RCOG guidance']
 },
 {
@@ -615,7 +615,7 @@ dontMiss: [
 ['Fournier gangrene', 'critical', 'Perineal pain, crepitus, sepsis, diabetes — broad antibiotics + debridement.'],
 ['Incarcerated / strangulated inguinal hernia', 'critical', 'Irreducible tender groin mass with obstruction signs — surgery.'],
 ['Traumatic rupture / testicular hematoma', 'critical', 'Scrotal trauma — US; rupture needs repair within hours.'],
-['Epididymo-orchitis', 'common', 'Gradual pain, fever, dysuria; Prehn sign is unreliable — antibiotics by age and risk.'],
+['Epididymo-orchitis', 'common', 'Gradual pain, fever, dysuria; Prehn sign is unreliable — choose antibiotics by STI/enteric exposure and cultures, not age alone.'],
 ['Torsion of the appendix testis', 'common', 'Prepubertal, \u201Cblue-dot\u201D sign; conservative care per urology.'],
 ['Hydrocele / varicocele', 'common', 'Chronic swelling, transillumination or bag-of-worms feel.']
 ],
@@ -624,11 +624,11 @@ exam: ['Testis position & lie: high-riding, horizontal = torsion', 'Cremasteric 
 workup: [
 ['Bedside', ['Immediate urology consult when torsion is suspected — imaging must not delay the OR', 'POCUS Doppler: flow absence; whirlpool sign of the cord']],
 ['Labs', ['Urinalysis & cultures (infection vs torsion overlap)', 'CBC, CRP; lactate/sepsis screen for Fournier; glucose']],
-['Imaging', ['Doppler US when diagnosis uncertain and OR not imminent', 'CT pelvis for Fournier extent; X-ray for subcutaneous gas']]
+['Imaging', ['Doppler US when diagnosis uncertain and OR not imminent', 'CT may define Fournier extent when stable; imaging must not delay debridement in a convincing presentation']]
 ],
 redFlags: ['Sudden severe testicular pain with vomiting', 'High-riding or transverse testis', 'Absent cremasteric reflex', 'Perineal pain with crepitus or sepsis (Fournier)', 'Irreducible groin mass', 'Scrotal trauma with persistent pain (rupture)'],
 disposition: [
-['Discharge', 'Epididymitis on appropriate antibiotics (cover gonorrhea/chlamydia), appendix-testis torsion with NSAIDs per urology, resolved mechanical pain with follow-up.'],
+['Discharge', 'Epididymitis on antibiotics selected for STI versus enteric risk, cultures and local resistance, appendix-testis torsion with NSAIDs per urology, resolved mechanical pain with follow-up.'],
 ['Admit', 'Epididymo-orchitis needing IV therapy, Fournier post-debridement, monitored equivocal cases.'],
 ['Emergency surgery', 'Testicular torsion (immediate exploration), Fournier debridement, strangulated hernia, testicular rupture.']
 ],
@@ -647,7 +647,7 @@ approach: [
     'A patient who is not waking up may be in non-convulsive status.'
 ],
 dontMiss: [
-['Convulsive status epilepticus', 'critical', '≥5 min continuous or ≥2 seizures without recovery. IM midazolam or IV lorazepam first (AES 2016 / RAMPART). Then levetiracetam 60 mg/kg (max 4.5 g), valproate 40 mg/kg (max 3 g), or fosphenytoin 20 mg PE/kg — ESETT 2019 showed equivalent efficacy (~47%).'],
+['Convulsive status epilepticus', 'critical', '≥5 min continuous or ≥2 seizures without recovery. IM midazolam or IV lorazepam first (AES 2016 / RAMPART). Then levetiracetam 60 mg/kg (max 4.5 g), valproate 40 mg/kg (max 3 g), or fosphenytoin 20 mg PE/kg (max 1,500 mg PE) — ESETT 2019 showed equivalent efficacy (~47%).'],
 ['Eclampsia', 'critical', 'Seizure in pregnancy or ≤6 weeks postpartum — magnesium sulfate, not a conventional AED as first-line; deliver.'],
 ['Hypoglycemia / hyponatremia / isoniazid', 'critical', 'Glucose every time. Severe hyponatremia: careful 3% saline. INH: pyridoxine in gram-for-gram equivalent.'],
 ['ICH / SAH / CNS infection', 'critical', 'First seizure with fever, headache, anticoagulation, or incomplete recovery — CT ± LP, antimicrobials if meningitis is possible.'],
@@ -697,7 +697,7 @@ history: ['Tempo: hours (epiglottitis, angioedema) vs days (PTA, viral)', 'Drool
 exam: ['Work of breathing and preferred posture — do not lie the unstable patient down', 'Floor of mouth, tongue elevation, neck crepitus or swelling', 'Tonsillar asymmetry, uvular deviation, trismus', 'IJ tenderness; lung findings (septic emboli)', 'Skin: rash of scarlet fever, membrane of diphtheria'],
 workup: [
 ['Bedside', ['Airway assessment first; flexible nasopharyngoscopy by a skilled operator if stable and epiglottitis is possible', 'Do not force a complete oropharyngeal exam in stridor/drooling']],
-['Labs', ['Centor-gated RADT/culture for GAS in typical pharyngitis', 'CBC, blood cultures if toxic; throat NAAT for gonorrhea when indicated']],
+['Labs', ['Use a validated clinical score to guide GAS testing in patients aged ≥3 years; high-risk exposure/complications may warrant testing despite a low score. Back up a negative RADT with culture in symptomatic children aged ≥3 years; follow assay-specific policy for NAAT', 'CBC, blood cultures if toxic; throat NAAT for gonorrhea when indicated']],
 ['Imaging', ['CT neck with contrast for deep-space abscess once the airway is secure', 'Lateral neck x-ray only in a stable patient if it will not delay airway care']]
 ],
 redFlags: ['Drooling, tripoding, stridor, or sitting bolt upright', 'Trismus or a muffled / hot-potato voice', 'Floor-of-mouth swelling or an elevated tongue', 'Toxic appearance with delayed neck pain after pharyngitis (Lemierre)', 'Rapidly progressive swelling after ACE-inhibitor or allergen', 'Inability to swallow saliva'],
@@ -706,9 +706,9 @@ disposition: [
 ['Admit', 'PTA after drainage if toxic or unable to take fluids, severe pharyngitis in the immunocompromised, recovering deep-space infection on IV antibiotics.'],
 ['Airway team / ICU / OT', 'Epiglottitis, Ludwig, RPA with airway threat, Lemierre with septic emboli, angioedema of the tongue/floor of mouth.']
 ],
-pitfalls: ['A tongue-blade exam in epiglottitis can precipitate complete obstruction.', 'Centor scores do not exclude epiglottitis, PTA, or Lemierre.', 'Adult epiglottitis is often missed because we still think of it as a pediatric Hib disease.', 'Needle aspiration of a \u201CPTA\u201D that is actually a carotid aneurysm or an epiglottic problem is disastrous — confirm anatomy.', 'Sore throat + chest discomfort in a vasculopath is ACS until the ECG says otherwise.'],
+pitfalls: ['A tongue-blade exam in epiglottitis can precipitate complete obstruction.', 'Centor scores do not exclude epiglottitis, PTA, or Lemierre.', 'Adult epiglottitis is often missed because we still think of it as a pediatric Hib disease.', 'Needle aspiration of a \u201CPTA\u201D that is actually a carotid aneurysm or an epiglottic problem is disastrous — confirm anatomy.', 'Exertional throat/chest discomfort can be ACS; a normal first ECG does not exclude it. Use clinical assessment and a validated troponin pathway.'],
 pearls: ['Tripod + drool = airway team, not a throat swab.', 'Ludwig is a floor-of-mouth disease — look up from below the mandible.', 'Pharyngitis that \u201Cgot better\u201D then the patient became septic with neck pain = Lemierre until CT/US of the IJ is negative.', 'Centor gates GAS testing; it is not a license to skip the airway exam.'],
-refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — sore throat', 'IDSA 2012 GAS pharyngitis guideline; Centor/McIsaac', 'Tintinalli\u2019s 9th ed. — deep neck infections']
+refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — sore throat', 'IDSA 2025 GAS pharyngitis risk-assessment update; CDC GAS testing guidance; Centor/McIsaac', 'Tintinalli\u2019s 9th ed. — deep neck infections']
 },
 {
 id: 'hemoptysis', name: 'Hemoptysis', icon: '🫁',
@@ -721,7 +721,7 @@ approach: [
     'Stable small-volume still needs a cancer/TB/PE plan in the right host.'
 ],
 dontMiss: [
-['Massive / airway-threatening hemoptysis', 'critical', 'Sit up, bleeding-side down, low-volume ventilation of the good lung; reverse coagulopathy; call bronchoscopy and bronchial-artery embolization.'],
+['Massive / airway-threatening hemoptysis', 'critical', 'If the bleeding side is known, place it dependent; support oxygenation and urgently involve airway/bronchoscopy experts for suction and lung isolation when needed. Reverse coagulopathy and arrange bronchial-artery embolization.'],
 ['Diffuse alveolar hemorrhage', 'critical', 'Falling hemoglobin, dropping saturations, bilateral infiltrates — capillaritis, cocaine, anticoagulants; bronchoscopy, immunosuppression per cause.'],
 ['Pulmonary embolism', 'critical', 'Hemoptysis can be the presenting feature; do not assume \u201Cbronchitis\u201D in a patient with VTE risks.'],
 ['Lung cancer / aspergilloma / bronchiectasis', 'critical', 'The most common sources of massive bleeding in adults — CT and IR, not a discharge inhaler.'],
@@ -757,7 +757,7 @@ approach: [
     'The drug follows the box: blood, epinephrine, norepinephrine, needle, or OR.'
 ],
 dontMiss: [
-['Obstructive shock (tamponade, tension PTX, massive PE)', 'critical', 'POCUS first: effusion with RA/RV collapse, absent lung sliding, RV strain. Needle/finger thoracostomy, pericardiocentesis, or reperfusion — not a 30 mL/kg bolus.'],
+['Obstructive shock (tamponade, tension PTX, massive PE)', 'critical', 'Use clinical assessment and rapid POCUS when available: effusion/chamber collapse or RV strain may support the cause. Absent lung sliding alone does not diagnose PTX. Treat tension PTX immediately without waiting for imaging; arrange tamponade drainage or PE reperfusion as indicated. Fluids require individualized reassessment.'],
 ['Cardiogenic shock', 'critical', 'Wet, cool, JVP up, B-lines, poor LV — cautious fluids, vasopressors (norepinephrine), urgent revascularization if ACS (2025 ACC/AHA ACS).'],
 ['Septic / distributive shock', 'critical', 'Antibiotics within 1 h. Use balanced crystalloid for initial resuscitation, then dynamic reassessment to guide further fluid. Start norepinephrine if MAP remains low (SSC 2026).'],
 ['Neurogenic shock', 'critical', 'Hypotension with warm dry skin after spinal injury — fluids then norepinephrine; do not treat as hypovolemia alone.'],
@@ -769,7 +769,7 @@ dontMiss: [
 history: ['Tempo: sudden (PE, tamponade, anaphylaxis, arrhythmia) vs hours (sepsis, bleed)', 'Chest pain, dyspnea, fever, allergen, trauma, GI bleeding, pregnancy', 'Heart failure, anticoagulation, adrenal replacement, immunocompromise', 'Drugs: beta-blockers, calcium-channel blockers, antihypertensives'],
 exam: ['Skin: warm vs cool; mottling; urticaria', 'JVP, heart sounds (muffled, new murmur), lung sliding and B-lines', 'Pulse pressure, cap refill, mental status, urine output', 'Abdomen and pelvis: AAA, pregnancy, peritonism, occult blood', 'Anaphylaxis: stridor, wheeze, swelling — or none of these'],
 workup: [
-['Bedside', ['RUSH/POCUS: pump, tank, pipes, sliding, DVT', 'ECG, SpO₂, glucose, lactate', 'Finger thoracostomy / pericardiocentesis when the ultrasound diagnosis is made in extremis']],
+['Bedside', ['RUSH/POCUS: pump, tank, pipes, sliding, DVT', 'ECG, SpO₂, glucose, lactate', 'Immediate decompression for clinically suspected tension PTX in extremis; ultrasound-guided tamponade drainage by a trained operator when indicated']],
 ['Labs', ['Lactate, VBG, CBC, coagulation, troponin, cultures before antibiotics when they will not delay them', 'Type & crossmatch; cortisol/TSH if endocrine shock is possible', 'Pregnancy test in patients of childbearing potential']],
 ['Imaging', ['CXR; CT only in the stabilized patient', 'CTPA, CTA aorta, or FAST as the leading diagnosis dictates']]
 ],
@@ -780,7 +780,7 @@ disposition: [
 ['ICU / theatre / cath lab / IR', 'Any shock needing vasopressors, airway, massive transfusion, reperfusion, or source-control surgery.']
 ],
 pitfalls: ['A \u201Cnormal\u201D blood pressure does not exclude shock — use lactate, mentation, and skin.', 'Fluids are not interchangeable across shock phenotypes: cardiogenic and obstructive shock need immediate cause-directed care.', 'Epinephrine in anaphylaxis is IM first, not an IV drip you wait to mix.', 'Pressors without a diagnosis: look at the RV and the pericardium before the third litre.', 'Beta-blocked and the elderly decompensate without tachycardia.'],
-pearls: ['Four boxes: empty tank, broken pump, leaky pipes, obstruction. POCUS assigns the box in minutes.', 'Norepinephrine is the first-line vasopressor for septic shock (SSC).', 'Blood for blood loss; epinephrine for anaphylaxis; needle for tension; OR for the ruptured AAA — the drug follows the box.', 'Serial lactate and cap refill outperform a single MAP target.'],
+pearls: ['Four boxes: empty tank, broken pump, leaky pipes, obstruction. POCUS can support the working diagnosis; mixed shock and nonspecific findings require reassessment.', 'Norepinephrine is the first-line vasopressor for septic shock (SSC).', 'Blood for blood loss; epinephrine for anaphylaxis; needle for tension; OR for the ruptured AAA — the drug follows the box.', 'Serial lactate and cap refill outperform a single MAP target.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — shock', 'Surviving Sepsis Campaign 2021 and 2026 update', '2025 ACC/AHA ACS Guideline (cardiogenic shock); RUSH protocol literature']
 },
 {
@@ -798,7 +798,7 @@ dontMiss: [
 ['ACS / inferior MI', 'critical', 'Isolated vomiting, especially in women, elderly, and diabetics — ECG before the antiemetic is blamed for the \u201Ccure.\u201D'],
 ['Raised ICP / SAH / posterior stroke', 'critical', 'Headache, diplopia, ataxia, no abdominal findings — CT/MRI. Projectile vomiting is a clue, not a rule.'],
 ['DKA / HHS / adrenal crisis / hyponatremia', 'critical', 'Glucose and electrolytes in every unexplained case. Steroid-dependent patients get stress-dose steroids.'],
-['Pregnancy complications (hyperemesis vs ectopic vs molar)', 'critical', 'hCG first; ketones and electrolytes in hyperemesis; ectopic if pain + bleeding.'],
+['Pregnancy complications (hyperemesis vs ectopic vs molar)', 'critical', 'hCG first; assess oral intake, weight loss, hydration and electrolytes in hyperemesis. Ketonuria does not grade severity; blood ketones/acidosis are relevant if DKA is suspected. Ectopic if pain + bleeding.'],
 ['Acute glaucoma / testicular or ovarian torsion', 'emergent', 'The referred-pain mimics — eye and groin exams exist for a reason.'],
 ['Cannabinoid hyperemesis / cyclic vomiting / gastritis', 'common', 'Hot-water bathing is a cannabinoid clue; capsaicin and haloperidol are options. Still exclude the killers once.']
 ],
@@ -812,7 +812,7 @@ workup: [
 redFlags: ['Bilious or feculent vomiting, or vomiting with peritonitis', 'Chest pain, dyspnea, or diaphoresis with vomiting', 'Headache, diplopia, or ataxia', 'Glucose high or very low; steroid-dependent patient', 'Positive hCG with pain or bleeding', 'Intractable vomiting with severe electrolyte derangement'],
 disposition: [
 ['Discharge', 'Gastroenteritis or cannabinoid hyperemesis after successful oral challenge, normal vitals and labs when indicated, reliable follow-up. Driving advice if sedating antiemetics were given.'],
-['Admit', 'Obstruction without ischemia, DKA on a protocol, hyperemesis with ketosis not yet reversed, inability to tolerate oral intake in a high-risk host.'],
+['Admit', 'Obstruction without ischemia, DKA on a protocol, hyperemesis with ongoing dehydration, electrolyte disturbance or inability to tolerate oral therapy, inability to tolerate oral intake in a high-risk host.'],
 ['Theatre / ICU / cath lab', 'Perforation, ischemic bowel/volvulus, ACS, raised ICP, adrenal crisis, airway from aspiration.']
 ],
 pitfalls: ['Treating with ondansetron and discharging a missed inferior MI or SBO is a classic error.', 'AXR misses a large fraction of obstruction — CT is the test when suspicion is real.', 'Cannabinoid hyperemesis is a diagnosis of exclusion in the first presentations.', 'Ondansetron prolongs QT — look at the ECG in the already-sick.', 'Children with bilious vomiting have malrotation/volvulus until proven otherwise.'],
@@ -889,22 +889,22 @@ disposition: [
 ],
 pitfalls: ['Charcot\u2019s triad is absent in a large fraction of cholangitis — do not wait for it.', 'A \u201Cnormal\u201D acetaminophen level late after ingestion does not exclude toxicity — treat on timing and enzymes/INR.', 'Giving sedation for MRI in ALF can mask and worsen intracranial hypertension.', 'Isolated unconjugated bilirubin with a normal CBC and enzymes is Gilbert until you force it to be something else.', 'Painless jaundice is cancer until staged — but it is rarely the reason they die tonight; cholangitis and ALF are.'],
 pearls: ['Three buckets: obstructed duct, injured hepatocyte, lysed red cell. ALP vs ALT vs LDH/smear assigns the bucket.', 'Cholangitis needs source control (ERCP), not antibiotics alone.', 'ALF: acute liver injury with INR ≥1.5 and encephalopathy, usually without pre-existing cirrhosis. Call transplant early.', 'Acetaminophen is the reversible cause you will not forgive yourself for missing.'],
-refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — jaundice', 'Tokyo Guidelines 2018/2023 for acute cholangitis', 'EASL / AASLD acute liver failure guidance; 2023 US/Canada acetaminophen consensus']
+refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — jaundice', 'Tokyo Guidelines 2018 for acute cholangitis', 'EASL / AASLD acute liver failure guidance; 2023 US/Canada acetaminophen consensus']
 },
 {
 id: 'cyanosis', name: 'Cyanosis', icon: '🔵',
 tag: 'Blue from lung, heart, or the blood itself?',
-overview: 'Cyanosis is ≥4–5 g/dL of deoxyhemoglobin (central) or local stasis (peripheral). The trap is that methemoglobinemia and sulfhemoglobinemia look blue with a \u201Cnormal\u201D PaO₂ and an SpO₂ stuck near 85%. Chocolate-brown blood that does not redden on oxygen is the bedside clue. Treat the airway and the cause — methylene blue for methemoglobin (not in G6PD).',
+overview: 'Cyanosis is ≥4–5 g/dL of deoxyhemoglobin (central) or local stasis (peripheral). The trap is that dyshemoglobinemias may cause cyanosis with a normal PaO₂; significant methemoglobinemia often drives SpO₂ toward 85%, while sulfhemoglobinemia readings vary. Chocolate-brown blood that does not redden on oxygen is the bedside clue. Treat the airway and the cause — methylene blue for methemoglobin (not in G6PD).',
 approach: [
     'Central (tongue/lips) vs peripheral (nail beds only).',
     'SpO₂ stuck ~85% with a normal PaO₂ is a saturation gap — send co-oximetry (methemoglobin, CO).',
-    'Chocolate-brown blood that does not redden on oxygen: methylene blue unless G6PD deficiency.',
-    'Oxygen will not fix a right-to-left shunt — find it.'
+    'Chocolate-brown blood or a saturation gap raises suspicion for dyshemoglobinemia; obtain co-oximetry and urgent toxicology advice. Antidotes depend on symptoms, measured MetHb and contraindications.',
+    'A substantial right-to-left shunt may respond poorly to oxygen; support oxygenation and obtain urgent cause-directed assessment.'
 ],
 dontMiss: [
-['Methemoglobinemia', 'critical', 'SpO₂ ~85% despite O₂, chocolate blood, normal PaO₂, saturation gap. Benzocaine, dapsone, nitrites, aniline. Methylene blue 1–2 mg/kg IV unless G6PD deficiency (then ascorbic acid / exchange).'],
-['Hypoxemic respiratory failure (PE, pneumonia, shunt, high altitude)', 'critical', 'Central cyanosis that improves (or does not) with oxygen tells you shunt vs V/Q. Treat the lung/PE.'],
-['Cyanotic congenital heart disease / Eisenmenger', 'critical', 'The crying infant or the adult with repaired CHD — do not over-oxygenate some mixing lesions; call cardiology. Hyperoxia test at the bedside.'],
+['Methemoglobinemia', 'critical', 'A saturation gap and chocolate blood suggest MetHb; confirm by co-oximetry. For significant symptoms or levels typically 20–30%, use methylene blue 1–2 mg/kg IV per toxicology protocol. Avoid in G6PD deficiency; check serotonergic interactions. Severe cases need urgent specialist alternatives.'],
+['Hypoxemic respiratory failure (PE, pneumonia, shunt, high altitude)', 'critical', 'Support hypoxemia urgently; response to oxygen alone cannot establish shunt versus V/Q mismatch. Investigate and treat the underlying cause.'],
+['Cyanotic congenital heart disease / Eisenmenger', 'critical', 'The crying infant or the adult with repaired CHD — do not over-oxygenate some mixing lesions; call cardiology. Urgent pediatric/cardiology assessment and echocardiography; do not delay escalation for a bedside hyperoxia test.'],
 ['Sulfhemoglobinemia', 'emergent', 'Similar picture to methemoglobin but does not correct with methylene blue — phenazopyridine, sulfonamides; supportive care.'],
 ['Carbon monoxide is NOT cyanosis', 'emergent', 'CO skin color is unreliable; cherry-red appearance is uncommon; SpO₂ is falsely normal — CO-oximetry. Listed here because it is the classic mis-association.'],
 ['Peripheral cyanosis / Raynaud / cold', 'common', 'Warm the patient; central mucous membranes should be pink. If they are not, it is not \u201Cjust cold.\u201D']
@@ -912,7 +912,7 @@ dontMiss: [
 history: ['Onset with drugs/anesthetics (benzocaine spray), well-water nitrites, dapsone', 'Lung or cardiac disease, altitude, diving', 'Known congenital heart disease', 'Cold exposure vs mucus-membrane involvement'],
 exam: ['Central (lips, tongue) vs peripheral (hands, feet only)', 'Work of breathing, lung findings, cardiac murmurs, clubbing (chronic)', 'Blood colour on the gauze: chocolate-brown vs red'],
 workup: [
-['Bedside', ['SpO₂, ABG with co-oximetry (MetHb, COHb) — a standard ABG PaO₂ will miss methemoglobin', 'Hyperoxia test in infants with suspected CHD']],
+['Bedside', ['SpO₂, ABG with co-oximetry (MetHb, COHb) — a standard ABG PaO₂ will miss methemoglobin', 'Urgent neonatal/cardiology assessment and echocardiography for suspected critical CHD']],
 ['Labs', ['CBC (polycythemia, anemia changes the cyanosis threshold), co-oximetry panel', 'Check G6PD history and serotonergic medications before methylene blue when feasible; consult toxicology urgently for treatment selection and alternatives']],
 ['Imaging', ['CXR, CTPA as the lung/PE picture dictates', 'Echo for shunt and pulmonary hypertension']]
 ],
@@ -922,9 +922,9 @@ disposition: [
 ['Admit', 'New unexplained central cyanosis, treated methemoglobinemia under observation, pneumonia/PE on therapy.'],
 ['ICU', 'Refractory hypoxemia, methemoglobin with shock or level typically >30% (or symptomatic at lower levels), mixing lesions, massive PE.']
 ],
-pitfalls: ['Trusting SpO₂ and PaO₂ without co-oximetry misses methemoglobin and CO.', 'Methylene blue is contraindicated in G6PD deficiency and can worsen hemolysis.', 'Anemic patients may not look blue until they are profoundly hypoxemic (not enough hemoglobin to make 5 g/dL deoxy).', 'Do not assume \u201Cperipheral\u201D until you have seen the tongue.', 'Oxygen will not fix a right-to-left shunt — find it.'],
-pearls: ['Saturation gap (pulse ox vs calculated SaO₂ from PaO₂) = dyshemoglobin until co-oximetry.', 'Chocolate blood + SpO₂ 85% on oxygen = methemoglobin.', 'Central vs peripheral is mucous membranes vs nail beds.', 'CO is not a cyanosis diagnosis — do not skip co-oximetry because the patient is not blue.'],
-refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — cyanosis', 'Goldfrank\u2019s / ACMT methemoglobinemia guidance', 'AHA pediatric CHD / hyperoxia test teaching']
+pitfalls: ['Trusting SpO₂ and PaO₂ without co-oximetry misses methemoglobin and CO.', 'Methylene blue is contraindicated in G6PD deficiency and can worsen hemolysis.', 'Anemic patients may not look blue until they are profoundly hypoxemic (not enough hemoglobin to make 5 g/dL deoxy).', 'Do not assume \u201Cperipheral\u201D until you have seen the tongue.', 'A substantial right-to-left shunt may respond poorly to oxygen; support oxygenation and obtain urgent cause-directed assessment.'],
+pearls: ['A gap between pulse oximetry and calculated saturation suggests dyshemoglobinemia or measurement error; co-oximetry distinguishes the cause.', 'Chocolate blood and an SpO₂ near 85% suggest methemoglobinemia; confirm by co-oximetry rather than treating the colour alone.', 'Central vs peripheral is mucous membranes vs nail beds.', 'CO is not a cyanosis diagnosis — do not skip co-oximetry because the patient is not blue.'],
+refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — cyanosis', 'Goldfrank\u2019s / ACMT methemoglobinemia guidance', 'CPS critical CHD detection guidance; EHA/EuroBloodNet methemoglobinemia consensus (2021)']
 },
 {
 id: 'overdose', name: 'Poisoning & Overdose', icon: '☠️',
@@ -959,14 +959,14 @@ disposition: [
 ['Admit (monitored bed)', 'NAC in progress, delayed-release or staggered ingestions, short-acting agents under observation, self-harm safety planning.'],
 ['ICU', 'Intubated/airway-compromised, pressors, seizures, hyperthermia, hemodialysis (salicylates, methanol, ethylene glycol, lithium), severe TCA cardiotoxicity.']
 ],
-pitfalls: ['A declining GCS in a \u201Cstable\u201D overdose precedes the crash — reassess continuously.', 'A paracetamol level drawn before 4 h is not interpretable on the nomogram. Staggered, repeated, and unknown-time ingestions are treated empirically — the nomogram does not apply.', 'Do not give flumazenil in undifferentiated, mixed, or chronic benzodiazepine overdose (seizures, withdrawal). A limited role remains for iatrogenic, benzodiazepine-naive procedural sedation (AHA 2023 toxicology update).', 'QRS widening with hypotension in suspected sodium-channel blockade warrants bicarbonate, resuscitation and poison-centre input.', 'Never delay dextrose for thiamine.', 'Call the poison centre early for high-risk, unknown, or multi-agent ingestions.'],
+pitfalls: ['A declining GCS in a \u201Cstable\u201D overdose precedes the crash — reassess continuously.', 'Do not plot a pre-4-hour level. US/Canada consensus permits the acute nomogram for a reliable ingestion history spanning <24 h, including multiple doses; measure from the start. Unknown timing or repeated exposure >24 h needs a separate concentration/AST/ALT pathway and poison-centre advice. Extended-release or opioid/anticholinergic co-ingestion may require a repeat level after 4–6 h despite an initial value below the line.', 'Do not give flumazenil in undifferentiated, mixed, or chronic benzodiazepine overdose (seizures, withdrawal). A limited role remains for iatrogenic, benzodiazepine-naive procedural sedation (AHA 2023 toxicology update).', 'QRS widening with hypotension in suspected sodium-channel blockade warrants bicarbonate, resuscitation and poison-centre input.', 'Never delay dextrose for thiamine.', 'Call the poison centre early for high-risk, unknown, or multi-agent ingestions.'],
 pearls: ['Toxidrome first: vitals, pupils, skin, bowel sounds, temperature.', 'Paracetamol in every deliberate overdose — silent until day 2–3.', 'Naloxone is titrated to ventilation, not to a GCS of 15.', 'QRS ≥100–110 ms in a possible TCA/sodium-channel blocker = bicarbonate now.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — toxicology', 'Dart RC et al. Management of acetaminophen poisoning in the US and Canada: a consensus statement. JAMA Netw Open 2023', 'RCEM/NPIS 2023 SNAP NAC regimen (UK default)', 'AHA 2023 focused update: cardiac arrest or life-threatening toxicity due to poisoning', 'Goldfrank\u2019s Toxicologic Emergencies']
 },
 {
 id: 'pediatric-fever', name: 'Pediatric Fever', icon: '🧒',
 tag: 'Age decides the workup; appearance decides the urgency.',
-overview: 'Fever in a child is screened by three questions: How old? Immunized? Well-appearing? The 2021 AAP guideline for well-appearing febrile infants 8–60 days stratifies 8–21, 22–28, and 29–60 days — \u201Csafely do less\u201D in the older, well, immunized infant. Any ill-appearing infant, and all febrile neonates 0–7 days, still need neonatal sepsis assessment and empiric therapy; stabilization precedes LP. Always hunt the hidden source — urine in the young — and take seriously the child who \u201Cjust doesn\u2019t look right.\u201D',
+overview: 'Fever in a child is screened by three questions: How old? Immunized? Well-appearing? The 2021 AAP guideline for well-appearing febrile infants 8–60 days stratifies 8–21, 22–28, and 29–60 days — \u201Csafely do less\u201D in the older, well-appearing infant with reassuring laboratory assessment. Any ill-appearing infant, and all febrile neonates 0–7 days, still need neonatal sepsis assessment and empiric therapy; stabilization precedes LP. Always hunt the hidden source — urine in the young — and take seriously the child who \u201Cjust doesn\u2019t look right.\u201D',
 approach: [
     'Three questions: How old? Immunized? Well-appearing? (Judge appearance between fever spikes.)',
     'Ill-appearing any age, and all 0–7 days: full sepsis evaluation.',
@@ -984,19 +984,19 @@ dontMiss: [
 ['Post-vaccination fever', 'common', 'Recent immunization does not exclude bacterial infection. Infants immunized within 48 h are outside the AAP 8–60-day algorithm: use age, examination and the local infant pathway; do not default to comfort care.']
 ],
 history: ['Exact age in days, gestational age, immunization status, day-care/sick contacts', 'Temperature measured how/where? Antipyretics given when?', 'Appearance between fevers: feeding, activity, consolability', 'Specific symptoms: cough, vomiting, diarrhea, rash, reduced wet diapers', 'Maternal risks in neonates (GBS, prolonged rupture, maternal fever, HSV)'],
-exam: ['Overall appearance: toxic vs well — the most important sign, judged between fever spikes', 'Vitals with age-adjusted norms; capillary refill', 'Full undressed exam: rashes, fontanelle, ears, throat, chest', 'Hydration: mucous membranes, tears, urine output', 'Localizing signs: limp, ear pull, drooling + tripod (croup/epiglottitis)'],
+exam: ['Assess appearance and perfusion immediately and repeatedly; do not wait for a fever-free interval', 'Vitals with age-adjusted norms; capillary refill', 'Full undressed exam: rashes, fontanelle, ears, throat, chest', 'Hydration: mucous membranes, tears, urine output', 'Localizing signs: limp, ear pull, drooling + tripod (croup/epiglottitis)'],
 workup: [
 ['Bedside', ['Rectal temperature in infants; urine collection (catheter or SPA <2 y when a culture is needed)', 'POCUS/lung US for pneumonia/effusion in trained hands']],
-['Labs (age-gated, AAP 2021 for well-appearing 8–60 d)', ['8–21 days: UA/culture, blood culture, LP ± IMs; empiric parenteral antibiotics', '22–28 days: UA/culture, blood culture, IMs (PCT, ANC, CRP); LP if IM abnormal', '29–60 days: UA/culture, blood culture, IMs; LP optional if IMs normal and well-appearing', '>60 days / >3 months well-appearing: clinical ± urine; inflammatory markers to gate antibiotics per local pathway']],
+['Labs (age-gated, AAP 2021 for well-appearing 8–60 d)', ['8–21 days: UA/culture, blood culture, LP ± IMs; empiric parenteral antibiotics', '22–28 days: UA/culture, blood culture, IMs (PCT, ANC, CRP); LP if IM abnormal', '29–60 days: UA/culture, blood culture, IMs; LP optional if IMs normal and well-appearing', '61–90 days: use a dedicated young-infant pathway; do not apply the AAP 8–60-day algorithm or assume the child is >3 months. Older children: clinical risk assessment and targeted urine/testing']],
 ['Imaging', ['CXR if respiratory signs; US for intussusception suspicion (then air enema); echo if Kawasaki']]
 ],
 redFlags: ['Any fever ≥38°C in an infant ≤21 days, or ill appearance at any age', 'Toxic appearance, inconsolability, lethargy', 'Petechial/purpuric rash or bulging fontanelle', 'Grunting, retractions, apnea, or cyanosis', 'Unable to feed or reduced wet diapers', 'Fever >5 days (think Kawasaki, including incomplete)'],
 disposition: [
-['Discharge', 'Well-appearing, immunized child — and, if 29–60 days, normal IMs with a negative UA — with reliable caregivers and clear return precautions, per local pathway.'],
+['Discharge', 'Older well-appearing child after age-appropriate assessment. Selected term 29–60-day infants with reassuring IMs/urine assessment may go home under the full AAP/local pathway, reliable caregivers and arranged reassessment within 24 h; a positive UA may qualify for outpatient UTI treatment in selected cases.'],
 ['Admit', '8–21-day-old infants on empiric antibiotics; 22–28-day-olds pending cultures; UTI needing IV therapy; bronchiolitis with feeding or respiratory distress; uncertain appearance.'],
-['ICU / urgent therapy', 'Meningitis/septic shock, Kawasaki needing IVIG, intussusception pre/post reduction, neonatal HSV.']
+['ICU / urgent therapy', 'Meningitis/septic shock, severe complications of Kawasaki/intussusception, or neonatal HSV with organ dysfunction. IVIG or uncomplicated intussusception reduction alone does not mandate ICU.']
 ],
-pitfalls: ['\u201CWell-looking\u201D must be judged between fever spikes. The AAP CPG does not apply to ill-appearing, premature, or immunocompromised infants, or to 0–7 days of life.', 'Immunization status changes the risk of occult bacteremia in older infants — document it.', 'Fever without source in a young infant is a workup, not a diagnosis.', 'Antipyretics can mask a toxic child.', 'Rectal temperatures in neonates; axillary/tympanic under-read in the young.', 'Incomplete Kawasaki (fever + 2–3 criteria with inflammatory labs) is easy to miss and still needs echo/IVIG consideration.'],
+pitfalls: ['Reassess appearance over time; antipyretic response cannot establish low risk. The AAP CPG does not apply to ill-appearing, premature, or immunocompromised infants, or to 0–7 days of life; clinical bronchiolitis and immunization within 48 h are also excluded.', 'Immunization status changes the risk of occult bacteremia in older infants — document it.', 'Fever without source in a young infant is a workup, not a diagnosis.', 'Improvement or lack of improvement after antipyretics cannot distinguish serious from non-serious illness. Assess and reassess without waiting for the fever to fall.', 'Rectal temperatures in neonates; axillary/tympanic under-read in the young.', 'Incomplete Kawasaki (fever + 2–3 criteria with inflammatory labs) is easy to miss and still needs echo/IVIG consideration.'],
 pearls: ['Age in days, immunizations, and appearance decide the workup — in that order.', 'AAP 2021: 8–21 d full including LP; 22–28 d LP if inflammatory markers are up; 29–60 d may skip LP if well with normal markers.', 'Urine is the hidden source in the young febrile infant.', 'Suspect Kawasaki with persistent fever and mucocutaneous signs; experienced clinicians may diagnose earlier than day 5. Incomplete presentations need the laboratory/echo pathway.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — pediatric fever', 'AAP 2021 CPG: Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old', 'NICE NG143 Fever in under 5s', 'AHA 2024 Kawasaki disease scientific statement']
 },
@@ -1023,7 +1023,7 @@ exam: ['Medical clearance: vitals, glucose, targeted tox, trauma from attempts �
 workup: [
 ['Bedside', ['Glucose, SpO₂; breath alcohol when relevant', 'Environment: remove ligatures/sharps; 1:1 observation for high risk']],
 ['Labs', ['Paracetamol and salicylate in all intentional overdoses and when history is incomplete', 'Targeted toxicology; TSH, electrolytes when a medical cause is possible']],
-['Screening tools', ['C-SSRS or ASQ (youth) to structure the interview — tools inform, they do not replace judgment or a safety plan']]
+['Screening tools', ['C-SSRS/ASQ can structure screening and the interview; do not use scores or low/medium/high risk categories to predict suicide or determine discharge. Arrange individualized psychosocial assessment and safety planning']]
 ],
 redFlags: ['Stated intent with available means', 'Attempt within the last days to week', 'Psychotic symptoms or command hallucinations', 'Intoxication with ongoing access to means', 'Discharge from psychiatric care in the past month', 'Inability to engage in a safety plan, or no safe person to go home with'],
 disposition: [
@@ -1046,29 +1046,29 @@ approach: [
     'INO or crossed signs: MRI-DWI, not a reassurance CT.'
 ],
 dontMiss: [
-['Posterior communicating artery aneurysm (CN III)', 'critical', 'Painful pupil-involving third-nerve palsy (down-and-out, ptosis, blown pupil) — CTA/MRA now, neurosurgery. A complete pupil-sparing CN III in a vasculopath >50 y is more often microvascular, but pain or incomplete palsies still get imaged.'],
+['Posterior communicating artery aneurysm (CN III)', 'critical', 'Painful pupil-involving third-nerve palsy (down-and-out, ptosis, blown pupil) — CTA/MRA now, neurosurgery. Pupil sparing does not exclude an aneurysm. Obtain urgent specialist assessment and vascular imaging for every new acquired CN III palsy rather than relying on the pupil rule.'],
 ['Brainstem stroke / INO (internuclear ophthalmoplegia)', 'critical', 'Sudden diplopia with ataxia, dysarthria, or crossed findings — posterior-circulation pathway, MRI-DWI. INO (impaired adduction + contralateral nystagmus) is MLF until proven otherwise.'],
 ['Giant cell arteritis', 'critical', 'Age ≥50, new headache, jaw claudication, diplopia or amaurosis — start glucocorticoids immediately to protect the other eye; ESR/CRP can be normal.'],
 ['Myasthenic crisis', 'critical', 'Fatigable binocular diplopia and ptosis, worse late in the day; pupils spared. Watch NIF/VC; avoid triggering antibiotics.'],
 ['Cavernous sinus thrombosis / orbital apex', 'critical', 'Diplopia + proptosis, chemosis, fever or CN V1 pain — CT/MR venography, antibiotics if septic, anticoagulation if atraumatic.'],
 ['Botulism', 'emergent', 'Descending paralysis, poorly reactive pupils, GI prodrome — antitoxin; do not wait for culture.'],
-['Microvascular cranial neuropathy / decompensated phoria', 'common', 'Isolated pupil-sparing CN III/IV/VI in a diabetic or hypertensive adult often resolves — still arrange close follow-up and image if incomplete, painful, or not isolated.']
+['Microvascular cranial neuropathy / decompensated phoria', 'common', 'Isolated CN IV/VI palsy may be microvascular after appropriate assessment. Every new acquired CN III palsy needs urgent imaging/specialist assessment, even with pupil sparing.']
 ],
 history: ['Monocular (persists covering one eye) vs binocular (resolves covering either)', 'Pain, headache, scalp tenderness, jaw claudication', 'Fatigability through the day, ptosis, dysarthria, limb weakness', 'Vascular risks, atrial fibrillation, trauma, recent infection or canned food'],
 exam: ['Cover-uncover / alternate cover; ductions and versions in nine positions', 'Pupils: size, reactivity, RAPD; complete vs pupil-sparing CN III', 'Fatigable ptosis (sustained upgaze); ice-pack test if MG possible', 'Orbital signs: proptosis, chemosis, resistance to retropulsion', 'Full neuro: INO, ataxia, other cranial nerves, temporal arteries'],
 workup: [
 ['Bedside', ['Visual acuity, pupils, cover testing; glucose', 'Ice-pack or rest test if MG is likely and the patient is stable']],
 ['Labs', ['ESR/CRP if age ≥50 with diplopia or GCA features', 'AChR/MuSK later; they do not change the ED airway decision']],
-['Imaging', ['CTA/MRA for painful or pupil-involving CN III', 'MRI-DWI ± CTA for brainstem/INO features', 'CT/MR orbits and cavernous sinus if orbital or febrile']]
+['Imaging', ['Urgent CTA/MRA and specialist assessment for new acquired CN III palsy, including pupil-sparing cases', 'MRI-DWI ± CTA for brainstem/INO features', 'CT/MR orbits and cavernous sinus if orbital or febrile']]
 ],
 redFlags: ['Painful pupil-involving third-nerve palsy', 'Age ≥50 with diplopia plus headache or jaw claudication', 'Proptosis, chemosis, or fever with diplopia', 'Fatigable weakness or falling vital capacity', 'Crossed findings, ataxia, or INO', 'Poorly reactive pupils with descending weakness (botulism)'],
 disposition: [
-['Discharge', 'Clear monocular optical cause, or isolated pupil-sparing microvascular CN palsy in a vasculopath after a careful exam, with ophthalmology/neuro follow-up within days and return precautions.'],
+['Discharge', 'Clear monocular optical cause, or specialist-assessed microvascular palsy with appropriate imaging and follow-up. Do not discharge a new CN III palsy solely because the pupil is spared.'],
 ['Admit', 'Incomplete or painful cranial neuropathies pending imaging, MG under NIF observation, treated GCA on steroids, orbital infection on IV antibiotics.'],
 ['Stroke / neurosurgery / ICU', 'PCOM aneurysm, brainstem stroke, cavernous sinus thrombosis, myasthenic crisis, botulism.']
 ],
-pitfalls: ['Calling a pupil-involving CN III \u201Cmicrovascular\u201D without vascular imaging misses a PCOM aneurysm.', 'Monocular diplopia is almost never a brain-attack — check refraction, dry eye, and the lens.', 'GCA diplopia can be fleeting and the ESR can be normal — treat on suspicion.', 'Myasthenia pupils are spared; if the pupils are involved, look elsewhere.', 'CT is a poor posterior-fossa test — MRI-DWI when INO or crossed signs are present.'],
-pearls: ['Binocular + cover test: if covering either eye kills the double vision, it is alignment.', 'Painful pupil-involving CN III = CTA now, not \u201Cfollow up with neuro.\u201D', 'Diplopia in the over-50s is GCA until you have asked about jaw claudication and started steroids when the story fits.', 'INO is a brainstem localizer — skip the reassurance CT.'],
+pitfalls: ['Calling a new CN III palsy microvascular without vascular imaging can miss an aneurysm, including pupil-sparing cases.', 'Monocular diplopia is almost never a brain-attack — check refraction, dry eye, and the lens.', 'GCA diplopia can be fleeting and the ESR can be normal — treat on suspicion.', 'Myasthenia pupils are spared; if the pupils are involved, look elsewhere.', 'CT is a poor posterior-fossa test — MRI-DWI when INO or crossed signs are present.'],
+pearls: ['Binocular + cover test: if covering either eye kills the double vision, it is alignment.', 'Every new acquired CN III palsy needs urgent vascular imaging and specialist assessment, even when the pupil is spared.', 'Diplopia in the over-50s is GCA until you have asked about jaw claudication and started steroids when the story fits.', 'INO is a brainstem localizer — skip the reassurance CT.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — diplopia', '2026 AHA/ASA stroke guidance; SAEM GRACE-3 (2023) acute dizziness guideline', 'ACR/EULAR GCA recommendations; AAO cranial neuropathy guidance']
 },
 {
@@ -1114,11 +1114,11 @@ overview: 'Acute limb ischemia is a vascular emergency: the six Ps (pain, pallor
 approach: [
     'Exam first: pulses, Doppler, comparison with the other limb, and a motor/sensory map.',
     'Chest or back pain with a pulse deficit is dissection until CTA says otherwise — do not anticoagulate blindly.',
-    'Classic ALI: unfractionated heparin and an immediate vascular call; imaging must not delay a clearly threatened limb.',
+    'Classic ALI: unfractionated heparin unless contraindicated and an immediate vascular call; imaging must not delay a clearly threatened limb.',
     'Pain out of proportion after reperfusion or crush is compartment syndrome — fasciotomy, not another scan.'
 ],
 dontMiss: [
-['Embolic or thrombotic acute limb ischemia', 'critical', 'Sudden pain, pallor, pulselessness — Rutherford threatened limb needs revascularization now. Heparin unless dissection is the leading diagnosis.'],
+['Embolic or thrombotic acute limb ischemia', 'critical', 'Sudden pain, pallor, pulselessness — Rutherford threatened but salvageable limb needs revascularization now; irreversible ischemia needs a different surgical plan. Give heparin unless contraindicated, including active bleeding, suspected dissection or HIT; obtain urgent vascular advice for alternatives.'],
 ['Aortic dissection into a limb', 'critical', 'Chest/back pain + pulse deficit or a cold arm/leg — CTA aorta first; anticoagulating this as a simple embolus can be lethal.'],
 ['Phlegmasia cerulea dolens / massive DVT', 'critical', 'Cyanotic swollen limb, often malignant or post-op — anticoagulation ± thrombolysis/thrombectomy; watch for venous gangrene.'],
 ['Compartment syndrome', 'critical', 'Pain on passive stretch after trauma, crush, or reperfusion — compartment pressures support but do not override clinical diagnosis; fasciotomy.'],
@@ -1137,11 +1137,11 @@ redFlags: ['Pulseless, pale, or paralyzed limb', 'Chest or back pain with a puls
 disposition: [
 ['Discharge', 'Chronic claudication without rest pain or tissue threat, intact Doppler, reliable vascular follow-up.'],
 ['Admit (vascular)', 'Viable but symptomatic ischemia, phlegmasia on anticoagulation, post-cath blue toe, infection needing IV therapy.'],
-['Emergency revascularization / OR / ICU', 'Threatened or irreversible ALI, dissection, compartment syndrome, necrotizing infection.']
+['Emergency vascular surgery / OR / ICU', 'Threatened ALI needs revascularization; irreversible ALI needs amputation/source-control planning rather than revascularization. Dissection, compartment syndrome and necrotizing infection also need emergency specialist care.']
 ],
 pitfalls: ['Waiting for ABI or formal angiography while the limb dies.', 'Heparin for \u201Cembolus\u201D that is really a type A dissection.', 'Calling cellulitis when the pain is out of proportion (nec fasc or compartment).', 'Irreversible ischemia still needs source control and often amputation planning — do not send home a dead limb.', 'Reperfusion without watching compartments produces a second disaster.'],
-pearls: ['Six Ps are a clock, not a checklist to complete before calling vascular.', 'Pulse deficit + chest or back pain = aorta, not a femoral embolus in isolation.', 'Heparin unless dissection leads; imaging must not delay a threatened limb.', 'Passive stretch pain after crush or reperfusion is compartment syndrome.'],
-refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — peripheral vascular and aortic disease', 'AHA/ACC PAD and aortic disease guidance', 'SVS acute limb ischemia recommendations']
+pearls: ['Six Ps are a clock, not a checklist to complete before calling vascular.', 'Pulse deficit + chest or back pain = aorta, not a femoral embolus in isolation.', 'Heparin unless contraindicated (including bleeding, suspected dissection or HIT); imaging must not delay a threatened limb.', 'Passive stretch pain after crush or reperfusion is compartment syndrome.'],
+refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — peripheral vascular and aortic disease', '2024 ACC/AHA multisociety PAD guideline; 2022 ACC/AHA aortic disease guideline', 'SVS acute limb ischemia recommendations']
 },
 {
 id: 'hyperglycemia', name: 'DKA, HHS & Adrenal Crisis', icon: '🧪',
@@ -1156,10 +1156,10 @@ approach: [
 dontMiss: [
 ['Diabetic ketoacidosis', 'critical', 'Diabetes history or glucose ≥200 mg/dL, β-hydroxybutyrate ≥3 mmol/L (or urine ketones ≥2+), and pH <7.3 and/or bicarbonate <18 mmol/L. Euglycemic DKA on SGLT2 inhibitors is easy to miss — check ketones when the story fits even if glucose is modest.'],
 ['Hyperosmolar hyperglycemic state', 'critical', 'Glucose ≥600 mg/dL, effective osmolality >300 or total >320 mOsm/kg, β-hydroxybutyrate <3 mmol/L, pH ≥7.3 and bicarbonate ≥15 mmol/L; altered mentation is not required — huge water deficit; correct slowly to avoid cerebral edema.'],
-['Adrenal crisis', 'critical', 'Shock, hyponatremia, hyperkalemia, or hypoglycemia in a steroid-dependent, pituitary, or meningococcemia patient — hydrocortisone 100 mg IV now.'],
+['Adrenal crisis', 'critical', 'Shock, hyponatremia, hyperkalemia, or hypoglycemia in a steroid-dependent, pituitary, or meningococcemia patient — adult hydrocortisone 100 mg IV now; children need age/body-surface dosing under the pediatric protocol.'],
 ['Precipitant ACS / sepsis / pancreatitis', 'critical', 'The crisis is often triggered — ECG, cultures, lipase as indicated. Treat the trigger with the protocol.'],
 ['Hypokalemia during insulin', 'critical', 'Total-body K⁺ is low even when the first value is normal; insulin drives K⁺ in — replace and monitor.'],
-['Cerebral edema (especially pediatric DKA)', 'critical', 'Headache, bradycardia, or deteriorating GCS during treatment — raise head, mannitol/hypertonic saline, slow the fluids, ICU.'],
+['Cerebral injury (especially pediatric DKA)', 'critical', 'Headache, bradycardia or deteriorating GCS — immediate pediatric/critical-care response, head elevation and mannitol/hypertonic saline per protocol; do not wait for CT. Reassess fluids while maintaining perfusion; do not stop resuscitation reflexively.'],
 ['Simple hyperglycemia / missed insulin', 'common', 'No acidosis, no ketones, well-appearing — hydration, insulin plan, follow-up. Still hunt infection.']
 ],
 history: ['Polyuria, polydipsia, weight loss, vomiting, abdominal pain', 'SGLT2 inhibitors, insulin omission, infection, pregnancy', 'Steroid use or recent cessation; pituitary disease; pigmentation', 'Chest pain, fever, diarrhea as precipitants'],
@@ -1173,10 +1173,10 @@ redFlags: ['Altered mentation with hyperglycemia or ketones', 'K⁺ <3.5 before 
 disposition: [
 ['Discharge', 'Isolated hyperglycemia without ketosis or HHS features, a clear missed-dose story, reliable insulin access and follow-up.'],
 ['Admit (ward / HDU)', 'Uncomplicated DKA responding on a protocol, new diabetes needing education, HHS with improving osmolality under monitoring.'],
-['ICU', 'Severe acidosis, shock, HHS with coma, pediatric DKA, adrenal crisis, cerebral edema, or a dangerous precipitant (ACS, sepsis).']
+['ICU', 'Severe acidosis, shock, HHS with coma, cerebral injury or a dangerous precipitant. All pediatric DKA needs a pediatric protocol and specialist monitored care; ICU depends on severity and neurologic/hemodynamic status. Adrenal crisis with instability needs ICU.']
 ],
 pitfalls: ['Starting insulin before potassium is replaced when K⁺ is already low — ventricular arrhythmia.', 'Missing euglycemic DKA because the glucose is 180 mg/dL on an SGLT2 inhibitor.', 'Waiting for a random cortisol in adrenal crisis.', 'Over-rapid correction of HHS sodium/osmolality.', 'Calling DKA abdominal pain \u201Cjust ketosis\u201D without considering pancreatitis or a surgical abdomen.', 'Do not stop insulin just because glucose falls: add dextrose and continue until ketoacidosis resolves. Adult resolution: β-hydroxybutyrate <0.6 mmol/L plus venous pH ≥7.3 or bicarbonate ≥18 mmol/L; ideally glucose <200 mg/dL. The anion gap and urine ketones are not resolution targets.'],
-pearls: ['Fluids, potassium, then insulin. That order prevents the crash.', 'SGLT2 + unwell = check ketones even if glucose is not high.', 'Hydrocortisone in the crashing steroid-dependent patient is a resuscitation drug, not an endocrine consult.', 'Clear ketonemia and acidosis, not just hyperglycemia; saline-related acidosis can keep the anion gap/bicarbonate misleading.'],
+pearls: ['Fluids, potassium, then insulin. That order prevents the crash.', 'SGLT2 + unwell = check ketones even if glucose is not high.', 'Hydrocortisone in the crashing steroid-dependent patient is a resuscitation drug, not an endocrine consult.', 'Clear ketonemia and acidosis, not just hyperglycemia; saline-related hyperchloremic acidosis can leave bicarbonate low despite ketone clearance; the anion gap is not a resolution target.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — DKA, HHS, adrenal insufficiency', 'ADA/EASD/AACE/JBDS/DTS Hyperglycemic Crises in Adults Consensus Report (2024); ADA Standards of Care 2026', 'ISPAD pediatric DKA; Endocrine Society adrenal insufficiency guidance']
 },
 {
@@ -1370,7 +1370,7 @@ id: 'pregnancy-emergency', name: 'Pregnancy-Related Emergency', icon: '🤰',
 tag: 'Pregnancy status changes the differential, imaging, medications, destination, and team.',
 overview: 'Pregnant and postpartum patients can present with the same emergencies as anyone else plus pregnancy-specific catastrophes. The ED must stabilize first, establish gestational/postpartum context, and involve obstetric expertise early under local pathways.',
 approach: ['Confirm pregnancy status and gestational/postpartum age without delaying resuscitation.', 'Prioritize hemorrhage, ectopic pregnancy, severe hypertension/eclampsia, thromboembolism, sepsis, trauma, and cardiopulmonary disease.', 'Use obstetric, anesthesia, neonatal, and transfer resources early; local destination protocols matter.'],
-dontMiss: [['Ruptured ectopic pregnancy', 'critical', 'Pain/bleeding with positive pregnancy test and instability is a surgical emergency.'], ['Severe preeclampsia / eclampsia', 'critical', 'Severe hypertension, headache, visual symptoms, RUQ pain, dyspnea, seizure, or postpartum presentation needs immediate obstetric protocol.'], ['Obstetric hemorrhage / placental abruption', 'critical', 'Bleeding, pain, uterine tenderness, shock, or trauma requires resuscitation and obstetric escalation.'], ['Pulmonary embolism / peripartum cardiomyopathy', 'critical', 'Dyspnea, chest symptoms, syncope, hypoxia, or new heart-failure signs require urgent evaluation.'], ['Hyperemesis, UTI, uncomplicated early-pregnancy symptoms', 'common', 'Assess hydration, ketones, infection, fetal/obstetric context, and safety-net carefully.']],
+dontMiss: [['Ruptured ectopic pregnancy', 'critical', 'Pain/bleeding with positive pregnancy test and instability is a surgical emergency.'], ['Severe preeclampsia / eclampsia', 'critical', 'Severe hypertension, headache, visual symptoms, RUQ pain, dyspnea, seizure, or postpartum presentation needs immediate obstetric protocol.'], ['Obstetric hemorrhage / placental abruption', 'critical', 'Bleeding, pain, uterine tenderness, shock, or trauma requires resuscitation and obstetric escalation.'], ['Pulmonary embolism / peripartum cardiomyopathy', 'critical', 'Dyspnea, chest symptoms, syncope, hypoxia, or new heart-failure signs require urgent evaluation.'], ['Hyperemesis, UTI, uncomplicated early-pregnancy symptoms', 'common', 'Assess oral intake, hydration, electrolytes, infection and obstetric context; ketonuria does not grade hyperemesis severity. Give thiamine in prolonged vomiting/poor intake, especially before planned dextrose; never delay correction of hypoglycemia.']],
 history: ['Gestational age, LMP, parity, postpartum interval, prior ectopic/cesarean', 'Bleeding, pain, contractions, fluid loss, fetal movement when relevant', 'Headache, visual symptoms, RUQ pain, dyspnea, VTE risk, trauma, medications'],
 exam: ['ABCs and shock assessment; blood pressure with correct cuff', 'Abdominal/uterine tenderness, bleeding estimate, pelvic examination only when appropriate', 'Neuro/respiratory/heart-failure signs; fetal assessment per gestation and local resources'],
 workup: [['Immediate', ['Pregnancy test, CBC/type and screen, focused ultrasound when available, ECG/glucose as indicated', 'Rh status and obstetric hemorrhage protocol according to local practice']], ['Imaging', ['Use ultrasound first when suitable; do not withhold indicated maternal imaging for a life-threatening diagnosis', 'CTA/VQ/MRI selection follows local pregnancy pathways']], ['Consultation', ['Early obstetric/anesthesia involvement; arrange transfer to appropriate maternal level of care when needed']]],
@@ -1408,7 +1408,7 @@ const ECG_DATA = {
     title: 'Emergency ECG Interpretation — From Scratch to the Shift',
     subtitle: 'A systematic 7-step method plus the patterns that change management in the next minutes.',
     tag: 'Read the patient first — then read the tracing systematically.',
-    overview: 'The ED ECG is a decision tool, not wallpaper. First: is the patient perfusing, and is this tracing technically real? Then branch the rhythm (rate, regularity, QRS width) and hunt the patterns that change management now — occlusion MI and its equivalents, hyperkalemia, unstable bradycardia or VT, pre-excited AF, and a dangerously long QT. Millimetre STEMI criteria still drive many cath-lab activations, but they miss a large fraction of acute coronary occlusions; that is the OMI skill. New or presumed-new LBBB alone is not a STEMI equivalent (2025 ACC/AHA/ACEP ACS). Compare with an old tracing and repeat the ECG if symptoms evolve.',
+    overview: 'This guide uses adult ECG thresholds; pediatric ECGs require age-specific interpretation. The ED ECG is a decision tool, not wallpaper. First: is the patient perfusing, and is this tracing technically real? Then branch the rhythm (rate, regularity, QRS width) and hunt the patterns that change management now — occlusion MI and its equivalents, hyperkalemia, unstable bradycardia or VT, pre-excited AF, and a dangerously long QT. Millimetre STEMI criteria still drive many cath-lab activations, but they miss a large fraction of acute coronary occlusions; that is the OMI skill. New or presumed-new LBBB alone is not a STEMI equivalent (2025 ACC/AHA/ACEP ACS). Compare with an old tracing and repeat the ECG if symptoms evolve.',
     meta: {
         edition: "Rosen's 10th ed. (2023) · 2025 ACC/AHA/ACEP ACS · OMI 2024–2026",
         approach: 'Patient first, then a systematic 7-step method — never jump straight to the ST segments'
@@ -1422,7 +1422,7 @@ const ECG_DATA = {
     ],
     redFlags: [
         'Shock, pulmonary edema, severe ischemic pain, or altered mentation with any concerning tracing',
-        'STEMI millimetre criteria or an OMI equivalent (Wellens, de Winter, posterior, Smith-modified Sgarbossa, hyperacute T)',
+        'STEMI criteria or high-risk ischemic patterns (de Winter, posterior injury, modified Sgarbossa, hyperacute T; Wellens often reflects reperfusion)',
         'Wide-complex tachycardia — treat as VT until proven otherwise',
         'Pre-excited AF (irregular, wide, very fast) — avoid AV-nodal blockers and IV amiodarone',
         'Sine-wave, widening QRS, or disappearing P waves — hyperkalemia until proven otherwise',
@@ -1456,7 +1456,7 @@ const ECG_DATA = {
             summary: 'Rate · regularity · QRS width first. Then sinus vs not, then the frontal axis.',
             details: [
                 '<strong>The ED rhythm branch (do this before naming the rhythm):</strong> (1) Fast or slow? (2) Regular or irregular? (3) Narrow (&lt;120 ms) or wide (≥120 ms)? That triad is the ACLS fork.',
-                '<strong>Sinus 4-point check:</strong> P before every QRS; QRS after every P; P upright in I, II, aVF and inverted in aVR; PR constant 120–200 ms.',
+                '<strong>Sinus activity and conduction:</strong> in uncomplicated 1:1 sinus rhythm, P before every QRS and QRS after every P; P usually upright in I/II and inverted in aVR; assess morphology and P–QRS conduction separately. Sinus origin can coexist with AV delay/block; a normal PR is not required for sinus activity.',
                 '<strong>Frontal axis (I and aVF, then confirm with II):</strong>',
                 '• <strong>Normal (about −30° to +90°):</strong> Net positive in I and aVF. If aVF is negative, check lead II — positive II means 0° to −30° (physiologic), not pathologic LAD.',
                 '• <strong>Pathologic LAD (−30° to −90°):</strong> I positive, aVF negative, II negative → LAFB, LVH, inferior infarct, or LBBB.',
@@ -1478,7 +1478,7 @@ const ECG_DATA = {
                 '• Short (&lt;120 ms): pre-excitation / WPW (delta wave) first. Isolated short PR without a delta wave is not an ED emergency label.',
                 '• Long (&gt;200 ms): first-degree AV block — note it, look harder if the patient is on AV-nodal blockers or has Lyme/ischemia.',
                 '• Dropped beats: Mobitz I (Wenckebach — lengthening PR, usually AV-nodal) vs Mobitz II (fixed PR, unexpected drop — infranodal, pacing prep). 2:1 block cannot be typed on PR alone — treat as high-grade if the QRS is wide or the patient is unstable. Complete heart block: AV dissociation, regular escape.',
-                '• PR depression: pericarditis (with PR elevation in aVR) — but territorial STE plus reciprocal STD is OMI, not pericarditis.',
+                '• PR depression with aVR PR elevation supports pericarditis, but is not diagnostic. Territorial STE plus reciprocal STD raises urgent concern for coronary occlusion.',
                 '<strong>QRS (usually &lt;110 ms; ACLS wide-complex threshold ≥120 ms):</strong> 110–119 ms requires morphology/context rather than a blanket normal label.',
                 '• Wide (≥120 ms): LBBB/RBBB, VT, paced, hyperK, sodium-channel blockade (TCA, flecainide), WPW.',
                 '• <strong>RBBB:</strong> rsR′ in V1–V2, wide slurred S in I, aVL, V5–V6.',
@@ -1519,7 +1519,7 @@ const ECG_DATA = {
                 '• <strong>Septal/anterior (V1–V4) and lateral (I, aVL, V5–V6):</strong> look for a contiguous distribution, reciprocal inferior change, and dynamic evolution. Isolated I/aVL change can be high-lateral/diagonal ischemia, but still needs context and comparison.',
                 '<strong>Supplemental leads — record, do not infer:</strong> with inferior OMI, record V3R–V6R (especially V4R) for RV involvement; STE ≥0.5 mm is supportive (≥1.0 mm in men &lt;30 years). With V1–V3 depression or suspected LCx occlusion, record V7 (left posterior axillary), V8 (mid-scapular), and V9 (left paraspinal) in the V6 horizontal plane; STE ≥0.5 mm supports posterior infarction (use ≥1.0 mm in men &lt;40 years for greater specificity).',
                 '<strong>Ischemic changes beyond STE (Fifth UDMI):</strong> new horizontal/downsloping STD ≥0.5 mm in ≥2 contiguous leads; new or dynamic T-wave inversion ≥1 mm in ≥2 contiguous leads; broad symmetric hyperacute T waves disproportionate to the QRS in ≥2 contiguous leads; pathologic Q waves ≥40 ms and/or ≥25% of the R wave in ≥2 contiguous leads.',
-                '<strong>Posterior and occlusion clues:</strong> posterior MI is suggested by STD ≥1 mm in V1, V2, and/or V3, particularly with a dominant R in V1/V2, with V7–V9 adding supportive evidence; negative posterior leads do not exclude occlusion. Acute occlusion can also present as de Winter, Wellens, Sgarbossa/modified Sgarbossa, Aslanger, or the South African flag pattern — these do not wait for a millimetre STEMI label.',
+                '<strong>Posterior and occlusion clues:</strong> posterior MI is suggested by STD ≥1 mm in V1, V2, and/or V3, particularly with a dominant R in V1/V2, with V7–V9 adding supportive evidence; negative posterior leads do not exclude occlusion. High-risk ischemic patterns include de Winter, Wellens and modified Sgarbossa findings. Wellens often reflects reperfusion and does not prove current occlusion. Aslanger and South African flag are described pattern clues with a smaller evidence base; use urgent clinical/ACS assessment rather than any pattern alone.',
                 '<strong>Serial and prior ECGs:</strong> compare with an old tracing and repeat promptly with ongoing/recurrent symptoms or an initially nondiagnostic ECG. A normal or sub-threshold first ECG does not exclude an acute coronary occlusion.'
             ],
             pearl: 'The core rule is simple: 1 mm in all standard leads except V2–V3. The work is recognizing a contiguous territory, adding V3R–V6R or V7–V9 when indicated, and acting on dynamic occlusion patterns before a textbook threshold appears.',
@@ -1532,7 +1532,7 @@ const ECG_DATA = {
             icon: '🚨',
             summary: 'Occlusion MI that misses millimetre STEMI criteria — and the patterns that are no longer automatic lab activations.',
             details: [
-                '<strong>Paradigm:</strong> STEMI vs NSTEMI is a millimetre rule. OMI vs NOMI is whether the artery is occluded. More than 1 in 4 occlusions never meet STEMI millimetres. New or presumed-new <strong>LBBB alone is not a STEMI equivalent</strong> (2025 ACC/AHA/ACEP ACS) — use Smith-modified Sgarbossa plus the patient.',
+                '<strong>Paradigm:</strong> STEMI/NSTEMI classification remains the guideline framework. OMI is a proposed clinical framework for recognizing acute coronary occlusion, including presentations below STE thresholds; ECG alone does not establish artery patency. New or presumed-new <strong>LBBB alone is not a STEMI equivalent</strong> (2025 ACC/AHA/ACEP ACS) — use Smith-modified Sgarbossa plus the patient.',
                 '<strong>1. Wellens (high-risk anterior ischemic pattern):</strong> pain-free after resolved angina. Type A (~25%): biphasic T in V2–V3. Type B (~75%): deep symmetric inverted T in V2–V3 ± V4–V5. Preserved R waves, little or no STE, no pathologic Q. <em>Stress testing is contraindicated.</em> Recurrent pain or T-wave pseudonormalisation raises concern for recurrent ischemia and requires immediate reassessment.',
                 '<strong>2. de Winter T waves (high-risk coronary occlusion pattern):</strong> 1–3 mm upsloping J-point STD in precordial leads into tall, broad, symmetric T waves. STE in aVR is common but not required. Activate as anterior OMI.',
                 '<strong>3. Smith-modified Sgarbossa (LBBB or ventricular paced):</strong> positive if <em>any</em> of: (1) concordant STE ≥ 1 mm in a lead with a positive QRS; (2) concordant STD ≥ 1 mm in V1–V3; (3) discordant STE ≥1 mm with ST/S ratio ≤ −0.25 (STE ≥ 25% of S-wave depth). Original Sgarbossa’s 5 mm discordant rule missed many anterior occlusions.',
@@ -1541,7 +1541,7 @@ const ECG_DATA = {
                 '<strong>6. Hyperacute T waves:</strong> earliest OMI sign (minutes). Broad, bulky, symmetric T that dwarfs a small R; loss of normal ST-T concavity. Precedes millimetre STE. Serial ECGs.',
                 '<strong>7. Aslanger pattern:</strong> STE in III but not other inferior leads; STD in at least one of V4–V6, not V2, with a positive terminal T; ST in V1 higher than V2. This described pattern raises concern for inferior infarction with multivessel disease. It is not a standalone proof of occlusion.'
             ],
-            pearl: 'More than 25% of acute coronary occlusions never meet millimetre STEMI criteria. Wellens or de Winter during a pain-free interval is still an emergency.',
+            pearl: 'Coronary occlusion can occur below STEMI thresholds. Wellens needs urgent ACS assessment even when pain-free; de Winter with suspected ongoing ischemia warrants immediate cardiology/reperfusion assessment.',
             pitfall: 'Activating the lab for isolated new LBBB, or dismissing Wellens/de Winter as “nonspecific ST-T changes.” Treating stable aVR-STE + diffuse STD as automatic code STEMI without asking whether this is demand ischemia.'
         },
         {
@@ -1557,12 +1557,12 @@ const ECG_DATA = {
                 '<strong>Hypothermia:</strong> Osborn (J) waves — positive hump at the J point, biggest in V2–V5 — plus bradycardia, AF, long PR/QRS/QT, shivering artifact. VF risk during handling. Treatment is rewarming, not an antiarrhythmic chase.',
                 '<strong>Brugada Type 1:</strong> coved STE ≥2 mm with a negative T in at least one V1–V2 lead. Fever and sodium-channel drugs may unmask it. Record standard 4th ICS positions and, when indicated, labelled 2nd/3rd ICS right-precordial leads. A Type 1 pattern needs clinical evaluation and exclusion of phenocopies.',
                 '<strong>PE / RV strain:</strong> sinus tachycardia is the common finding. S1Q3T3 is neither sensitive nor specific. More useful: TWI in V1–V4 ± inferior leads, new RBBB, RAD. Normal ECG does not exclude PE.',
-                '<strong>Pericarditis vs BER vs OMI:</strong> pericarditis — diffuse concave STE, PR depression, PR elevation/STD in aVR, Spodick sign, <em>no</em> reciprocal STD except aVR/V1. BER — fish-hook J-point notching (often V4), ST/T ratio in V6 &lt; 0.25. <strong>Any territorial STE + reciprocal STD is OMI until proven otherwise.</strong>',
-                '<strong>TCA / sodium-channel blockade:</strong> sinus tach, QRS &gt; 100 ms (seizure risk) / &gt; 160 ms (arrhythmia), terminal R in aVR ≥ 3 mm. Sodium bicarbonate 1–2 mEq/kg IV push, repeat toward QRS &lt; 100 ms and pH ~7.50–7.55. Avoid class Ia/Ic agents.',
+                '<strong>Pericarditis vs BER vs OMI:</strong> pericarditis — diffuse concave STE, PR depression, PR elevation/STD in aVR, Spodick sign, reciprocal STD outside aVR/V1 is atypical but no ECG sign alone excludes myocardial inflammation or ACS. BER — fish-hook J-point notching (often V4), ST/T ratio in V6 &lt; 0.25. <strong>Territorial STE with reciprocal STD requires urgent ACS assessment.</strong>',
+                '<strong>TCA / sodium-channel blockade:</strong> sinus tach, QRS &gt; 100 ms (seizure risk) / &gt; 160 ms (arrhythmia), terminal R in aVR ≥ 3 mm. Sodium bicarbonate 1–2 mEq/kg IV under the poison-centre protocol; reassess QRS, perfusion, sodium, potassium and pH. Avoid pH &gt;7.55 or sodium &gt;155 mmol/L; do not keep dosing solely to force QRS &lt;100 ms. Avoid class Ia/Ic agents.',
                 '<strong>Electrical alternans + low voltage + tachycardia:</strong> tamponade until bedside echo. Low voltage alone is not tamponade.',
                 '<strong>Digoxin effect vs toxicity:</strong> scooped STD is “digitalis effect,” not a diagnosis of toxicity. Toxicity: ectopy, bidirectional VT, atrial tach with block. Fab fragments; discuss calcium with toxicology if hyperK is from digoxin.'
             ],
-            pearl: 'If the ECG looks bizarre, wide, slow, or refuses to classify, treat hyperkalemia while the lab runs. Calcium for the membrane; insulin/albuterol/dialysis for the potassium.',
+            pearl: 'A wide, slow or sine-wave rhythm in a compatible context warrants urgent hyperkalemia treatment while potassium is measured. Consider toxins and other causes in parallel; use formulation-specific calcium and glucose monitoring.',
             pitfall: 'Giving beta-blockers, diltiazem, or amiodarone to a wide-complex bradycardia that is actually hyperK. Calling territorial STE “pericarditis” because it is concave.'
         }
     ],
@@ -1575,9 +1575,9 @@ const ECG_DATA = {
             severity: 'critical',
             leads: 'II, III, aVF (STE) + aVL (mirror STD) — 2 contiguous at J point',
             criteria: 'Inferior example: convex STE ≥1 mm in II + III + aVF with mirror STD in aVL. General rule: STE in V2–V3 ≥ 2.5 mm (men &lt;40), ≥ 2.0 mm (men ≥40), ≥ 1.5 mm (women); ≥ 1.0 mm in all other leads ×2 contiguous. Posterior V7–V9 ≥ 0.5 mm. MIRROR — inferior up, aVL down.',
-            significance: 'Still the operational trigger for most cath-lab activations. Misses &gt;25% of acute occlusions — that is why OMI equivalents exist.',
+            significance: 'Still the operational trigger for most cath-lab activations. An ECG below these thresholds can still represent acute coronary occlusion.',
             action: 'If millimetre STEMI + compatible symptoms/signs: immediate reperfusion pathway per local STEMI protocol. Add V4R for inferior STE and V7–V9 for isolated anterior STD.',
-            caution: 'A tracing that fails millimetre criteria can still be OMI (hyperacute T, Wellens, de Winter, posterior, Aslanger, Smith-modified Sgarbossa).'
+            caution: 'STE below thresholds does not exclude occlusion. Distinguish ongoing injury patterns from reperfusion patterns such as Wellens; described Aslanger patterns need clinical correlation.'
         },
         {
             id: 'hyperacute-t',
@@ -1788,10 +1788,10 @@ const ECG_DATA = {
         'Patient first: an unstable wide-complex rhythm is shocked or cardioverted — the 12-lead can wait.',
         'STEMI millimetres still activate labs; OMI equivalents catch the occlusions those millimetres miss.',
         'New LBBB alone is not a STEMI equivalent (2025 ACC/AHA/ACEP). Use Smith-modified Sgarbossa.',
-        'Isolated STD V1–V3 with upright T waves is posterior OMI until V7–V9 are placed.',
-        'Bizarre, wide, slow, unclassifiable = hyperkalemia until calcium has gone in.',
+        'STD maximal in V1–V3 can represent posterior occlusion: record V7–V9; negative supplemental leads do not exclude it.',
+        'Wide, slow or sine-wave ECG in a compatible context: treat suspected hyperkalemia promptly while assessing other causes.',
         'Irregular, wide and very fast raises concern for pre-excited AF: avoid AV-nodal blockers and IV amiodarone; seek expert rhythm treatment.',
-        'Territorial STE plus reciprocal STD is OMI, even if the STE is concave.'
+        'Territorial STE plus reciprocal STD raises urgent concern for occlusion, even when STE is concave; interpret with the patient and serial ECGs.'
     ],
     pitfalls: [
         'Activating the lab for isolated new LBBB, or discharging Wellens because the patient is pain-free.',

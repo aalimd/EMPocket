@@ -1,0 +1,228 @@
+{
+  "checked": "2026-10-08",
+  "dataset": "PTB-XL 1.0.3",
+  "method": "Independent downloads of the 12 .dat/.hea files; SHA-256 compared with bundled samples; headers compared for 500 Hz, 5000 samples, 12 leads, 1000 ADC units/mV and lead order. SCP codes/likelihoods also compared with source metadata; zero source likelihood is displayed as unspecified.",
+  "records": [
+    {
+      "id": 3,
+      "binaryBytes": 120000,
+      "hashMatches": true,
+      "headerMatches": true,
+      "leadsMatch": true,
+      "gainMatches": true,
+      "gainFields": [
+        "1000.0(0)/mV"
+      ],
+      "source": "https://physionet.org/files/ptb-xl/1.0.3/records500/00000/00003_hr",
+      "sha256": "60b689479b76af5b84ba2b9ecdc120f51919d7725d27f5f4604ee6413cfb1c31",
+      "sourceCodes": {
+        "NORM": 100.0,
+        "SR": 0.0
+      },
+      "sourceStatementsMatch": true
+    },
+    {
+      "id": 7,
+      "binaryBytes": 120000,
+      "hashMatches": true,
+      "headerMatches": true,
+      "leadsMatch": true,
+      "gainMatches": true,
+      "gainFields": [
+        "1000.0(0)/mV"
+      ],
+      "source": "https://physionet.org/files/ptb-xl/1.0.3/records500/00000/00007_hr",
+      "sha256": "9029a50211579ffcdef90521b092b1ea4bb2bb0a420044df50a005ed569b08cb",
+      "sourceCodes": {
+        "NORM": 100.0,
+        "SR": 0.0
+      },
+      "sourceStatementsMatch": true
+    },
+    {
+      "id": 4117,
+      "binaryBytes": 120000,
+      "hashMatches": true,
+      "headerMatches": true,
+      "leadsMatch": true,
+      "gainMatches": true,
+      "gainFields": [
+        "1000.0(0)/mV"
+      ],
+      "source": "https://physionet.org/files/ptb-xl/1.0.3/records500/04000/04117_hr",
+      "sha256": "467ad079fdd977ceab1e48446bf3d6c556b2693c2eb7e3775e2eb29e3a01d425",
+      "sourceCodes": {
+        "AFIB": 100.0
+      },
+      "sourceStatementsMatch": true
+    },
+    {
+      "id": 4401,
+      "binaryBytes": 120000,
+      "hashMatches": true,
+      "headerMatches": true,
+      "leadsMatch": true,
+      "gainMatches": true,
+      "gainFields": [
+        "1000.0(0)/mV"
+      ],
+      "source": "https://physionet.org/files/ptb-xl/1.0.3/records500/04000/04401_hr",
+      "sha256": "82f2e4c7d205bf92b25d44e85dfd691341e655d1285fdedb10a3b26055b12c51",
+      "sourceCodes": {
+        "AFIB": 100.0
+      },
+      "sourceStatementsMatch": true
+    },
+    {
+      "id": 172,
+      "binaryBytes": 120000,
+      "hashMatches": true,
+      "headerMatches": true,
+      "leadsMatch": true,
+      "gainMatches": true,
+      "gainFields": [
+        "1000.0(0)/mV"
+      ],
+      "source": "https://physionet.org/files/ptb-xl/1.0.3/records500/00000/00172_hr",
+      "sha256": "67936a95107482aa640cdffe444387f6bbee03f6dd5110cb7c8ad1fa378b24df",
+      "sourceCodes": {
+        "CRBBB": 100.0,
+        "LAFB": 100.0,
+        "SR": 0.0
+      },
+      "sourceStatementsMatch": true
+    },
+    {
+      "id": 256,
+      "binaryBytes": 120000,
+      "hashMatches": true,
+      "headerMatches": true,
+      "leadsMatch": true,
+      "gainMatches": true,
+      "gainFields": [
+        "1000.0(0)/mV"
+      ],
+      "source": "https://physionet.org/files/ptb-xl/1.0.3/records500/00000/00256_hr",
+      "sha256": "f775f4ef9240fcc1dadbe0199e8759f9398b8271a030f2f8849ee1b39e07098b",
+      "sourceCodes": {
+        "CLBBB": 100.0,
+        "PVC": 100.0,
+        "SR": 0.0
+      },
+      "sourceStatementsMatch": true
+    },
+    {
+      "id": 41,
+      "binaryBytes": 120000,
+      "hashMatches": true,
+      "headerMatches": true,
+      "leadsMatch": true,
+      "gainMatches": true,
+      "gainFields": [
+        "1000.0(0)/mV"
+      ],
+      "source": "https://physionet.org/files/ptb-xl/1.0.3/records500/00000/00041_hr",
+      "sha256": "63f9b4bcd724af592b35ec3063d492d52b8d1f7b292ff6734e1475f48749cfac",
+      "sourceCodes": {
+        "LAFB": 100.0,
+        "SR": 0.0
+      },
+      "sourceStatementsMatch": true
+    },
+    {
+      "id": 102,
+      "binaryBytes": 120000,
+      "hashMatches": true,
+      "headerMatches": true,
+      "leadsMatch": true,
+      "gainMatches": true,
+      "gainFields": [
+        "1000.0(0)/mV"
+      ],
+      "source": "https://physionet.org/files/ptb-xl/1.0.3/records500/00000/00102_hr",
+      "sha256": "f6cd7c9132415846af8e17c8b9691c45401bc1485c7ee956c1a9cfc229c13cb8",
+      "sourceCodes": {
+        "ISCAL": 50.0,
+        "1AVB": 100.0,
+        "SR": 0.0
+      },
+      "sourceStatementsMatch": true
+    },
+    {
+      "id": 30,
+      "binaryBytes": 120000,
+      "hashMatches": true,
+      "headerMatches": true,
+      "leadsMatch": true,
+      "gainMatches": true,
+      "gainFields": [
+        "1000.0(0)/mV"
+      ],
+      "source": "https://physionet.org/files/ptb-xl/1.0.3/records500/00000/00030_hr",
+      "sha256": "6107fe8e79c83554ac9780dd08a666b709299ac9141874291b390d1f6619dd92",
+      "sourceCodes": {
+        "LVH": 100.0,
+        "SR": 0.0
+      },
+      "sourceStatementsMatch": true
+    },
+    {
+      "id": 257,
+      "binaryBytes": 120000,
+      "hashMatches": true,
+      "headerMatches": true,
+      "leadsMatch": true,
+      "gainMatches": true,
+      "gainFields": [
+        "1000.0(0)/mV"
+      ],
+      "source": "https://physionet.org/files/ptb-xl/1.0.3/records500/00000/00257_hr",
+      "sha256": "914a8ec891865c7c5ee30f6e9417919ba6cc63580bd4d4e3fa181db646dd34b8",
+      "sourceCodes": {
+        "ASMI": 50.0,
+        "IMI": 100.0,
+        "PAC": 0.0,
+        "LOWT": 0.0,
+        "STD_": 0.0,
+        "SR": 0.0
+      },
+      "sourceStatementsMatch": true
+    },
+    {
+      "id": 177,
+      "binaryBytes": 120000,
+      "hashMatches": true,
+      "headerMatches": true,
+      "leadsMatch": true,
+      "gainMatches": true,
+      "gainFields": [
+        "1000.0(0)/mV"
+      ],
+      "source": "https://physionet.org/files/ptb-xl/1.0.3/records500/00000/00177_hr",
+      "sha256": "1acf54d5cc7e638a47c2ad2a3b7b1d7a337aee758d316965e12ff25cf7e1ed79",
+      "sourceCodes": {
+        "ASMI": 100.0,
+        "SR": 0.0
+      },
+      "sourceStatementsMatch": true
+    },
+    {
+      "id": 144,
+      "binaryBytes": 120000,
+      "hashMatches": true,
+      "headerMatches": true,
+      "leadsMatch": true,
+      "gainMatches": true,
+      "gainFields": [
+        "1000.0(0)/mV"
+      ],
+      "source": "https://physionet.org/files/ptb-xl/1.0.3/records500/00000/00144_hr",
+      "sha256": "57352802572e1d5efab00a2e038f8d82a3a2186ee653567e16633472c8ba5c22",
+      "sourceCodes": {
+        "PACE": 100.0
+      },
+      "sourceStatementsMatch": true
+    }
+  ],
+  "metadataSource": "https://physionet.org/files/ptb-xl/1.0.3/ptbxl_database.csv"
+}

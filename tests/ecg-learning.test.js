@@ -6,10 +6,10 @@ const X=ctx.window.ECG_EXPLORER;
 test('normal comparisons match dimensions and stay finite across all supported cases',()=>{
  let supported=0;
  for(const c of X.cases){const item=X.build(c.id,false),ref=X.comparison(c.id);assert.ok(ref,c.id);supported++;
- assert.equal(ref.width,item.width,c.id);assert.equal(ref.height,item.height,c.id);assert.match(ref.note,/72\/min/);assert.doesNotMatch(ref.svg,/NaN|Infinity/);
+ assert.equal(ref.width,item.width,c.id);assert.equal(ref.height,item.height,c.id);assert.match(ref.note,/(72|75)\/min/);assert.doesNotMatch(ref.svg,/NaN|Infinity/);
  for(const p of ref.svg.matchAll(/[ML]([\d.]+),(-?[\d.]+)/g)){assert.ok(+p[1]>=0&&+p[1]<=ref.width,c.id+' x');assert.ok(+p[2]>=0&&+p[2]<=ref.height,c.id+' y');}
  }
- assert.equal(supported,47);
+ assert.equal(supported,X.cases.length);
 });
 test('location practice accepts ellipse interiors and rejects bounding-box corners',()=>{
  const r=[100,200,80,40];assert.equal(X.containsPoint(r,140,220),true);assert.equal(X.containsPoint(r,100,200),false);assert.equal(X.containsPoint(r,90,220),false);

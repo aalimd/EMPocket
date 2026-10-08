@@ -8,7 +8,7 @@ function bounds(target,width,height,label){const [x,y,w,h]=target;assert.ok(targ
 test('every Explorer finding has unique, nonempty, in-bounds marker regions',()=>{
  let findings=0;
  for(const record of X.cases){const item=X.build(record.id,false);for(const f of item.findings){findings++;assert.ok(f.targets.length,record.id+' '+f.title);assert.equal(new Set(f.targets.map(JSON.stringify)).size,f.targets.length,record.id);for(const r of f.targets)bounds(r,item.width,item.height,record.id+' '+f.title);}}
- assert.equal(X.cases.length,47);assert.equal(findings,143);
+ assert.equal(X.cases.length,69);assert.equal(findings,187);
 });
 test('every dynamic guide marker stays in its named lane across speed, gain and duration',()=>{
  for(const [id,entry] of Object.entries(lib)){

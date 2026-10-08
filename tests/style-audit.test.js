@@ -1190,3 +1190,32 @@ test('the learning workspace speaks the same visual language as the other sectio
             "header kicker is " + ws.kickSize + "px against the app's " + shift.size + "px");
     }
 });
+
+test('ECG finding regions are attached to the tracing and match authored coordinates in every case', async t => {
+    if (!await ready(t)) return;
+    await load('#ecg-explorer', 1800);
+    const result = await evaluate(`(() => {
+        const X = window.ECG_EXPLORER, root = document.querySelector('#stage').firstElementChild;
+        const errors = [];
+        for (const record of X.cases) {
+            X.mount(root, {id: record.id});
+            const item = X.build(record.id, false);
+            for (let index = 0; index < item.findings.length; index++) {
+                root.querySelector('[data-finding="' + index + '"]').click();
+                const marks = [...root.querySelectorAll('.explorer-canvas svg .ecg-finding-marks ellipse')];
+                const expected = item.findings[index].targets;
+                if (marks.length !== expected.length) errors.push(record.id + ':' + index + ' missing marks on ECG');
+                if (root.querySelector('.ui-icon .ecg-finding-marks')) errors.push(record.id + ' marked a toolbar icon');
+                marks.forEach((mark, i) => {
+                    const [x,y,w,h] = expected[i];
+                    if (+mark.getAttribute('cx') !== x+w/2 || +mark.getAttribute('cy') !== y+h/2 ||
+                        +mark.getAttribute('rx') !== w/2 || +mark.getAttribute('ry') !== h/2)
+                        errors.push(record.id + ':' + index + ' incorrect target geometry');
+                });
+            }
+        }
+        return {count:X.cases.length, errors};
+    })()`);
+    assert.equal(result.count, 69);
+    assert.deepEqual(result.errors, []);
+});

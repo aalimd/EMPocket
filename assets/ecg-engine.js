@@ -310,6 +310,7 @@ function baseTableForLead(lead) {
 
 /* Instantaneous voltage (mV) for one lead at global time tMs. */
 function leadVoltageAt(lead, tMs, caseData, sampleIdx) {
+  if (caseData && caseData.voltageAt) return caseData.voltageAt(lead, tMs);
   if (caseData && caseData.dissociated) return dissociatedVoltageAt(lead, tMs, caseData, sampleIdx);
   var mags = limbVectorMags();
   var angs = limbVectorAngles(caseData.axisDeg);
@@ -388,6 +389,34 @@ function leadVoltageAt(lead, tMs, caseData, sampleIdx) {
     v += caseData.noise.muscle * hashNoise(caseData.seed >>> 0, hashStr(lead), sampleIdx);
   }
   return v;
+}
+
+/* Manual-measurement aid for a clear terminal T limb. Template QT is a
+   timing parameter, not a measured Gaussian endpoint. No U is included.
+   Return null when no usable T descent is found; never manufacture a QT. */
+function measureTangentQt(caseData, lead) {
+  lead=lead||'II';
+  // This demonstration is limited to the clean normal reference.
+  if(caseData.kind!=='normal-sinus'||caseData.fibrillatory||caseData.dissociated||!caseData.beatTimes||caseData.beatTimes.length<3)return null;
+  var q=caseData.beatTimes[2],end=caseData.qtMs+110;
+  var baseline=leadVoltageAt(lead,q+end,caseData);
+  var peak=caseData.qrsMs+80,amplitude=0;
+  for(var dt=peak;dt<caseData.qtMs;dt++){
+    var a=Math.abs(leadVoltageAt(lead,q+dt,caseData)-baseline);
+    if(a>amplitude){amplitude=a;peak=dt;}
+  }
+  if(amplitude<.04)return null;
+  var direction=leadVoltageAt(lead,q+peak,caseData)>=baseline?1:-1;
+  var slope=0,at=null;
+  for(var t=peak+1;t<end-2;t++){
+    var d=(leadVoltageAt(lead,q+t+1,caseData)-leadVoltageAt(lead,q+t-1,caseData))/2;
+    if(direction*d<slope){slope=direction*d;at=t;}
+  }
+  if(at===null||slope>=0)return null;
+  var rawSlope=slope*direction;
+  var endpoint=at+(baseline-leadVoltageAt(lead,q+at,caseData))/rawSlope;
+  var rr=caseData.beatTimes[2]-caseData.beatTimes[1];
+  return {qtMs:endpoint,rrMs:rr,qtcBazettMs:endpoint/Math.sqrt(rr/1000),method:'Tangent to steepest terminal T limb'};
 }
 
 /* ── Phase 2: AV dissociation (VT + complete heart block) ──
@@ -477,8 +506,8 @@ function renderPaperGrid(w, h) {
 }
 
 /* Calibration pulse: 1 mV tall, 200 ms wide, from the same converters. */
-function renderCalibrationPulse(x, yBase) {
-  var h = mvToUnits(1);   // 80 units
+function renderCalibrationPulse(x, yBase, gain) {
+  var h = mvToUnits(1) * ((gain || 10) / 10);
   var w = msToUnits(200); // 40 units
   var lead = 14;          // short lead-in/out in SVG units
   var d = 'M' + r1(x) + ',' + r1(yBase) +
@@ -507,7 +536,7 @@ function renderLeadPath(lead, x0, yBase, tStart, durMs, caseData) {
     var globalIdx = Math.round(t / STEP_MS); // stable index for hash noise
     var mv = leadVoltageAt(lead, t, caseData, globalIdx);
     var x = x0 + msToUnits(t - tStart);
-    var y = yBase - mvToUnits(mv);
+    var y = yBase - mvToUnits(mv) * ((caseData.gain || 10) / 10);
     if (i === 0) d += 'M' + r1(x) + ',' + r1(y);
     else d += ' L' + r1(x) + ',' + r1(y);
   }
@@ -570,17 +599,17 @@ function render12Lead(opts) {
   var subtitle = opts.subtitle === undefined ? caseData.rate + '/min · sinus' : opts.subtitle;
   var teaching = opts.teaching === undefined ? 'P upright I/II, negative aVR · V1 rS → R growth → dominant R V5/V6 · T concordant, asymmetric' : opts.teaching;
   var rhythmLabel = opts.rhythmLabel || 'II rhythm · 10 s · ' + caseData.rate + '/min regular';
-  var footer = opts.footer === undefined ? 'PR ~' + caseData.prMs + ' ms · QRS ~' + caseData.qrsMs + ' ms · QT ~' + caseData.qtMs + ' ms.' : opts.footer;
+  var footer = opts.footer === undefined ? 'PR ~' + caseData.prMs + ' ms · QRS ~' + caseData.qrsMs + ' ms · nominal template QT ' + caseData.qtMs + ' ms; measure visible T end.' : opts.footer;
   var m = layoutMetrics();
   var W = Math.round(m.w), H = Math.round(m.h);
   var s = '';
   s += '<svg class="ecg-svg ecg-paper ecg-engine-12lead" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-labelledby="ecgEngTitle ecgEngDesc" preserveAspectRatio="xMidYMid meet">';
   s += '<title id="ecgEngTitle">' + esc(title) + ' — synthetic educational ECG</title>';
-  s += '<desc id="ecgEngDesc">Synthetic educational 12-lead ECG at 25 mm per second and 10 mm per millivolt. ' + esc(description) + ' Not a patient recording.</desc>';
+  s += '<desc id="ecgEngDesc">Synthetic educational 12-lead ECG at 25 mm per second and ' + (caseData.gain || 10) + ' mm per millivolt. ' + esc(description) + ' Not a patient recording.</desc>';
   s += renderPaperGrid(W, H);
   // Header: title + speed/gain + synthetic badge (calibration sits in the left gutter).
   s += '<text x="' + m.gutL + '" y="38" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="30" font-weight="800" fill="#111111">' + esc(title) + '</text>';
-  s += '<text x="' + m.gutL + '" y="68" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="22" font-weight="700" fill="#374151">SYNTHETIC EDUCATIONAL ECG · 25 mm/s · 10 mm/mV · ' + esc(subtitle) + '</text>';
+  s += '<text x="' + m.gutL + '" y="68" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="22" font-weight="700" fill="#374151">SYNTHETIC EDUCATIONAL ECG · 25 mm/s · ' + (caseData.gain || 10) + ' mm/mV · ' + esc(subtitle) + '</text>';
   s += '<text x="' + m.gutL + '" y="96" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="20" fill="#6b7280">' + esc(teaching) + '</text>';
   s += renderSecondMarks(m.gutL, m.marT - 14, 10000);
   // 12 lead cells.
@@ -608,7 +637,7 @@ function render12Lead(opts) {
   s += '<rect x="' + r1(rhyX) + '" y="' + r1(rhyTop) + '" width="' + r1(rhyW) + '" height="' + r1(m.rhyH) + '" fill="none" stroke="#e5b8bd" stroke-width="1.5"/>';
   // Calibration pulse in the left gutter at rhythm baseline: no lead lane
   // starts left of x=gutL, so the 40x80 pulse and its label obscure nothing.
-  s += renderCalibrationPulse(24, rhyBase);
+  s += renderCalibrationPulse(24, rhyBase, caseData.gain);
   // Footer safety note (always visible, inside the paper).
   s += '<text x="' + m.gutL + '" y="' + r1(H - 14) + '" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="21" font-weight="700" fill="#374151">Synthetic educational tracing — not a patient recording. ' + esc(footer) + '</text>';
   s += '</svg>';
@@ -703,7 +732,13 @@ function createPatternCase(patternId, opts) {
           V4: { stMv: -0.16, stShape: 'upsloping', tAmp: 1.10, tShape: 'tallSym' },
           V5: { stMv: -0.13, stShape: 'upsloping', tAmp: 1.05, tShape: 'tallSym' },
           V6: { stMv: -0.10, stShape: 'upsloping', tAmp: 0.85, tShape: 'tallSym' },
-          aVR: { stMv: 0.10, tAmp: -0.10, tShape: 'normal' }
+          // One frontal ST/T field: all six limb leads obey Goldberger.
+          I: { stMv: -0.10, tAmp: 0.08 },
+          II: { stMv: -0.10, tAmp: 0.12 },
+          III: { stMv: 0, tAmp: 0.04 },
+          aVR: { stMv: 0.10, tAmp: -0.10 },
+          aVL: { stMv: -0.05, tAmp: 0.02 },
+          aVF: { stMv: -0.05, tAmp: 0.08 }
         }
       });
     case 'sgarbossa':
@@ -947,7 +982,7 @@ function renderOmiLegend() {
       var t = tStartMs + i * stepMs;
       var mv = leadVoltageAt(displayName, t, caseData, Math.round(t / STEP_MS));
       var x = xSlot + msToUnits(t - tStartMs);
-      var y = yBase - mvToUnits(mv);
+      var y = yBase - mvToUnits(mv) * ((caseData.gain || 10) / 10);
       d += (i === 0 ? 'M' : ' L') + r1(x) + ',' + r1(y);
     }
     return '<path class="ecg-trace" d="' + d + '" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
@@ -1282,6 +1317,7 @@ window.ECG_ENGINE = {
   createNormalSinusCase: createNormalSinusCase,
   createPatternCase: createPatternCase,
   leadVoltageAt: leadVoltageAt,
+  measureTangentQt: measureTangentQt,
   renderNormal12Lead: renderNormal12Lead,
   render12Lead: render12Lead,
   layoutMetrics: layoutMetrics,

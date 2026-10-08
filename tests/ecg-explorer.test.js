@@ -46,7 +46,7 @@ test('expanded curriculum has unique cases, nonempty bounded targets and honest 
 test('new strip rhythms have the authored conduction relationships and readable signal bounds',()=>{
  const C=context.window.ECG_CURRICULUM;
  for(const record of C.cases.filter(c=>c.kind)){
-  const d=C.stripData(record.kind);for(let lane=0;lane<d.lanes.length;lane++)for(let t=0;t<=6000;t+=2)assert.ok(Math.abs(C.voltage(t,d,lane))<=1.6,record.id+' waveform clipping');
+  const d=C.stripData(record.kind);for(let lane=0;lane<d.lanes.length;lane++)for(let t=0;t<=6000;t+=2)assert.ok(Math.abs(C.voltage(t,d,lane))*(d.gain||10)/10<=1.6,record.id+' waveform clipping');
  }
  const one=C.stripData('mobitz1'),two=C.stripData('mobitz2'),pair=C.stripData('twoone');
  assert.deepEqual(Array.from(one.beats.slice(0,4),b=>b.pr),[160,220,280,160]);

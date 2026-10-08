@@ -1,3 +1,5 @@
+> Latest content/evidence review: [8 October 2026 clinical audit](CLINICAL-AUDIT-2026-10-08.md); current signal inventory: [7 October ECG review](ecg-accuracy.md). Older counts below are historical.
+
 > Current waveform review: [9 September accuracy update](ECG-ACCURACY-2026-09-09.md) — 47 examples, 143 findings, nine calibrated replacements. Counts and limitations below describe the earlier snapshot.
 
 # EM-CPs ECG section — programmer notes

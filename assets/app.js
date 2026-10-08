@@ -342,6 +342,7 @@
     const reviewState = {};
     let patientFilter = 'all';
     let libraryFiltersOpen = false;
+    let librarySystem = 'all';
     let caseCursor = 0;
     let offlineStatus = ('serviceWorker' in navigator && navigator.serviceWorker.controller) ? 'Works offline' :
         ('serviceWorker' in navigator ? 'Offline setup pending' : 'Online access');
@@ -753,7 +754,7 @@
         const count = severityCount(cp);
         const label = severityFilter === 'all' ? 'critical' : SEV_LABEL[severityFilter].toLowerCase();
         return '<button type="button" class="cp-card" data-id="' + cp.id + '" data-cat="' + catFor(cp.id) + '">' +
-            '<span class="cp-count">' + count + ' ' + label + '</span>' +
+            '<span class="cp-count">' + count + ' ' + label + ' diagnoses</span>' +
             '<div class="cp-ico" data-cat="' + catFor(cp.id) + '" data-id="' + cp.id + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(cp.id), cp.id)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</div>' +
             '<h3>' + esc(cp.name) + '</h3><p>' + esc(cp.tag) + '</p>' +
             (isReviewed(cp.id) ? '<span class="cp-reviewed">' + semanticSvg(SEMANTIC_ICONS['completed'], 'review-check') + ' ' + esc(reviewLabel(cp.id)) + '</span>' : '') +
@@ -772,6 +773,7 @@
            lit (iOS keeps the originating tab selected until the user leaves the section).
            Every learn sub-view reports 'study' because it lives in the Practice workspace. */
         const activeNavKey = view === 'presentation' ? 'home' : view;
+        document.body.dataset.view = view;
         document.querySelectorAll('[data-nav]').forEach(function (el) {
             const on = (el.getAttribute('data-nav') === activeNavKey);
             el.classList.toggle('on-home', on);
@@ -808,7 +810,13 @@
         }).join('') + '</div>';
     }
 
-    function renderHome() {
+    function libraryItems() {
+        const group = GROUPS.find(g => g.title === librarySystem);
+        return DATA.filter(cp => cpMatchesFilter(cp) && patientMatches(cp) && (!group || group.ids.includes(cp.id)));
+    }
+
+    function renderHome(preservePosition) {
+        const position = window.scrollY;
         currentId = null;
         markActive(null);
         syncNav('home');
@@ -818,32 +826,34 @@
             stage.innerHTML = '<p class="empty-filter">Could not load presentations. Confirm <code>assets/data.js</code> uploaded with index.html.</p>';
             return;
         }
+        const visible = libraryItems();
         const groupsHtml = GROUPS.map(g => {
-            const items = g.ids.map(id => BY_ID[id]).filter(cp => cp && cpMatchesFilter(cp) && patientMatches(cp));
+            const items = g.ids.map(id => BY_ID[id]).filter(cp => cp && visible.includes(cp));
             if (!items.length) return '';
             const cat = catFor(items[0].id);
             return '<section class="home-group" data-cat="' + cat + '">' +
                 '<h3 class="group-title"><span class="ios-icon-badge ios-emoji-badge group-badge cat-' + cat + '" aria-hidden="true">' + getGroupSvg(g.title) + '</span>' + esc(g.title) + ' <span>' + items.length + '</span></h3>' +
                 '<div class="cp-grid">' + items.map(cardHtml).join('') + '</div></section>';
         }).join('');
-        const visibleCount = DATA.filter(cp => cpMatchesFilter(cp) && patientMatches(cp)).length;
+        const visibleCount = visible.length;
+        const filtered = librarySystem !== 'all' || patientFilter !== 'all' || severityFilter !== 'all';
         stage.innerHTML =
             '<section class="home-intro">' +
-            '<span class="study-kicker">EM POCKET · EMERGENCY MEDICINE</span>' +
-            '<h1>Build your clinical reasoning</h1>' +
-            '<p>Structured emergency medicine frameworks, ECG mastery, and simulated clinical practice.</p>' +
-            '<div class="home-actions"><button type="button" class="home-start" data-browse-library="1">Browse presentations <span aria-hidden="true">↓</span></button>' +
-            (getEcg() ? '<button type="button" class="home-ecg" id="ecgEntryBtn">Learn ECGs <span aria-hidden="true">→</span></button>' : '') +
-            '</div><div class="home-meta"><span>' + DATA.length + ' presentations</span><span>' + reviewedIds().length + ' reviewed</span><span id="offlineStatus">' + esc(offlineStatus) + '</span></div></section>' +
+            '<span class="study-kicker">YOUR EMERGENCY MEDICINE WORKSPACE</span>' +
+            '<h1>What would you like to learn?</h1>' +
+            '<p>Find a presentation, learn to read an ECG, or work through a case.</p>' +
+            '<div class="home-meta"><span>' + DATA.length + ' presentations</span><span>' + reviewedIds().length + ' reviewed</span><span id="offlineStatus">' + esc(offlineStatus) + '</span></div></section>' +
+            (window.EM_LEARNING ? window.EM_LEARNING.homeHtml() : '') +
             studyDashboardHtml() +
             '<section class="presentation-library" id="presentationLibrary" aria-labelledby="presentationLibraryTitle" tabindex="-1">' +
             '<div class="library-head"><div><h2 id="presentationLibraryTitle">Presentation library</h2><p>' + visibleCount + ' of ' + DATA.length + ' presentations · grouped by clinical system</p></div>' +
-            '<details class="library-filters"' + (libraryFiltersOpen ? ' open' : '') + '><summary>Filter by patient context' + (patientFilter !== 'all' ? ' · active' : '') + '</summary>' + patientFiltersHtml() + '</details></div>' +
-            (groupsHtml || '<p class="empty-filter">No presentations match these filters. Try another patient context or severity.</p>') + '</section>' +
-            (window.EM_LEARNING ? window.EM_LEARNING.homeHtml() : '');
+            '</div><div class="library-toolbar"><label class="library-system">Clinical system<select id="librarySystem">' +
+            '<option value="all"' + (librarySystem === 'all' ? ' selected' : '') + '>All clinical systems</option>' +
+            GROUPS.map(g => '<option value="' + esc(g.title) + '"' + (librarySystem === g.title ? ' selected' : '') + '>' + esc(g.title) + '</option>').join('') + '</select></label>' +
+            '<div class="library-filter-controls"><details class="library-filters"' + (libraryFiltersOpen ? ' open' : '') + '><summary>Patient context' + (patientFilter !== 'all' ? ' · active' : '') + '</summary>' + patientFiltersHtml() + '</details></div></div>' +
+            (filtered ? '<div class="library-filter-status" role="status"><span>Filtered results · ' + visibleCount + ' presentations</span><button type="button" data-reset-library>Clear filters</button></div>' : '') +
+            (groupsHtml || '<div class="empty-filter"><h3>No matching presentations</h3><p>Clear the filters to return to the full library.</p></div>') + '</section>';
         bindCards(stage);
-        const ecgEntry = document.getElementById('ecgEntryBtn');
-        if (ecgEntry) ecgEntry.addEventListener('click', function () { showEcg(); });
         stage.querySelectorAll('[data-browse-library]').forEach(btn => btn.addEventListener('click', (e) => {
             if (btn.tagName === 'A') e.preventDefault();
             const library = document.getElementById('presentationLibrary');
@@ -852,11 +862,28 @@
                 library.scrollIntoView({ block: 'start', behavior: 'smooth' });
             }
         }));
-        stage.querySelector('.library-filters').addEventListener('toggle', function () { libraryFiltersOpen = this.open; });
+        stage.querySelector('.library-filters').addEventListener('toggle', function () { if (this.isConnected) libraryFiltersOpen = this.open; });
+        stage.querySelector('#librarySystem').addEventListener('change', function () {
+            librarySystem = this.value;
+            renderHome(true);
+            stage.querySelector('#librarySystem').focus({ preventScroll: true });
+        });
+        const reset = stage.querySelector('[data-reset-library]');
+        if (reset) reset.addEventListener('click', function () {
+            librarySystem = patientFilter = severityFilter = 'all';
+            document.querySelectorAll('#filterChips .chip').forEach(chip => {
+                const active = chip.dataset.sev === 'all';
+                chip.classList.toggle('active', active);
+                chip.setAttribute('aria-pressed', String(active));
+            });
+            renderHome(true);
+            stage.querySelector('#librarySystem').focus({ preventScroll: true });
+        });
         stage.querySelectorAll('.patient-chip').forEach(btn => btn.addEventListener('click', function () {
             patientFilter = btn.dataset.patient;
-            renderHome();
-            const selected = stage.querySelector('[data-patient="' + patientFilter + '"]');
+            libraryFiltersOpen = false;
+            renderHome(true);
+            const selected = stage.querySelector('.library-filters > summary');
             if (selected) selected.focus({ preventScroll: true });
         }));
         stage.querySelectorAll('[data-study]').forEach(btn => btn.addEventListener('click', function () {
@@ -864,8 +891,8 @@
             if (btn.dataset.study === 'case') showStudy('case');
             else showStudy(btn.dataset.study);
         }));
-        window.scrollTo({ top: 0 });
-        announce('Home — ' + DATA.length + ' presentations');
+        window.scrollTo({ top: preservePosition ? position : 0 });
+        announce('Library — ' + visibleCount + ' of ' + DATA.length + ' presentations');
     }
 
     function showHome() {
@@ -902,7 +929,7 @@
         const body = chosen === 'case' ? caseHtml() :
             '<section class="study-page"><div class="study-page-head">' + backButtonHtml('data-home="1"') + '<span class="study-kicker">PERSONAL STUDY SPACE</span><h1>' + (chosen === 'due' ? 'Review queue' : 'Saved topics') + '</h1><p>' + (chosen === 'due' ? 'Topics return after 1, 3, 7, and 14 days of review. Complete a review to move it to the next interval.' : 'Use saved topics for weak areas, upcoming rotations, or cases you want to discuss.') + '</p></div>' +
             topicListHtml(chosen === 'due' ? dueIds() : savedIds(), chosen === 'due' ? 'Nothing is due yet. Mark a topic reviewed to start its spaced-review schedule.' : 'No saved topics yet. Save one from any presentation.') + '</section>';
-        stage.innerHTML = '<div class="workspace-actions study-workspace-links"><a href="#learn~practice">Evolving cases →</a><a href="#learn~progress">Progress & backup →</a><a href="#learn~skills">Procedures & teams →</a></div><nav class="study-tabs" aria-label="Study views"><button type="button" data-study="due"' + (chosen === 'due' ? ' aria-current="page"' : '') + ' class="' + (chosen === 'due' ? 'active' : '') + '">Review queue <span>' + dueIds().length + '</span></button><button type="button" data-study="saved"' + (chosen === 'saved' ? ' aria-current="page"' : '') + ' class="' + (chosen === 'saved' ? 'active' : '') + '">Saved</button><button type="button" data-study="case"' + (chosen === 'case' ? ' aria-current="page"' : '') + ' class="' + (chosen === 'case' ? 'active' : '') + '">Practice case</button></nav>' + body;
+        stage.innerHTML = '<nav class="study-tabs" aria-label="Personal study navigation"><a href="#learn~practice">Practice</a><button type="button" data-study="due"' + (chosen === 'due' ? ' aria-current="page"' : '') + ' class="' + (chosen === 'due' ? 'active' : '') + '" aria-label="Review queue">Review <span>' + dueIds().length + '</span></button><button type="button" data-study="saved"' + (chosen === 'saved' ? ' aria-current="page"' : '') + ' class="' + (chosen === 'saved' ? 'active' : '') + '" aria-label="Saved topics">Saved</button><a href="#learn~progress">Progress</a></nav>' + body;
         stage.querySelectorAll('[data-home]').forEach(btn => btn.addEventListener('click', showHome));
         stage.querySelectorAll('[data-study]').forEach(btn => btn.addEventListener('click', () => showStudy(btn.dataset.study)));
         stage.querySelectorAll('[data-next-case]').forEach(btn => btn.addEventListener('click', () => { caseCursor += 1; renderStudy('case'); }));
@@ -2690,24 +2717,35 @@
         const input = document.getElementById('searchInput');
         const clearBtn = document.getElementById('searchClearBtn');
         let searchTimer = 0;
+        let searchPending = false;
         input.addEventListener('input', () => {
             clearTimeout(searchTimer);
             const value = input.value.trim();
-            searchTimer = setTimeout(() => runSearch(value), 120);
+            searchPending = true;
+            searchTimer = setTimeout(() => { searchPending = false; runSearch(value); }, 120);
         });
         if (clearBtn) {
             clearBtn.addEventListener('click', () => {
                 clearTimeout(searchTimer);
+                searchPending = false;
                 input.value = '';
                 runSearch('');
                 input.focus();
             });
         }
         input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                clearTimeout(searchTimer);
+                if (searchPending) {
+                    searchPending = false;
+                    runSearch(input.value.trim());
+                }
+            }
             const pop = document.querySelector('.results-pop');
             const items = pop ? pop.querySelectorAll('.res-item[data-id]') : [];
             if (e.key === 'Escape') {
                 clearTimeout(searchTimer);
+                searchPending = false;
                 input.value = '';
                 if (clearBtn) clearBtn.hidden = true;
                 hideSearchResults(pop);
@@ -2806,7 +2844,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261002-v19').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261008-clinical-v30').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     const applyUpdate = () => {
                         const waiting = registration.waiting;

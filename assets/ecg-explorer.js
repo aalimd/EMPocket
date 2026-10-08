@@ -66,7 +66,7 @@
     if(part==='p') {a=q-160;b=q-75;}
     if(part==='pr') {a=q-data.prMs;b=q;}
     if(part==='t') {a=q+data.qrsMs+70;b=q+data.qtMs;}
-    if(part==='qt') b=q+data.qtMs;
+    if(part==='qt') {const measured=data.kind==='normal-sinus'?E.measureTangentQt(data,lead):null;b=q+(measured?measured.qtMs:data.qtMs);}
     if(part==='st') {a=q+data.qrsMs;b=a+100;}
     let lo=0,hi=0;
     for(let t=a;t<=b;t+=2) {const v=E.leadVoltageAt(lead,t,data,t/2);lo=Math.min(lo,v);hi=Math.max(hi,v);}
@@ -79,7 +79,7 @@
       f('P wave: atrial activity','The small positive P wave comes before QRS in lead II. Follow the repeating P–QRS relationship rather than naming the rhythm from rate alone.',seg('II','p')),
       f('PR interval','Measure from the beginning of P to the beginning of QRS. The model uses a PR of 160 ms; P duration is included in that interval.',seg('II','pr')),
       f('Narrow QRS','The model uses an 88 ms QRS. Identify the start and end of ventricular depolarization; at 25 mm/s, a small horizontal box represents 40 ms.',seg('II','qrs')),
-      f('QT and T-wave endpoint','QT extends from QRS onset to T end. This model uses QT 380 ms. Rate correction and a clear T endpoint are needed when interpreting QTc.',seg('II','qt')),
+      f('QT and T-wave endpoint','QT extends from QRS onset to T end. The template parameter is 380 ms; the visible lead-II T gives about '+Math.round(E.measureTangentQt(data,'II').qtMs)+' ms by the tangent method. Use the same stated method for comparisons, exclude a separate U, and correct using measured RR.',seg('II','qt')),
       f('Limb-lead polarity','Compare the predominantly positive complexes in I and II with the negative aVR view. These are different views of the same modeled cardiac activity.', ['I','II','aVR'].map(lead=>region(cells.find(c=>c.lead===lead)))) ,
       f('Lead labels and electrode placement','The printed labels identify the lead views; they cannot prove correct electrode placement. Confirm placement clinically, including V1/V2 in the fourth intercostal spaces.',cells.filter(c=>['V1','V2'].includes(c.lead)).map(region)),
       f('Sequential columns','Each upper column covers a successive 2.5-second window. The bottom rhythm strip spans all ten seconds. Compare events using their time windows rather than assuming adjacent columns are simultaneous.',[region(cells[0]),region(cells[1])])
@@ -143,6 +143,7 @@
   // A model comparator, never represented as a prior patient ECG.
   function comparison(id) {
     const item=build(id,false),record=item.record;
+    if(record.full){const normal=curriculum.normalReference(record);return {...normal,svg:instanceSvg(normal.svg,'-reference'+(++sequence)),note:'Normal sinus model at 75/min; printed gain and supplemental leads match. Compare distribution; timing may differ.'};}
     if(!record.kind&&!record.library){const normal=build('normal',false);return {...normal,note:'Same lead layout, 25 mm/s and 10 mm/mV. Normal sinus model at 72/min; beat timing may differ.'};}
     let rows,ux=.2,uy=80,duration=6000;
     if(record.kind){rows=item.data.lanes.map((lead,i)=>({lead,lane:lead,baseline:210+i*270}));}
@@ -206,7 +207,7 @@
     const progress=readProgress(),attempted=readPractice();let persisted=true,practicePersisted=!practiceVolatile;
     const chosen=cases.some(c=>c.id===requested)?requested:(appView?progress.last:'normal');
     const practicing=requested==='practice';
-    const state={id:chosen,practice:practicing,revealed:!practicing,finding:0,highlights:true,zoom:'1',answer:'',region:0,viewOptions:false,compare:false,locating:false,locationFeedback:'',path:null,pathOpen:false,checklistOpen:false,findingMenu:false,observations:{},hint:false};
+    const state={id:chosen,practice:practicing,revealed:!practicing,finding:0,highlights:true,zoom:'1',answer:'',region:0,viewOptions:false,compare:false,locating:false,locationFeedback:'',path:null,pathOpen:false,learningToolsOpen:false,checklistOpen:false,findingMenu:false,observations:{},hint:false};
     if(appView&&chosen===progress.last)state.finding=progress.finding;
     function save(){if(appView){progress.last=state.id;progress.finding=state.finding;persisted=saveProgress(progress);}}
     function remember(){if(!appView)return;save();try{history.replaceState(null,'','#ecg-explorer~'+(state.practice?'practice':state.id));}catch(e){}if(window.STUDENT_LEARNING&&!state.practice)window.STUDENT_LEARNING.remember('ecg-explorer~'+state.id);}
@@ -271,7 +272,7 @@
       const zoom=host.querySelector('[data-control="zoom"]').closest('label');extra.append(zoom);
       const highlights=host.querySelector('[data-action="highlights"]');if(highlights)extra.append(highlights);
       host.querySelector('.explorer-controls').append(extra);
-      extra.open=state.viewOptions||state.zoom!=='1';
+      extra.open=state.viewOptions||state.zoom!=='1'||state.compare;
       extra.addEventListener('toggle',()=>{if(extra.isConnected)state.viewOptions=extra.open;});
 
       if(!hidden&&item.findings.length>4){
@@ -281,7 +282,7 @@
         chooser.addEventListener('toggle',()=>{if(chooser.isConnected)state.findingMenu=chooser.open;});
       }
       if(!suppress&&state.highlights){
-        const svg=host.querySelector('svg'),g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('class','ecg-finding-marks');
+        const svg=host.querySelector('.explorer-canvas svg'),g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('class','ecg-finding-marks');
         item.findings[state.finding].targets.forEach(([x,y,w,h],regionIndex)=>{const circle=document.createElementNS(g.namespaceURI,'ellipse');for(const [k,v]of Object.entries({cx:x+w/2,cy:y+h/2,rx:w/2,ry:h/2}))circle.setAttribute(k,v);circle.dataset.region=regionIndex;circle.setAttribute('tabindex','0');circle.setAttribute('role','button');circle.setAttribute('aria-pressed',String(regionIndex===state.region));circle.setAttribute('aria-label','Inspect marked region '+(regionIndex+1)+' for '+item.findings[state.finding].title);g.append(circle);});svg.setAttribute('role','group');svg.append(g);
       }
       if(!suppress){
@@ -303,7 +304,10 @@
       const toolbar=host.querySelector('.explorer-controls');
       const progressBar=document.createElement('section');progressBar.className='explorer-progress';progressBar.setAttribute('aria-label','Learning progress');
       progressBar.innerHTML='<div class="progress-head"><span class="ios-icon-badge ios-emoji-badge" aria-hidden="true">' + ico('chart') + '</span><div><strong>'+progress.completed.length+' / '+cases.length+' cases completed</strong><progress max="'+cases.length+'" value="'+progress.completed.length+'" aria-label="Completed ECG cases"></progress><small>'+(persisted?'Progress stays on this device.':'Storage unavailable; progress lasts for this visit.')+'</small></div></div><button class="ex-button" data-action="continue"><span class="btn-icon btn-emoji" aria-hidden="true">' + ico('play') + '</span><span>Continue learning →</span></button>'+(progress.review.length?'<button class="ex-button" data-action="review-next"><span class="btn-icon btn-emoji" aria-hidden="true">' + ico('bookmark') + '</span><span>Review saved findings ('+progress.review.length+')</span></button>':'');
-      toolbar.before(progressBar);
+      const learningTools=document.createElement('details');learningTools.className='explorer-learning-tools';learningTools.open=state.learningToolsOpen;
+      learningTools.innerHTML='<summary>Learning tools <span>'+progress.completed.length+' / '+cases.length+' studied</span></summary>';
+      learningTools.addEventListener('toggle',()=>{if(learningTools.isConnected)state.learningToolsOpen=learningTools.open;});
+      toolbar.before(learningTools);learningTools.append(progressBar);
       if(!state.practice){
         const pathPanel=document.createElement('details');pathPanel.className='explorer-path';pathPanel.open=state.pathOpen;
         pathPanel.innerHTML='<summary><span class="ios-icon-badge ios-emoji-badge sec-badge-sm" aria-hidden="true">' + ico('compass') + '</span><span>Suggested learning path</span> <span class="path-sub">Start here or choose any case</span></summary><p>Optional order · take one example at a time. Completion records what you studied, not a proficiency score.</p><ol>'+pathways.map((path,i)=>'<li><strong>'+esc(path.title)+'</strong><p>'+esc(path.objective)+'</p><small>Suggested preparation: '+esc(path.prior)+' · '+path.ids.filter(id=>progress.completed.includes(id)).length+' / '+path.ids.length+' studied</small><button class="ex-button" data-action="pathway" data-path="'+i+'">'+(state.path===i?'Continue this stage':'Start this stage')+'</button></li>').join('')+'</ol>';
@@ -325,7 +329,7 @@
         const actions=document.createElement('div');actions.className='explorer-learning-actions';
         actions.innerHTML='<button class="ex-button" data-action="complete" aria-pressed="'+progress.completed.includes(state.id)+'"><span class="btn-icon btn-emoji" aria-hidden="true">' + ico('check') + '</span><span>'+(progress.completed.includes(state.id)?'Case completed':'Mark case complete')+'</span></button><button class="ex-button" data-action="save-review" aria-pressed="'+progress.review.includes(state.id+':'+state.finding)+'"><span class="btn-icon btn-emoji" aria-hidden="true">' + ico('bookmark') + '</span><span>'+(progress.review.includes(state.id+':'+state.finding)?'Finding saved for review':'Review this finding later')+'</span></button><button class="ex-button" data-action="locate-practice" aria-pressed="'+state.locating+'"><span class="btn-icon btn-emoji" aria-hidden="true">' + ico('target') + '</span><span>'+(state.locating?'Exit location exercise':'Practice locating this finding')+'</span></button>';
         host.querySelector('.explorer-findings').append(actions);
-        const compareButton=document.createElement('button');compareButton.className='ex-button';compareButton.dataset.action='compare';compareButton.setAttribute('aria-pressed',String(state.compare));compareButton.innerHTML='<span class="btn-icon btn-emoji" aria-hidden="true">' + ico('scale') + '</span><span>Compare normal</span>';toolbar.append(compareButton);
+        const compareButton=document.createElement('button');compareButton.className='ex-button';compareButton.dataset.action='compare';compareButton.setAttribute('aria-pressed',String(state.compare));compareButton.innerHTML='<span class="btn-icon btn-emoji" aria-hidden="true">' + ico('scale') + '</span><span>Compare normal</span>';extra.append(compareButton);
       }
       if(state.locating&&!hidden){
         const detail=host.querySelector('.explorer-explanation');detail.innerHTML='<strong>Locate: '+esc(item.findings[state.finding].title)+'</strong><p>Tap the matching region on the main ECG. You can also use the keyboard: focus the ECG and move the cursor with arrow keys, then press Enter.</p><p class="explorer-location-feedback" role="status">'+esc(state.locationFeedback)+'</p><button class="ex-button" data-action="show-location">Show location and explanation</button>';
@@ -334,7 +338,7 @@
       }
       if(state.compare&&!suppress){
         const ref=comparison(state.id),section=document.createElement('section');section.className='explorer-comparison';section.setAttribute('aria-label','Normal comparison');
-        if(ref){section.innerHTML='<div class="explorer-paper-hint">Normal sinus reference · 72/min</div><div class="explorer-reference-paper" tabindex="0" role="region" aria-label="Normal ECG; synchronized scrolling"><div class="explorer-reference-canvas" style="width:'+Number(state.zoom)*100+'%">'+instanceSvg(ref.svg,'-ref'+(++sequence))+'</div></div><p>'+esc(ref.note)+'</p>';
+        if(ref){section.innerHTML='<div class="explorer-paper-hint">Normal sinus reference · '+(ref.data?.rate||72)+'/min</div><div class="explorer-reference-paper" tabindex="0" role="region" aria-label="Normal ECG; synchronized scrolling"><div class="explorer-reference-canvas" style="width:'+Number(state.zoom)*100+'%">'+instanceSvg(ref.svg,'-ref'+(++sequence))+'</div></div><p>'+esc(ref.note)+'</p>';
           const paper=host.querySelector('.explorer-paper');section.querySelector('.explorer-reference-paper').style.maxHeight=paper.getBoundingClientRect().height+'px';
           host.querySelector('.explorer-sheet').after(section);
           const reference=section.querySelector('.explorer-reference-paper');let syncing=false;

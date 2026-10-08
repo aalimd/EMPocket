@@ -61,7 +61,17 @@
   if(cases.some(c=>c.id===id)) return {href:'#study~case-'+id,label:'Practice'};
   return {href:'#learn~practice',label:'All cases'};
  }
- function starterHtml(){const p=read();const last=/^(?:ecg(?:-explorer)?|[a-z-]+)(?:~[a-z0-9-]+)?$/.test(p.last)?p.last:'';const weak=Object.entries(p.ratings).filter(([k,v])=>v&&v.value!=='got').sort((a,b)=>b[1].at-a[1].at);return '<section class="student-start"><p class="study-kicker">RECOMMENDED FOR NEW LEARNERS</p><h2>'+(last?'Resume your learning session':'10-minute foundational track')+'</h2><p>Learn a core clinical approach, inspect a normal tracing, then make your first decision.</p><div class="student-actions">'+(last?'<a href="#'+esc(last)+'">Continue where you left off →</a>':'')+'<a href="#chest-pain">1 · Learn Chest Pain approach</a><a href="#ecg-explorer~normal">2 · Read normal 12-lead ECG</a><a href="#study~case-chest-pain">3 · Test with ACS case</a></div>'+(weak.length?'<details class="weak-areas"><summary>Revisit your weak areas ('+weak.length+')</summary><ul>'+weak.map(([key,v])=>{const id=key.split(':')[1];let route=key.startsWith('ecg:')?'ecg-explorer~'+id:key.startsWith('case:')?'study~case-'+id:id+'~study';const name=key.startsWith('ecg:')?(window.ECG_EXPLORER.cases.find(c=>c.id===id)||{}).name:(window.CP_DATA.find(c=>c.id===id)||{}).name;return name?'<li><a href="#'+esc(route)+'">'+esc(name)+'</a> · '+(v.value==='again'?'Review again':'Partly confident')+'</li>':'';}).join('')+'</ul></details>':'')+'</section>';}
+ function starterHtml(){
+  const p=read(),last=/^(?:ecg(?:-explorer)?|[a-z-]+)(?:~[a-z0-9-]+)?$/.test(p.last)?p.last:'';
+  const weak=Object.entries(p.ratings).filter(([k,v])=>v&&v.value!=='got').sort((a,b)=>b[1].at-a[1].at);
+  const id=last.split('~')[0],topic=(window.CP_DATA||[]).find(c=>c.id===id);
+  const title=topic?topic.name:id==='ecg'?'ECG guide':id==='ecg-explorer'?'ECG cases':'Your previous session';
+  return '<section class="student-start" aria-label="Continue learning">'+
+   (last?'<div class="student-resume"><div><p class="study-kicker">CONTINUE LEARNING</p><h2>'+esc(title)+'</h2></div><a class="resume-link" href="#'+esc(last)+'">Resume <span aria-hidden="true">→</span></a></div>':'')+
+   '<details class="starter-track"><summary>New here? Try a 10-minute learning path</summary><p>Read an approach, inspect a normal ECG, then make your first decision.</p><div class="student-actions"><a href="#chest-pain">1 · Chest pain approach</a><a href="#ecg-explorer~normal">2 · Normal 12-lead ECG</a><a href="#study~case-chest-pain">3 · Chest pain case</a></div></details>'+
+   (weak.length?'<details class="weak-areas"><summary>Topics to revisit ('+weak.length+')</summary><ul>'+weak.map(([key,v])=>{const id=key.split(':')[1];let route=key.startsWith('ecg:')?'ecg-explorer~'+id:key.startsWith('case:')?'study~case-'+id:id+'~study';const name=key.startsWith('ecg:')?(window.ECG_EXPLORER.cases.find(c=>c.id===id)||{}).name:(window.CP_DATA.find(c=>c.id===id)||{}).name;return name?'<li><a href="#'+esc(route)+'">'+esc(name)+'</a> · '+(v.value==='again'?'Review again':'Partly confident')+'</li>':'';}).join('')+'</ul></details>':'')+'</section>';
+ }
+
  // Learning depth changes prompts only; clinical content and progress stay available.
  const focusLevels={
   core:{label:'Core',description:'Build a structured approach. Useful when a presentation is new to you.',prompts:[['What needs attention first, and why?','how-to-think','Review the approach'],['Which immediate threats must you consider?','dont-miss','Review important diagnoses'],['Which history and examination findings would you seek?','history','Review assessment']]},
@@ -78,7 +88,7 @@
  function placeFilters(stage){
   if(!contextFilters)contextFilters=document.querySelector('.context-filters');
   if(!contextFilters)return;
-  const target=stage.querySelector('.library-head')||stage.querySelector('[data-severity-slot]');
+  const target=stage.querySelector('.library-filter-controls')||stage.querySelector('.library-head')||stage.querySelector('[data-severity-slot]');
   if(target){contextFilters.hidden=false;if(contextFilters.parentElement!==target)target.append(contextFilters);}
   else contextFilters.hidden=true;
  }
@@ -87,7 +97,7 @@
   const marker=document.createElement('span');marker.className='student-enhanced';marker.hidden=true;stage.append(marker);
   const route=location.hash.slice(1),hero=stage.querySelector('.cp-hero');
   if(hero){const id=route.split('~')[0];if(id)remember(route);const practice=practiceFor(id);const intro=document.createElement('section');intro.className='student-intro';intro.innerHTML='<div class="student-actions"><a href="#'+(id==='ecg'?'ecg-explorer':'shift~'+esc(id))+'">'+(id==='ecg'?'Explore ECGs':'Shift view')+'</a><a href="'+practice.href+'">'+esc(practice.label)+'</a></div>'+glossaryHtml();hero.after(intro);if(id!=='ecg'&&Array.isArray(window.CP_DATA)&&window.CP_DATA.some(c=>c.id===id)){const learningArea=stage.querySelector('#section-study')||intro;learningArea.insertAdjacentHTML('beforeend',guidedHtml(id));bindGuided(learningArea.querySelector('.guided-reasoning'),id);}}
-  if(stage.querySelector('.home-intro')||stage.querySelector('.study-page')){const holder=document.createElement('div');holder.innerHTML=starterHtml();const at=stage.querySelector('.presentation-library')||stage.querySelector('.study-dashboard')||stage.querySelector('.home-intro')||stage.querySelector('.study-page');at.after(holder.firstElementChild);if(stage.querySelector('.home-intro')&&!Object.keys(read().ratings).length){const stats=stage.querySelector('.study-dashboard');if(stats)stats.hidden=true;}}
+  if(stage.querySelector('.home-intro')){const holder=document.createElement('div');holder.innerHTML=starterHtml();const at=stage.querySelector('.home-intro')||stage.querySelector('.study-page');at.after(holder.firstElementChild);if(stage.querySelector('.home-intro')&&!Object.keys(read().ratings).length){const stats=stage.querySelector('.study-dashboard');if(stats)stats.hidden=true;}}
   placeFilters(stage);
   const recall=stage.querySelector('.learning-loop');if(recall){const review=recall.querySelector('#reviewBtn');if(review)review.hidden=true;const panel=document.createElement('div');panel.className='recall-confidence';panel.hidden=true;panel.innerHTML='<p>After checking both answers, rate your recall.</p>'+ratingHtml('topic:'+route.split('~')[0]);recall.append(panel);recall.querySelectorAll('[data-reveal]').forEach(b=>b.addEventListener('click',()=>{b.dataset.attempted='true';if([...recall.querySelectorAll('[data-reveal]')].every(b=>b.dataset.attempted))panel.hidden=false;}));}
   stage.addEventListener('click',confidenceClick,{once:false});
@@ -95,7 +105,18 @@
  function confidenceClick(e){const button=e.target.closest('[data-confidence]');if(!button)return;const box=button.closest('[data-rating-key]'),ok=rate(box.dataset.ratingKey,button.dataset.confidence);box.querySelectorAll('[data-confidence]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));box.querySelector('.confidence-status').textContent='Self-assessment saved'+(ok?' on this device.':' for this session only.');if(button.dataset.confidence==='got'&&box.dataset.ratingKey.startsWith('topic:')){const b=document.getElementById('reviewBtn');if(b&&(b.getAttribute('aria-pressed')!=='true'||b.textContent==='Complete review')&&!box.dataset.scheduled){b.click();box.dataset.scheduled='true';}}}
  // A single delegated listener survives route rendering; enhancement observes only root replacement.
  function rememberJump(e){const b=e.target.closest('[data-jump]');if(b){const id=location.hash.slice(1).split('~')[0];if(id)remember(id+'~'+b.dataset.jump);}}
- function start(){const stage=document.getElementById('stage');if(!stage)return;stage.addEventListener('click',rememberJump);new MutationObserver(()=>enhance(stage)).observe(stage,{childList:true});enhance(stage);}
+ function libraryMenuClick(e){
+  const menus=document.querySelectorAll('.library-filter-controls > details');
+  const chosen=e.target.closest('.library-filter-controls > details');
+  if(!chosen)menus.forEach(menu=>{menu.open=false;});
+  else if(e.target.closest('summary'))menus.forEach(menu=>{if(menu!==chosen)menu.open=false;});
+ }
+ function libraryMenuKey(e){
+  if(e.key!=='Escape')return;
+  const menu=[...document.querySelectorAll('.library-filter-controls > details[open]')].find(menu=>menu.contains(document.activeElement));
+  if(menu){menu.open=false;menu.querySelector('summary').focus();e.preventDefault();}
+ }
+ function start(){const stage=document.getElementById('stage');if(!stage)return;stage.addEventListener('click',rememberJump);document.addEventListener('click',libraryMenuClick);document.addEventListener('keydown',libraryMenuKey);new MutationObserver(()=>enhance(stage)).observe(stage,{childList:true});enhance(stage);}
  window.STUDENT_LEARNING={cases,render,bindPractice,shuffled,read,rate,remember,ratingHtml,getFocus,setFocus,guidedHtml,practiceFor};
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 }());

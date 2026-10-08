@@ -6,7 +6,7 @@
   let count=0;const errors=[];const check=(v,m)=>{count++;if(!v)throw Error(m);};
   const change=(host,key,value)=>{const input=host.querySelector('[data-control="'+key+'"]');input.value=value;input.dispatchEvent(new Event('change',{bubbles:true}));check(host.querySelector('[data-control="'+key+'"]')===input,'Native '+key+' picker retained');};
   const click=(host,key)=>host.querySelector('[data-action="'+key+'"]').click();
-  const validate=host=>{const svg=host.querySelector('svg');check(!svg.querySelector('parsererror'),'SVG parse');check(svg.querySelector('rect[fill="#fff1f2"]'),'Pink paper');check(!/NaN|Infinity/.test(svg.outerHTML),'Finite SVG');check(host.scrollWidth<=host.clientWidth+2,'Outer overflow');const seen=new Set();for(const node of document.querySelectorAll('[id]')){check(!seen.has(node.id),'Duplicate ID '+node.id);seen.add(node.id);} };
+  const validate=host=>{const svg=host.querySelector('.explorer-canvas svg');check(!svg.querySelector('parsererror'),'SVG parse');check(svg.querySelector('rect[fill="#fff1f2"]'),'Pink paper');check(!/NaN|Infinity/.test(svg.outerHTML),'Finite SVG');check(host.scrollWidth<=host.clientWidth+2,'Outer overflow');const seen=new Set();for(const node of document.querySelectorAll('[id]')){check(!seen.has(node.id),'Duplicate ID '+node.id);seen.add(node.id);} };
   const tick=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
   for(const record of window.ECG_EXPLORER.cases){
    try{

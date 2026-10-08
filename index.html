@@ -9,15 +9,15 @@
 <title>EM Pocket — Emergency Medicine Reference</title>
 <meta name="description" content="A focused emergency medicine reference for chest pain, dyspnea, abdominal pain, and more. Rosen's-based frameworks for clinical learning and review.">
 <meta name="theme-color" content="#f6f7f9" id="themeColor">
-<link rel="manifest" href="manifest.json?v=20261002-v19">
-<link rel="icon" href="assets/icon.svg?v=20261002-v19" type="image/svg+xml">
-<link rel="icon" href="assets/icon-192.png?v=20261002-v19" type="image/png" sizes="192x192">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261002-v19" sizes="180x180">
+<link rel="manifest" href="manifest.json?v=20261008-clinical-v30">
+<link rel="icon" href="assets/icon.svg?v=20261008-clinical-v30" type="image/svg+xml">
+<link rel="icon" href="assets/icon-192.png?v=20261008-clinical-v30" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261008-clinical-v30" sizes="180x180">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="preload" href="assets/fonts/PlusJakartaSans-Variable.ttf?v=20261002-v19" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="assets/app.css?v=20261002-v19">
+<link rel="preload" href="assets/fonts/PlusJakartaSans-Variable.ttf?v=20261008-clinical-v30" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="assets/app.css?v=20261008-clinical-v30">
 <script>
 (function () {
     try {
@@ -47,7 +47,7 @@
 <nav class="sidebar" id="sidebar" aria-label="Presentations">
     <div class="side-head">
     <button class="brand" id="brandBtn" type="button" title="All presentations">
-        <span class="brand-mark" aria-hidden="true"><img src="assets/icon-192.png?v=20261002-v19" alt="" width="44" height="44"></span>
+        <span class="brand-mark" aria-hidden="true"><img src="assets/icon-192.png?v=20261008-clinical-v30" alt="" width="44" height="44"></span>
         <span class="brand-text">
             <strong>EM Pocket</strong>
             <span>Emergency medicine</span>
@@ -71,11 +71,11 @@
     <header class="topbar">
         <button class="icon-btn burger" id="burgerBtn" type="button" aria-label="Open presentations menu" aria-controls="sidebar" aria-expanded="false"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
         <nav class="primary-nav" aria-label="Primary navigation">
-        <button class="home-btn" id="homeBtn" type="button" title="All presentations (H)" aria-label="All presentations" data-nav="home"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-8H9v8H4a1 1 0 0 1-1-1z"/></svg><span class="header-label">Presentations</span></button>
+        <button class="home-btn" id="homeBtn" type="button" title="All presentations (H)" aria-label="All presentations" data-nav="home"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-8H9v8H4a1 1 0 0 1-1-1z"/></svg><span class="header-label">Library</span></button>
         <button class="home-btn utility-btn" id="ecgBtn" type="button" title="ECG Interpretation from scratch (E)" aria-label="Open ECG Guide" data-nav="ecg"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h5l3-8 4 16 3-8h5"/></svg><span class="header-label">ECG Guide</span></button>
         <button class="home-btn utility-btn" id="studyBtn" type="button" title="Practice and learning workspace (S)" aria-label="Open practice workspace" data-nav="study"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v16M3 3h4a5 5 0 0 1 5 2 5 5 0 0 1 5-2h4v16h-4a5 5 0 0 0-5 2 5 5 0 0 0-5-2H3z"/></svg><span class="header-label">Practice</span></button>
-        <button class="home-btn utility-btn" id="explorerBtn" type="button" aria-label="Open ECG Explorer" data-nav="explorer"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M4 12h4l2-4 3 8 2-4h5"/></svg><span class="header-label">ECG Explorer</span></button>
-        <button class="home-btn utility-btn" id="shiftBtn" type="button" title="Focused shift-ready view (V)" aria-label="Open focused shift view" data-nav="shift"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-9 12h7l-1 8 10-12h-7z"/></svg><span class="header-label">Shift View</span></button>
+        <button class="home-btn utility-btn" id="explorerBtn" type="button" aria-label="Open ECG Explorer" data-nav="explorer"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M4 12h4l2-4 3 8 2-4h5"/></svg><span class="header-label">ECG Cases</span></button>
+        <button class="home-btn utility-btn" id="shiftBtn" type="button" title="Focused shift-ready view (V)" aria-label="Open focused shift view" data-nav="shift"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-9 12h7l-1 8 10-12h-7z"/></svg><span class="header-label">Quick View</span></button>
         </nav>
         <div class="searchwrap">
             <span class="search-ico" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></span>
@@ -120,14 +120,14 @@
     <footer class="foot">
         <p>Made by Dr. Alzahrani EM. · <a href="mailto:apps@aamd.sa?subject=EM%20Pocket%20feedback" title="Send feedback or suggestions">Send feedback: apps@aamd.sa</a></p>
         <p><strong>EM Pocket</strong> — Built on the approach of <em>Rosen's Emergency Medicine</em> (10th ed., 2023)
-            and corroborating society guidance reviewed in September 2026 (Tintinalli's 9th ed., ACC/AHA, ESC, SSC, AAP, ACG, GINA/GOLD, ACEP). Educational reference —
+            and corroborating society guidance with selected source checks updated 8 October 2026 (Tintinalli's 9th ed., ACC/AHA, ESC, SSC, AAP, ACG, GINA/GOLD, ACEP). Educational reference —
             always apply clinical judgment and institutional protocols.</p>
     </footer>
     <nav class="ios-tabbar" aria-label="Primary" role="navigation">
         <div class="ios-tabbar-inner">
             <button class="tabbar-item active" type="button" data-nav="home" aria-label="Presentations" aria-current="page">
                 <svg class="tabbar-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-8H9v8H4a1 1 0 0 1-1-1z"/></svg>
-                <span class="tabbar-label">Presentations</span>
+                <span class="tabbar-label">Library</span>
                 <span class="tabbar-dot" aria-hidden="true"></span>
             </button>
             <button class="tabbar-item" type="button" data-nav="ecg" aria-label="ECG Guide">
@@ -142,12 +142,12 @@
             </button>
             <button class="tabbar-item" type="button" data-nav="explorer" aria-label="ECG Explorer">
                 <svg class="tabbar-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M4 12h4l2-4 3 8 2-4h5"/></svg>
-                <span class="tabbar-label">Explorer</span>
+                <span class="tabbar-label">ECG Cases</span>
                 <span class="tabbar-dot" aria-hidden="true"></span>
             </button>
             <button class="tabbar-item" type="button" data-nav="shift" aria-label="Shift View">
                 <svg class="tabbar-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-9 12h7l-1 8 10-12h-7z"/></svg>
-                <span class="tabbar-label">Shift</span>
+                <span class="tabbar-label">Quick View</span>
                 <span class="tabbar-dot" aria-hidden="true"></span>
             </button>
         </div>
@@ -212,13 +212,13 @@
 <div class="toast" id="toast" role="status"></div>
 <noscript><p class="noscript">EM Pocket needs JavaScript enabled to show presentations.</p></noscript>
 
-<script type="module" src="assets/ecg-svg.js?v=20261002-v19"></script>
-<script type="module" src="assets/ecg-engine.js?v=20261002-v19"></script>
-<script type="module" src="assets/ecg-case-tracings.js?v=20261002-v19"></script>
-<script type="module" src="assets/ecg-interactive.js?v=20261002-v19"></script>
-<script type="module" src="assets/ecg-curriculum.js?v=20261002-v19"></script><script type="module" src="assets/ecg-explorer.js?v=20261002-v19"></script>
-<script type="module" src="assets/data.js?v=20261002-v19"></script>
-<script type="module" src="assets/evidence.js?v=20261002-v19"></script>
-<script type="module" src="assets/student-learning.js?v=20261002-v19"></script><script type="module" src="assets/em-learning-data.js?v=20261002-v19"></script><script type="module" src="assets/em-learning.js?v=20261002-v19"></script><script type="module" src="assets/app.js?v=20261002-v19"></script>
+<script type="module" src="assets/ecg-svg.js?v=20261008-clinical-v30"></script>
+<script type="module" src="assets/ecg-engine.js?v=20261008-clinical-v30"></script>
+<script type="module" src="assets/ecg-case-tracings.js?v=20261008-clinical-v30"></script>
+<script type="module" src="assets/ecg-interactive.js?v=20261008-clinical-v30"></script>
+<script type="module" src="assets/ecg-curriculum.js?v=20261008-clinical-v30"></script><script type="module" src="assets/ecg-explorer.js?v=20261008-clinical-v30"></script>
+<script type="module" src="assets/data.js?v=20261008-clinical-v30"></script>
+<script type="module" src="assets/evidence.js?v=20261008-clinical-v30"></script>
+<script type="module" src="assets/student-learning.js?v=20261008-clinical-v30"></script><script type="module" src="assets/em-learning-data.js?v=20261008-clinical-v30"></script><script type="module" src="assets/em-learning.js?v=20261008-clinical-v30"></script><script type="module" src="assets/app.js?v=20261008-clinical-v30"></script>
 </body>
 </html>

@@ -778,5 +778,5 @@ window.EM_LEARNING_DATA = {
       "answer": "Reconstruct the information available at the decision point before discussing the eventual outcome."
     }
   ],
-  "checked": "2026-09-10"
+  "checked": "2026-10-08"
 };

@@ -80,10 +80,10 @@
   repolarization:{label:'AHA/ACCF/HRS · ST, T, U and QT interpretation',url:'https://www.ahajournals.org/doi/10.1161/CIRCULATIONAHA.108.191096'},
   preexcitation:{label:'ACC/AHA/ACCP/HRS · AF with pre-excitation',url:'https://www.jacc.org/doi/10.1016/j.jacc.2023.08.017'},
   brugada:{label:'ESC · Brugada morphology and lead placement',url:'https://www.escardio.org/communities/councils/cardiology-practice/scientific-documents-and-publications/ejournal/volume-19/brugada-syndrome-and-sports-activity-from-history-to-risk-stratification/'},
-  pericarditis:{label:'ESC · ECG findings in pericarditis',url:'https://www.escardio.org/communities/councils/cardiology-practice/scientific-documents-and-publications/ejournal/volume-15/Diagnosis-of-acute-pericarditis/'},
+  pericarditis:{label:'ESC 2025 · Myocarditis and pericarditis guideline',url:'https://academic.oup.com/eurheartj/article/46/40/3952/8234483'},
   toxic:{label:'AHA 2025 · Special circumstances and toxicology',url:'https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation'},
   hypothermia:{label:'Prospective study · ECG manifestations of hypothermia',url:'https://pubmed.ncbi.nlm.nih.gov/10569384/'},
-  pe:{label:'ESC · Acute pulmonary embolism guideline',url:'https://academic.oup.com/eurheartj/article/41/4/543/5556136'}
+  pe:{label:'AHA/ACC multisociety · Acute PE guideline (2026)',url:'https://www.jacc.org/doi/10.1016/j.jacc.2025.11.005'}
  });
  const M=(title,explanation,leads,part)=>({title,explanation,leads:leads.split(' '),part});
  const calibrated={
@@ -148,9 +148,86 @@
  for(const id of ['long-qt','hypocalcemia','hypercalcemia'])cases.find(c=>c.id===id).guide='step-intervals';
  cases.find(c=>c.id==='preexcited-af').guide='wpw';
  cases.find(c=>c.id==='early-repolarization').guide='pericarditis-ber';
+
+ // Core gaps: full-lead spatial examples and rhythm/technical teaching cases.
+ Object.assign(sources,{
+  standards:{label:'AHA/ACC/HRS · ECG diagnostic statements',url:'https://www.jacc.org/doi/10.1016/j.jacc.2007.01.025'},
+  mat:{label:'ESC · Supraventricular tachycardia guideline',url:'https://academic.oup.com/eurheartj/article/41/5/655/5556821'},
+  pacing:{label:'ESC · Cardiac pacing guideline',url:'https://academic.oup.com/eurheartj/article/42/35/3427/6358547'}
+ });
+ const coreLesson=(title,explanation,leads='II',part='rhythm')=>M(title,explanation,leads,part);
+ function core(id,name,category,summary,lessons,full=false,source='standards'){
+  const record={id,name,category,summary,kind:id,lessons,full,source,guide:category==='Ischemia'?'step-ischemia-map':category==='Other important patterns'?'step-hypertrophy':category==='Technical pitfalls'?'step-rate-calibration':id.startsWith('pacing-')?'step-intervals':'step-rhythm-axis',core:true};
+  cases.push(record);
+ }
+ for(const [id,name,angle,clue]of [
+  ['axis-left','Left axis deviation',-60,'I is positive, aVF and II are negative. Lead II separates true left deviation from the −30 to 0 degree range.'],
+  ['axis-right','Right axis deviation',120,'I is negative and aVF is positive. Check placement and the clinical differential.'],
+  ['axis-extreme','Extreme QRS axis',-120,'I and aVF are both negative; this is the northwest quadrant.']]){
+  core(id,name,'Conduction','A complete synthetic ECG with mean QRS axis about '+angle+' degrees; axis alone does not name the cause.',[
+   coreLesson('Read I, aVF and II',clue,'I II aVF','qrs'),coreLesson('Check the whole tracing','Axis is a QRS assessment. P and T axes need not follow it; inspect QRS duration and the precordial views.','aVR V1 V6','qrs')],true);
+ }
+ core('lafb','Left anterior fascicular block','Conduction','Leftward QRS axis with qR in I/aVL and rS inferiorly, QRS 100 ms.',[
+  coreLesson('Leftward axis and inferior rS','The main QRS is positive in I/aVL and negative in II/III/aVF; this model uses an axis near −60 degrees.','I II III aVL aVF','qrs'),
+  coreLesson('Delayed lateral R peak','The small initial q is followed by a lateral R peak at 56 ms. Exclude other causes of the axis and morphology.','I aVL','qrs')],true,'bbb');
+ core('lpfb','Left posterior fascicular block','Conduction','Rightward axis with rS in I/aVL and qR inferiorly; a diagnosis of exclusion.',[
+  coreLesson('Right axis and inferior qR','A small initial inferior q precedes the dominant positive QRS; I/aVL have an initial r and dominant S.','I III aVL aVF','qrs'),
+  coreLesson('Exclude competing causes','LPFB is uncommon. Exclude right ventricular hypertrophy, lateral infarction and other causes of rightward axis before assigning the clinical diagnosis.','V1 V5','qrs')],true,'bbb');
+ core('sinus-arrhythmia','Respiratory sinus arrhythmia','Rhythms','Cyclic R–R variation with a consistent sinus P shape and fixed PR.',[
+  coreLesson('Cyclic interval variation','Intervals shorten and lengthen smoothly rather than showing the irregular timing of AF.'),
+  coreLesson('Sinus P persists','Each QRS has the same preceding sinus P and a PR of 160 ms.','II','p')]);
+ core('sinus-pause','Sinus pause','Rhythms','A 2.5-second gap without P or QRS between otherwise conducted sinus beats.',[
+  coreLesson('Missing atrial and ventricular activity','The interval from the QRS at 2100 ms to the next at 4600 ms is 2500 ms. No P train marches through the gap.'),
+  coreLesson('Describe before assigning mechanism','This pause is not an exact multiple of the 800 ms baseline cycle. A brief surface strip cannot establish all sinus-node mechanisms.')]);
+ core('mat','Multifocal atrial tachycardia','Rhythms','An irregular atrial tachycardia with at least three P morphologies, variable PR and discrete isoelectric intervals.',[
+  coreLesson('Three P morphologies','Upright, inverted and biphasic P shapes alternate in this lead-II example. Identify P rather than diagnosing AF from irregularity.','II','p'),
+  coreLesson('Variable PP, PR and RR','The average ventricular rate is above 100/min. Each modeled P conducts through a narrow QRS; the PR varies with the focus.')],false,'mat');
+ core('flutter-variable','Atrial flutter · variable conduction','Rhythms','Atrial activity at 300/min continues through changing 2:1, 3:1 and 4:1 conduction.',[
+  coreLesson('Atrial clock continues','Flutter waves recur every 200 ms even when the ventricular interval changes.'),
+  coreLesson('Variable ventricular response','R–R intervals are multiples of the flutter cycle. This is not a sinus P train or a featureless AF baseline.')],false,'flutter');
+ core('rv-infarction','Inferior infarction with right-sided leads','Ischemia','Inferior ST elevation with V3R/V4R elevation in a separate simultaneous supplemental panel.',[
+  coreLesson('Inferior territorial changes','II/III/aVF show ST elevation with reciprocal aVL depression.','II III aVF aVL','st'),
+  coreLesson('Inspect the right-sided leads','V3R and V4R are supplemental right-chest positions, not relabeled V3/V4. The modeled J elevations are 1.2 and 1.5 mm; apply age-specific criteria and clinical context.','V3R V4R','st')],true,'acs');
+ core('regional-ischemia','Regional ST depression and T inversion','Ischemia','Horizontal lateral ST depression with T inversion; correlate with symptoms and serial recordings.',[
+  coreLesson('Contiguous lateral changes','I/aVL/V4–V6 show depressed ST and inverted T. These findings support an ischemia differential but are not specific.','I aVL V4 V5 V6','st'),
+  coreLesson('NSTEMI is not an ECG-only label','Symptoms, troponin and serial assessment determine the diagnosis. A normal ECG also cannot exclude ACS.','V4 V5 V6','t')],true,'acs');
+ core('old-inferior-q','Inferior Q-wave pattern','Ischemia','Broad inferior Q waves without acute ST elevation in this synthetic comparison pattern.',[
+  coreLesson('Inferior Q waves','Initial negative deflections last about 40 ms in the inferior views; assess depth, duration and distribution together.','II III aVF','qrs'),
+  coreLesson('Age cannot be proven by ECG alone','This example has an isoelectric ST segment. Q waves do not establish infarct timing; compare prior ECGs and exclude mimics.','II III aVF','st')],true,'acs');
+ core('limb-reversal','Right/left arm electrode reversal','Technical pitfalls','A normal underlying model displayed after swapping right- and left-arm electrodes.',[
+  coreLesson('Unexpected limb polarities','I is inverted, II/III swap, and aVR/aVL swap. The transformed leads still obey their algebraic identities.','I II III aVR aVL','rhythm'),
+  coreLesson('Chest progression is preserved','The precordial views retain the original progression in this arm-reversal model. Repeat with confirmed placement before interpreting disease.','V1 V3 V6','qrs')],true);
+ core('high-v1-v2','High V1/V2 placement · illustrative mimic','Technical pitfalls','An illustrative placement error with negative anterior P and altered V1/V2 morphology; not a unique diagnostic signature.',[
+  coreLesson('Unexpected anterior P polarity','The modeled negative P in V2 is a clue to check electrode placement. P morphology alone cannot prove a placement error.','V1 V2','p'),
+  coreLesson('Repeat at verified landmarks','Place V1/V2 in the fourth intercostal spaces. The remaining chest progression and limb leads provide context.','V1 V2 V3','qrs')],true);
+ core('artifact-vt','Motion artifact mimicking VT','Technical pitfalls','A noisy lead II is shown with a simultaneous clean lead I containing the underlying sinus rhythm.',[
+  coreLesson('Sinus complexes continue','Compare both leads: normal complexes continue at the same timestamps through the noisy interval.'),
+  coreLesson('Check the patient and signal','Motion can mimic a broad fast rhythm. Assess pulse, perfusion, electrode contact and other leads before assigning the rhythm.','I','rhythm')]);
+ core('pacing-capture-failure','Ventricular pacing · failure to capture','Conduction','Regular pacing stimuli with two stimuli not followed by ventricular depolarization.',[
+  coreLesson('Stimulus without QRS','The spikes at 2500 and 3500 ms are not followed by QRS complexes. This is electrical failure to capture.'),
+  coreLesson('Assess the consequence','Check the patient, mechanical capture and device system. A stimulus artifact alone does not establish ventricular contraction.')],false,'pacing');
+ core('pacing-undersensing','Ventricular pacing · undersensing','Conduction','Pacing stimuli occur despite intervening intrinsic ventricular complexes.',[
+  coreLesson('Intrinsic beats are not sensed','An intrinsic QRS at 2100 ms does not reset the stimulus scheduled at 2500 ms.'),
+  coreLesson('Describe electrical behavior','Inappropriate stimuli suggest undersensing in the supplied device scenario. Confirm programming and device interrogation; ECG alone cannot name the hardware cause.')],false,'pacing');
+ core('lvh-full','LVH voltage · full ECG','Other important patterns','High precordial voltage with S in V1 plus R in V5 above 35 mm at standard gain; displayed at half gain.',[
+  coreLesson('Measure voltage at the printed gain','S V1 is 1.6 mV and R V5 is 2.2 mV: 3.8 mV, equivalent to 38 mm at 10 mm/mV. This page uses 5 mm/mV.','V1 V5','qrs'),
+  coreLesson('Voltage is not anatomy','ECG voltage criteria have limited sensitivity and depend on age/body habitus. Correlate with imaging and context.','I aVL V6','qrs')],true,'voltage');
+ core('low-voltage-full','Low QRS voltage · full ECG','Other important patterns','Peak-to-peak QRS below 0.5 mV in all limb leads and below 1 mV in all chest leads.',[
+  coreLesson('All limb leads are low voltage','Assess total QRS excursion from the negative to positive extremum, not R amplitude alone.','I II III aVR aVL aVF','qrs'),
+  coreLesson('Check calibration and causes','The gain is 10 mm/mV. Low voltage has a broad differential; this pattern alone does not diagnose an effusion.','V1 V3 V5','qrs')],true,'voltage');
+ core('rvh-full','Right ventricular hypertrophy pattern','Other important patterns','Rightward axis, dominant R in V1 and deep lateral S with anterior repolarization changes.',[
+  coreLesson('Rightward forces','Inspect the rightward limb axis and a dominant R in V1 rather than relying on a single voltage.','I aVF V1','qrs'),
+  coreLesson('Lateral S and right-precordial T','Deep lateral S and anterior T inversion are modeled. Exclude RBBB, posterior infarction and other mimics; confirm chamber anatomy clinically.','V1 V3 V5 V6','t')],true,'voltage');
+ core('lae-full','Left atrial abnormality pattern','Other important patterns','Broad notched P in II and an enlarged terminal negative P component in V1.',[
+  coreLesson('Broad notched inferior P','The P duration is 130 ms with two separated peaks in II. Assess duration and morphology together.','II','p'),
+  coreLesson('Terminal negative P in V1','The terminal negative component is prolonged and deep in this model. This is an atrial ECG abnormality, not a direct measurement of atrial size.','V1','p')],true,'voltage');
+ core('rae-full','Right atrial abnormality pattern','Other important patterns','Tall narrow inferior P and a prominent initial positive P in V1.',[
+  coreLesson('Tall inferior P','The lead-II P reaches 0.30 mV (3 mm at standard gain) without prolonged duration.','II III aVF','p'),
+  coreLesson('Anterior positive P','V1 has a prominent initial positive component. ECG morphology does not establish the anatomical size or cause.','V1','p')],true,'voltage');
  const interpolate=(t,points,smooth=false)=>{if(t<points[0][0]||t>points[points.length-1][0])return 0;for(let j=1;j<points.length;j++)if(t<=points[j][0]){const[a,x]=points[j-1],[b,y]=points[j];const u=(t-a)/(b-a);return x+(y-x)*(smooth?u*u*(3-2*u):u);}return 0;};
  function stripData(kind) {
   const record=cases.find(c=>c.kind===kind);
+  if(record&&record.core)return coreData(record);
   const data={kind,duration:6000,lanes:record&&record.lanes?record.lanes:kind==='rbbb'||kind==='lbbb'?['V1','V6']:['II'],p:[],beats:[],rate:75};
   let rr=800,pr=160,qrs=90,qt=380;
   if(kind==='brady')rr=60000/45;if(kind==='tachy'){rr=500;qt=320;}if(kind==='flutter'){rr=400;qt=270;}if(kind==='svt'){rr=60000/180;qt=240;qrs=80;}if(kind==='junctional'||kind==='pea')rr=1500;
@@ -183,6 +260,7 @@
  }
  function voltage(t,data,lane) {
   const kind=data.kind;
+  if(data.core)return coreVoltage(data.lanes[lane],t,data);
   if(kind==='asystole')return 0;
   if(kind==='vf')return .42*Math.sin(t*.031+1.7*Math.sin(t*.0031))+.24*Math.sin(t*.049)+.13*Math.sin(t*.077+.4);
   if(kind==='torsades'&&t>=3000){const u=t-3000;return (.2+.75*Math.abs(Math.sin(u*Math.PI/1400)))*Math.sin(u*.026)*Math.cos(u*Math.PI/2800)+.12*Math.sin(u*.052);}
@@ -202,10 +280,18 @@
  // Continuous piecewise waveform in mV; QRS and ST share their J endpoint.
  function morphologyVoltage(t,data,lane) {
   const k=data.kind,lead=data.lanes[lane];let v=0;
+  // Independent chest projections share beat timing, not copied morphology.
+  const chest={
+   V3:{p:.07,r:.65,s:-.45,t:.09,u:.16,j:.18},
+   V4:{p:.08,r:1.08,s:-.22,t:.31,u:.18,j:.18},
+   V5:{p:.09,r:1.30,s:-.12,t:.32,u:.12,j:.17},
+   V6:{p:.08,r:1.05,s:-.08,t:.29,u:.10,j:.12}
+  }[lead];
+  const independent=chest&&['lowk','cold','preexcitation','alternans','earlyrep'].includes(k);
   if(k==='rvstrain'&&lead==='II')return morphologyVoltage(t,data,0)+morphologyVoltage(t,data,2);
   const coeff=lead==='aVR'?-.85:lead==='I'?.7:lead==='III'?.3:lead==='aVL'?.2:lead==='aVF'?.65:1;
   const alt=n=>k==='alternans'?(n%2?.18:.32):1;
-  for(const [n,p] of data.p.entries())v+=interpolate(t-p.on,[[0,0],[20,.65],[40,1],[60,.65],[80,0]],true)*p.amp*coeff*alt(n);
+  for(const [n,p] of data.p.entries())v+=interpolate(t-p.on,[[0,0],[20,.65],[40,1],[60,.65],[80,0]],true)*p.amp*(independent?chest.p/.14:coeff)*alt(n);
   if(k==='preaf')v+=.016*Math.sin(t*.043+.5*Math.sin(t*.009));
   for(const [n,b] of data.beats.entries()){
    const d=t-b.on,w=b.qrs,qt=b.qt;let j=0,ta=.28,pr=0;
@@ -223,7 +309,13 @@
    if(k==='sodiumblock')shape=lead==='aVR'?[[0,0],[25,-.15],[65,-.5],[130,.4],[w,0]]:[[0,0],[28,-.08],[68,1],[115,-.3],[w,0]];
    if(k==='preexcitation')shape=[[0,0],[40,.22],[66,1],[106,-.25],[w,0]];
    if(k==='preaf'){const z=b.variant;shape=[[0,0],[35,.12+z*.035],[w*.55,.8+z*.12],[w*.83,-.15-z*.07],[w,0]];ta=-.18;}
-   if(k==='earlyrep'){j=.15;shape=[[0,0],[16,-.08],[36,1],[64,-.15],[78,.12],[88,.23],[w,j]];ta=.4;}
+   if(k==='earlyrep'){j=independent?chest.j:.15;shape=[[0,0],[16,-.08],[36,1],[64,-.15],[78,.12],[88,.23],[w,j]];ta=.4;}
+   if(independent){
+    if(k==='preexcitation')shape=[[0,0],[40,.18],[66,chest.r],[106,chest.s],[w,0]];
+    else if(k==='earlyrep')shape=[[0,0],[16,-.05],[36,chest.r],[64,chest.s],[78,.09],[88,j+.07],[w,j]];
+    else shape=[[0,0],[w*.18,-.03],[w*.4,chest.r],[w*.7,chest.s],[w,0]];
+    ta=k==='lowk'?chest.t*.65:chest.t;
+   }
    // Simple frontal projection for the simultaneous diffuse/pericarditis panels.
    // Independent chest-lead shapes are not used to claim a frontal QRS axis.
    const projection=['diffuse','pericarditis'].includes(k)?coeff:1;
@@ -232,16 +324,172 @@
    let rep=[[w,j],[w+(qt-w)*.2,j],[w+(qt-w)*.62,ta*projection],[qt,0]];
    if(k==='diffuse'||k==='lowk')rep=[[w,j],[w+80,j],[w+130,0],[qt-75,ta*projection],[qt,0]];
    if(k==='brugada1')rep=[[w,j],[w+55,j*.8],[w+130,.07],[qt-75,ta],[qt,0]];
-   if(k==='cold')rep=[[w,0],[w+25,.22],[w+60,0],[qt-115,.22],[qt,0]];
+   if(k==='cold')rep=[[w,0],[w+25,independent?chest.j:.22],[w+60,0],[qt-115,independent?chest.t:.22],[qt,0]];
    if(k==='lowca')rep=[[w,0],[330,0],[440,.28],[qt,0]];
    if(k==='highca')rep=[[w,0],[w+10,0],[190,.28],[qt,0]];
    // Choose one side at J to avoid doubling its voltage; smooth ST–T curves.
    let beat=d<=w?interpolate(d,shape):interpolate(d,rep,true);
    if(pr)beat+=interpolate(d,[[-b.pr+80,0],[-b.pr+95,pr],[-.01,pr],[0,0]]);
-   if(k==='lowk')beat+=interpolate(d,[[420,0],[500,.22],[620,0]],true);
+   if(k==='lowk')beat+=interpolate(d,[[420,0],[500,independent?chest.u:.22],[620,0]],true);
    v+=beat*alt(n);
   }
   return v;
+ }
+
+ function coreData(record){
+  const kind=record.kind,full=record.full;
+  const data={kind,core:true,full,duration:full?10000:6000,lanes:full?['I','II','III','aVR','aVL','aVF','V1','V2','V3','V4','V5','V6']:kind==='artifact-vt'?['II','I']:['II'],p:[],beats:[],spikes:[],rate:75,prMs:160,qrsMs:90,qtMs:380,axisDeg:45,seed:7107,noise:{disabled:true},beatTimes:[]};
+  data.gain=record.id==='lvh-full'?5:10;
+  if(kind==='lafb'||kind==='lpfb')data.qrsMs=100;
+  if(kind==='old-inferior-q')data.qrsMs=110;
+  if(['axis-left','lafb'].includes(kind))data.axisDeg=-60;
+  if(kind==='axis-right')data.axisDeg=120;
+  if(kind==='axis-extreme')data.axisDeg=-120;
+  if(kind==='lpfb')data.axisDeg=135;
+  if(kind==='rvh-full')data.axisDeg=110;
+  const push=(q,pr=160,variant=0,paced=false)=>{
+   data.beats.push({on:q,qrs:paced?160:data.qrsMs,qt:paced?440:data.qtMs,pr,variant,paced});
+   if(!paced)data.p.push({on:q-pr,amp:.14,variant,duration:kind==='lae-full'?130:80});
+  };
+  if(kind==='sinus-arrhythmia'){
+   for(let q=500,n=0;q<data.duration;q+=[800,700,620,680,800,950,1020,950][n++%8])push(q);
+  }else if(kind==='sinus-pause'){
+   [500,1300,2100,4600,5400].forEach(q=>push(q));
+  }else if(kind==='mat'){
+   data.rate=null;data.qtMs=300;
+   const rr=[500,560,490,620,530,510,580,520],prs=[110,140,180];
+   for(let q=500,n=0;q<data.duration;q+=rr[n++%rr.length])push(q,prs[n%3],n%3);
+  }else if(kind==='flutter-variable'){
+   data.rate=null;data.qtMs=270;data.flutter=true;
+   for(let q=500,n=0;q<data.duration;q+=[400,600,400,800,600][n++%5]){push(q);data.p=[];}
+  }else if(kind.startsWith('pacing-')){
+   data.prMs=null;data.qrsMs=160;data.qtMs=440;data.rate=60;
+   for(let q=500;q<data.duration;q+=1000){
+    data.spikes.push(q-14);
+    if(kind==='pacing-capture-failure'&&[2500,3500].includes(q))continue;
+    push(q,0,0,true);
+   }
+   if(kind==='pacing-undersensing'){push(2100);push(4100);}
+  }else for(let q=500;q<data.duration;q+=800)push(q);
+  data.beatTimes=data.beats.map(b=>b.on);
+  data.voltageAt=(lead,t)=>coreVoltage(lead,t,data);
+  return data;
+ }
+ const frontalAngles={I:0,II:60,III:120,aVR:210,aVL:330,aVF:90};
+ function project(magnitude,angle,lead){
+  const length=lead.startsWith('a')?Math.sqrt(3)/2:1;
+  return magnitude*length*Math.cos((angle-frontalAngles[lead])*Math.PI/180);
+ }
+ function coreVoltage(lead,t,data){
+  const k=data.kind;
+  if(k==='limb-reversal'){
+   const transformed={I:['I',-1],II:['III',1],III:['II',1],aVR:['aVL',1],aVL:['aVR',1],aVF:['aVF',1]};
+   const pair=transformed[lead];
+   return coreBaseVoltage(pair?pair[0]:lead,t,data)*(pair?pair[1]:1);
+  }
+  return coreBaseVoltage(lead,t,data);
+ }
+ function coreBaseVoltage(lead,t,data){
+  const k=data.kind,limb=lead in frontalAngles;
+  // Generate two independent limb signals; derive the other four exactly.
+  if(limb&&!['I','II'].includes(lead)){
+   const a=coreBaseVoltage('I',t,data),b=coreBaseVoltage('II',t,data);
+   return {III:b-a,aVR:-(a+b)/2,aVL:a-b/2,aVF:b-a/2}[lead];
+  }
+  const chest={
+   V1:{p:.04,pn:-.04,q:0,r:.22,s:-.85,t:.18},
+   V2:{p:.05,q:0,r:.35,s:-.75,t:.38},
+   V3:{p:.07,q:0,r:.65,s:-.45,t:.52},
+   V4:{p:.08,q:-.03,r:1.05,s:-.22,t:.55},
+   V5:{p:.09,q:-.08,r:1.35,s:-.12,t:.42},
+   V6:{p:.08,q:-.07,r:1.10,s:-.09,t:.32},
+   V3R:{p:.025,q:0,r:.16,s:-.55,t:.16},
+   V4R:{p:.02,q:0,r:.12,s:-.40,t:.12}
+  }[lead];
+  if(!limb&&!chest)throw Error('Unsupported core lead '+lead);
+  let v=0;
+  for(const p of data.p){
+   const d=t-p.on,w=p.duration;
+   let amp=limb?project(k==='rae-full'?.30:.14,60,lead):chest.p;
+   if(k==='mat')amp*=p.variant===1?-.9:p.variant===2?.8:1;
+   if(k==='high-v1-v2'&&['V1','V2'].includes(lead))amp=-.06;
+   let shape=k==='lae-full'?[[0,0],[35,amp],[65,amp*.45],[95,amp*1.05],[w,0]]:[[0,0],[w*.45,amp],[w,0]];
+   if(k==='mat'&&p.variant===2)shape=[[0,0],[25,amp],[55,-amp*.8],[80,0]];
+   if(k==='lae-full'&&lead==='V1')shape=[[0,0],[30,.05],[50,0],[90,-.12],[130,0]];
+   if(k==='rae-full'&&lead==='V1')shape=[[0,0],[30,.16],[50,0],[70,-.025],[80,0]];
+   v+=interpolate(d,shape,true);
+   if(chest&&chest.pn&& !['lae-full','rae-full','high-v1-v2'].includes(k))v+=interpolate(d,[[40,0],[60,chest.pn],[80,0]],true);
+  }
+  if(data.flutter&&lead==='II'){const phase=((t-100)%200+200)%200;v+=interpolate(phase,[[0,0],[145,-.22],[200,0]]);}
+  for(const b of data.beats){
+   const d=t-b.on,w=b.qrs,qt=b.qt;
+   let q=limb?project(.10,225,lead):chest.q;
+   let r=limb?project(1.05,data.axisDeg,lead):chest.r;
+   let s=limb?project(.16,data.axisDeg+195,lead):chest.s;
+   let ta=limb?project(.35,50,lead):chest.t,j=0;
+   if(k==='lafb'||k==='lpfb'){q=limb?project(.18,k==='lafb'?135:-45,lead):q;s=limb?r*.1:s;}
+   if(k==='lvh-full'&&!limb){if(lead==='V1')s=-1.6;if(lead==='V5')r=2.2;if(lead==='V6')r=1.8;}
+   if(k==='rvh-full'&&!limb){if(lead==='V1'){r=1.1;s=-.18;}if(['V5','V6'].includes(lead)){r=.55;s=-.8;}if(['V1','V2','V3'].includes(lead))ta=-.22;}
+   if(k==='high-v1-v2'&&['V1','V2'].includes(lead)){r=.12;s=-.7;}
+   if(k==='rv-infarction')j=limb?(lead==='I'?-.10:.20):lead==='V3R'?.12:lead==='V4R'?.15:0;
+   if(k==='regional-ischemia'){
+    j=limb?(lead==='I'?-.12:-.06):['V4','V5','V6'].includes(lead)?-.16:0;
+    if(limb)ta=lead==='I'?-.20:-.10;
+    else if(['V4','V5','V6'].includes(lead))ta=-.28;
+   }
+   let shape=[[0,0],[w*.18,q],[w*.4,r],[w*.72,s],[w,0]];
+   if(k==='lafb'||k==='lpfb')shape=[[0,0],[18,q],[56,r],[80,s],[w,0]];
+   if(k==='old-inferior-q'&&limb){
+    const initial=project(.42,225,lead);
+    shape=[[0,0],[10,initial],[38,initial],[48,0],[66,r],[92,s],[w,0]];
+   }
+   if(b.paced){shape=[[0,0],[35,.25],[88,1.10],[125,.35],[160,0]];ta=-.3;}
+   shape[shape.length-1][1]=j;
+   let signal=d<=w?interpolate(d,shape,true):interpolate(d,[[w,j],[w+70,j],[w+(qt-w)*.62,ta],[qt,0]],true);
+   if(k==='low-voltage-full')signal*=limb?.22:.35;
+   v+=signal;
+  }
+  for(const spike of data.spikes)v+=interpolate(t-spike,[[0,0],[2,1.2],[4,0]]);
+  if(k==='artifact-vt'&&lead==='II'&&t>=2400&&t<=4800){
+   const envelope=Math.min(1,(t-2400)/120,(4800-t)/120);
+   v+=envelope*(.52*Math.sin(t*.058)+.20*Math.sin(t*.097));
+  }
+  return v;
+ }
+ function renderCore(record){
+  const data=coreData(record);
+  if(!record.full){
+   const item=renderStrip(record);
+   return {...item,caption:'Synthetic teaching strip · selected leads · '+(record.category==='Technical pitfalls'?'simultaneous lead views.':'6 seconds.')};
+  }
+  const drawing=E.render12Lead({caseData:data,title:record.name+' · 12-lead',description:record.summary,subtitle:'10-second model',teaching:'Sequential 2.5-second columns · continuous 10-second lead II',rhythmLabel:'II rhythm · 10 s',footer:'Read printed gain; inspect all leads and clinical context.'});
+  const m=E.layoutMetrics(),uy=8*data.gain;
+  const cells=[];
+  E.layout.LAYOUT_3X4.forEach((row,r)=>row.forEach((lead,c)=>cells.push({lead,x:m.gutL+c*(m.colW+m.gapX),y:m.marT+r*(m.rowH+m.gapY),base:m.marT+r*(m.rowH+m.gapY)+m.rowH/2,start:c*2500,duration:2500})));
+  let svg=drawing.svg,height=drawing.height;
+  if(record.id==='rv-infarction'){
+   const top=height+20;baseSupplement();
+   function baseSupplement(){
+    const base=top+160;height=top+320;
+    svg=svg.replace(/viewBox="0 0 (\d+) (\d+)"/,'viewBox="0 0 $1 '+height+'"').replace('</svg>','<rect x="0" y="'+top+'" width="'+drawing.width+'" height="300" fill="url(#ecgEngMajor)"/>'+['V3R','V4R'].map((lead,i)=>{
+     const x=m.gutL+i*1050;cells.push({lead,x,y:top,base,start:0,duration:5000});
+     let d='';for(let t=0;t<=5000;t+=2)d+=(t?' L':'M')+(x+t*.2).toFixed(2)+','+(base-coreVoltage(lead,t,data)*uy).toFixed(2);
+     return '<text x="'+x+'" y="'+(top+32)+'" font-size="26">'+lead+'</text><path class="ecg-trace" d="'+d+'" fill="none" stroke="#111" stroke-width="3"/>';
+    }).join('')+'</svg>');
+   }
+  }
+  const findings=record.lessons.map(f=>({title:f.title,explanation:f.explanation,targets:f.leads.flatMap(lead=>{
+   const cell=cells.find(c=>c.lead===lead);if(!cell)return [];
+   const b=data.beats.find(b=>b.on>=cell.start+220&&b.on+b.qt<cell.start+cell.duration);
+   let a=b.on,z=b.on+b.qrs;
+   if(f.part==='p'){a=b.on-160;z=b.on-20;}
+   if(f.part==='st'){a=b.on+b.qrs;z=a+80;}
+   if(f.part==='t'){a=b.on+b.qrs+70;z=b.on+b.qt;}
+   if(f.part==='rhythm'){a=cell.start+20;z=cell.start+cell.duration-20;}
+   let lo=0,hi=0;for(let t=a;t<=z;t+=2){const v=coreVoltage(lead,t,data);lo=Math.min(lo,v);hi=Math.max(hi,v);}
+   return [[cell.x+(a-cell.start)*.2-4,cell.base-hi*uy-12,(z-a)*.2+8,(hi-lo)*uy+24]];
+  })}));
+  return {svg,width:drawing.width,height,data,cells,findings,format:record.id==='rv-infarction'?'12-lead ECG + right-sided leads':'Full 12-lead ECG',caption:'Synthetic educational tracing · 12 leads and continuous rhythm strip'+(record.id==='rv-infarction'?' · simultaneous right-sided 0–5 s panel.':'.'),scale:'25 mm/s · '+data.gain+' mm/mV'};
  }
  function lessonTargets(f,data) {
   const lanes=f.leads?f.leads.map(l=>data.lanes.indexOf(l)):[f.lane];
@@ -249,7 +497,7 @@
    if(lane<0)throw Error('Finding lead is not displayed: '+f.title);
    const windows=f.part?(f.part==='rhythm'?[[0,data.duration]]:data.beats.filter(b=>b.on>=300&&b.on+b.qt<6000).slice(0,3).map(b=>{
     const q=b.on,w=b.qrs,qt=b.qt,pr=b.pr||160;
-    return ({qrs:[q,q+w],st:[q+w,q+w+70],t:[q+w+70,q+qt],qt:[q,q+qt],pr:[q-pr,q],u:[q+410,q+630],j:[q+w-25,q+w+65],'j-st':[q+w-15,q+w+110],'st-t':[q+w,q+qt],'qrs-t':[q,q+qt],'p-qt':[q-pr,q+qt],'pr-segment':[q-pr+85,q-2]})[f.part];
+    return ({p:[q-pr,q-pr+(data.p.find(p=>Math.abs(p.on-(q-pr))<.1)?.duration||80)],qrs:[q,q+w],st:[q+w,q+w+70],t:[q+w+70,q+qt],qt:[q,q+qt],pr:[q-pr,q],u:[q+410,q+630],j:[q+w-25,q+w+65],'j-st':[q+w-15,q+w+110],'st-t':[q+w,q+qt],'qrs-t':[q,q+qt],'p-qt':[q-pr,q+qt],'pr-segment':[q-pr+85,q-2]})[f.part];
    })):[[f.a,f.b]];
    return windows.map(([a,b])=>{
     let lo=0,hi=0;for(let t=a;t<=b;t+=2){const v=voltage(t,data,lane);lo=Math.min(lo,v);hi=Math.max(hi,v);}
@@ -281,5 +529,5 @@
   entry.caption=item.caption+' Grid and waveform share a calibrated scale; on-screen millimetres depend on zoom. Selected morphology, not a clinically validated patient ECG.';
   entry.figureLabel='Calibrated synthetic ECG';entry.calibrated=true;entry.hasReference=false;
  }
- window.ECG_CURRICULUM={cases,sources,build:record=>record.library?renderPanel(record):renderStrip(record),stripData,voltage};
+ window.ECG_CURRICULUM={cases,sources,normalReference:record=>renderCore({...record,kind:'reference-normal',name:'Normal sinus reference',summary:'Normal sinus model at 75/min, with matching lead views and printed gain. This is a synthetic comparison, not a prior patient ECG.'}),build:record=>record.core?renderCore(record):record.library?renderPanel(record):renderStrip(record),stripData,voltage};
 }());
