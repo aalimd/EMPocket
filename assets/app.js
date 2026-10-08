@@ -574,6 +574,7 @@
     }
     let learningMemory = normalizeLearning({});
     let learningStorageAvailable = true;
+    let learningStorageReadable = false;
     function loadLearning() {
         if (!learningStorageAvailable) return learningMemory;
         let raw;
@@ -581,17 +582,20 @@
             raw = localStorage.getItem('em-cps-learning');
         } catch (e) {
             learningStorageAvailable = false;
+            learningStorageReadable = false;
             return learningMemory;
         }
+        learningStorageReadable = true;
         try { learningMemory = normalizeLearning(JSON.parse(raw || '{}')); }
         catch (e) { learningMemory = normalizeLearning({}); }
         return learningMemory;
     }
-    function saveLearning(data) {
+    function saveLearning(data, retry) {
         learningMemory = normalizeLearning(data);
-        if (!learningStorageAvailable) return false;
+        if (!learningStorageAvailable && !(retry && learningStorageReadable)) return false;
         try {
             localStorage.setItem('em-cps-learning', JSON.stringify(learningMemory));
+            learningStorageAvailable = true;
             return true;
         } catch (e) {
             learningStorageAvailable = false;
@@ -644,8 +648,22 @@
     }
     function setNote(id, note) {
         const learning = loadLearning();
-        if (note.trim()) learning.notes[id] = note.trim(); else delete learning.notes[id];
-        return saveLearning(learning);
+        const updated = Object.assign({}, learning, { notes: Object.assign({}, learning.notes) });
+        if (note.trim()) updated.notes[id] = note.trim(); else delete updated.notes[id];
+        const persisted = saveLearning(updated, true);
+        // A failed note write remains a draft, so Discard can still restore the saved note.
+        if (!persisted) learningMemory = learning;
+        return persisted;
+    }
+    function saveCurrentNote() {
+        const note = stage.querySelector('#studyNote');
+        if (!note || !note.dataset.noteTopic) return false;
+        const persisted = setNote(note.dataset.noteTopic, note.value);
+        const status = stage.querySelector('#noteStatus');
+        if (status) status.textContent = persisted ? 'Saved on this device.' : 'Could not save on this device. Your draft is still here.';
+        if (persisted) note.dispatchEvent(new Event('note-saved'));
+        toast(persisted ? 'Learning note saved.' : 'Could not save your note. Keep this page open or copy your draft.');
+        return persisted;
     }
     function dueIds() {
         const plan = loadLearning().reviewPlan || {};
@@ -1299,7 +1317,7 @@
 
     function personalPlanHtml(cp) {
         const note = noteFor(cp.id);
-        return '<section class="personal-plan" aria-label="Personal study notes"><div><span class="study-kicker">PRIVATE TO THIS DEVICE</span><h2>Your learning note</h2><p>Capture a weak point, a teaching pearl, or a question to take to your next shift.</p></div><div class="personal-controls"><button type="button" class="save-topic' + (isSaved(cp.id) ? ' active' : '') + '" id="saveTopic" aria-pressed="' + isSaved(cp.id) + '">' + saveButtonContent(isSaved(cp.id)) + '</button><span class="review-status">' + esc(isReviewed(cp.id) ? reviewLabel(cp.id) : 'Review schedule starts when marked reviewed') + '</span></div><label for="studyNote">Private note</label><textarea id="studyNote" rows="3" maxlength="800" placeholder="Example: I need to revisit the disposition threshold…">' + esc(note) + '</textarea><div class="note-actions"><button type="button" class="rf-clear" id="saveNote">Save note</button><span id="noteStatus"></span></div></section>';
+        return '<section class="personal-plan" aria-label="Personal study notes"><div><span class="study-kicker">PRIVATE TO THIS DEVICE</span><h2>Your learning note</h2><p>Capture a weak point, a teaching pearl, or a question to take to your next shift.</p></div><div class="personal-controls"><button type="button" class="save-topic' + (isSaved(cp.id) ? ' active' : '') + '" id="saveTopic" aria-pressed="' + isSaved(cp.id) + '">' + saveButtonContent(isSaved(cp.id)) + '</button><span class="review-status">' + esc(isReviewed(cp.id) ? reviewLabel(cp.id) : 'Review schedule starts when marked reviewed') + '</span></div><label for="studyNote">Private note</label><textarea id="studyNote" data-note-topic="' + esc(cp.id) + '" rows="3" maxlength="800" placeholder="Example: I need to revisit the disposition threshold…">' + esc(note) + '</textarea><div class="note-actions"><button type="button" class="rf-clear" id="saveNote">Save note</button><span id="noteStatus"></span></div></section>';
     }
 
     function learningLoopHtml(cp) {
@@ -1526,12 +1544,7 @@
             toast((saved ? 'Saved to your study list.' : 'Removed from saved topics.') + (persisted ? '' : ' This change lasts for this session only.'));
         });
         const saveNote = document.getElementById('saveNote');
-        if (saveNote) saveNote.addEventListener('click', () => {
-            const persisted = setNote(cp.id, document.getElementById('studyNote').value);
-            const status = document.getElementById('noteStatus');
-            if (status) status.textContent = persisted ? 'Saved on this device.' : 'Saved for this session only.';
-            toast(persisted ? 'Learning note saved.' : 'Learning note saved for this session only.');
-        });
+        if (saveNote) saveNote.addEventListener('click', saveCurrentNote);
         setupRedFlags(cp, state);
         const readBar = document.getElementById('readBar');
         if (readBar) {
@@ -1776,12 +1789,7 @@
             toast((saved ? 'Saved to your study list.' : 'Removed from saved topics.') + (persisted ? '' : ' This change lasts for this session only.'));
         });
         const saveNote = document.getElementById('saveNote');
-        if (saveNote) saveNote.addEventListener('click', function () {
-            const persisted = setNote(ECG_TOPIC_ID, document.getElementById('studyNote').value);
-            const status = document.getElementById('noteStatus');
-            if (status) status.textContent = persisted ? 'Saved on this device.' : 'Saved for this session only.';
-            toast(persisted ? 'Learning note saved.' : 'Learning note saved for this session only.');
-        });
+        if (saveNote) saveNote.addEventListener('click', saveCurrentNote);
     }
     function resolveEcgJump(ecg, target) {
         if (!target) return '';
@@ -3074,7 +3082,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261008-search-clear-v39').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261008-note-save-guard-v40').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Ready for offline use'));
                     const applyUpdate = () => {
                         if(window.POCKET_DESIGN && !window.POCKET_DESIGN.beforeRoute(() => window.location.reload()))return;
@@ -3109,7 +3117,7 @@
         }
     }
 
-    window.EM_POCKET_UI = { stage, esc, dueIds, savedIds, reviewedIds, noteFor, toast, findSearchHits, setStageContext, syncNav, showDisclaimer, openReadingPanel, closeReadingPanel, get offlineStatus(){return offlineStatus;} };
+    window.EM_POCKET_UI = { stage, esc, dueIds, savedIds, reviewedIds, noteFor, saveCurrentNote, toast, findSearchHits, setStageContext, syncNav, showDisclaimer, openReadingPanel, closeReadingPanel, get offlineStatus(){return offlineStatus;} };
     if (document.readyState !== 'complete') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

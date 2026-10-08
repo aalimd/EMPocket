@@ -34,21 +34,31 @@
     function dirty() { const n=stage.querySelector('#studyNote');return !!(n && notes.has(n) && n.value!==notes.get(n)); }
     function beforeRoute(continuation) {
         if(!dirty())return true;
+        ui.closeReadingPanel(false);
         history.replaceState(null,'',stableUrl);
         pending=continuation;
         let dialog=document.getElementById('unsavedNoteDialog');
         if(!dialog) {
-            dialog=document.createElement('dialog');dialog.id='unsavedNoteDialog';dialog.className='design-dialog';dialog.setAttribute('aria-labelledby','unsavedNoteTitle');
-            dialog.innerHTML='<h2 id="unsavedNoteTitle">Save your learning note?</h2><p>You have changes that have not been saved.</p><div class="design-dialog-actions"><button class="design-action primary" type="button" data-note-save>Save &amp; continue</button><button class="design-action" type="button" data-note-discard>Discard changes</button><button class="design-action" type="button" data-note-stay>Keep editing</button></div>';
+            dialog=document.createElement('dialog');dialog.id='unsavedNoteDialog';dialog.className='design-dialog';dialog.setAttribute('aria-labelledby','unsavedNoteTitle');dialog.setAttribute('aria-describedby','unsavedNoteDescription');
+            dialog.innerHTML='<h2 id="unsavedNoteTitle">Save your learning note?</h2><p id="unsavedNoteDescription">You have changes that have not been saved.</p><p role="alert" data-note-error hidden></p><div class="design-dialog-actions"><button class="design-action primary" type="button" data-note-save>Save &amp; continue</button><button class="design-action" type="button" data-note-discard>Discard changes</button><button class="design-action" type="button" data-note-stay>Keep editing</button></div>';
             document.body.append(dialog);
-            const finish=save=>{const n=stage.querySelector('#studyNote');if(save)stage.querySelector('#saveNote')?.click();else if(n)n.value=notes.get(n);dialog.close();const next=pending;pending=null;if(next)next();};
+            const finish=save=>{
+                const n=stage.querySelector('#studyNote');
+                if(save && !ui.saveCurrentNote()) {
+                    const error=dialog.querySelector('[data-note-error]');
+                    error.hidden=false;error.textContent='Could not save on this device. Your draft is still here. Choose Keep editing to copy it before leaving, or discard your changes.';
+                    return;
+                }
+                if(!save && n){n.value=notes.get(n);n.dispatchEvent(new Event('input',{bubbles:true}));}
+                dialog.close();const next=pending;pending=null;if(next)next();
+            };
             dialog.querySelector('[data-note-save]').onclick=()=>finish(true);
             dialog.querySelector('[data-note-discard]').onclick=()=>finish(false);
             const stay=()=>{pending=null;dialog.close();stage.querySelector('#studyNote')?.focus();};
             dialog.querySelector('[data-note-stay]').onclick=stay;
             dialog.addEventListener('cancel',e=>{e.preventDefault();stay();});
         }
-        if(!dialog.open)dialog.showModal();
+        if(!dialog.open){const error=dialog.querySelector('[data-note-error]');error.hidden=true;error.textContent='';dialog.showModal();}
         return false;
     }
     function learn(target) {
@@ -100,7 +110,7 @@
         stage.querySelector('[data-search-more]').onclick=()=>{shown+=40;draw();};draw();
     }
     function settings() {
-        stage.innerHTML=header('THE EM POCKET · ON THIS DEVICE','Settings','Manage offline access, installation and your learning records on this device.')+'<section class="settings-section"><h2>Reading &amp; appearance</h2><p>Use Aa in the top bar to change text size, appearance and colour without leaving your page.</p><button type="button" class="design-action" data-display-options>Open display options</button></section><section class="settings-section"><h2>Offline access & installation</h2><p class="settings-offline" id="offlineStatus">'+esc(ui.offlineStatus)+'</p><p>After offline setup succeeds, presentations, learning activities and ECG data are available without a connection. External reference links require internet access.</p><div id="settingsInstall"></div><details><summary>Install instructions</summary><p>On iPhone or iPad, open this site in Safari, choose Share, then Add to Home Screen. On supported desktop and Android browsers, use the browser’s Install app option.</p></details></section><section class="settings-section"><h2>Your learning records</h2><p>Export a backup or review an import before adding missing records. Existing records and preferences are preserved.</p>'+action('#learn~progress','Progress & backup')+'</section><section class="settings-section"><h2>About The EM Pocket</h2><p>An independent, free emergency medicine learning reference. No account is required.</p><div class="design-links"><button type="button" class="design-action" data-clinical-notice>Clinical notice</button><a class="design-action" href="mailto:apps@aamd.sa?subject=The%20EM%20Pocket%20feedback">Send feedback</a><button type="button" class="design-action" data-print>Print / Save as PDF</button></div><p>Release 20261008-search-clear-v39 · Content sources and review dates are listed with each presentation.</p></section>';
+        stage.innerHTML=header('THE EM POCKET · ON THIS DEVICE','Settings','Manage offline access, installation and your learning records on this device.')+'<section class="settings-section"><h2>Reading &amp; appearance</h2><p>Use Aa in the top bar to change text size, appearance and colour without leaving your page.</p><button type="button" class="design-action" data-display-options>Open display options</button></section><section class="settings-section"><h2>Offline access & installation</h2><p class="settings-offline" id="offlineStatus">'+esc(ui.offlineStatus)+'</p><p>After offline setup succeeds, presentations, learning activities and ECG data are available without a connection. External reference links require internet access.</p><div id="settingsInstall"></div><details><summary>Install instructions</summary><p>On iPhone or iPad, open this site in Safari, choose Share, then Add to Home Screen. On supported desktop and Android browsers, use the browser’s Install app option.</p></details></section><section class="settings-section"><h2>Your learning records</h2><p>Export a backup or review an import before adding missing records. Existing records and preferences are preserved.</p>'+action('#learn~progress','Progress & backup')+'</section><section class="settings-section"><h2>About The EM Pocket</h2><p>An independent, free emergency medicine learning reference. No account is required.</p><div class="design-links"><button type="button" class="design-action" data-clinical-notice>Clinical notice</button><a class="design-action" href="mailto:apps@aamd.sa?subject=The%20EM%20Pocket%20feedback">Send feedback</a><button type="button" class="design-action" data-print>Print / Save as PDF</button></div><p>Release 20261008-note-save-guard-v40 · Content sources and review dates are listed with each presentation.</p></section>';
         const back=settingsReturn || {hash:'#library',y:0,title:'Library'};
         const backButton=document.createElement('button');backButton.type='button';backButton.className='back-btn settings-return';backButton.textContent='Back to '+back.title;
         backButton.onclick=()=>{returningFromSettings=back;location.hash=back.hash;};stage.prepend(backButton);
@@ -118,7 +128,7 @@
             n.setAttribute('aria-describedby','noteStatus');
             const status=stage.querySelector('#noteStatus');if(status)status.setAttribute('role','status');
             n.addEventListener('input',()=>{if(status)status.textContent=n.value===notes.get(n)?'No unsaved changes.':'Unsaved changes · '+n.value.length+' / 800 characters';});
-            stage.querySelector('#saveNote')?.addEventListener('click',()=>notes.set(n,n.value));
+            n.addEventListener('note-saved',()=>notes.set(n,n.value));
         }
         const route=location.hash.slice(1).split('~');
         if((['ecg','ecg-explorer'].includes(route[0])||route.join('~')==='learn~visual-recordings')&&!stage.querySelector('.ecg-local-nav')) {

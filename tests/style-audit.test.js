@@ -559,6 +559,40 @@ test('unsaved notes retain their text and support stay, save and discard during 
     await evaluate(`location.hash='chest-pain'`);await wait(100);assert.equal(await evaluate(`document.getElementById('studyNote').value`),'My learning note');
 });
 
+test('failed note saves keep the draft guarded and cannot continue or replace the saved note',async t=>{
+    if(!await ready(t))return;
+    for(const route of ['#chest-pain','#ecg']){
+        await load(route);
+        await cdp('Page.reload');await wait(450);
+        await evaluate(`(()=>{const d=document.getElementById('disclaimerOverlay');if(d&&!d.hidden){const c=document.getElementById('disclaimerCheck');c.checked=true;c.dispatchEvent(new Event('change',{bubbles:true}));document.getElementById('disclaimerAcceptBtn').click();}})()`);
+        await evaluate(`(()=>{const n=document.getElementById('studyNote');n.value='Previously saved note';n.dispatchEvent(new Event('input',{bubbles:true}));document.getElementById('saveNote').click();})()`);
+        assert.equal(await evaluate(`JSON.parse(localStorage.getItem('em-cps-learning')).notes[${JSON.stringify(route.slice(1))}]`),'Previously saved note',route+' baseline is persisted');
+        await evaluate(`(()=>{const n=document.getElementById('studyNote');
+            const original=Storage.prototype.setItem;window.restoreNoteStorage=()=>{Storage.prototype.setItem=original;};Storage.prototype.setItem=function(key,value){if(key==='em-cps-learning')throw new DOMException('Storage full','QuotaExceededError');return original.call(this,key,value);};
+            n.value='Draft that must survive a failed save';n.dispatchEvent(new Event('input',{bubbles:true}));document.getElementById('saveNote').click();})()`);
+        assert.equal(await evaluate(`window.POCKET_DESIGN.dirty()`),true,'failed manual save must remain unsaved');
+        assert.match(await evaluate(`document.getElementById('noteStatus').textContent`),/could not|couldn.t|unable/i);
+        assert.equal(await evaluate(`(()=>{const event=new Event('beforeunload',{cancelable:true});window.dispatchEvent(event);return event.defaultPrevented;})()`),true);
+        await evaluate(`location.hash='settings'`);await wait(100);
+        await evaluate(`document.querySelector('[data-note-save]').click()`);await wait(100);
+        const r=await evaluate(`({hash:location.hash,modal:document.getElementById('unsavedNoteDialog').matches(':modal'),draft:document.getElementById('studyNote')?.value,dirty:window.POCKET_DESIGN.dirty(),error:document.querySelector('#unsavedNoteDialog [role="alert"]')?.textContent})`);
+        assert.equal(r.hash,route);assert.equal(r.modal,true);assert.equal(r.draft,'Draft that must survive a failed save');assert.equal(r.dirty,true);assert.match(r.error,/could not|couldn.t|unable/i);
+        await evaluate(`document.querySelector('[data-note-stay]').click()`);assert.equal(await evaluate(`document.activeElement.id`),'studyNote');
+        await evaluate(`location.hash='settings'`);await wait(100);await evaluate(`document.querySelector('[data-note-discard]').click()`);await wait(100);
+        assert.equal(await evaluate(`location.hash`),'#settings');
+        await evaluate(`window.restoreNoteStorage();location.hash=${JSON.stringify(route.slice(1))}`);await wait(100);
+        assert.equal(await evaluate(`document.getElementById('studyNote').value`),'Previously saved note',route+' discard must restore the previous note in this session too');
+        await cdp('Page.reload');await wait(450);
+        assert.equal(await evaluate(`document.getElementById('studyNote').value`),'Previously saved note','failed save must not change persistent data');
+        await evaluate(`(()=>{const original=Storage.prototype.setItem;window.restoreNoteStorage=()=>{Storage.prototype.setItem=original;};Storage.prototype.setItem=function(key,value){if(key==='em-cps-learning')throw new DOMException('Storage full','QuotaExceededError');return original.call(this,key,value);};const n=document.getElementById('studyNote');n.value='Saved after storage recovered';n.dispatchEvent(new Event('input',{bubbles:true}));location.hash='settings';})()`);await wait(100);
+        await evaluate(`document.querySelector('[data-note-save]').click()`);
+        assert.equal(await evaluate(`document.getElementById('unsavedNoteDialog').open`),true);
+        await evaluate(`window.restoreNoteStorage();document.querySelector('[data-note-save]').click()`);await wait(100);
+        assert.equal(await evaluate(`location.hash`),'#settings','retry must continue the original requested navigation');
+        assert.equal(await evaluate(`JSON.parse(localStorage.getItem('em-cps-learning')).notes[${JSON.stringify(route.slice(1))}]`),'Saved after storage recovered');
+    }
+});
+
 test('reading settings preserve their event bindings across repeated route changes',async t=>{
     if(!await ready(t))return;await load('#settings');
     await evaluate(`document.getElementById('toolsToggle').click();document.getElementById('fontUp').click();document.getElementById('themeBtn').click();document.querySelector('[data-accent="ocean"].accent-dot').click();`);

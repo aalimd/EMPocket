@@ -1,47 +1,47 @@
 /* The EM Pocket service worker — resilient app-shell caching for offline clinical reference. */
-const CACHE_VERSION = 'v236';
+const CACHE_VERSION = 'v238';
 // Preserve case, separators and the full path: sibling installations must never share caches.
 const SCOPE_KEY = encodeURIComponent(new URL(self.registration.scope).pathname);
 const CACHE_PREFIX = 'em-cps-scope-' + SCOPE_KEY + '-';
 const CACHE = CACHE_PREFIX + CACHE_VERSION;
 const CORE_ASSETS = [
     './',
-    './assets/app.css?v=20261008-search-clear-v39',
-    './assets/design.js?v=20261008-search-clear-v39',
-    './assets/css/tokens.css?v=20261008-search-clear-v39',
-    './assets/css/scientific.css?v=20261008-search-clear-v39',
-    './assets/css/base.css?v=20261008-search-clear-v39',
-    './assets/css/shell.css?v=20261008-search-clear-v39',
-    './assets/css/components.css?v=20261008-search-clear-v39',
-    './assets/css/views.css?v=20261008-search-clear-v39',
-    './assets/css/ecg.css?v=20261008-search-clear-v39',
-    './assets/css/print.css?v=20261008-search-clear-v39',
-    './assets/em-learning-data.js?v=20261008-search-clear-v39',
-    './assets/ecg-recordings.js?v=20261008-search-clear-v39',
+    './assets/app.css?v=20261008-note-save-guard-v40',
+    './assets/design.js?v=20261008-note-save-guard-v40',
+    './assets/css/tokens.css?v=20261008-note-save-guard-v40',
+    './assets/css/scientific.css?v=20261008-note-save-guard-v40',
+    './assets/css/base.css?v=20261008-note-save-guard-v40',
+    './assets/css/shell.css?v=20261008-note-save-guard-v40',
+    './assets/css/components.css?v=20261008-note-save-guard-v40',
+    './assets/css/views.css?v=20261008-note-save-guard-v40',
+    './assets/css/ecg.css?v=20261008-note-save-guard-v40',
+    './assets/css/print.css?v=20261008-note-save-guard-v40',
+    './assets/em-learning-data.js?v=20261008-note-save-guard-v40',
+    './assets/ecg-recordings.js?v=20261008-note-save-guard-v40',
     './assets/ptb-xl-LICENSE.txt',
     './assets/material-symbols-LICENSE.txt',
-    './assets/em-learning.js?v=20261008-search-clear-v39',
-    './assets/student-learning.js?v=20261008-search-clear-v39',
-    './assets/app.js?v=20261008-search-clear-v39',
-    './assets/data.js?v=20261008-search-clear-v39',
-    './assets/evidence.js?v=20261008-search-clear-v39',
-    './assets/ecg-svg.js?v=20261008-search-clear-v39',
-    './assets/ecg-engine.js?v=20261008-search-clear-v39',
-    './assets/ecg-case-tracings.js?v=20261008-search-clear-v39',
-    './assets/ecg-interactive.js?v=20261008-search-clear-v39',
-    './assets/ecg-curriculum.js?v=20261008-search-clear-v39',
-  './assets/ecg-explorer.js?v=20261008-search-clear-v39'
+    './assets/em-learning.js?v=20261008-note-save-guard-v40',
+    './assets/student-learning.js?v=20261008-note-save-guard-v40',
+    './assets/app.js?v=20261008-note-save-guard-v40',
+    './assets/data.js?v=20261008-note-save-guard-v40',
+    './assets/evidence.js?v=20261008-note-save-guard-v40',
+    './assets/ecg-svg.js?v=20261008-note-save-guard-v40',
+    './assets/ecg-engine.js?v=20261008-note-save-guard-v40',
+    './assets/ecg-case-tracings.js?v=20261008-note-save-guard-v40',
+    './assets/ecg-interactive.js?v=20261008-note-save-guard-v40',
+    './assets/ecg-curriculum.js?v=20261008-note-save-guard-v40',
+  './assets/ecg-explorer.js?v=20261008-note-save-guard-v40'
 ];
 const OPTIONAL_ASSETS = [
-    './manifest.json?v=20261008-search-clear-v39',
-    './assets/icon.svg?v=20261008-search-clear-v39',
-    './assets/icon-192.png?v=20261008-search-clear-v39',
-    './assets/icon-512.png?v=20261008-search-clear-v39',
-    './assets/icon-maskable-512.png?v=20261008-search-clear-v39',
-    './assets/apple-touch-icon.png?v=20261008-search-clear-v39',
+    './manifest.json?v=20261008-note-save-guard-v40',
+    './assets/icon.svg?v=20261008-note-save-guard-v40',
+    './assets/icon-192.png?v=20261008-note-save-guard-v40',
+    './assets/icon-512.png?v=20261008-note-save-guard-v40',
+    './assets/icon-maskable-512.png?v=20261008-note-save-guard-v40',
+    './assets/apple-touch-icon.png?v=20261008-note-save-guard-v40',
     // Optional on purpose: a missing or mis-typed font must never block the
     // offline install, and the UI stays fully usable on the system stack.
-    './assets/fonts/PlusJakartaSans-Variable.ttf?v=20261008-search-clear-v39'
+    './assets/fonts/PlusJakartaSans-Variable.ttf?v=20261008-note-save-guard-v40'
 ];
 
 // Cache the canonical directory URL: Pages redirects index.html to this URL.
