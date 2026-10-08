@@ -52,7 +52,7 @@ See Cloudflare's official [static HTML settings](https://developers.cloudflare.c
 
 ## Release and offline updates
 
-The current asset token is `20261008-redesign-v31`; `CACHE_VERSION` is `v226` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
+The current asset token is `20261008-font-weight-v32`; `CACHE_VERSION` is `v227` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
 
 The worker precaches the canonical `./` shell because Pages redirects `/index.html` to `/`. Direct hash routes and offline `/index.html` requests fall back to that shell. Required asset failure or an HTML fallback returned instead of required JavaScript/CSS prevents a new worker from activating; optional icon failure does not prevent core offline use. A new worker claims the app and notifies users to refresh. The worker handles only this app's entry points and shipped asset paths, including at the domain root. New cache names encode the exact installation path, preserving case and punctuation. Cleanup touches only that exact namespace; it does not clear saved progress or other apps' caches. Ambiguous legacy cache names are intentionally retained during this one-time naming change.
 
@@ -82,4 +82,4 @@ The latest seven-area learning and UI review, recorded-ECG attribution, verifica
 
 ## Clinical content audit — 8 October 2026
 
-See [the clinical audit](docs/CLINICAL-AUDIT-2026-10-08.md) for the reviewed inventory, corrections, primary guidance and verification limits. Current asset release: `20261008-redesign-v31`; installation-scoped service-worker cache: `v226`. This is educational content with selected evidence checks, not independent clinical certification.
+See [the clinical audit](docs/CLINICAL-AUDIT-2026-10-08.md) for the reviewed inventory, corrections, primary guidance and verification limits. Current asset release: `20261008-font-weight-v32`; installation-scoped service-worker cache: `v227`. This is educational content with selected evidence checks, not independent clinical certification.

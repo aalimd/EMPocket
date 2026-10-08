@@ -567,6 +567,32 @@ test('reading settings preserve their event bindings across repeated route chang
     assert.equal(await evaluate(`document.querySelectorAll('#topbarTools').length`),1);
 });
 
+test('bold preference changes rendered fonts across routes and survives reload and reversal',async t=>{
+    if(!await ready(t))return;await load('#settings');
+    const weight=selector=>evaluate(`getComputedStyle(document.querySelector(${JSON.stringify(selector)})).fontWeight`);
+    assert.equal(await weight('.settings-section p'),'400');
+    await evaluate(`document.getElementById('boldBtn').click()`);
+    assert.equal(await weight('.settings-section p'),'700');
+    assert.equal(await evaluate(`document.getElementById('boldBtn').getAttribute('aria-pressed')`),'true');
+    assert.equal(await evaluate(`JSON.parse(localStorage.getItem('em-cps-prefs')).bold`),true);
+    for(const [route,selector] of [['library','.cp-desc'],['learn~home','.design-header p'],['learn~practice','.practice-stem'],['study~case-chest-pain','.case-practice>.case-prompt'],['chest-pain','.sec-body li'],['ecg','.tag'],['shift~chest-pain','.shift-grid li'],['search~chest','.search-result-card p']]){
+        await evaluate(`location.hash=${JSON.stringify(route)}`);await wait(100);
+        assert.ok(Number(await weight(selector))>=700,route+' reading text remains regular');
+        assert.ok(await evaluate(`document.documentElement.scrollWidth<=innerWidth+1`),route+' overflows with bold text');
+    }
+    await cdp('Page.navigate',{url:baseUrl+'#settings'});await wait(450);
+    assert.equal(await weight('.settings-section p'),'700');
+    assert.equal(await evaluate(`document.getElementById('boldBtn').getAttribute('aria-pressed')`),'true');
+    await evaluate(`document.getElementById('boldBtn').click()`);
+    assert.equal(await weight('.settings-section p'),'400');
+    assert.equal(await evaluate(`JSON.parse(localStorage.getItem('em-cps-prefs')).bold`),false);
+    await evaluate(`location.hash='chest-pain'`);await wait(100);
+    assert.equal(await weight('.sec-body li'),'400');
+    await cdp('Page.navigate',{url:baseUrl+'#settings'});await wait(450);
+    assert.equal(await weight('.settings-section p'),'400');
+    assert.equal(await evaluate(`document.getElementById('boldBtn').getAttribute('aria-pressed')`),'false');
+});
+
 test('short cases present one question at a time and retain answer feedback when navigating back',async t=>{
     if(!await ready(t))return;await load('#study~case-chest-pain');
     assert.equal(await evaluate(`document.querySelectorAll('[data-question]:not([hidden])').length`),1);

@@ -2238,7 +2238,7 @@
         const accent = normalizeAccent(p.accent);
         r.setAttribute('data-theme', dark ? 'dark' : 'light');
         r.setAttribute('data-accent', accent);
-        if (p.bold !== false) r.setAttribute('data-weight', 'bold');
+        if (p.bold === true) r.setAttribute('data-weight', 'bold');
         else r.removeAttribute('data-weight');
         r.classList.toggle('sidebar-collapsed', p.sidebar === true);
         syncSidebarToggle();
@@ -2253,7 +2253,7 @@
             themeBtn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
             themeBtn.title = dark ? 'Light mode' : 'Dark mode';
         }
-        if (boldBtn) boldBtn.setAttribute('aria-pressed', p.bold !== false ? 'true' : 'false');
+        if (boldBtn) boldBtn.setAttribute('aria-pressed', p.bold === true ? 'true' : 'false');
         if (label) label.textContent = Math.round(scale * 100) + '%';
         try {
             document.querySelectorAll('.accent-dot').forEach(function (dot) {
@@ -2839,7 +2839,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261008-redesign-v31').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261008-font-weight-v32').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     const applyUpdate = () => {
                         if(window.POCKET_DESIGN && !window.POCKET_DESIGN.beforeRoute(() => window.location.reload()))return;

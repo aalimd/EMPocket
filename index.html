@@ -9,15 +9,15 @@
 <title>EM Pocket — Emergency Medicine Reference</title>
 <meta name="description" content="A focused emergency medicine reference for chest pain, dyspnea, abdominal pain, and more. Rosen's-based frameworks for clinical learning and review.">
 <meta name="theme-color" content="#f6f8f7" id="themeColor">
-<link rel="manifest" href="manifest.json?v=20261008-redesign-v31">
-<link rel="icon" href="assets/icon.svg?v=20261008-redesign-v31" type="image/svg+xml">
-<link rel="icon" href="assets/icon-192.png?v=20261008-redesign-v31" type="image/png" sizes="192x192">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261008-redesign-v31" sizes="180x180">
+<link rel="manifest" href="manifest.json?v=20261008-font-weight-v32">
+<link rel="icon" href="assets/icon.svg?v=20261008-font-weight-v32" type="image/svg+xml">
+<link rel="icon" href="assets/icon-192.png?v=20261008-font-weight-v32" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261008-font-weight-v32" sizes="180x180">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="preload" href="assets/fonts/PlusJakartaSans-Variable.ttf?v=20261008-redesign-v31" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="assets/app.css?v=20261008-redesign-v31">
+<link rel="preload" href="assets/fonts/PlusJakartaSans-Variable.ttf?v=20261008-font-weight-v32" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="assets/app.css?v=20261008-font-weight-v32">
 <script>
 (function () {
     try {
@@ -28,7 +28,7 @@
         r.setAttribute('data-theme', theme === 'light' ? 'light' : 'dark');
         var accent = ACCENTS.indexOf(p.accent) !== -1 ? p.accent : 'emerald';
         r.setAttribute('data-accent', accent);
-        if (p.bold !== false) r.setAttribute('data-weight', 'bold');
+        if (p.bold === true) r.setAttribute('data-weight', 'bold');
         if (p.scale) r.style.setProperty('--type-scale', String(p.scale));
         if (p.sidebar === true) r.classList.add('sidebar-collapsed');
         var meta = document.getElementById('themeColor');
@@ -47,7 +47,7 @@
 <nav class="sidebar" id="sidebar" aria-label="Main navigation">
     <div class="side-head">
     <button class="brand" id="brandBtn" type="button" title="All presentations">
-        <span class="brand-mark" aria-hidden="true"><img src="assets/icon-192.png?v=20261008-redesign-v31" alt="" width="44" height="44"></span>
+        <span class="brand-mark" aria-hidden="true"><img src="assets/icon-192.png?v=20261008-font-weight-v32" alt="" width="44" height="44"></span>
         <span class="brand-text">
             <strong>EM Pocket</strong>
             <span>Emergency medicine</span>
@@ -210,14 +210,14 @@
 <div class="toast" id="toast" role="status"></div>
 <noscript><p class="noscript">EM Pocket needs JavaScript enabled to show presentations.</p></noscript>
 
-<script type="module" src="assets/ecg-svg.js?v=20261008-redesign-v31"></script>
-<script type="module" src="assets/ecg-engine.js?v=20261008-redesign-v31"></script>
-<script type="module" src="assets/ecg-case-tracings.js?v=20261008-redesign-v31"></script>
-<script type="module" src="assets/ecg-interactive.js?v=20261008-redesign-v31"></script>
-<script type="module" src="assets/ecg-curriculum.js?v=20261008-redesign-v31"></script><script type="module" src="assets/ecg-explorer.js?v=20261008-redesign-v31"></script>
-<script type="module" src="assets/data.js?v=20261008-redesign-v31"></script>
-<script type="module" src="assets/evidence.js?v=20261008-redesign-v31"></script>
-<script type="module" src="assets/student-learning.js?v=20261008-redesign-v31"></script><script type="module" src="assets/em-learning-data.js?v=20261008-redesign-v31"></script><script type="module" src="assets/em-learning.js?v=20261008-redesign-v31"></script><script type="module" src="assets/app.js?v=20261008-redesign-v31"></script>
-<script type="module" src="assets/design.js?v=20261008-redesign-v31"></script>
+<script type="module" src="assets/ecg-svg.js?v=20261008-font-weight-v32"></script>
+<script type="module" src="assets/ecg-engine.js?v=20261008-font-weight-v32"></script>
+<script type="module" src="assets/ecg-case-tracings.js?v=20261008-font-weight-v32"></script>
+<script type="module" src="assets/ecg-interactive.js?v=20261008-font-weight-v32"></script>
+<script type="module" src="assets/ecg-curriculum.js?v=20261008-font-weight-v32"></script><script type="module" src="assets/ecg-explorer.js?v=20261008-font-weight-v32"></script>
+<script type="module" src="assets/data.js?v=20261008-font-weight-v32"></script>
+<script type="module" src="assets/evidence.js?v=20261008-font-weight-v32"></script>
+<script type="module" src="assets/student-learning.js?v=20261008-font-weight-v32"></script><script type="module" src="assets/em-learning-data.js?v=20261008-font-weight-v32"></script><script type="module" src="assets/em-learning.js?v=20261008-font-weight-v32"></script><script type="module" src="assets/app.js?v=20261008-font-weight-v32"></script>
+<script type="module" src="assets/design.js?v=20261008-font-weight-v32"></script>
 </body>
 </html>

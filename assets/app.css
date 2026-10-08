@@ -5,11 +5,11 @@
    Native dialogs use the browser top layer. Print and reduced-motion own their
    media overrides. No historical iOS/v5/v6 patch layers remain in the runtime. */
 @layer scientific;
-@import url('./css/tokens.css?v=20261008-redesign-v31');
-@import url('./css/scientific.css?v=20261008-redesign-v31');
-@import url('./css/base.css?v=20261008-redesign-v31');
-@import url('./css/shell.css?v=20261008-redesign-v31');
-@import url('./css/components.css?v=20261008-redesign-v31');
-@import url('./css/views.css?v=20261008-redesign-v31');
-@import url('./css/ecg.css?v=20261008-redesign-v31');
-@import url('./css/print.css?v=20261008-redesign-v31');
+@import url('./css/tokens.css?v=20261008-font-weight-v32');
+@import url('./css/scientific.css?v=20261008-font-weight-v32');
+@import url('./css/base.css?v=20261008-font-weight-v32');
+@import url('./css/shell.css?v=20261008-font-weight-v32');
+@import url('./css/components.css?v=20261008-font-weight-v32');
+@import url('./css/views.css?v=20261008-font-weight-v32');
+@import url('./css/ecg.css?v=20261008-font-weight-v32');
+@import url('./css/print.css?v=20261008-font-weight-v32');
