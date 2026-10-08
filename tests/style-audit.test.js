@@ -144,6 +144,7 @@ async function ensureBrowser() {
         cdp = (method, params = {}) => pipe(method, params, true);
         await cdp('Page.enable');
         await cdp('Runtime.enable');
+        await cdp('Emulation.setFocusEmulationEnabled', { enabled: true });
         await cdp('Network.setCacheDisabled', { cacheDisabled: true });
         /* The app precaches its own shell, so without this the worker keeps
            serving a previous release and every measurement below is fiction. */
@@ -482,7 +483,7 @@ test('ECG finding regions are attached to the tracing and match authored coordin
 test('the redesigned phone header has search and settings without clipped or duplicated navigation', async t => {
     if(!await ready(t))return; await load('#library');
     const r=await evaluate(`(()=>{const bar=document.querySelector('.topbar');return {clipped:bar.scrollHeight>bar.clientHeight+1,search:document.querySelector('.searchwrap input').getBoundingClientRect().height,settings:document.getElementById('toolsToggle').getBoundingClientRect().height,visible:[...document.querySelectorAll('[data-nav]')].filter(e=>e.getClientRects().length).map(e=>e.dataset.nav),parked:document.getElementById('settingsParking').contains(document.getElementById('topbarTools'))};})()`);
-    assert.equal(r.clipped,false);assert.equal(r.search,44);assert.equal(r.settings,44);assert.deepEqual(r.visible,['home','study','ecg','shift']);assert.equal(r.parked,true);
+    assert.equal(r.clipped,false);assert.equal(r.search,48);assert.equal(r.settings,44);assert.deepEqual(r.visible,['home','study','ecg','shift']);assert.equal(r.parked,true);
 });
 
 test('Library contains every presentation and no unrelated home dashboard',async t=>{
@@ -493,7 +494,7 @@ test('Library contains every presentation and no unrelated home dashboard',async
 
 test('four destinations have coherent active states including legacy ECG and recorded routes',async t=>{
     if(!await ready(t))return;
-    for(const [route,key] of [['#library','home'],['#chest-pain','home'],['#learn~home','study'],['#study~saved','study'],['#learn~skills','study'],['#ecg-hub','ecg'],['#ecg','ecg'],['#ecg-explorer','ecg'],['#learn~visual-recordings','ecg'],['#shift','shift']]){
+    for(const [route,key] of [['#library','home'],['#chest-pain','home'],['#library~saved','home'],['#learn~home','study'],['#study~saved','study'],['#learn~skills','study'],['#ecg-hub','ecg'],['#ecg','ecg'],['#ecg-explorer','ecg'],['#learn~visual-recordings','ecg'],['#shift','shift']]){
         await load(route);assert.equal(await evaluate(`document.querySelector('.ios-tabbar [aria-current="page"]')?.dataset.nav`),key,route);
     }
 });
@@ -621,8 +622,49 @@ test('opaque mobile navigation and print rules prevent ECG paper from interferin
     await cdp('Emulation.setEmulatedMedia',{media:''});assert.ok(Object.values(r).every(d=>d==='none'));assert.equal(await evaluate(`document.querySelectorAll('.read-progress').length`),0);
 });
 
-test('unknown links explain the error and give a working library route',async t=>{
-    if(!await ready(t))return;await load('#missing-page');assert.equal(await evaluate(`document.querySelector('h1').textContent`),'Page not found');assert.equal(await evaluate(`document.querySelector('#stage a').hash`),'#library');
+test('unknown links explain the error and give working library and search routes',async t=>{
+    if(!await ready(t))return;await load('#missing-page');assert.equal(await evaluate(`document.querySelector('h1').textContent`),'This page is unavailable');assert.equal(await evaluate(`document.querySelector('#stage a').hash`),'#library');assert.equal(await evaluate(`document.querySelectorAll('#stage a')[1].hash`),'#search');assert.equal(await evaluate(`document.activeElement === document.querySelector('#stage h1')`),true);
+});
+
+test('Back returns to the destination that opened the topic and refocuses its card',async t=>{
+    if(!await ready(t))return;await load('#library');
+    await evaluate(`document.querySelector('.cp-card[data-id="chest-pain"]').click()`);await wait(150);
+    assert.equal(await evaluate(`location.hash`),'#chest-pain');
+    assert.equal(await evaluate(`document.querySelector('#backBtn').textContent.trim()`),'Back to Library');
+    await evaluate(`document.querySelector('#backBtn').click()`);await wait(250);
+    assert.equal(await evaluate(`location.hash`),'#library');
+    assert.equal(await evaluate(`document.activeElement?.dataset?.id || ''`),'chest-pain','the card that opened the topic is focused again');
+});
+
+test('Back from a search result returns to the same query and refocuses that result',async t=>{
+    if(!await ready(t))return;await load('#search~chest');
+    const pick=`(function(){const ids=window.CP_DATA.map(c=>c.id).concat(['ecg']);return [...document.querySelectorAll('.search-result-card')].find(a=>ids.indexOf(a.getAttribute('href').slice(1).split('~')[0])>=0)||null;})()`;
+    const first=await evaluate(pick+'&&'+pick+'.getAttribute("href")');assert.ok(first);
+    await evaluate(`(`+pick+`).click()`);await wait(150);
+    assert.notEqual(await evaluate(`location.hash`),'#search~chest');
+    assert.equal(await evaluate(`document.querySelector('#backBtn').textContent.trim()`),'Back to Search');
+    await evaluate(`document.querySelector('#backBtn').click()`);await wait(300);
+    assert.equal(await evaluate(`location.hash`),'#search~chest');
+    assert.equal(await evaluate(`document.activeElement?.getAttribute('href') || ''`),first,'the result card that opened the topic is focused again');
+});
+
+test('an unknown section inside a real topic keeps the topic and explains the link',async t=>{
+    if(!await ready(t))return;await load('#chest-pain~no-such-section');
+    assert.equal(await evaluate(`document.querySelector('#presentationTitle').textContent`),'Chest Pain');
+    const notice=await evaluate(`document.querySelector('.route-notice')?.textContent || ''`);
+    assert.ok(notice.includes('This section is unavailable in this topic.'),notice);
+    assert.equal(await evaluate(`!!document.querySelector('.route-notice a[href="#chest-pain"]')`),true);
+    assert.equal(await evaluate(`!!document.querySelector('.route-notice a[href="#search"]')`),true);
+    assert.equal(await evaluate(`document.activeElement === document.querySelector('#presentationTitle')`),true);
+});
+
+test('Back on the saved topics screen returns to the library home',async t=>{
+    if(!await ready(t))return;await load('#library~saved');
+    assert.equal(await evaluate(`document.querySelector('.ios-tabbar [aria-current="page"]')?.dataset.nav`),'home');
+    assert.equal(await evaluate(`document.querySelector('#stage [data-home]').textContent.trim()`),'Back to Library');
+    await evaluate(`document.querySelector('#stage [data-home]').click()`);await wait(250);
+    assert.equal(await evaluate(`location.hash`),'#library');
+    assert.equal(await evaluate(`!!document.querySelector('#presentationLibraryTitle')`),true);
 });
 
 test('search exposes all matches beyond the preview and filters by collection without losing result links',async t=>{
@@ -658,4 +700,84 @@ test('the teaching viewer shows and hides normal-reference paths without alterin
 
 test('Quick starts with an explicit choice when no topic is selected',async t=>{
     if(!await ready(t))return;await load('#shift');assert.equal(await evaluate(`document.querySelector('h1').textContent`),'Quick');assert.equal(await evaluate(`document.getElementById('quickPresentation').value`),'');assert.equal(await evaluate(`document.getElementById('quickPresentation').options.length`),46);
+});
+
+test('saved topics are reachable directly from the phone library',async t=>{
+    if(!await ready(t))return;await load('#library');
+    assert.equal(await evaluate(`!!document.querySelector('.library-head a[href="#library~saved"]')`),true);
+    await evaluate(`document.querySelector('.library-head a').click()`);await wait(100);
+    assert.equal(await evaluate(`document.querySelector('.ios-tabbar [aria-current="page"]').dataset.nav`),'home');
+});
+
+test('preparation and recorded ECG headings match their navigation destinations',async t=>{
+    if(!await ready(t))return;await load('#learn~skills');
+    assert.equal(await evaluate(`document.querySelector('h1').textContent`),'Preparation');
+    await load('#learn~visual-recordings');
+    assert.equal(await evaluate(`document.querySelector('h1').textContent`),'Recorded ECGs');
+    assert.equal(await evaluate(`document.title`),'Recorded ECGs · The EM Pocket');
+    assert.equal(await evaluate(`!!document.querySelector('.workspace-tabs')`),false);
+    assert.equal(await evaluate(`document.querySelector('.ecg-local-nav [aria-current="page"]').textContent`),'Recordings');
+});
+
+test('severity changes wait for the note decision and cancellation preserves the filter',async t=>{
+    if(!await ready(t))return;await load('#chest-pain');
+    await evaluate(`const n=document.getElementById('studyNote');n.value='Keep this draft';n.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('[data-sev="critical"]').click()`);
+    assert.equal(await evaluate(`document.getElementById('unsavedNoteDialog').open`),true);
+    await evaluate(`document.querySelector('[data-note-stay]').click()`);
+    assert.equal(await evaluate(`document.querySelector('#filterChips [aria-pressed="true"]').dataset.sev`),'all');
+    assert.equal(await evaluate(`document.getElementById('studyNote').value`),'Keep this draft');
+    await evaluate(`document.getElementById('saveNote').click()`);
+});
+
+test('search closes when tabbing away and does not submit during input composition',async t=>{
+    if(!await ready(t))return;await load('#library');
+    await evaluate(`const input=document.getElementById('searchInput');input.focus();input.value='chest';input.dispatchEvent(new Event('input',{bubbles:true}))`);await wait(180);
+    await evaluate(`document.getElementById('searchInput').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',isComposing:true,bubbles:true}))`);await wait(80);
+    assert.equal(await evaluate(`location.hash`),'#library');
+    await evaluate(`document.getElementById('toolsToggle').focus()`);await wait(80);
+    const state=await evaluate(`({expanded:document.getElementById('searchInput').getAttribute('aria-expanded'),focus:document.activeElement.id,contained:document.querySelector('.searchwrap').contains(document.getElementById('toolsToggle'))})`);
+    assert.equal(state.expanded,'false',JSON.stringify(state));
+});
+
+test('reading size limits are announced through disabled controls',async t=>{
+    if(!await ready(t))return;await load('#settings');
+    await evaluate(`for(let i=0;i<5;i++)document.getElementById('fontUp').click()`);
+    assert.equal(await evaluate(`document.getElementById('fontUp').disabled`),true);
+    await evaluate(`for(let i=0;i<5;i++)document.getElementById('fontDown').click()`);
+    assert.equal(await evaluate(`document.getElementById('fontDown').disabled`),true);
+});
+
+test('reader severity menus dismiss with Escape and short phone popups remain reachable',async t=>{
+    if(!await ready(t))return;await load('#chest-pain');
+    await evaluate(`const menu=document.querySelector('.context-filters');menu.open=true;menu.querySelector('summary').focus();menu.querySelector('summary').dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))`);
+    assert.equal(await evaluate(`document.querySelector('.context-filters').open`),false);
+    await cdp('Emulation.setDeviceMetricsOverride',{width:390,height:568,deviceScaleFactor:1,mobile:true});
+    try {
+        await load('#library');await evaluate(`document.querySelector('.library-filters').querySelector('summary').scrollIntoView({block:'center'});document.querySelector('.library-filters').open=true`);await wait(80);
+        const r=await evaluate(`(()=>{const p=document.querySelector('.patient-filter'),b=p.getBoundingClientRect();return {top:b.top,bottom:b.bottom,header:document.querySelector('.topbar').getBoundingClientRect().bottom,nav:document.querySelector('.ios-tabbar').getBoundingClientRect().top,scroll:getComputedStyle(p).overflowY}})()`);
+        assert.ok(r.top>=r.header-1&&r.bottom<=r.nav+1,JSON.stringify(r));assert.equal(r.scroll,'auto');
+    } finally {await cdp('Emulation.setDeviceMetricsOverride',{...VIEWPORT,deviceScaleFactor:2,mobile:true});}
+});
+
+test('dark appearance prints with dark ink on light clinical surfaces',async t=>{
+    if(!await ready(t))return;await load('#chest-pain');
+    await evaluate(`document.documentElement.setAttribute('data-theme','dark')`);
+    await cdp('Emulation.setEmulatedMedia',{media:'print'});
+    try {
+        const colors=await evaluate(`['.sec-head','.dx-card','.personal-plan'].map(s=>{const c=getComputedStyle(document.querySelector(s));return {ink:c.color,bg:c.backgroundColor}})`);
+        assert.ok(colors.every(c=>c.ink==='rgb(23, 43, 40)'),JSON.stringify(colors));
+        assert.ok(colors.every(c=>c.bg!=='rgb(58, 31, 36)'),JSON.stringify(colors));
+    } finally {await cdp('Emulation.setEmulatedMedia',{media:''});}
+});
+
+test('enlarged bold text fits the complete reading and learning flows at 320px',async t=>{
+    if(!await ready(t))return;
+    await cdp('Emulation.setDeviceMetricsOverride',{width:320,height:740,deviceScaleFactor:1,mobile:true});
+    try {
+        for(const route of ['#library','#learn~home','#learn~practice','#learn~case-resus','#learn~skills','#learn~progress','#ecg','#ecg-explorer','#study~case-chest-pain','#search~chest','#shift~chest-pain','#chest-pain']){
+            await load(route,200);await evaluate(`document.documentElement.style.setProperty('--type-scale','1.4');document.documentElement.setAttribute('data-weight','bold')`);
+            const r=await evaluate(`({width:innerWidth,page:document.documentElement.scrollWidth,overs:[...document.querySelectorAll('#stage *')].filter(e=>e.getBoundingClientRect().right>innerWidth+1&&getComputedStyle(e).position!=='absolute').slice(0,5).map(e=>e.className)})`);
+            assert.ok(r.page<=r.width+1,route+' overflow: '+JSON.stringify(r));
+        }
+    } finally {await cdp('Emulation.setDeviceMetricsOverride',{...VIEWPORT,deviceScaleFactor:2,mobile:true});}
 });

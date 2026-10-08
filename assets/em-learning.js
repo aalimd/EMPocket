@@ -1,4 +1,4 @@
-/* EM Pocket learning workspace. Local content, local progress, no accounts. */
+/* The EM Pocket learning workspace. Local content, local progress, no accounts. */
 (function () {
     'use strict';
     const D = window.EM_LEARNING_DATA;
@@ -41,12 +41,12 @@
         /* The board used to render without the kicker or the lead, so moving
            between the four tabs changed the page header itself. The board is a
            denser card surface, not a different page. */
-        const kicker = '<p class="study-kicker">EM POCKET · LEARNING WORKSPACE</p>';
+        const kicker = '<p class="study-kicker">THE EM POCKET · LEARNING WORKSPACE</p>';
         const lead = '<p class="workspace-lead">'+esc(description)+'</p>';
         return '<section class="learning-workspace"><div class="practice-hero"><div class="workspace-hero-nav"><a class="back-btn ios-nav-back" href="#learn~home"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span>Learn</span></a><nav class="workspace-personal" aria-label="Personal study tools"><a href="#study~due" aria-label="Review queue">Review</a><a href="#study~saved" aria-label="Saved topics">Saved</a></nav></div>'+kicker+'<h1 tabindex="-1">'+esc(title)+'</h1>'+lead+'<nav class="workspace-tabs" aria-label="Learning workspace">'+[['practice','Practice'],['visuals','Visuals'],['skills','Preparation'],['progress','Progress']].map(([id,label])=>'<a href="#learn~'+id+'"'+(id===active?' aria-current="page"':'')+'>'+label+'</a>').join('')+'</nav></div><div class="workspace-body"></div></section>';
     }
     function homeHtml() {
-        return '<section class="workspace-entry" aria-label="Choose how to use EM Pocket">' +
+        return '<section class="workspace-entry" aria-label="Choose how to use The EM Pocket">' +
             '<a href="#presentationLibrary" data-browse-library="1"><span>REFERENCE</span><strong>Browse presentations</strong><p>Clinical approaches, important diagnoses, assessment and disposition.</p><b class="entry-action">Open library <span aria-hidden="true">→</span></b></a>' +
             '<a href="#ecg"><span>ECG LEARNING</span><strong>Read an ECG</strong><p>A seven-step guide, interactive teaching examples and real recordings.</p><b class="entry-action">Start with the guide <span aria-hidden="true">→</span></b></a>' +
             '<a href="#learn~practice"><span>ACTIVE PRACTICE</span><strong>Work through a case</strong><p>Make a decision, reassess the patient and read the explanation.</p><b class="entry-action">Choose a case <span aria-hidden="true">→</span></b></a>' +
@@ -263,7 +263,7 @@
     let recordingsPromise = null;
     function loadRecordings() {
         if (!recordingsPromise) {
-            recordingsPromise = import('./ecg-recordings.js?v=20261008-font-weight-v32')
+            recordingsPromise = import('./ecg-recordings.js?v=20261008-the-em-pocket-v35')
                 .catch(function () { recordingsPromise = null; });
         }
         return recordingsPromise || Promise.resolve();
@@ -320,7 +320,7 @@
             body.querySelector('[data-recording-time]').disabled=full;
             const figure=recordingFigure(r,{view:full?'full':'lead',gain:body.querySelector('[data-recording-gain]').value,lead:body.querySelector('[data-recording-lead]').value,start:body.querySelector('[data-recording-time]').value});
             body.querySelector('[data-recording-plot]').innerHTML='<div class="recording-scroll" tabindex="0" role="region" aria-label="Recorded ECG; scroll horizontally">'+figure.svg+'</div>';
-            body.querySelector('[data-recording-label]').innerHTML='<p><strong>Record '+r.id+': '+esc(r.label)+'</strong></p>'+((r.sourceStatements||[]).length?'<p>All source statements (coexisting findings included):</p><ul>'+r.sourceStatements.map(s=>'<li>'+esc(s.label)+' ('+esc(s.code)+')'+(s.likelihood===null?' · source likelihood unspecified':' · source likelihood '+s.likelihood+'%')+'</li>').join('')+'</ul>':'')+'<a href="https://physionet.org/content/ptb-xl/1.0.3/'+esc(r.sourcePath)+'.hea" target="_blank" rel="noopener noreferrer">Original recording header →</a>';
+            body.querySelector('[data-recording-label]').innerHTML='<p><strong>Record '+r.id+': '+esc(r.label)+'</strong></p>'+((r.sourceStatements||[]).length?'<p>All source statements (coexisting findings included):</p><ul>'+r.sourceStatements.map(s=>'<li>'+esc(s.label)+' ('+esc(s.code)+')'+(s.likelihood===null?' · source likelihood: Not specified':' · source likelihood '+s.likelihood+'%')+'</li>').join('')+'</ul>':'')+'<a href="https://physionet.org/content/ptb-xl/1.0.3/'+esc(r.sourcePath)+'.hea" target="_blank" rel="noopener noreferrer">Original recording header →</a>';
         };
         body.querySelectorAll('.recording-controls select').forEach(select=>select.addEventListener('change',()=>{if(select.hasAttribute('data-recording'))body.querySelector('[data-recording-answer]').open=false;draw();}));draw();bindRead(body);
     }
@@ -334,9 +334,9 @@
         for(const [k,v] of Object.entries(value)){if(['__proto__','prototype','constructor'].includes(k))throw Error('Unsafe backup property.');safeTree(v,depth+1);}
     }
     function validateBackup(text) {
-        if(typeof text!=='string'||text.length>2000000)throw Error('Choose an EM Pocket JSON backup smaller than 2 MB.');
+        if(typeof text!=='string'||text.length>2000000)throw Error('Choose a JSON backup from The EM Pocket smaller than 2 MB.');
         const data=JSON.parse(text);safeTree(data);
-        if(!object(data)||data.app!=='EM Pocket free'||data.version!==1||!object(data.values))throw Error('This is not a supported EM Pocket backup.');
+        if(!object(data)||data.app!=='EM Pocket free'||data.version!==1||!object(data.values))throw Error('This backup is not supported by The EM Pocket.');
         const fields=(v,allowed)=>Object.keys(v).every(k=>allowed.includes(k));
         const timestamp=v=>Number.isFinite(v)&&v>=0;
         for(const [key,value] of Object.entries(data.values)) {
@@ -399,13 +399,19 @@
         const status=body.querySelector('[data-backup-status]'),preview=body.querySelector('[data-backup-preview]');let pending=null;
         body.querySelector('[data-backup-export]').addEventListener('click',()=>{try{download(exportBackup(),'em-pocket-learning-'+new Date().toISOString().slice(0,10)+'.json');status.textContent='Backup prepared for download.';}catch(_){status.textContent='Backup could not be read. Storage may be unavailable or contain an invalid record. Nothing was changed.';}});
         let selection=0;
-        body.querySelector('[data-backup-file]').addEventListener('change',async e=>{const ticket=++selection;pending=null;preview.innerHTML='';const file=e.target.files[0];if(!file)return;try{if(file.size>2000000)throw Error('Choose a backup smaller than 2 MB.');const parsed=validateBackup(await file.text());if(ticket!==selection)return;pending=parsed;preview.innerHTML='<p>Valid EM Pocket backup · '+Object.keys(parsed.values).length+' storage groups. Existing values will be kept.</p><button type="button" data-backup-apply>Add missing records</button>';preview.querySelector('button').addEventListener('click',()=>{try{const count=importBackup(pending);preview.innerHTML='<button type="button" data-backup-reload>Reload to use imported data</button>';preview.querySelector('button').onclick=()=>location.reload();status.textContent=count+' storage groups processed. Reload after finishing any session-only work.';pending=null;}catch(error){status.textContent=error.message;}});status.textContent='Review the import above before applying it.';}catch(error){if(ticket===selection)status.textContent=error.message;}});
+        body.querySelector('[data-backup-file]').addEventListener('change',async e=>{const ticket=++selection;pending=null;preview.innerHTML='';const file=e.target.files[0];if(!file)return;try{if(file.size>2000000)throw Error('Choose a backup smaller than 2 MB.');const parsed=validateBackup(await file.text());if(ticket!==selection)return;pending=parsed;preview.innerHTML='<p>Valid backup from The EM Pocket · '+Object.keys(parsed.values).length+' storage groups. Existing values will be kept.</p><button type="button" data-backup-apply>Add missing records</button>';preview.querySelector('button').addEventListener('click',()=>{try{const count=importBackup(pending);preview.innerHTML='<button type="button" data-backup-reload>Reload to use imported data</button>';preview.querySelector('button').onclick=()=>location.reload();status.textContent=count+' storage groups processed. Reload after finishing any session-only work.';pending=null;}catch(error){status.textContent=error.message;}});status.textContent='Review the import above before applying it.';}catch(error){if(ticket===selection)status.textContent=error.message;}});
     }
     function mount(stage,target='practice') {
         const active=target.startsWith('case-')?'practice':target.startsWith('module-')?'skills':target.startsWith('visual-')?'visuals':['practice','visuals','skills','progress'].includes(target)?target:'practice';
-        const titles={practice:['Practice','Six fictional cases. Read the situation, choose a decision, then see what changes.'],visuals:['Visuals','Choose real recorded ECGs or clearly labelled teaching diagrams to connect findings with limitations.'],skills:['Procedures','Preparation and discussion exercises for supervised practice, handover and clinical teaching.'],progress:['Progress','Track your completed attempts, review notes, and maintain your private local backup.']};
+        const titles={practice:['Practice','Six fictional cases. Read the situation, choose a decision, then see what changes.'],visuals:['Visuals','Choose real recorded ECGs or clearly labelled teaching diagrams to connect findings with limitations.'],skills:['Preparation','Preparation and discussion exercises for supervised practice, handover and clinical teaching.'],progress:['Progress','Track your completed attempts, review notes, and maintain your private local backup.']};
         const board=!/^(case|module|visual)-/.test(target);
-        stage.innerHTML=shell(titles[active][0],titles[active][1],active,board);
+        const recordings=target==='visual-recordings';
+        const heading=recordings?['Recorded ECGs','Inspect recorded signals, compare your interpretation with the source labels, and check recording context.']:titles[active];
+        stage.innerHTML=shell(heading[0],heading[1],active,board);
+        if(recordings){
+            stage.querySelector('.workspace-tabs').remove();
+            const back=stage.querySelector('.ios-nav-back');back.href='#ecg-hub';back.querySelector('span').textContent='ECG';
+        }
         const ws = stage.querySelector('.learning-workspace');
         if(board)ws.classList.add('practice-board');
         ws.setAttribute('data-learn-tab', active);

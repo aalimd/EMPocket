@@ -8,7 +8,7 @@ function bind(){
  const listeners={},opened=[],queries=[];let popup=null;
  const input={value:'',addEventListener(type,fn){listeners[type]=fn;},blur(){},focus(){}};
  const context=vm.createContext({setTimeout,clearTimeout,input,searchCursor:-1,
-  document:{getElementById:id=>id==='searchInput'?input:null,querySelector:()=>popup},
+  document:{getElementById:id=>id==='searchInput'?input:null,querySelector:selector=>selector==='.searchwrap'?{addEventListener(){}}:popup},
   runSearch(q){queries.push(q);const items=q.length>=2?[{dataset:{id:q,target:''}}]:[];popup={style:{display:q.length>=2?'block':'none'},querySelectorAll:()=>items,querySelector:()=>items[0]};},
   hideSearchResults(p){if(p)p.style.display='none';},
   paintSearchCursor(){},openSearchHit(id){opened.push(id);}

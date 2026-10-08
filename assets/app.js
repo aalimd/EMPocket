@@ -123,8 +123,9 @@
         return (saved ? STAR_SVG.filled : STAR_SVG.outline) + '<span>' + (saved ? 'Saved topic' : 'Save topic') + '</span>';
     }
     const CHEVRON_BACK_SVG = '<svg class="ios-back-ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>';
-    function backButtonHtml(extraAttr) {
-        return '<button type="button" class="back-btn ios-nav-back"' + (extraAttr ? ' ' + extraAttr : '') + '>' + CHEVRON_BACK_SVG + '<span>All presentations</span></button>';
+    function backButtonHtml(extraAttr, label) {
+        const text = label || ('Back to ' + backDestination().label);
+        return '<button type="button" class="back-btn ios-nav-back"' + (extraAttr ? ' ' + extraAttr : '') + '>' + CHEVRON_BACK_SVG + '<span>' + esc(text) + '</span></button>';
     }
 
     /* ══════════ Centralized Semantic Vector Icon System (Apple HIG / SF-Symbol inspired) ══════════ */
@@ -339,12 +340,72 @@
     let searchCursor = -1;
     let deferredInstallPrompt = null;
     let sidebarReturnFocus = null;
+    /* Back returns to the destination that opened the current screen (Library, Search,
+       Learn or Quick), never always to the first page, and re-focuses the card that
+       opened it when that card survives the re-render. Topics and the ECG guide never
+       overwrite this context — they only record which card opened them. */
+    const BACK_DESTINATIONS = {
+        library: { hash: '#library', label: 'Library' },
+        search: { hash: '#search', label: 'Search' },
+        learn: { hash: '#learn~home', label: 'Learn' },
+        study: { hash: '#learn~home', label: 'Learn' },
+        shift: { hash: '#shift', label: 'Quick' },
+        settings: { hash: '#settings', label: 'Settings' },
+        ecg: { hash: '#ecg-hub', label: 'ECG' },
+        explorer: { hash: '#ecg-explorer', label: 'Explorer' }
+    };
+    let backContext = { hash: '#library', originHash: '#library', label: 'Library' };
+    let backSource = null;
+    let lastClick = null;
+    function recordBackContext(key, hash) {
+        const dest = BACK_DESTINATIONS[key] || BACK_DESTINATIONS.library;
+        backContext = { hash: hash || dest.hash, originHash: location.hash || '#library', label: dest.label };
+    }
+    function captureBackSource() {
+        if (!lastClick || lastClick.hash !== backContext.originHash) return;
+        const el = lastClick.el;
+        if (!el || !el.closest) return;
+        const card = el.closest('[data-id]');
+        if (card && /^[a-z0-9-]+$/.test(card.dataset.id || '')) {
+            backSource = { selector: '[data-id="' + card.dataset.id + '"]', y: lastClick.scrollY };
+            return;
+        }
+        const link = el.closest('a[href^="#"]');
+        if (!link) return;
+        const raw = (link.getAttribute('href') || '').slice(1);
+        if (/^[a-z0-9-]+(?:~[a-z0-9-]+)?$/.test(raw)) backSource = { selector: 'a[href="#' + raw + '"]', y: lastClick.scrollY };
+    }
+    function restoreBackFocus() {
+        const source = backSource;
+        backSource = null;
+        let el = null;
+        if (source && source.selector) {
+            try { el = stage.querySelector(source.selector); } catch (e) { el = null; }
+        }
+        if (source && source.y) window.scrollTo({ top: source.y });
+        if (el && el.focus) { el.focus({ preventScroll: true }); return; }
+        const fallback = document.getElementById('presentationLibraryTitle') || stage.querySelector('h1') || stage;
+        if (fallback && fallback.focus) { try { fallback.focus({ preventScroll: true }); } catch (e) {} }
+    }
+    function backDestination() {
+        if ((location.hash || '#library') === backContext.hash) return { hash: '#library', label: 'Library' };
+        return { hash: backContext.hash, label: backContext.label };
+    }
+    function goBack() {
+        const dest = backDestination().hash;
+        const open = () => {
+            history.pushState(null, '', location.pathname + location.search + dest);
+            applyRoute(false, true);
+            restoreBackFocus();
+        };
+        if (!window.POCKET_DESIGN || window.POCKET_DESIGN.beforeRoute(open)) open();
+    }
     const reviewState = {};
     let patientFilter = 'all';
     let libraryFiltersOpen = false;
     let librarySystem = 'all';
     let caseCursor = 0;
-    let offlineStatus = ('serviceWorker' in navigator && navigator.serviceWorker.controller) ? 'Works offline' :
+    let offlineStatus = ('serviceWorker' in navigator && navigator.serviceWorker.controller) ? 'Ready for offline use' :
         ('serviceWorker' in navigator ? 'Offline setup pending' : 'Online access');
     const REVIEW_INTERVALS = [1, 3, 7, 14];
     const PATIENT_CONTEXTS = {
@@ -478,7 +539,7 @@
         t._h = setTimeout(() => { t.classList.remove('show'); t.style.pointerEvents = ''; }, 8000);
     }
     function setTitle(name) {
-        document.title = name ? name + ' — EM Pocket' : 'EM Pocket — Emergency Medicine Reference';
+        document.title = name ? name + ' · The EM Pocket' : 'The EM Pocket — Emergency Medicine Reference';
     }
     function setStageContext(label, labelledBy) {
         stage.removeAttribute('aria-live');
@@ -628,7 +689,7 @@
         const list = document.getElementById('sideList');
         list.innerHTML = [['home','Library','home'],['study','Learn','references'],['ecg','ECG','ecg'],['shift','Quick','first-minutes']].map(([key,label,icon]) =>
             '<button type="button" class="side-item" data-nav="'+key+'"><i class="ico" aria-hidden="true">'+(key==='home'?GROUP_SVG.home:semanticSvg(SEMANTIC_ICONS[icon] || SEMANTIC_ICONS.generic))+'</i>'+label+'</button>').join('') +
-            '<div class="side-divider"></div><div class="side-secondary"><a class="side-btn" href="#study~saved">Saved topics</a><a class="side-btn" href="#learn~progress">Progress &amp; backup</a><a class="side-btn" href="#settings">Settings &amp; offline</a></div>';
+            '<div class="side-divider"></div><div class="side-secondary"><a class="side-btn" href="#library~saved">Saved topics</a><a class="side-btn" href="#learn~progress">Progress &amp; backup</a><a class="side-btn" href="#settings">Settings &amp; offline</a></div>';
     }
 
     function markActive(id) {
@@ -781,16 +842,16 @@
             '</div></section>';
     }
 
-    function patientFiltersHtml() {
-        const filters = [
+    const PATIENT_FILTER_OPTIONS = [
             ['all', 'All patients', 'patient-all'],
             ['pediatric', 'Pediatric', 'patient-pediatric'],
             ['pregnancy', 'Pregnancy', 'patient-pregnancy'],
             ['geriatric', 'Older adult', 'patient-geriatric'],
             ['immunocompromised', 'Immunocompromised', 'patient-immunocompromised'],
             ['trauma', 'Trauma', 'patient-trauma']
-        ];
-        return '<div class="patient-filter" role="group" aria-label="Patient context filter"><span>Patient context</span>' + filters.map(function (f) {
+    ];
+    function patientFiltersHtml() {
+        return '<div class="patient-filter" role="group" aria-label="Patient context filter"><span>Patient context</span>' + PATIENT_FILTER_OPTIONS.map(function (f) {
             return '<button type="button" class="patient-chip' + (patientFilter === f[0] ? ' active' : '') + '" data-patient="' + f[0] + '" aria-pressed="' + (patientFilter === f[0]) + '"><span class="chip-emoji chip-icon" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[f[2]]) + '</span>' + f[1] + '</button>';
         }).join('') + '</div>';
     }
@@ -802,6 +863,7 @@
 
     function renderHome(preservePosition) {
         const position = window.scrollY;
+        recordBackContext('library');
         currentId = null;
         markActive(null);
         syncNav('home');
@@ -822,15 +884,16 @@
         }).join('');
         const visibleCount = visible.length;
         const filtered = librarySystem !== 'all' || patientFilter !== 'all' || severityFilter !== 'all';
+        const activeFilters = [librarySystem, patientFilter, severityFilter].filter(v => v !== 'all').length;
         stage.innerHTML =
-            '<section class="home-intro library-only"><span class="study-kicker">EM POCKET · REFERENCE</span><h1>Library</h1><p>Find an emergency presentation and explore its approach, warning signs, workup and disposition.</p><div class="home-meta"><span>' + DATA.length + ' presentations</span><span id="offlineStatus">' + esc(offlineStatus) + '</span></div></section>' +
+            '<section class="home-intro library-only"><span class="study-kicker">THE EM POCKET · REFERENCE</span><h1>Library</h1><p>Find an emergency presentation and explore its approach, warning signs, workup and disposition.</p><div class="home-meta"><span>' + DATA.length + ' presentations</span><span id="offlineStatus">' + esc(offlineStatus) + '</span></div></section>' +
             '<section class="presentation-library" id="presentationLibrary" aria-labelledby="presentationLibraryTitle" tabindex="-1">' +
             '<div class="library-head"><div><h2 id="presentationLibraryTitle">Presentation library</h2><p>' + visibleCount + ' of ' + DATA.length + ' presentations · grouped by clinical system</p></div>' +
-            '</div><div class="library-toolbar"><label class="library-system">Clinical system<select id="librarySystem">' +
+            '<a class="design-action" href="#library~saved">Saved topics · ' + savedIds().length + '</a></div><div class="library-toolbar"><label class="library-system">Clinical system<select id="librarySystem">' +
             '<option value="all"' + (librarySystem === 'all' ? ' selected' : '') + '>All clinical systems</option>' +
             GROUPS.map(g => '<option value="' + esc(g.title) + '"' + (librarySystem === g.title ? ' selected' : '') + '>' + esc(g.title) + '</option>').join('') + '</select></label>' +
-            '<div class="library-filter-controls"><details class="library-filters"' + (libraryFiltersOpen ? ' open' : '') + '><summary>Patient context' + (patientFilter !== 'all' ? ' · active' : '') + '</summary>' + patientFiltersHtml() + '</details></div></div>' +
-            (filtered ? '<div class="library-filter-status" role="status"><span>Filtered results · ' + visibleCount + ' presentations</span><button type="button" data-reset-library>Clear filters</button></div>' : '') +
+            '<div class="library-filter-controls"><details class="library-filters"' + (libraryFiltersOpen ? ' open' : '') + '><summary>Patient context' + (patientFilter !== 'all' ? ' · ' + esc(PATIENT_FILTER_OPTIONS.find(f => f[0] === patientFilter)[1]) : '') + '</summary>' + patientFiltersHtml() + '</details></div></div>' +
+            (filtered ? '<div class="library-filter-status" role="status"><span>Filters · ' + activeFilters + ' active · ' + visibleCount + ' presentations</span><button type="button" data-reset-library>Reset filters</button></div>' : '') +
             (groupsHtml || '<div class="empty-filter"><h3>No matching presentations</h3><p>Clear the filters to return to the full library.</p></div>') + '</section>';
         bindCards(stage);
         stage.querySelectorAll('[data-browse-library]').forEach(btn => btn.addEventListener('click', (e) => {
@@ -897,17 +960,21 @@
             return '<button type="button" class="quiz-option" data-correct="' + (i === correct) + '">' + esc(option) + '</button>';
         }).join('') + '</div><p class="quiz-feedback" aria-live="polite"></p></fieldset>';
     }
-    function renderStudy(view) {
+    function renderStudy(view, opts) {
         currentId = null;
-        markActive('study'); syncNav('study'); setTitle('Study');
-        setStageContext('Personal study space');
+        const nav = (opts && opts.nav) || 'study';
+        const title = (opts && opts.title) || 'Study';
+        if (nav === 'home') { recordBackContext('library', '#library~saved'); markActive(null); }
+        else { recordBackContext('study', location.hash || '#study~due'); markActive('study'); }
+        syncNav(nav); setTitle(title);
+        setStageContext((opts && opts.stageContext) || 'Personal study space');
         if(view&&view.indexOf('case-')===0){const i=window.STUDENT_LEARNING.cases.findIndex(c=>c.id===view.slice(5));if(i>=0)caseCursor=i;view='case';}
         const chosen = view === 'saved' ? 'saved' : view === 'case' ? 'case' : 'due';
         const body = chosen === 'case' ? caseHtml() :
             '<section class="study-page"><div class="study-page-head">' + backButtonHtml('data-home="1"') + '<span class="study-kicker">PERSONAL STUDY SPACE</span><h1>' + (chosen === 'due' ? 'Review queue' : 'Saved topics') + '</h1><p>' + (chosen === 'due' ? 'Topics return after 1, 3, 7, and 14 days of review. Complete a review to move it to the next interval.' : 'Use saved topics for weak areas, upcoming rotations, or cases you want to discuss.') + '</p></div>' +
             topicListHtml(chosen === 'due' ? dueIds() : savedIds(), chosen === 'due' ? 'Nothing is due yet. Mark a topic reviewed to start its spaced-review schedule.' : 'No saved topics yet. Save one from any presentation.') + '</section>';
         stage.innerHTML = '<nav class="study-tabs" aria-label="Personal study navigation"><a href="#learn~practice">Practice</a><button type="button" data-study="due"' + (chosen === 'due' ? ' aria-current="page"' : '') + ' class="' + (chosen === 'due' ? 'active' : '') + '" aria-label="Review queue">Review <span>' + dueIds().length + '</span></button><button type="button" data-study="saved"' + (chosen === 'saved' ? ' aria-current="page"' : '') + ' class="' + (chosen === 'saved' ? 'active' : '') + '" aria-label="Saved topics">Saved</button><a href="#learn~progress">Progress</a></nav>' + body;
-        stage.querySelectorAll('[data-home]').forEach(btn => btn.addEventListener('click', showHome));
+        stage.querySelectorAll('[data-home]').forEach(btn => btn.addEventListener('click', goBack));
         stage.querySelectorAll('[data-study]').forEach(btn => btn.addEventListener('click', () => showStudy(btn.dataset.study)));
         stage.querySelectorAll('[data-next-case]').forEach(btn => btn.addEventListener('click', () => { caseCursor += 1; renderStudy('case'); }));
         stage.querySelectorAll('.study-topic, .review-btn[data-id]').forEach(btn => btn.addEventListener('click', () => {
@@ -919,7 +986,7 @@
         if(chooseCase)chooseCase.addEventListener('change',()=>{caseCursor=Number(chooseCase.value);renderStudy('case');});
         const retryCase=stage.querySelector('[data-retry-case]');
         if(retryCase)retryCase.addEventListener('click',()=>renderStudy('case'));
-        announce('Study: '+chosen);
+        announce(nav === 'home' ? title : 'Study: ' + chosen);
         window.scrollTo({ top: 0 });
         stage.focus({ preventScroll: true });
     }
@@ -949,7 +1016,7 @@
             '<div class="shift-sheet-head">' +
             '<div class="shift-head-main">' +
             '<span class="ios-icon-badge ios-emoji-badge shift-hero-badge cat-' + catFor(cp.id) + '" data-id="' + cp.id + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(cp.id), cp.id)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</span>' +
-            '<div><span class="shift-kicker">' + semanticSvg(SEMANTIC_ICONS['first-minutes'], 'kicker-svg') + ' FOCUSED SHIFT VIEW</span><h1>' + esc(cp.name) + '</h1><p>' + esc(cp.tag) + '</p></div>' +
+            '<div><span class="shift-kicker">' + semanticSvg(SEMANTIC_ICONS['first-minutes'], 'kicker-svg') + ' QUICK REFERENCE</span><h1>' + esc(cp.name) + '</h1><p>' + esc(cp.tag) + '</p></div>' +
             '</div>' +
             '<div class="shift-head-actions">' +
             '<button type="button" class="handover-btn" id="copyHandoverBtn" title="Copy educational reference"><span class="btn-icon btn-emoji" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['references'], 'btn-svg') + '</span><span>Copy reference</span></button>' +
@@ -1018,7 +1085,7 @@
         copyBtn.addEventListener('click', function () {
             const rfText = (cp.redFlags || []).join('; ');
             const immediateWorkup = (cp.workup || []).flatMap(w => w[1].map(item => w[0] + ': ' + item));
-            const text = 'EM Pocket educational reference (not a patient handover): ' + cp.name + '\n' +
+            const text = 'The EM Pocket educational reference (not a patient handover): ' + cp.name + '\n' +
                 'Red Flags: ' + (rfText || 'None listed') + '\n' +
                 'Approach: ' + ((cp.approach || []).join('; ') || 'Standard resuscitation') + '\n' +
                 'Workup: ' + (immediateWorkup.join('; ') || 'Per protocol') + '\n' +
@@ -1030,22 +1097,23 @@
     }
 
     function renderShift(id) {
+        recordBackContext('shift');
         if (!DATA.length) {
             currentId = null;
-            markActive('shift'); syncNav('shift'); setTitle('Shift view');
-            setStageContext('Focused shift view');
-            stage.innerHTML = '<section class="study-page"><div class="study-page-head">' + backButtonHtml('data-home="1"') + '<h1>Shift view unavailable</h1><p>Presentation data could not be loaded. Confirm <code>assets/data.js</code> is available, then refresh.</p></div></section>';
-            stage.querySelector('[data-home]').addEventListener('click', showHome);
+            markActive('shift'); syncNav('shift'); setTitle('Quick');
+            setStageContext('Quick reference');
+            stage.innerHTML = '<section class="study-page"><div class="study-page-head">' + backButtonHtml('data-home="1"') + '<h1>Quick view unavailable</h1><p>Presentation data could not be loaded. Confirm <code>assets/data.js</code> is available, then refresh.</p></div></section>';
+            stage.querySelector('[data-home]').addEventListener('click', goBack);
             return;
         }
         if (!id || !BY_ID[id]) {
             currentId=null; syncNav('shift');setTitle('Quick');setStageContext('Quick reference');
-            stage.innerHTML='<header class="design-header"><span class="study-kicker">EM POCKET · FOCUSED REFERENCE</span><h1>Quick</h1><p>Choose a presentation to see its approach, red flags, workup, important diagnoses and disposition together.</p></header><section class="settings-section"><label for="quickPresentation">Presentation</label><select id="quickPresentation"><option value="">Choose a presentation…</option>'+DATA.map(cp=>'<option value="'+cp.id+'">'+esc(cp.name)+'</option>').join('')+'</select><p class="clinical-safety-note">Educational reference. Read the full pathway for history, examination, supporting sources and context.</p></section>';
+            stage.innerHTML='<header class="design-header"><span class="study-kicker">THE EM POCKET · FOCUSED REFERENCE</span><h1>Quick</h1><p>Choose a presentation to see its approach, red flags, workup, important diagnoses and disposition together.</p></header><section class="settings-section"><label for="quickPresentation">Presentation</label><select id="quickPresentation"><option value="">Choose a presentation…</option>'+DATA.map(cp=>'<option value="'+cp.id+'">'+esc(cp.name)+'</option>').join('')+'</select><p class="clinical-safety-note">Educational reference. Read the full pathway for history, examination, supporting sources and context.</p></section>';
             stage.querySelector('#quickPresentation').onchange=function(){if(this.value)showShift(this.value);};window.scrollTo({top:0});return;
         }
         const cp = BY_ID[id];
-        currentId = cp.id; markActive(cp.id); syncNav('shift'); setTitle('Shift view · ' + cp.name);
-        setStageContext('Focused shift view for ' + cp.name);
+        currentId = cp.id; markActive(cp.id); syncNav('shift'); setTitle('Quick · ' + cp.name);
+        setStageContext('Quick reference for ' + cp.name);
         stage.innerHTML = '<div class="shift-topline">' +
             backButtonHtml('data-home="1"') +
             '<div class="shift-select-wrap">' +
@@ -1058,11 +1126,11 @@
             '</div></div>' + shiftHtml(cp) +
             '<div class="handover-fallback" id="handoverFallback" hidden></div>';
         document.getElementById('shiftSelect').addEventListener('change', function () { showShift(this.value); });
-        stage.querySelector('[data-home]').addEventListener('click', showHome);
+        stage.querySelector('[data-home]').addEventListener('click', goBack);
         stage.querySelector('[data-full-id]').addEventListener('click', function () { showPresentation(this.dataset.fullId); });
         setupHandoverCopy(cp);
         window.scrollTo({ top: 0 });
-        announce('Shift view: ' + cp.name);
+        announce('Quick view: ' + cp.name);
         stage.focus({ preventScroll: true });
     }
 
@@ -1420,7 +1488,7 @@
             pagerHtml(id) +
             '</div></div>';
 
-        document.getElementById('backBtn').addEventListener('click', showHome);
+        document.getElementById('backBtn').addEventListener('click', goBack);
         stage.querySelectorAll('.sec-head').forEach(h =>
             h.addEventListener('click', () => {
                 const card = h.closest('.section-card');
@@ -1490,7 +1558,9 @@
            re-attach unconditionally or it would watch detached nodes and the
            highlight would freeze. */
         observeRail();
-        if (target) jumpToSection(target, true);
+        if (target) {
+            if (jumpToSection(target, true) === false) showSectionUnavailable('#' + id);
+        }
         else if (preservePosition) { /* Filtering keeps the clinician in the same reading position. */ }
         else {
             window.scrollTo({ top: 0 });
@@ -1501,7 +1571,7 @@
 
     function jumpToSection(target, fromSearch) {
         const card = document.getElementById('section-' + target);
-        if (!card) return;
+        if (!card) return false;
         const parent = card.classList.contains('section-card') ? card : card.closest('.section-card');
         if (parent && parent.classList.contains('closed')) {
             parent.classList.remove('closed');
@@ -1525,6 +1595,7 @@
             chip.setAttribute('aria-current', 'true');
             scrollStepChipIntoView(chip);
         }
+        return true;
     }
 
     function showPresentation(id, target) {
@@ -1746,7 +1817,7 @@
             setTitle('ECG');
             setStageContext('Emergency ECG interpretation');
             stage.innerHTML = '<section class="study-page"><div class="study-page-head">' + backButtonHtml('data-home="1"') + '<h1>ECG guide unavailable</h1><p>Confirm <code>assets/data.js</code> includes <code>ECG_DATA</code>, then refresh.</p></div></section>';
-            stage.querySelector('[data-home]').addEventListener('click', showHome);
+            stage.querySelector('[data-home]').addEventListener('click', goBack);
             return;
         }
         const patternTarget = (ecg.patterns.filter(function (p) { return p.id === target; })[0] || {}).id || null;
@@ -1879,7 +1950,7 @@
                 + '<p class="ecg-litfl">Diagrams above are original teaching drawings. For real 12-lead tracings see <a href="https://litfl.com/ecg-library/" target="_blank" rel="noopener">LITFL ECG Library</a> — free for non-profit education with credit to litfl.com (CC BY-NC-SA 4.0).</p>',
                 true, 'ecg-references');
 
-        document.getElementById('backBtn').addEventListener('click', showHome);
+        document.getElementById('backBtn').addEventListener('click', goBack);
         document.getElementById('openDynamicEcg').addEventListener('click', function () { openEcgLightbox('stemi-criteria', this); });
         stage.querySelectorAll('[data-ecg-panel]').forEach(function (select) {
             function focusPanel() {
@@ -1923,7 +1994,7 @@
             announce('Viewing emergency ECG Guide');
         } else {
             announce('Viewing emergency ECG — ' + stripTags(target));
-            requestAnimationFrame(function () { jumpToSection(resolveEcgJump(ecg, target), true); });
+            requestAnimationFrame(function () { if (jumpToSection(resolveEcgJump(ecg, target), true) === false) showSectionUnavailable('#ecg'); });
         }
     }
     function showEcg(target) {
@@ -1938,6 +2009,7 @@
         else location.hash = route;
     }
     function renderExplorer(id) {
+        recordBackContext('explorer');
         currentId = null;
         markActive('ecg-explorer'); syncNav('ecg'); setTitle('ECG Explorer');
         setStageContext('ECG Explorer');
@@ -1961,24 +2033,56 @@
         if (design) design.park();
         const route = (location.hash || '').replace('#', '').split('~');
         const id = route[0], target = route[1];
-        if (id === 'search' && design) {currentId=null;syncNav('home');setTitle('Search');setStageContext('Search results');let query='';try{query=decodeURIComponent(route.slice(1).join('~')||'');}catch(_){}design.search(query);}
-        else if (id === 'settings' && design) { currentId=null; syncNav('settings'); setTitle('Settings'); setStageContext('Settings and offline'); design.settings(); }
+        if (id === 'search' && design) {recordBackContext('search', location.hash);currentId=null;syncNav('home');setTitle('Search');setStageContext('Search results');let query='';try{query=decodeURIComponent(route.slice(1).join('~')||'');}catch(_){}design.search(query);}
+        else if (id === 'settings' && design) { recordBackContext('settings'); currentId=null; syncNav('settings'); setTitle('Settings'); setStageContext('Settings and offline'); design.settings(); }
         else if (id === 'learn' && window.EM_LEARNING) {
-            currentId=null; markActive('study'); syncNav(target==='visual-recordings'?'ecg':'study'); setTitle('Learn'); setStageContext('Learning workspace');
+            recordBackContext('learn', location.hash);
+            currentId=null; markActive('study'); syncNav(target==='visual-recordings'?'ecg':'study'); setTitle(target==='visual-recordings'?'Recorded ECGs':'Learn'); setStageContext(target==='visual-recordings'?'Recorded ECG learning':'Learning workspace');
             if(design && (!target || ['home','tracks','short'].includes(target) || target.startsWith('track-'))) design.learn(target || 'home');
             else window.EM_LEARNING.mount(stage,target||'practice');
             announce('Learning workspace');
         }
-        else if (id === 'library') { if (target === 'saved') renderStudy('saved'); else renderHome(preservePosition); }
-        else if (id === 'ecg-hub' && design) { currentId=null; syncNav('ecg'); setTitle('ECG'); setStageContext('ECG learning'); design.ecg(); }
+        else if (id === 'library') { if (target === 'saved') { recordBackContext('library', '#library~saved'); renderStudy('saved', { nav: 'home', title: 'Saved topics', stageContext: 'Saved topics in your library' }); } else renderHome(preservePosition); }
+        else if (id === 'ecg-hub' && design) { recordBackContext('ecg'); currentId=null; syncNav('ecg'); setTitle('ECG'); setStageContext('ECG learning'); design.ecg(); }
         else if (id === 'study') renderStudy(target || 'due');
         else if (id === 'shift') renderShift(target);
         else if (id === 'ecg-explorer') renderExplorer(target);
-        else if (id === ECG_TOPIC_ID) renderEcg(target);
-        else if (id && BY_ID[id]) renderPresentation(id, target, preservePosition);
+        else if (id === ECG_TOPIC_ID) { captureBackSource(); renderEcg(target); }
+        else if (id && BY_ID[id]) { captureBackSource(); renderPresentation(id, target, preservePosition); }
         else if (!id || id === 'presentationLibrary') renderHome();
-        else { syncNav('home'); setTitle('Page not found'); setStageContext('Page not found'); stage.innerHTML='<section class="design-empty"><h1>Page not found</h1><p>This link does not match a presentation or learning page.</p><a class="design-action" href="#library">Open the library</a></section>'; }
+        else renderUnavailablePage();
         if(design)design.afterRoute();
+    }
+
+    function renderUnavailablePage() {
+        currentId = null;
+        syncNav('home');
+        setTitle('This page is unavailable');
+        setStageContext('This page is unavailable');
+        stage.innerHTML = '<section class="design-empty unavailable-route">' +
+            '<h1 tabindex="-1">This page is unavailable</h1>' +
+            '<p>This link does not match a presentation, section or learning page. Open the library or search to find what you need.</p>' +
+            '<div class="design-links"><a class="design-action primary" href="#library">Open the library</a>' +
+            '<a class="design-action" href="#search">Search The EM Pocket</a></div></section>';
+        const heading = stage.querySelector('h1');
+        if (heading && heading.focus) heading.focus({ preventScroll: true });
+        window.scrollTo({ top: 0 });
+        announce('This page is unavailable');
+    }
+
+    function showSectionUnavailable(fallbackHash) {
+        const host = stage.querySelector('.pres-main') || stage;
+        const notice = document.createElement('div');
+        notice.className = 'design-empty route-notice';
+        notice.setAttribute('role', 'status');
+        notice.innerHTML = '<strong>This section is unavailable in this topic.</strong> ' +
+            '<span>Choose a section from the list, or search for it. <a href="' + esc(fallbackHash) + '">View all sections</a> · <a href="#search">Search The EM Pocket</a></span>';
+        const anchor = host.querySelector('.cp-hero-nav');
+        if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(notice, anchor.nextSibling);
+        else host.insertBefore(notice, host.firstChild);
+        const title = document.getElementById('presentationTitle') || document.getElementById('ecgTitle') || stage.querySelector('h1') || stage;
+        if (title && title.focus) { try { title.focus({ preventScroll: true }); } catch (e) {} }
+        announce('This section is unavailable in this topic.');
     }
 
     function refreshActiveRoute() {
@@ -2025,7 +2129,7 @@
         const copy = document.getElementById('copyReview');
         if (copy) copy.addEventListener('click', async () => {
             const selected = Array.from(boxes).filter(b => b.checked).map(b => cp.redFlags[Number(b.dataset.rf)]);
-            const summary = 'EM Pocket educational review — ' + cp.name + '\nSelected red flags: ' +
+            const summary = 'The EM Pocket educational review — ' + cp.name + '\nSelected red flags: ' +
                 (selected.length ? selected.map(x => '• ' + x).join('\n') : 'None selected') +
                 '\n\nUse clinical judgment and local protocols.';
             try {
@@ -2157,7 +2261,7 @@
                 '<div class="res-body"><div class="r-title">' + esc(h.title) + '</div>' +
                 '<div class="r-sub">' + (h.sub ? esc(h.sub) : '') + '</div></div>' +
                 '<span class="r-tag">' + esc(h.kind) + '</span></button>').join('')
-            : '<div class="res-item"><div class="r-sub">No results for \u201C' + esc(q) + '\u201D</div></div>';
+            : '<div class="res-item res-empty"><div class="r-sub">No results for \u201C' + esc(q) + '\u201D</div><div class="res-empty-actions"><button type="button" class="btn" data-search-action="clear">Clear search</button><button type="button" class="btn" data-search-action="browse">Browse library</button></div></div>';
         if(allHits.length>12)pop.insertAdjacentHTML('beforeend','<button type="button" class="res-item search-all" id="search-result-12" role="option" aria-selected="false" data-id="search" data-target="'+esc(q)+'">View all '+allHits.length+' results →</button>');
         pop.style.display = 'block';
         if (input) input.setAttribute('aria-expanded', 'true');
@@ -2170,6 +2274,25 @@
             el.addEventListener('click', () => {
                 hideSearchResults(pop);
                 openSearchHit(el.dataset.id, el.dataset.target);
+            }));
+        pop.querySelectorAll('[data-search-action]').forEach(el =>
+            el.addEventListener('click', () => {
+                hideSearchResults(pop);
+                if (el.dataset.searchAction === 'clear') {
+                    input.value = '';
+                    if (clearBtn) clearBtn.hidden = true;
+                    input.focus();
+                    return;
+                }
+                if ((location.hash || '#library').slice(1).split('~')[0] === 'library') {
+                    const library = document.getElementById('presentationLibrary');
+                    if (library) {
+                        library.focus({ preventScroll: true });
+                        library.scrollIntoView({ block: 'start', behavior: 'smooth' });
+                    }
+                } else {
+                    location.hash = 'library';
+                }
             }));
     }
     function openSearchHit(id, target) {
@@ -2255,6 +2378,10 @@
         }
         if (boldBtn) boldBtn.setAttribute('aria-pressed', p.bold === true ? 'true' : 'false');
         if (label) label.textContent = Math.round(scale * 100) + '%';
+        const fontDown = document.getElementById('fontDown');
+        const fontUp = document.getElementById('fontUp');
+        if (fontDown) fontDown.disabled = scale === SCALE_STEPS[0];
+        if (fontUp) fontUp.disabled = scale === SCALE_STEPS[SCALE_STEPS.length - 1];
         try {
             document.querySelectorAll('.accent-dot').forEach(function (dot) {
                 const on = dot.getAttribute('data-accent') === accent;
@@ -2310,14 +2437,20 @@
         document.querySelectorAll('#filterChips .chip').forEach(chip => {
             chip.setAttribute('aria-pressed', String(chip.classList.contains('active')));
             chip.addEventListener('click', () => {
-                document.querySelectorAll('#filterChips .chip').forEach(c => {
-                    c.classList.remove('active');
-                    c.setAttribute('aria-pressed', 'false');
-                });
-                chip.classList.add('active');
-                chip.setAttribute('aria-pressed', 'true');
-                severityFilter = chip.dataset.sev;
-                refreshActiveRoute();
+                const change = () => {
+                    document.querySelectorAll('#filterChips .chip').forEach(c => {
+                        const active = c === chip;
+                        c.classList.toggle('active', active);
+                        c.setAttribute('aria-pressed', String(active));
+                    });
+                    severityFilter = chip.dataset.sev;
+                    refreshActiveRoute();
+                    const filters = document.querySelector('.context-filters');
+                    filters.open = false;
+                    filters.querySelector('summary').focus({ preventScroll: true });
+                };
+                const design = window.POCKET_DESIGN;
+                if (!design || design.beforeRoute(change)) change();
             });
         });
     }
@@ -2363,7 +2496,7 @@
         } else {
             check.checked = false;
             btn.disabled = true;
-            if (btnText) btnText.textContent = 'Accept & Enter EM Pocket';
+            if (btnText) btnText.textContent = 'Accept & Enter The EM Pocket';
         }
 
         requestAnimationFrame(() => {
@@ -2411,7 +2544,7 @@
             if (!check.checked) return;
             setDisclaimerAgreed();
             hideDisclaimer();
-            toast('Educational terms acknowledged. Welcome to EM Pocket.');
+            toast('Educational terms acknowledged. Welcome to The EM Pocket.');
         });
 
         if (linkBtn) {
@@ -2586,6 +2719,12 @@
     } catch (e) {}
     function init() {
         setupDisclaimer();
+        /* Remember which element the clinician used to leave a destination, so Back can
+           focus that same card or result again after the destination re-renders. */
+        document.addEventListener('click', function (e) {
+            const el = e.target && e.target.closest ? e.target : null;
+            if (el) lastClick = { el: el, hash: location.hash || '#library', scrollY: window.scrollY };
+        }, true);
         buildSidebar();
         syncSidebarAccessibility();
         bindFilters();
@@ -2692,7 +2831,7 @@
         if (installBtn) installBtn.addEventListener('click', async () => {
             if (!deferredInstallPrompt) {
                 if (isIosDevice()) toast('To install on iPhone or iPad: open this site in Safari, tap Share, then Add to Home Screen.');
-                else toast('Use your browser menu and choose Install app to add EM Pocket to your device.');
+                else toast('Use your browser menu and choose Install app to add The EM Pocket to your device.');
                 return;
             }
             deferredInstallPrompt.prompt();
@@ -2703,9 +2842,9 @@
         window.addEventListener('appinstalled', () => {
             deferredInstallPrompt = null;
             if (installBtn) installBtn.hidden = true;
-            toast('EM Pocket is installed and ready for offline use.');
+            toast('The EM Pocket is installed and ready for offline use.');
         });
-        window.addEventListener('offline', () => toast('You’re offline — saved EM Pocket content remains available.'));
+        window.addEventListener('offline', () => toast('You’re offline — saved The EM Pocket content remains available.'));
         window.addEventListener('online', () => toast('You’re back online.'));
 
         const input = document.getElementById('searchInput');
@@ -2728,6 +2867,7 @@
             });
         }
         input.addEventListener('keydown', (e) => {
+            if (e.isComposing || e.keyCode === 229) return;
             if (e.key === 'Enter') {
                 clearTimeout(searchTimer);
                 if (searchPending) {
@@ -2771,6 +2911,12 @@
                     openSearchHit(first.dataset.id, first.dataset.target);
                 }
             }
+        });
+        document.querySelector('.searchwrap').addEventListener('focusout', (e) => {
+            if (e.currentTarget.contains(e.relatedTarget)) return;
+            clearTimeout(searchTimer);
+            searchPending = false;
+            hideSearchResults();
         });
 
         document.getElementById('printBtn').addEventListener('click', () => {
@@ -2839,8 +2985,8 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261008-font-weight-v32').then((registration) => {
-                    navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
+                navigator.serviceWorker.register('./sw.js?v=20261008-the-em-pocket-v35').then((registration) => {
+                    navigator.serviceWorker.ready.then(() => setOfflineStatus('Ready for offline use'));
                     const applyUpdate = () => {
                         if(window.POCKET_DESIGN && !window.POCKET_DESIGN.beforeRoute(() => window.location.reload()))return;
                         const waiting = registration.waiting;
@@ -2849,12 +2995,12 @@
                         }
                         window.location.reload();
                     };
-                    if (registration.waiting) toastWithAction('An updated offline bundle is ready.', 'Reload', applyUpdate);
+                    if (registration.waiting) toastWithAction('New version available', 'Refresh', applyUpdate);
                     registration.addEventListener('updatefound', () => {
                         const worker = registration.installing;
                         if (worker) worker.addEventListener('statechange', () => {
                             if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-                                toastWithAction('An updated offline bundle is ready.', 'Reload', applyUpdate);
+                                toastWithAction('New version available', 'Refresh', applyUpdate);
                             }
                             if (worker.state === 'redundant' && !navigator.serviceWorker.controller) {
                                 setOfflineStatus('Online only');
@@ -2863,7 +3009,7 @@
                         });
                     });
                     navigator.serviceWorker.addEventListener('controllerchange', () => {
-                        setOfflineStatus('Works offline');
+                        setOfflineStatus('Ready for offline use');
                         if (hadController) toast('Offline content updated. Refresh to use the latest interface.');
                     }, { once: true });
                 }).catch(function () {

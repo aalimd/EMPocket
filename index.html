@@ -6,18 +6,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
 <meta name="format-detection" content="telephone=no">
-<title>EM Pocket — Emergency Medicine Reference</title>
+<title>The EM Pocket — Emergency Medicine Reference</title>
 <meta name="description" content="A focused emergency medicine reference for chest pain, dyspnea, abdominal pain, and more. Rosen's-based frameworks for clinical learning and review.">
 <meta name="theme-color" content="#f6f8f7" id="themeColor">
-<link rel="manifest" href="manifest.json?v=20261008-font-weight-v32">
-<link rel="icon" href="assets/icon.svg?v=20261008-font-weight-v32" type="image/svg+xml">
-<link rel="icon" href="assets/icon-192.png?v=20261008-font-weight-v32" type="image/png" sizes="192x192">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261008-font-weight-v32" sizes="180x180">
+<link rel="manifest" href="manifest.json?v=20261008-the-em-pocket-v35">
+<link rel="icon" href="assets/icon.svg?v=20261008-the-em-pocket-v35" type="image/svg+xml">
+<link rel="icon" href="assets/icon-192.png?v=20261008-the-em-pocket-v35" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261008-the-em-pocket-v35" sizes="180x180">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="preload" href="assets/fonts/PlusJakartaSans-Variable.ttf?v=20261008-font-weight-v32" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="assets/app.css?v=20261008-font-weight-v32">
+<link rel="preload" href="assets/fonts/PlusJakartaSans-Variable.ttf?v=20261008-the-em-pocket-v35" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="assets/app.css?v=20261008-the-em-pocket-v35">
 <script>
 (function () {
     try {
@@ -47,9 +47,9 @@
 <nav class="sidebar" id="sidebar" aria-label="Main navigation">
     <div class="side-head">
     <button class="brand" id="brandBtn" type="button" title="All presentations">
-        <span class="brand-mark" aria-hidden="true"><img src="assets/icon-192.png?v=20261008-font-weight-v32" alt="" width="44" height="44"></span>
+        <span class="brand-mark" aria-hidden="true"><img src="assets/icon-192.png?v=20261008-the-em-pocket-v35" alt="" width="44" height="44"></span>
         <span class="brand-text">
-            <strong>EM Pocket</strong>
+            <strong>The EM Pocket</strong>
             <span>Emergency medicine</span>
         </span>
     </button>
@@ -57,9 +57,9 @@
     </div>
     <div class="side-list" id="sideList"></div>
     <div class="side-footer">
-        <button class="side-btn" id="printBtn" type="button" title="Print / Export PDF (Ctrl+P)">Print / PDF</button>
+        <button class="side-btn" id="printBtn" type="button" title="Print / Save as PDF (Ctrl+P)">Print / Save as PDF</button>
         <button class="side-btn disclaimer-link-btn" id="disclaimerLinkBtn" type="button" title="View Educational Terms &amp; Disclaimer">Clinical notice</button>
-        <a class="side-btn" href="mailto:apps@aamd.sa?subject=EM%20Pocket%20feedback" title="Send feedback or suggestions to apps@aamd.sa">Send feedback</a>
+        <a class="side-btn" href="mailto:apps@aamd.sa?subject=The%20EM%20Pocket%20feedback" title="Send feedback or suggestions to apps@aamd.sa">Send feedback</a>
         <p class="side-note">Education only — never replaces clinical judgment or local protocols.</p>
     </div>
 </nav>
@@ -70,7 +70,7 @@
 
     <header class="topbar">
         <button class="icon-btn burger" id="burgerBtn" type="button" aria-label="Open presentations menu" aria-controls="sidebar" aria-expanded="false"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-        <span class="topbar-brand">EM Pocket</span>
+        <span class="topbar-brand">The EM Pocket</span>
         <nav class="primary-nav" aria-label="Primary navigation">
         <button class="home-btn" id="homeBtn" type="button" title="All presentations (H)" aria-label="All presentations" data-nav="home"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-8H9v8H4a1 1 0 0 1-1-1z"/></svg><span class="header-label">Library</span></button>
         <button class="home-btn utility-btn" id="studyBtn" type="button" title="Learning workspace (S)" aria-label="Open learning workspace" data-nav="study"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v16M3 3h4a5 5 0 0 1 5 2 5 5 0 0 1 5-2h4v16h-4a5 5 0 0 0-5 2 5 5 0 0 0-5-2H3z"/></svg><span class="header-label">Learn</span></button>
@@ -80,8 +80,8 @@
         </nav>
         <div class="searchwrap">
             <span class="search-ico" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></span>
-            <input type="search" id="searchInput" placeholder="Search presentations, cases, ECG…"
-                   maxlength="120" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" inputmode="search" aria-label="Search EM Pocket" role="combobox" aria-autocomplete="list" aria-controls="searchResults" aria-expanded="false">
+            <input type="search" id="searchInput" placeholder="Search topics, findings or ECGs"
+                   maxlength="120" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" inputmode="search" aria-label="Search The EM Pocket" role="combobox" aria-autocomplete="list" aria-controls="searchResults" aria-expanded="false">
             <button class="search-clear-btn" id="searchClearBtn" type="button" aria-label="Clear search query" hidden><svg class="ui-icon clear-ico" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
             <kbd class="search-kbd" title="Press / to search" aria-hidden="true">/</kbd>
         </div>
@@ -96,7 +96,7 @@
         <div class="topbar-tools" id="topbarTools">
             <div class="pref-tools" role="group" aria-label="Reading options">
                 <button type="button" class="pref-btn" id="fontDown" title="Smaller text" aria-label="Smaller text">A−</button>
-                <span class="pref-scale" id="fontLabel">100%</span>
+                <span class="pref-scale" id="fontLabel" role="status" aria-live="polite" aria-atomic="true">100%</span>
                 <button type="button" class="pref-btn" id="fontUp" title="Larger text" aria-label="Larger text">A+</button>
                 <button type="button" class="pref-btn" id="boldBtn" title="Bold text" aria-label="Bold reading text" aria-pressed="false"><strong>B</strong></button>
                 <button type="button" class="pref-btn" id="themeBtn" title="Dark mode" aria-label="Switch to dark mode" aria-pressed="false"><span class="theme-ico" aria-hidden="true"><svg class="mono-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span></button>
@@ -119,8 +119,8 @@
     <main class="stage" id="stage" tabindex="-1" role="main" aria-label="Presentation content"></main>
 
     <footer class="foot">
-        <p>Made by Dr. Alzahrani EM. · <a href="mailto:apps@aamd.sa?subject=EM%20Pocket%20feedback" title="Send feedback or suggestions">Send feedback: apps@aamd.sa</a></p>
-        <p><strong>EM Pocket</strong> — Built on the approach of <em>Rosen's Emergency Medicine</em> (10th ed., 2023)
+        <p>Made by Dr. Alzahrani EM. · <a href="mailto:apps@aamd.sa?subject=The%20EM%20Pocket%20feedback" title="Send feedback or suggestions">Send feedback: apps@aamd.sa</a></p>
+        <p><strong>The EM Pocket</strong> — Built on the approach of <em>Rosen's Emergency Medicine</em> (10th ed., 2023)
             and corroborating society guidance with selected source checks updated 8 October 2026 (Tintinalli's 9th ed., ACC/AHA, ESC, SSC, AAP, ACG, GINA/GOLD, ACEP). Educational reference —
             always apply clinical judgment and institutional protocols.</p>
     </footer>
@@ -160,12 +160,12 @@
                 <span>Mandatory Clinical Notice</span>
             </div>
             <h2 id="disclaimerTitle">Educational &amp; Reference Purpose Only</h2>
-            <p id="disclaimerDesc" class="disclaimer-sub">Please review and confirm your agreement before accessing EM Pocket.</p>
+            <p id="disclaimerDesc" class="disclaimer-sub">Please review and confirm your agreement before accessing The EM Pocket.</p>
         </div>
 
         <div class="disclaimer-body">
             <div class="disclaimer-callout">
-                <strong>EM Pocket is designed solely for medical education, cognitive practice, and training reference.</strong>
+                <strong>The EM Pocket is designed solely for medical education, cognitive practice, and training reference.</strong>
             </div>
             <ul class="disclaimer-points">
                 <li>
@@ -193,31 +193,31 @@
 
             <label class="disclaimer-agree-label" for="disclaimerCheck">
                 <input type="checkbox" id="disclaimerCheck" required>
-                <span>I understand and agree that EM Pocket is strictly an educational tool, and that all clinical decisions and patient care remain my independent professional responsibility.</span>
+                <span>I understand and agree that The EM Pocket is strictly an educational tool, and that all clinical decisions and patient care remain my independent professional responsibility.</span>
             </label>
         </div>
 
         <div class="disclaimer-footer">
             <button type="button" class="disclaimer-btn" id="disclaimerAcceptBtn" disabled>
-                <span>Accept &amp; Enter EM Pocket</span>
+                <span>Accept &amp; Enter The EM Pocket</span>
                 <span class="btn-arrow" aria-hidden="true">→</span>
             </button>
         </div>
     </div>
 </dialog>
-<div id="settingsParking" class="settings-parking" hidden><button type="button" class="design-action" id="installBtn" hidden>Install EM Pocket</button></div>
+<div id="settingsParking" class="settings-parking" hidden><button type="button" class="design-action" id="installBtn" hidden>Install The EM Pocket</button></div>
 
 <div class="toast" id="toast" role="status"></div>
-<noscript><p class="noscript">EM Pocket needs JavaScript enabled to show presentations.</p></noscript>
+<noscript><p class="noscript">The EM Pocket needs JavaScript enabled to show presentations.</p></noscript>
 
-<script type="module" src="assets/ecg-svg.js?v=20261008-font-weight-v32"></script>
-<script type="module" src="assets/ecg-engine.js?v=20261008-font-weight-v32"></script>
-<script type="module" src="assets/ecg-case-tracings.js?v=20261008-font-weight-v32"></script>
-<script type="module" src="assets/ecg-interactive.js?v=20261008-font-weight-v32"></script>
-<script type="module" src="assets/ecg-curriculum.js?v=20261008-font-weight-v32"></script><script type="module" src="assets/ecg-explorer.js?v=20261008-font-weight-v32"></script>
-<script type="module" src="assets/data.js?v=20261008-font-weight-v32"></script>
-<script type="module" src="assets/evidence.js?v=20261008-font-weight-v32"></script>
-<script type="module" src="assets/student-learning.js?v=20261008-font-weight-v32"></script><script type="module" src="assets/em-learning-data.js?v=20261008-font-weight-v32"></script><script type="module" src="assets/em-learning.js?v=20261008-font-weight-v32"></script><script type="module" src="assets/app.js?v=20261008-font-weight-v32"></script>
-<script type="module" src="assets/design.js?v=20261008-font-weight-v32"></script>
+<script type="module" src="assets/ecg-svg.js?v=20261008-the-em-pocket-v35"></script>
+<script type="module" src="assets/ecg-engine.js?v=20261008-the-em-pocket-v35"></script>
+<script type="module" src="assets/ecg-case-tracings.js?v=20261008-the-em-pocket-v35"></script>
+<script type="module" src="assets/ecg-interactive.js?v=20261008-the-em-pocket-v35"></script>
+<script type="module" src="assets/ecg-curriculum.js?v=20261008-the-em-pocket-v35"></script><script type="module" src="assets/ecg-explorer.js?v=20261008-the-em-pocket-v35"></script>
+<script type="module" src="assets/data.js?v=20261008-the-em-pocket-v35"></script>
+<script type="module" src="assets/evidence.js?v=20261008-the-em-pocket-v35"></script>
+<script type="module" src="assets/student-learning.js?v=20261008-the-em-pocket-v35"></script><script type="module" src="assets/em-learning-data.js?v=20261008-the-em-pocket-v35"></script><script type="module" src="assets/em-learning.js?v=20261008-the-em-pocket-v35"></script><script type="module" src="assets/app.js?v=20261008-the-em-pocket-v35"></script>
+<script type="module" src="assets/design.js?v=20261008-the-em-pocket-v35"></script>
 </body>
 </html>

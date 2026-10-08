@@ -1,46 +1,46 @@
-/* EM Pocket service worker — resilient app-shell caching for offline clinical reference. */
-const CACHE_VERSION = 'v227';
+/* The EM Pocket service worker — resilient app-shell caching for offline clinical reference. */
+const CACHE_VERSION = 'v230';
 // Preserve case, separators and the full path: sibling installations must never share caches.
 const SCOPE_KEY = encodeURIComponent(new URL(self.registration.scope).pathname);
 const CACHE_PREFIX = 'em-cps-scope-' + SCOPE_KEY + '-';
 const CACHE = CACHE_PREFIX + CACHE_VERSION;
 const CORE_ASSETS = [
     './',
-    './assets/app.css?v=20261008-font-weight-v32',
-    './assets/design.js?v=20261008-font-weight-v32',
-    './assets/css/tokens.css?v=20261008-font-weight-v32',
-    './assets/css/scientific.css?v=20261008-font-weight-v32',
-    './assets/css/base.css?v=20261008-font-weight-v32',
-    './assets/css/shell.css?v=20261008-font-weight-v32',
-    './assets/css/components.css?v=20261008-font-weight-v32',
-    './assets/css/views.css?v=20261008-font-weight-v32',
-    './assets/css/ecg.css?v=20261008-font-weight-v32',
-    './assets/css/print.css?v=20261008-font-weight-v32',
-    './assets/em-learning-data.js?v=20261008-font-weight-v32',
-    './assets/ecg-recordings.js?v=20261008-font-weight-v32',
+    './assets/app.css?v=20261008-the-em-pocket-v35',
+    './assets/design.js?v=20261008-the-em-pocket-v35',
+    './assets/css/tokens.css?v=20261008-the-em-pocket-v35',
+    './assets/css/scientific.css?v=20261008-the-em-pocket-v35',
+    './assets/css/base.css?v=20261008-the-em-pocket-v35',
+    './assets/css/shell.css?v=20261008-the-em-pocket-v35',
+    './assets/css/components.css?v=20261008-the-em-pocket-v35',
+    './assets/css/views.css?v=20261008-the-em-pocket-v35',
+    './assets/css/ecg.css?v=20261008-the-em-pocket-v35',
+    './assets/css/print.css?v=20261008-the-em-pocket-v35',
+    './assets/em-learning-data.js?v=20261008-the-em-pocket-v35',
+    './assets/ecg-recordings.js?v=20261008-the-em-pocket-v35',
     './assets/ptb-xl-LICENSE.txt',
-    './assets/em-learning.js?v=20261008-font-weight-v32',
-    './assets/student-learning.js?v=20261008-font-weight-v32',
-    './assets/app.js?v=20261008-font-weight-v32',
-    './assets/data.js?v=20261008-font-weight-v32',
-    './assets/evidence.js?v=20261008-font-weight-v32',
-    './assets/ecg-svg.js?v=20261008-font-weight-v32',
-    './assets/ecg-engine.js?v=20261008-font-weight-v32',
-    './assets/ecg-case-tracings.js?v=20261008-font-weight-v32',
-    './assets/ecg-interactive.js?v=20261008-font-weight-v32',
-    './assets/ecg-curriculum.js?v=20261008-font-weight-v32',
-  './assets/ecg-explorer.js?v=20261008-font-weight-v32'
+    './assets/em-learning.js?v=20261008-the-em-pocket-v35',
+    './assets/student-learning.js?v=20261008-the-em-pocket-v35',
+    './assets/app.js?v=20261008-the-em-pocket-v35',
+    './assets/data.js?v=20261008-the-em-pocket-v35',
+    './assets/evidence.js?v=20261008-the-em-pocket-v35',
+    './assets/ecg-svg.js?v=20261008-the-em-pocket-v35',
+    './assets/ecg-engine.js?v=20261008-the-em-pocket-v35',
+    './assets/ecg-case-tracings.js?v=20261008-the-em-pocket-v35',
+    './assets/ecg-interactive.js?v=20261008-the-em-pocket-v35',
+    './assets/ecg-curriculum.js?v=20261008-the-em-pocket-v35',
+  './assets/ecg-explorer.js?v=20261008-the-em-pocket-v35'
 ];
 const OPTIONAL_ASSETS = [
-    './manifest.json?v=20261008-font-weight-v32',
-    './assets/icon.svg?v=20261008-font-weight-v32',
-    './assets/icon-192.png?v=20261008-font-weight-v32',
-    './assets/icon-512.png?v=20261008-font-weight-v32',
-    './assets/icon-maskable-512.png?v=20261008-font-weight-v32',
-    './assets/apple-touch-icon.png?v=20261008-font-weight-v32',
+    './manifest.json?v=20261008-the-em-pocket-v35',
+    './assets/icon.svg?v=20261008-the-em-pocket-v35',
+    './assets/icon-192.png?v=20261008-the-em-pocket-v35',
+    './assets/icon-512.png?v=20261008-the-em-pocket-v35',
+    './assets/icon-maskable-512.png?v=20261008-the-em-pocket-v35',
+    './assets/apple-touch-icon.png?v=20261008-the-em-pocket-v35',
     // Optional on purpose: a missing or mis-typed font must never block the
     // offline install, and the UI stays fully usable on the system stack.
-    './assets/fonts/PlusJakartaSans-Variable.ttf?v=20261008-font-weight-v32'
+    './assets/fonts/PlusJakartaSans-Variable.ttf?v=20261008-the-em-pocket-v35'
 ];
 
 // Cache the canonical directory URL: Pages redirects index.html to this URL.
