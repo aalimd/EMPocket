@@ -1,5 +1,5 @@
 'use strict';
-/* The 13 runtime scripts are ES modules so they fetch in parallel and no longer
+/* The 14 runtime scripts are ES modules so they fetch in parallel and no longer
    block first paint. Module scope is strict and file-local, which is the whole
    reason this test exists: a bare global would still look fine to `node --check`
    and would only throw a ReferenceError in the browser. */
@@ -14,9 +14,9 @@ const scriptTags = [...html.matchAll(/<script([^>]*)>/g)].map(m => m[1]);
 
 test('every runtime script is a deferred ES module', () => {
     const srcTags = scriptTags.filter(a => /\ssrc=/.test(a));
-    /* 12 startup modules: the 232KB recorded-ECG library is loaded on demand
+    /* 13 startup modules: the 232KB recorded-ECG library is loaded on demand
        instead (see the deferral test below). */
-    assert.equal(srcTags.length, 12, 'expected 12 startup modules');
+    assert.equal(srcTags.length, 13, 'expected 13 startup modules');
     for (const attrs of srcTags) {
         assert.match(attrs, /type="module"/,
             'script is still render-blocking: ' + attrs.trim().slice(0, 70));

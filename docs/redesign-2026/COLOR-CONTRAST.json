@@ -1,0 +1,295 @@
+{
+  "status": "Proposed solid-color pairs only; not a component accessibility certification",
+  "method": "WCAG sRGB relative luminance contrast ratio",
+  "checked": "2026-10-08",
+  "pairs": [
+    {
+      "name": "canvas-light",
+      "foreground": "#172B28",
+      "background": "#F6F8F7",
+      "contrast": 13.9376,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "surface-light",
+      "foreground": "#172B28",
+      "background": "#FFFFFF",
+      "contrast": 14.866,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "muted-light",
+      "foreground": "#4B635D",
+      "background": "#FFFFFF",
+      "contrast": 6.4775,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "primary-light",
+      "foreground": "#FFFFFF",
+      "background": "#146B5C",
+      "contrast": 6.3881,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "selected-light",
+      "foreground": "#115544",
+      "background": "#E8F5F0",
+      "contrast": 7.7909,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "critical-light",
+      "foreground": "#991B1B",
+      "background": "#FEF2F2",
+      "contrast": 7.5966,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "warning-light",
+      "foreground": "#92400E",
+      "background": "#FFFBEB",
+      "contrast": 6.837,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "completed-light",
+      "foreground": "#166534",
+      "background": "#ECFDF5",
+      "contrast": 6.7688,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "info-light",
+      "foreground": "#1E40AF",
+      "background": "#EFF6FF",
+      "contrast": 8.0148,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "error-action-light",
+      "foreground": "#FFFFFF",
+      "background": "#B91C1C",
+      "contrast": 6.47,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "canvas-dark",
+      "foreground": "#E9F1EE",
+      "background": "#101917",
+      "contrast": 15.5792,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "surface-dark",
+      "foreground": "#E9F1EE",
+      "background": "#182522",
+      "contrast": 13.7811,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "muted-dark",
+      "foreground": "#B4C8C0",
+      "background": "#182522",
+      "contrast": 9.0184,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "primary-dark",
+      "foreground": "#10251E",
+      "background": "#84D6BE",
+      "contrast": 9.4555,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "selected-dark",
+      "foreground": "#B9EFDB",
+      "background": "#203D34",
+      "contrast": 9.2394,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "critical-dark",
+      "foreground": "#FFC7CE",
+      "background": "#3A1F24",
+      "contrast": 10.2132,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "warning-dark",
+      "foreground": "#F8D59B",
+      "background": "#352B19",
+      "contrast": 9.9157,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "completed-dark",
+      "foreground": "#B6E8C5",
+      "background": "#1B3528",
+      "contrast": 9.6679,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "info-dark",
+      "foreground": "#C2D8FF",
+      "background": "#1D2C43",
+      "contrast": 9.7486,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "error-action-dark",
+      "foreground": "#3A1F24",
+      "background": "#FFC7CE",
+      "contrast": 10.2132,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "primary-hover-light",
+      "foreground": "#FFFFFF",
+      "background": "#0F5549",
+      "contrast": 8.6923,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "primary-active-light",
+      "foreground": "#FFFFFF",
+      "background": "#0B453B",
+      "contrast": 10.8885,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "emerald-action-light",
+      "foreground": "#FFFFFF",
+      "background": "#146B5C",
+      "contrast": 6.3881,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "emerald-action-dark",
+      "foreground": "#10251E",
+      "background": "#84D6BE",
+      "contrast": 9.4555,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "ocean-action-light",
+      "foreground": "#FFFFFF",
+      "background": "#075985",
+      "contrast": 7.563,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "ocean-action-dark",
+      "foreground": "#082F49",
+      "background": "#7DD3FC",
+      "contrast": 8.324,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "violet-action-light",
+      "foreground": "#FFFFFF",
+      "background": "#6D28D9",
+      "contrast": 7.1049,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "violet-action-dark",
+      "foreground": "#2E1065",
+      "background": "#C4B5FD",
+      "contrast": 8.2536,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "rose-action-light",
+      "foreground": "#FFFFFF",
+      "background": "#A21CAF",
+      "contrast": 6.3226,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "rose-action-dark",
+      "foreground": "#4A044E",
+      "background": "#F0ABFC",
+      "contrast": 8.4142,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "amber-action-light",
+      "foreground": "#FFFFFF",
+      "background": "#92400E",
+      "contrast": 7.09,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "amber-action-dark",
+      "foreground": "#451A03",
+      "background": "#FCD34D",
+      "contrast": 10.3871,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "teal-action-light",
+      "foreground": "#FFFFFF",
+      "background": "#115E59",
+      "contrast": 7.5835,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "teal-action-dark",
+      "foreground": "#042F2E",
+      "background": "#5EEAD4",
+      "contrast": 9.7819,
+      "threshold": 4.5,
+      "passes": true
+    },
+    {
+      "name": "input-border-light",
+      "foreground": "#698078",
+      "background": "#FFFFFF",
+      "contrast": 4.2343,
+      "threshold": 3,
+      "passes": true
+    },
+    {
+      "name": "input-border-dark",
+      "foreground": "#91A99F",
+      "background": "#182522",
+      "contrast": 6.3169,
+      "threshold": 3,
+      "passes": true
+    }
+  ]
+}

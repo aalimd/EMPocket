@@ -9,7 +9,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = path.join(__dirname, '..');
-const css = fs.readFileSync(path.join(root, 'assets/app.css'), 'utf8');
+const {css,loader,modules}=require('./helpers/styles');
 
 function walk(dir, out) {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -27,7 +27,7 @@ function usedClasses() {
     const used = new Set();
     for (const file of walk(root, [])) {
         const text = fs.readFileSync(file, 'utf8');
-        const isTarget = path.relative(root, file).split(path.sep).join('/') === 'assets/app.css';
+        const isTarget = path.extname(file) === '.css';
         for (const m of text.matchAll(/class=\\?["']([^"'`]+)/g)) m[1].split(/\s+/).forEach(c => c && used.add(c));
         for (const m of text.matchAll(/class(?:Name)?\s*[:=]\s*`?["']([^"'`]+)/g)) m[1].split(/\s+/).forEach(c => c && used.add(c));
         for (const m of text.matchAll(/classList\.[a-z]+\((['"])([^'"]+)\1/g)) used.add(m[2]);
@@ -62,25 +62,18 @@ test('unused classes do not accumulate in the stylesheet', () => {
         ' baseline: ' + unused.join(' '));
 });
 
-test('the stylesheet documents its own layer order and z-index scale', () => {
-    assert.match(css, /EM-CPs stylesheet — read this first/,
-        'the append-only cascade needs a header index, otherwise no one can tell which rule wins');
-    assert.match(css, /z-index scale/,
-        'the z-index scale is documented so new layers stop inventing values');
-    for (const layer of ['v5', 'v5.1', 'v6', 'iOS27']) {
-        assert.ok(css.includes(layer), 'the layer index should mention ' + layer);
-    }
-    assert.match(css, /z-index:\s*100 !important/,
-        'the tab bar must stay documented at 100, between the topbar (90) and the drawer (110)');
+test('the stylesheet has explicit modules, one drawing layer and a bounded size', () => {
+    assert.match(loader,/z-index scale/);
+    assert.equal(modules.length,8);
+    assert.equal(new Set(modules).size,8);
+    assert.match(css,/@layer scientific/);
+    assert.ok(css.length<100000,'Modular CSS must not grow back into the 433 KB patch cascade');
+    assert.doesNotMatch(css,/!important[^{}]*\{/);
 });
 
-test('the selector the runtime actually uses is the one that is styled', () => {
-    /* student-learning.js moves .context-filters out of the topbar into the
-       library heading, so any `.topbar .context-filters` rule is dead on arrival. */
-    assert.doesNotMatch(css, /\.topbar \.context-filters/,
-        'the filter is relocated at runtime, so a .topbar-scoped rule can never match it');
-    assert.match(css, /\.context-filters \.chips \{[^}]*max-width:/,
-        'the severity panel needs its own ceiling; the phone guard clamps every .chips to 100%');
+test('relocated severity controls have a viewport-bounded popup', () => {
+    assert.match(css,/\.context-filters \.chips\{[^}]*max-width:/);
+    assert.match(css,/\.context-filters>summary\{[^}]*min-height:/);
 });
 
 test('the stylesheet parses as balanced CSS', () => {

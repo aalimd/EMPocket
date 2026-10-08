@@ -16,12 +16,17 @@
         for(let n=0;win.innerWidth!==width&&n<120;n++)await new Promise(r=>requestAnimationFrame(r));
         await new Promise(r=>win.requestAnimationFrame(()=>win.requestAnimationFrame(r)));
         const tag=`${width}px ${theme} ${scale}`,head=doc.querySelector('.topbar').getBoundingClientRect(),search=doc.querySelector('.searchwrap').getBoundingClientRect();
-        const buttons=[...doc.querySelectorAll('.primary-nav > button')];check(buttons.length===5,tag+' five destinations');
+        const visible=el=>el.getBoundingClientRect().width>0&&win.getComputedStyle(el).visibility!=='hidden';
+        const buttons=[...doc.querySelectorAll('[data-nav]')].filter(visible);check(buttons.length===4,tag+' four visible destinations');
+        const nav=doc.querySelector(width<=920?'.ios-tabbar':'.sidebar').getBoundingClientRect();
+        const settings=doc.querySelector('#toolsToggle').getBoundingClientRect();
+        check(inside(search,head)&&inside(settings,head),tag+' search and settings fit header');
+        check(!overlap(search,settings),tag+' settings clear of search');
         for(const b of buttons){
-          const rect=b.getBoundingClientRect(),icon=b.querySelector('svg'),ir=icon.getBoundingClientRect(),label=b.querySelector('.header-label').getBoundingClientRect();
+          const rect=b.getBoundingClientRect(),icon=b.querySelector('svg'),ir=icon.getBoundingClientRect(),label=b.getBoundingClientRect();
           check(ir.width>=16&&ir.height>=16&&win.getComputedStyle(icon).display!=='none',tag+' '+b.id+' icon visible');
           check(inside(ir,rect)&&inside(label,rect),tag+' '+b.id+' contents fit button '+JSON.stringify({button:rect.toJSON(),icon:ir.toJSON(),label:label.toJSON()}));
-          check(inside(rect,head)&&rect.right<=width+1,tag+' '+b.id+' fits header');
+          check(inside(rect,nav)&&rect.right<=width+1,tag+' '+b.dataset.nav+' fits navigation');
           check(!overlap(rect,search),tag+' '+b.id+' clear of search');
         }
         for(let i=1;i<buttons.length;i++)check(!overlap(buttons[i-1].getBoundingClientRect(),buttons[i].getBoundingClientRect()),tag+' adjacent buttons separated');

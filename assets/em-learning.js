@@ -43,7 +43,7 @@
            denser card surface, not a different page. */
         const kicker = '<p class="study-kicker">EM POCKET · LEARNING WORKSPACE</p>';
         const lead = '<p class="workspace-lead">'+esc(description)+'</p>';
-        return '<section class="learning-workspace"><div class="practice-hero"><div class="workspace-hero-nav"><a class="back-btn ios-nav-back" href="#"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span>Library</span></a><nav class="workspace-personal" aria-label="Personal study tools"><a href="#study~due" aria-label="Review queue">Review</a><a href="#study~saved" aria-label="Saved topics">Saved</a></nav></div>'+kicker+'<h1 tabindex="-1">'+esc(title)+'</h1>'+lead+'<nav class="workspace-tabs" aria-label="Learning workspace">'+[['practice','Practice'],['visuals','Visuals'],['skills','Procedures'],['progress','Progress']].map(([id,label])=>'<a href="#learn~'+id+'"'+(id===active?' aria-current="page"':'')+'>'+label+'</a>').join('')+'</nav></div><div class="workspace-body"></div></section>';
+        return '<section class="learning-workspace"><div class="practice-hero"><div class="workspace-hero-nav"><a class="back-btn ios-nav-back" href="#learn~home"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span>Learn</span></a><nav class="workspace-personal" aria-label="Personal study tools"><a href="#study~due" aria-label="Review queue">Review</a><a href="#study~saved" aria-label="Saved topics">Saved</a></nav></div>'+kicker+'<h1 tabindex="-1">'+esc(title)+'</h1>'+lead+'<nav class="workspace-tabs" aria-label="Learning workspace">'+[['practice','Practice'],['visuals','Visuals'],['skills','Preparation'],['progress','Progress']].map(([id,label])=>'<a href="#learn~'+id+'"'+(id===active?' aria-current="page"':'')+'>'+label+'</a>').join('')+'</nav></div><div class="workspace-body"></div></section>';
     }
     function homeHtml() {
         return '<section class="workspace-entry" aria-label="Choose how to use EM Pocket">' +
@@ -183,7 +183,7 @@
             '</select></div>' +
             '</div>' +
             (cards ? '<div class="workspace-grid">' + cards + '</div>' : emptyFilterState()) +
-            '<nav class="practice-more" aria-label="Other practice"><a href="#study~case">Short cases</a><a href="#ecg-explorer~practice">ECG practice</a><a href="#study~due">Review queue</a></nav>';
+            '<nav class="practice-more" aria-label="Other practice"><a href="#learn~short">Short cases</a><a href="#ecg-explorer~practice">ECG practice</a><a href="#study~due">Review queue</a></nav>';
     }
     function newSession() { return {index:0,answers:[],done:false,seed:Math.floor(Math.random()*100000)}; }
     function mountCase(body,id) {
@@ -229,7 +229,7 @@
     }
     function readIcon(){return window.EM_ICONS && window.EM_ICONS.svg ? window.EM_ICONS.svg(window.EM_ICONS.map['completed']) : '';}
     function readButton(id) {return '<button type="button" data-module-read="'+esc(id)+'">'+(progress().viewed.includes(id)?readIcon()+'<span>Read on this device</span>':'Mark as read')+'</button><p class="module-save" role="status"></p>';}
-    function bindRead(body) {body.querySelector('[data-module-read]')?.addEventListener('click',e=>{const p=progress();p.viewed.push(e.target.dataset.moduleRead);const ok=saveProgress(p);e.target.innerHTML=readIcon()+'<span>Read</span>';body.querySelector('.module-save').textContent=ok?'Reading activity saved. This does not certify a skill.':'Reading activity remembered for this session only.';});}
+    function bindRead(body) {body.querySelector('[data-module-read]')?.addEventListener('click',e=>{const p=progress();p.viewed.push(e.currentTarget.dataset.moduleRead);const ok=saveProgress(p);e.currentTarget.innerHTML=readIcon()+'<span>Read</span>';body.querySelector('.module-save').textContent=ok?'Reading activity saved. This does not certify a skill.':'Reading activity remembered for this session only.';});}
     function mountModule(body,id) {
         const m=D.modules.find(m=>m.id===id);if(!m){body.innerHTML='<p>Module not found.</p>';return;}
         body.innerHTML='<article><p class="study-kicker">'+esc(m.kind)+'</p><h2>'+esc(m.title)+'</h2><p>'+esc(m.intro)+'</p><div class="workspace-grid">'+m.sections.map(([title,points])=>'<section class="workspace-card"><h3>'+esc(title)+'</h3><ul>'+points.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul></section>').join('')+'</div><fieldset class="workspace-readiness"><legend>Preparation rehearsal</legend><p>Tick each section after explaining it aloud. This is a temporary rehearsal, not a clinical checklist or sign-off.</p>'+m.sections.map(([title],i)=>'<label><input type="checkbox" data-readiness="'+i+'"> I can explain '+esc(title.toLowerCase())+'</label>').join('')+'<p data-readiness-status role="status">0 / '+m.sections.length+' sections rehearsed</p></fieldset><section class="workspace-callout"><h3>Pause and explain</h3><p>'+esc(m.question)+'</p><details><summary>Compare your explanation</summary><p>'+esc(m.answer)+'</p></details></section><div class="workspace-actions">'+readButton(id)+'<a href="#'+esc(m.topic)+'">Related presentation →</a></div>'+sourceHtml(m.source)+'</article>';body.querySelectorAll('[data-readiness]').forEach(box=>box.addEventListener('change',()=>{body.querySelector('[data-readiness-status]').textContent=body.querySelectorAll('[data-readiness]:checked').length+' / '+m.sections.length+' sections rehearsed';}));bindRead(body);
@@ -263,7 +263,7 @@
     let recordingsPromise = null;
     function loadRecordings() {
         if (!recordingsPromise) {
-            recordingsPromise = import('./ecg-recordings.js?v=20261008-clinical-v30')
+            recordingsPromise = import('./ecg-recordings.js?v=20261008-redesign-v31')
                 .catch(function () { recordingsPromise = null; });
         }
         return recordingsPromise || Promise.resolve();

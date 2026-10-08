@@ -69,3 +69,20 @@ test('one release token covers shell, precache, manifest and service-worker regi
  assert.match(read('assets/app.js'),/serviceWorker\.register\('\.\/sw\.js\?v=/);
  assert.ok(!fs.existsSync(path.join(root,'_worker.js')));assert.ok(!fs.existsSync(path.join(root,'functions')));
 });
+
+test('every imported CSS module and font resolves locally with the same release and offline coverage',()=>{
+ const {loader,modules}=require('./helpers/styles');
+ const release=html.match(/assets\/app\.css\?v=([^" ]+)/)[1];
+ assert.equal(modules.length,8);
+ for(const m of loader.matchAll(/@import url\('([^']+)'\)/g)) {
+  const url=new URL(m[1],'https://example.test/nested/assets/app.css');
+  assert.ok(url.pathname.startsWith('/nested/assets/css/'));
+  assert.equal(url.searchParams.get('v'),release);
+  assert.ok(worker.includes("'./"+url.pathname.replace('/nested/','')+url.search+"'"));
+  assert.deepEqual(headers(url.pathname)['Cache-Control'],['no-cache, max-age=0, must-revalidate']);
+ }
+ for(const file of modules)for(const m of fs.readFileSync(file,'utf8').matchAll(/url\('([^']+)'\)/g)) {
+  const resolved=path.resolve(path.dirname(file),m[1].split('?')[0]);assert.ok(fs.existsSync(resolved),resolved);
+  assert.equal(new URL(m[1],'https://example.test/assets/css/tokens.css').searchParams.get('v'),release);
+ }
+});

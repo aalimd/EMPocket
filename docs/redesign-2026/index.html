@@ -1,0 +1,3891 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>EM Pocket — خطة إعادة التصميم</title><style>
+:root{color-scheme:light dark;--canvas:#f6f8f7;--surface:#fff;--ink:#172b28;--muted:#4b635d;--line:#d7e2dc;--brand:#146b5c;--soft:#e8f5f0;--code:#edf2ef;--focus:#146b5c}*{box-sizing:border-box}body{margin:0;background:var(--canvas);color:var(--ink);font:16px/1.85 system-ui,-apple-system,"Segoe UI",sans-serif}a{color:var(--brand);text-underline-offset:4px}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--focus);outline-offset:3px}header{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--surface);border-bottom:1px solid var(--line);padding:12px 24px}header strong{font-size:20px}header span{font-size:13px;color:var(--muted)}.theme{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;min-height:44px;padding:8px 16px}.layout{max-width:1600px;margin:auto;display:grid;grid-template-columns:280px minmax(0,1fr)}aside{position:sticky;top:var(--reader-header-size,77px);height:calc(100dvh - var(--reader-header-size,77px));overflow:auto;padding:24px 16px;border-inline-end:1px solid var(--line)}.tabs{display:grid;gap:8px;margin-bottom:20px}.tabs button{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px;padding:10px 14px;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:10px;color:var(--ink)}.tabs button[aria-current="page"]{background:var(--brand);color:#fff;border-color:var(--brand)}label{font-size:14px;color:var(--muted)}input{display:block;width:100%;min-height:44px;padding:8px 12px;color:var(--ink);background:var(--surface);border:1px solid var(--muted);border-radius:8px;margin:8px 0}.matches{font-size:13px;color:var(--muted);min-height:24px}.toc{list-style:none;padding:0}.toc li{margin:0 0 4px}.toc a{display:block;border-radius:8px;padding:6px 10px;text-decoration:none;color:var(--muted);font-size:14px}.toc a:hover{background:var(--soft);color:var(--ink)}main{min-width:0;padding:32px 40px 80px}.hero{max-width:1040px;margin:0 0 28px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:28px}.hero small{color:var(--brand)}.hero h1{font-size:30px;line-height:1.4;margin:10px 0}.hero p{color:var(--muted);max-width:760px}.overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:24px}.overview button{background:var(--soft);color:var(--ink);border:0;border-radius:12px;padding:16px;min-height:100px;text-align:start}.overview b{display:block;font-size:18px}.overview span{font-size:13px;color:var(--muted)}.document{max-width:1040px;overflow-wrap:anywhere}.document[hidden]{display:none}.document h1{font-size:28px;line-height:1.5}.document h2{font-size:23px;margin:44px 0 20px;padding-top:16px;border-top:1px solid var(--line);scroll-margin-top:calc(var(--reader-header-size,77px) + 16px)}.document h3{font-size:19px;margin-top:28px;scroll-margin-top:calc(var(--reader-header-size,77px) + 16px)}.document p,.document li{max-width:850px}.document p{margin:12px 0}.document li{margin-block:7px}.document strong{font-weight:700}.document code{direction:ltr;unicode-bidi:isolate;font:14px/1.6 ui-monospace,monospace;background:var(--code);padding:2px 5px;border-radius:4px}.document pre{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;max-width:100%;font:13px/1.7 ui-monospace,monospace}.document pre code{background:transparent;padding:0;white-space:pre;display:block}.table-scroll{max-width:100%;overflow:auto;margin:20px 0;border:1px solid var(--line);border-radius:12px;background:var(--surface)}table{border-collapse:collapse;min-width:620px;width:100%;font-size:14px}th,td{padding:12px 16px;text-align:start;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--soft);font-weight:600}tbody tr:last-child td{border-bottom:0}.diagram-source{padding:12px 16px;background:var(--soft);border-radius:12px}.diagram-source summary{cursor:pointer}.palette{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.swatch{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}.swatch .sample{padding:22px;border-radius:8px;font-weight:600}.swatch h2{font-size:14px;border:0;padding:0;margin:12px 0 0}.swatch p{font-size:13px;margin:4px 0}footer{font-size:13px;color:var(--muted);margin-top:40px}html[data-theme=dark]{--canvas:#101917;--surface:#182522;--ink:#e9f1ee;--muted:#b4c8c0;--line:#354b42;--brand:#84d6be;--soft:#203d34;--code:#263a32;--focus:#84d6be}html[data-theme=dark] .tabs button[aria-current=page]{color:#10251e}@media(prefers-color-scheme:dark){html:not([data-theme=light]){--canvas:#101917;--surface:#182522;--ink:#e9f1ee;--muted:#b4c8c0;--line:#354b42;--brand:#84d6be;--soft:#203d34;--code:#263a32;--focus:#84d6be}html:not([data-theme=light]) .tabs button[aria-current=page]{color:#10251e}}@media(max-width:900px){header{padding:10px 16px}.layout{grid-template-columns:1fr}aside{position:static;height:auto;padding:16px;border:0}.tabs{grid-template-columns:repeat(2,minmax(0,1fr));margin:0 0 16px}.toc{max-height:220px;overflow:auto}main{padding:16px 16px 48px}.hero{padding:20px}.hero h1{font-size:24px}.overview{grid-template-columns:repeat(2,minmax(0,1fr))}.document h2{font-size:21px}.palette{grid-template-columns:1fr}}@media(max-width:359px){main,aside{padding:12px}header strong{font-size:17px}header span{display:none}.tabs button{font-size:14px}.hero{padding:16px}.hero h1{font-size:22px}}@media print{header,aside,.hero,.diagram-source{display:none!important}.layout{display:block}main{padding:0}.document[hidden]{display:none}.document{max-width:none}.document h2{break-after:avoid}.table-scroll,pre{overflow:visible!important}table{min-width:0;font-size:10pt}body{background:#fff;color:#111;font-size:11pt}.palette{grid-template-columns:repeat(2,1fr)}}
+</style></head><body>
+<header><div><strong>EM Pocket</strong><br><span>مواصفة إعادة التصميم · 8 أكتوبر 2026 · خطة مقترحة</span></div><button class="theme" id="theme" type="button">تبديل المظهر</button></header>
+<div class="layout"><aside aria-label="فهرس خطة التصميم"><nav class="tabs" aria-label="وثائق الخطة"><button data-tab="master" aria-current="page">المواصفة الشاملة</button><button data-tab="contracts">عقود الشاشات</button><button data-tab="coverage">جرد المحتوى</button><button data-tab="colors">فحص الألوان</button></nav><label for="section-search">بحث في أقسام الخطة</label><input id="section-search" type="search" placeholder="مثال: الطباعة، الملاحظات، ECG"><div class="matches" role="status" id="matches"></div><details id="contents"><summary>فهرس الأقسام</summary><ul class="toc" id="toc"></ul></details></aside>
+<main id="main"><section class="hero"><small>DESIGN BLUEPRINT · EDUCATIONAL APP</small><h1>مرجع واضح، وتعلم مترابط، وECG محفوظ الدقة.</h1><p>48 قسمًا للمواصفة، وعقود تفصيلية للشاشات، وجرد 207 عناصر، و36 زوجًا لونيًا محسوبًا. هذه وثائق تخطيط؛ لم تتغير واجهة التطبيق المنشورة.</p><div class="overview"><button data-jump="11"><b>Library</b><span>45 موضوعًا · بحث وقراءة ومصادر</span></button><button data-jump="16"><b>Learn</b><span>استئناف وحالات ومراجعة وتقدم</span></button><button data-jump="22"><b>ECG</b><span>دليل وحالات وتسجيلات وممارسة</span></button><button data-jump="15"><b>Quick</b><span>عرض مرجعي مختصر مرتبط بالأصل</span></button></div></section><section class="document" data-document="master"><h1 id="master-section-1" tabindex="-1">EM Pocket — المخطط الشامل لإعادة التصميم</h1><p>وثيقة تصميم منتج وتجربة استخدام ونظام واجهة وخطة تنفيذ واختبار. الإصدار 1.0، بتاريخ 8 أكتوبر 2026.</p>
+<p><strong>الحالة:</strong> مواصفة مقترحة قابلة للتنفيذ والمراجعة. إنشاء هذه الوثيقة لا يغيّر واجهة التطبيق المنشورة. الأرقام الزمنية وميزانيات الأداء أدناه أهداف للاختبار، وليست نتائج محققة أو وعودًا بالاستبقاء. جميع الأمثلة البصرية تخطيط عرض، وليست إرشادات علاجية جديدة.</p>
+<p><strong>خط الأساس:</strong> التطبيق المجاني EM-CPs، commit <code>545162d</code>، إصدار الأصول <code>20261008-clinical-v30</code>، service worker <code>v225</code>. الجرد مستخرج من المصدر الحالي، ويُحدّث قبل بدء التنفيذ إذا تغير المصدر. توضع هذه الوثائق خارج حزمة النشر التشغيلية.</p>
+<h2 id="master-section-2" tabindex="-1">01 — قرار المنتج والنتيجة المطلوبة</h2><p>المنتج مرجع تعليمي في طب الطوارئ، يتيح الوصول السريع إلى الموضوع والمعلومة، ثم الانتقال الاختياري إلى تعلم نشط مترابط. يخدم القارئ الذي يريد معلومة محددة والمتعلم الذي يريد جلسة متسلسلة. لا يُطلب منه اختيار شخصية أو مستوى أو إكمال ملف تعريفي ليفتح المحتوى.</p>
+<p>النتيجة المرئية: هيكل واحد، أربع وجهات رئيسية، بحث دائم الوصول، قراءة هادئة، تعليم له بداية ونهاية واستئناف، وتخطيط قلب يحتل المساحة المناسبة له. تظل الهوية الطبية التعليمية صريحة. لا تعني مشاهدة المحتوى أو إكمال حالة امتلاك كفاءة سريرية.</p>
+<p>قرارات محسومة في هذه المواصفة:</p>
+<ul>
+<li>الوجهات الأساسية بالترتيب: <strong>Library / Learn / ECG / Quick</strong>. الأسماء العربية التوضيحية: المكتبة / التعلم / تخطيط القلب / العرض السريع.</li>
+<li>الوجهة الافتراضية الجديدة <strong>Library</strong>؛ لا تسبقها لوحة إحصائيات أو مسار إلزامي. روابط المحتوى المباشرة تتجاوز الوجهة الافتراضية وتفتح مقصودها.</li>
+<li>يحتفظ المنتج باسم EM Pocket وبالأخضر الحالي أساسًا للهوية. لا نغيّر الهوية إلى الأزرق لمجرد التجديد.</li>
+<li>محتوى التطبيق الحالي إنجليزي. هذه الوثيقة عربية؛ لا تعني ترجمة المحتوى الطبي تلقائيًا. يُهيأ النظام لـ RTL مع إبقاء محتوى ECG والأرقام والوحدات في اتجاهها الصحيح.</li>
+<li>إعادة بناء قوالب العرض والتنقل تدريجيًا؛ محركات الإشارات والمحتوى الطبي والتخزين الحالي أصول نحافظ عليها ونربطها بواجهة جديدة.</li>
+<li>لا جدار دفع أو حساب أو اشتراك أو محتوى خارجي مطلوب للتشغيل. لا تعديل للتطبيق المدفوع المجاور.</li>
+<li>لا إدخال لجرعات أو حاسبات أو إرشادات علاجية جديدة ضمن تجميل الواجهة. أي إضافة محتوى لها مراجعة سريرية منفصلة.</li>
+</ul>
+<h2 id="master-section-3" tabindex="-1">02 — الجرد الذي يجب أن يبقى متاحًا</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>المجال</th>
+<th align="right">الجرد الحالي</th>
+<th>التزام إعادة التصميم</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>المواضيع السريرية</td>
+<td align="right">45</td>
+<td>وصول كامل إلى كل موضوع وكل حقل بلا إسقاط أو اختصار يغير المعنى</td>
+</tr>
+<tr>
+<td>دليل ECG</td>
+<td align="right">7 خطوات، 18 نمطًا</td>
+<td>ترتيب تعلم واضح وروابط ثابتة إلى جميع الأقسام</td>
+</tr>
+<tr>
+<td>مكتبة الرسوم داخل الدليل</td>
+<td align="right">27 شكلًا</td>
+<td>احتفاظ بالشرح والتفاعل وحدود كل شكل</td>
+</tr>
+<tr>
+<td>حالات ECG الاصطناعية التفاعلية</td>
+<td align="right">69</td>
+<td>عرض، تكبير، علامات، تفسير، مقارنة، ممارسة وتقدم</td>
+</tr>
+<tr>
+<td>التسجيلات الحقيقية</td>
+<td align="right">12 من PTB-XL</td>
+<td>الحفاظ على العينات الأصلية والمصدر والمعايرة والوسوم وحدودها</td>
+</tr>
+<tr>
+<td>الحالات القصيرة</td>
+<td align="right">12</td>
+<td>اختيار، إجابة، تفسير البدائل، إعادة محاولة وتقييم ذاتي</td>
+</tr>
+<tr>
+<td>الحالات المتطورة</td>
+<td align="right">6</td>
+<td>المراحل، الاستئناف ضمن الجلسة، الاختيارات الأولى، المناقشة والمصادر</td>
+</tr>
+<tr>
+<td>وحدات التحضير والمناقشة</td>
+<td align="right">6</td>
+<td>القراءة والتأشير كقراءة؛ لا شهادة إتقان لإجراء</td>
+</tr>
+<tr>
+<td>مساحات التعلم البصري</td>
+<td align="right">5</td>
+<td>تسجيلات ECG، غازات الدم، رئة، صدر، أزواج ECG</td>
+</tr>
+<tr>
+<td>التعلم الشخصي</td>
+<td align="right">قائم</td>
+<td>مفضلة، ملاحظات، مراجعة مجدولة، ثقة ذاتية، تصدير واستيراد</td>
+</tr>
+<tr>
+<td>أدوات المرجع</td>
+<td align="right">قائمة</td>
+<td>تاريخ ومصادر، فلاتر، بحث، قوائم أعلام حمراء، ملخص قابل للنسخ، طباعة</td>
+</tr>
+<tr>
+<td>PWA والتفضيلات</td>
+<td align="right">قائمة</td>
+<td>تثبيت، تحديث، عمل محلي دون اتصال، حجم خط، غامق، لون، نهاري/ليلي</td>
+</tr>
+</tbody></table></div>
+<p>قائمة كل معرف موجود ومكانه الجديد في الملحق <a href="#coverage" data-doc-link="coverage">CONTENT-COVERAGE.md</a>. تُنشأ مصفوفة «قديم ← جديد ← اختبار قبول» قبل تبديل أي شاشة. لا يعتبر إخفاء ميزة في قائمة غير مكتشفة حفظًا لتجربتها.</p>
+<h2 id="master-section-4" tabindex="-1">03 — سيناريوهات الاستخدام المرجعية</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>السيناريو</th>
+<th>المسار المتوقع</th>
+<th>معيار قبول المنتج المقترح</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>يريد مرجع ألم الصدر</td>
+<td>بحث ← موضوع ← قسم مقصود</td>
+<td>عنوان وموضوع واضحان؛ لا خطوة اختيار مستوى</td>
+</tr>
+<tr>
+<td>يريد علامة خطر محددة</td>
+<td>بحث شامل ← النتيجة ← قسم مفتوح</td>
+<td>ظهور النص داخل سياقه وعدم إخفاء الشروط المصاحبة</td>
+</tr>
+<tr>
+<td>يعود إلى حالة غير منتهية</td>
+<td>Learn ← Continue ← المرحلة</td>
+<td>لا تضيع الاختيارات الموجودة ولا يعاد ترتيبها عند العودة</td>
+</tr>
+<tr>
+<td>يدرس ECG من البداية</td>
+<td>ECG ← Guide ← خطوة ← مثال</td>
+<td>مثال وشرح ورابط ممارسة متصل بالخطوة</td>
+</tr>
+<tr>
+<td>يقرأ تسجيلًا حقيقيًا</td>
+<td>ECG ← Recordings ← اختيار ← كشف الوسم</td>
+<td>أصل التسجيل واضح؛ لا ادعاء تشخيص آني من وسم dataset</td>
+</tr>
+<tr>
+<td>يستخدم الموضوع سريعًا</td>
+<td>Quick ← اختيار موضوع</td>
+<td>خطوات وتعليمات تصعيد كاملة ضمن نطاق الملخص المحدد</td>
+</tr>
+<tr>
+<td>يستخدم التطبيق بلا شبكة</td>
+<td>فتح نسخة سبق تجهيزها</td>
+<td>shell وأصول أساسية متاحة؛ المصادر الخارجية معلمة بأنها تحتاج اتصالًا</td>
+</tr>
+<tr>
+<td>يعود من صفحة نتيجة بحث</td>
+<td>Back</td>
+<td>نفس الاستعلام والفلاتر والموضع والعنصر المحدد</td>
+</tr>
+<tr>
+<td>يستخدم قارئ شاشة/لوحة مفاتيح</td>
+<td>التنقل والبحث والممارسة</td>
+<td>اسم/دور/حالة، ترتيب تركيز منطقي، لا حاجز لوحة مفاتيح</td>
+</tr>
+<tr>
+<td>يريد حفظ ملاحظة</td>
+<td>موضوع ← Notes ← Save</td>
+<td>حالة حفظ صادقة؛ تنبيه إن تعذر التخزين أو كانت هناك مسودة غير محفوظة</td>
+</tr>
+</tbody></table></div>
+<p>يُختبر نجاح المهمة ونسبة الأخطاء والزمن الوسيط والنطاق، ولا يُفترض أن جميع المستخدمين ينجزونها خلال ثلاث ثوانٍ. لا تجمع بيانات سلوك مستمرة افتراضيًا؛ يمكن إجراء جلسات استخدام بموافقة المشاركين أو قياسات محلية مؤقتة بلا بيانات مرضى.</p>
+<h2 id="master-section-5" tabindex="-1">04 — هندسة المعلومات</h2><details class="diagram-source"><summary>صيغة المخطط البنيوي</summary><pre dir="ltr"><code>flowchart TD
+    Shell[EM Pocket: Search + Settings]
+    Shell --&gt; Library[Library]
+    Shell --&gt; Learn[Learn]
+    Shell --&gt; ECG[ECG]
+    Shell --&gt; Quick[Quick]
+    Library --&gt; Topic[Clinical topic: all sections]
+    Library --&gt; Saved[Saved topics]
+    Learn --&gt; Continue[Continue]
+    Learn --&gt; Cases[Short + evolving cases]
+    Learn --&gt; Tracks[Learning tracks]
+    Learn --&gt; Visuals[Visuals + preparation]
+    Learn --&gt; Progress[Progress + review + backup]
+    ECG --&gt; Guide[7-step guide]
+    ECG --&gt; Explorer[69 teaching cases]
+    ECG --&gt; Recordings[12 source recordings]
+    ECG --&gt; ECGPractice[Practice + saved findings]
+    Quick --&gt; QuickTopic[Focused topic summary]
+    Topic --&gt; Cases
+    Topic --&gt; ECG
+    QuickTopic --&gt; Topic</code></pre></details><ul>
+<li>Library تضم فهرس المواضيع، التصفية، المفضلة، والموضوع الكامل.</li>
+<li>Learn هي وجهة التعلم والاستئناف؛ لا تعيد عرض جميع بطاقات المكتبة. تجمع أنواع التعلم تحت أسماء مفهومة دون فرض دمج محركاتها البرمجية.</li>
+<li>ECG وجهة واحدة تضم Guide / Cases / Recordings / Practice. تبقى هوية النموذج الاصطناعي والتسجيل الحقيقي مميزة في كل شاشة.</li>
+<li>Quick اختصار مرجعي تعليمي، لا واجهة فرز طبي ولا أداة قرار فردي. تعرض المواضيع نفسها بصياغة عرض مختلفة مع الوصول إلى الأصل.</li>
+<li>Settings وجهة ثانوية عبر زر ثابت. تضم القراءة والمظهر والتثبيت وحالة النسخة والخصوصية والمساعدة. التقدم والنسخ الاحتياطي لهما رابط منها، لكن موطنهما Learn.</li>
+<li>البحث عام. الفلاتر داخل Library أو قائمة Cases محلية ولا تتحكم في نتائج وجهات أخرى خفية.</li>
+</ul>
+<h2 id="master-section-6" tabindex="-1">05 — المسارات القديمة والجديدة</h2><p>المسارات التالية مقترحة للإضافة. تبقى المسارات الحالية قابلة للفتح بعد التحديث، بما فيها روابط المفضلة واختصارات PWA والروابط المنسوخة. لا يعاد تخصيص معرف قديم لمعنى مختلف.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>الرابط/العائلة</th>
+<th>السلوك الجديد</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>#</code> أو فتح <code>./</code></td>
+<td>Library</td>
+</tr>
+<tr>
+<td><code>#library</code></td>
+<td>فهرس المكتبة الجديد</td>
+</tr>
+<tr>
+<td><code>#library~saved</code></td>
+<td>المواضيع المحفوظة</td>
+</tr>
+<tr>
+<td><code>#&lt;topic-id&gt;</code></td>
+<td>الموضوع نفسه بالقالب الجديد</td>
+</tr>
+<tr>
+<td><code>#&lt;topic-id&gt;~&lt;section-id&gt;</code></td>
+<td>الموضوع مع فتح القسم والتركيز على عنوانه</td>
+</tr>
+<tr>
+<td><code>#learn~home</code></td>
+<td>مركز التعلم</td>
+</tr>
+<tr>
+<td><code>#learn~practice</code></td>
+<td>الحالات المتطورة؛ رابط ثابت محفوظ</td>
+</tr>
+<tr>
+<td><code>#learn~case-&lt;id&gt;</code></td>
+<td>نفس الحالة المتطورة</td>
+</tr>
+<tr>
+<td><code>#learn~skills</code>, <code>#learn~module-&lt;id&gt;</code></td>
+<td>التحضير والوحدة نفسها</td>
+</tr>
+<tr>
+<td><code>#learn~visuals</code>, <code>#learn~visual-&lt;id&gt;</code></td>
+<td>مساحة التعلم البصري القديمة نفسها</td>
+</tr>
+<tr>
+<td><code>#learn~progress</code></td>
+<td>سجل التعلم والنسخ الاحتياطي</td>
+</tr>
+<tr>
+<td><code>#study</code>, <code>#study~&lt;existing-tab&gt;</code></td>
+<td>وجهات التعلم الحالية المكافئة، مع دعم جميع القيم الموجودة</td>
+</tr>
+<tr>
+<td><code>#study~case-&lt;topic-id&gt;</code></td>
+<td>الحالة القصيرة الصحيحة</td>
+</tr>
+<tr>
+<td><code>#study~due</code>, <code>#study~saved</code></td>
+<td>قائمة المراجعة والمحفوظات القديمة</td>
+</tr>
+<tr>
+<td><code>#ecg</code>, <code>#ecg~&lt;existing-target&gt;</code></td>
+<td>دليل ECG والقسم القديم؛ لا تحول <code>#ecg</code> إلى لوحة تسقط موضع الدليل</td>
+</tr>
+<tr>
+<td><code>#ecg-hub</code></td>
+<td>مدخل ECG الجامع الجديد</td>
+</tr>
+<tr>
+<td><code>#ecg-explorer</code>, <code>#ecg-explorer~&lt;id&gt;</code></td>
+<td>قائمة/حالة Explorer الحالية</td>
+</tr>
+<tr>
+<td><code>#ecg-explorer~practice</code></td>
+<td>ممارسة ECG الحالية</td>
+</tr>
+<tr>
+<td><code>#learn~visual-recordings</code></td>
+<td>التسجيلات الحقيقية نفسها؛ يظهر ECG نشطًا في التنقل العام</td>
+</tr>
+<tr>
+<td><code>#shift</code>, <code>#shift~&lt;topic-id&gt;</code></td>
+<td>Quick مع اختيار الموضوع المحفوظ أو المقصود</td>
+</tr>
+<tr>
+<td><code>#settings</code></td>
+<td>الإعدادات الجديدة</td>
+</tr>
+<tr>
+<td>معرف/قسم مجهول</td>
+<td>«This page is unavailable» مع العودة للوجهة المناسبة والبحث؛ لا شاشة بيضاء</td>
+</tr>
+</tbody></table></div>
+<p>يُستخرج سجل كامل من router الحالي لاختبار القيم القديمة غير المذكورة فرديًا. التحويلات الداخلية تستخدم <code>replaceState</code> عند تطبيع الرابط، والتنقل المقصود يستخدم history جديدة. فتح قسم داخل الموضوع يدعم Back دون إنشاء history لكل حركة تمرير. يظل أصل التثبيت والمسار وscope كما هما.</p>
+<h2 id="master-section-7" tabindex="-1">06 — الغلاف العام وتوزيع المساحات</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>النطاق</th>
+<th align="right">الهوامش</th>
+<th>التنقل</th>
+<th>تخطيط المحتوى</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>320–599px</td>
+<td align="right">16px؛ 12px فقط للشاشات 320–359</td>
+<td>شريط علوي 56px + سفلي 64px وsafe-area</td>
+<td>عمود واحد؛ أدوات الثانوية في sheets</td>
+</tr>
+<tr>
+<td>600–899px</td>
+<td align="right">24px</td>
+<td>شريط سفلي نفسه؛ العنوان/البحث أوسع</td>
+<td>عمود قراءة واحد؛ قوائم قد تصبح عمودين إذا اتسع النص</td>
+</tr>
+<tr>
+<td>900–1199px</td>
+<td align="right">24px</td>
+<td>rail جانبي 80px؛ أسماء نصية ظاهرة/قابلة للكشف واسم متاح دائمًا</td>
+<td>القراءة 720px كحد أقصى؛ نتائج أو بطاقات عمودان</td>
+</tr>
+<tr>
+<td>≥1200px</td>
+<td align="right">32px</td>
+<td>sidebar 248px قابل للتصغير إلى 80px</td>
+<td>القراءة 760px؛ ECG/لوحات العمل حتى 1440px</td>
+</tr>
+<tr>
+<td>≥1600px و 4K</td>
+<td align="right">32–48px</td>
+<td>نفس الغلاف</td>
+<td>لا تكبير تلقائي للنص أو تمديد أسطر القراءة إلى كامل الشاشة</td>
+</tr>
+</tbody></table></div>
+<p>هذه نقاط بداية تصميمية؛ يتحول الغلاف عند الحاجة إلى المساحة، لا بناءً على اسم جهاز. إذا لم تتسع عناصر rail بعرض 900px مع تكبير النص، يستخدم نمط الهاتف مؤقتًا بدل الضغط والقص.</p>
+<ul>
+<li>عنصر تنقل رئيسي واحد ظاهر في كل حجم. لا تكرار لأربع وجهات في أعلى وأسفل الشاشة معًا.</li>
+<li>الشريط العلوي: اسم EM Pocket/عنوان الوجهة، بحث، إعدادات. داخل الموضوع يظهر Back بعنوان مقصده، ويختصر اسم المنتج عند ضيق المساحة.</li>
+<li>الشريط السفلي: أربع خانات متساوية، أيقونة 22px، نص 12–13px، مساحة لمس ≥48px؛ لا حركة ارتداد أو مؤشر متوهج.</li>
+<li>السفلي ثابت على أرضية شبه معتمة؛ لا تتضح موجة ECG أو نص عبره. احترام inset الجهاز ولوحة المفاتيح.</li>
+<li>المساحة السفلية للمحتوى = ارتفاع الشريط + safe-area + 24px. لا زر أو سطر أخير تحته.</li>
+<li>المفضلة/التقدم/الإعدادات وجهات ثانوية، فلا تضاف تبويبات عامة لها.</li>
+<li>حين تفتح لوحة المفاتيح لا يتحول الشريط إلى عنصر يزاحم نتائج البحث؛ تُستخدم حدود viewport الفعلية باختبار سلوكي.</li>
+<li>Back يعود إلى السياق المصدر: مكتبة/بحث/تعلم/Quick، وليس دائمًا إلى الصفحة الأولى.</li>
+<li>لا أكثر من صفين ثابتين أعلى القراءة؛ على الهاتف قد يُطوى البحث إلى زر أثناء قراءة الموضوع ويظل متاحًا بنقرة.</li>
+</ul>
+<h2 id="master-section-8" tabindex="-1">07 — نظام المسافات والأبعاد</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>Token</th>
+<th align="right">قيمة أساسية</th>
+<th>استخدام</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>space-1</td>
+<td align="right">4px</td>
+<td>بين الرمز والبيان القصير</td>
+</tr>
+<tr>
+<td>space-2</td>
+<td align="right">8px</td>
+<td>بين عناصر صغيرة</td>
+</tr>
+<tr>
+<td>space-3</td>
+<td align="right">12px</td>
+<td>صفوف أدوات ومحتوى مختصر</td>
+</tr>
+<tr>
+<td>space-4</td>
+<td align="right">16px</td>
+<td>حشو بطاقة هاتف</td>
+</tr>
+<tr>
+<td>space-5</td>
+<td align="right">20px</td>
+<td>عناصر قراءة مترابطة</td>
+</tr>
+<tr>
+<td>space-6</td>
+<td align="right">24px</td>
+<td>حشو بطاقة كبيرة/الفصل بين الأقسام</td>
+</tr>
+<tr>
+<td>space-8</td>
+<td align="right">32px</td>
+<td>بداية مجموعة جديدة</td>
+</tr>
+<tr>
+<td>space-10</td>
+<td align="right">40px</td>
+<td>فصل مناطق شاشة كبيرة</td>
+</tr>
+<tr>
+<td>space-12</td>
+<td align="right">48px</td>
+<td>فصل رئيسي استثنائي</td>
+</tr>
+<tr>
+<td>control-height</td>
+<td align="right">48px</td>
+<td>زر أساسي وحقل بحث</td>
+</tr>
+<tr>
+<td>compact-control-height</td>
+<td align="right">44px</td>
+<td>أداة ثانوية؛ ليس نص القراءة</td>
+</tr>
+<tr>
+<td>radius-control</td>
+<td align="right">10px</td>
+<td>الحقول والأزرار</td>
+</tr>
+<tr>
+<td>radius-card</td>
+<td align="right">16px</td>
+<td>بطاقة مستقلة</td>
+</tr>
+<tr>
+<td>radius-dialog</td>
+<td align="right">20px</td>
+<td>نافذة/لوحة</td>
+</tr>
+<tr>
+<td>border-width</td>
+<td align="right">1px</td>
+<td>حدود الهيكل</td>
+</tr>
+<tr>
+<td>focus-width</td>
+<td align="right">3px</td>
+<td>مؤشر لوحة المفاتيح، offset 3px</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>لا تستخدم قيمًا عشوائية لحل كل شاشة؛ أي استثناء يذكر سببه ويضاف إلى token أو مكوّن محدد.</li>
+<li>ارتفاع البطاقة تابع للمحتوى، وليس ثابتًا. لا يقطع النص عند تغيير حجم الخط.</li>
+<li>نسب مرنة بـ rem للنص والحشو الذي يتأثر به. أبعاد ECG العلمية تبقى ضمن نظام الإحداثيات الخاص بالرسم.</li>
+<li>كثافة واحدة مريحة للهاتف. وضع Compact اختياري في Desktop للقوائم فقط، ولا يصغّر أهداف اللمس أو الإنذارات.</li>
+</ul>
+<h2 id="master-section-9" tabindex="-1">08 — الألوان والهوية الدلالية</h2><p>القيم التالية مقترحة، وقد فُحص تباين أزواج النص/الخلفية المدرجة آليًا في <a href="COLOR-CONTRAST.json">COLOR-CONTRAST.json</a>. يجب إعادة التحقق على المكونات المركبة والشفافية والحالات عند التنفيذ. الحدود الزخرفية ليست بديلًا لحدود التحكم اللازمة للفهم.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>الدور</th>
+<th>الخلفية النهارية</th>
+<th>النص النهاري</th>
+<th>الخلفية الليلية</th>
+<th>النص الليلي</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Canvas</td>
+<td><code>#F6F8F7</code></td>
+<td><code>#172B28</code></td>
+<td><code>#101917</code></td>
+<td><code>#E9F1EE</code></td>
+</tr>
+<tr>
+<td>Surface</td>
+<td><code>#FFFFFF</code></td>
+<td><code>#172B28</code></td>
+<td><code>#182522</code></td>
+<td><code>#E9F1EE</code></td>
+</tr>
+<tr>
+<td>Secondary text</td>
+<td><code>#FFFFFF</code></td>
+<td><code>#4B635D</code></td>
+<td><code>#182522</code></td>
+<td><code>#B4C8C0</code></td>
+</tr>
+<tr>
+<td>Primary action</td>
+<td><code>#146B5C</code></td>
+<td><code>#FFFFFF</code></td>
+<td><code>#84D6BE</code></td>
+<td><code>#10251E</code></td>
+</tr>
+<tr>
+<td>Selected soft</td>
+<td><code>#E8F5F0</code></td>
+<td><code>#115544</code></td>
+<td><code>#203D34</code></td>
+<td><code>#B9EFDB</code></td>
+</tr>
+<tr>
+<td>Critical</td>
+<td><code>#FEF2F2</code></td>
+<td><code>#991B1B</code></td>
+<td><code>#3A1F24</code></td>
+<td><code>#FFC7CE</code></td>
+</tr>
+<tr>
+<td>Warning</td>
+<td><code>#FFFBEB</code></td>
+<td><code>#92400E</code></td>
+<td><code>#352B19</code></td>
+<td><code>#F8D59B</code></td>
+</tr>
+<tr>
+<td>Completed</td>
+<td><code>#ECFDF5</code></td>
+<td><code>#166534</code></td>
+<td><code>#1B3528</code></td>
+<td><code>#B6E8C5</code></td>
+</tr>
+<tr>
+<td>Information</td>
+<td><code>#EFF6FF</code></td>
+<td><code>#1E40AF</code></td>
+<td><code>#1D2C43</code></td>
+<td><code>#C2D8FF</code></td>
+</tr>
+<tr>
+<td>Error action</td>
+<td><code>#B91C1C</code></td>
+<td><code>#FFFFFF</code></td>
+<td><code>#FFC7CE</code></td>
+<td><code>#3A1F24</code></td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>النص العادي ≥4.5:1؛ النص الكبير وفق تعريف WCAG ≥3:1؛ التحكم والمؤشرات المرئية اللازمة ≥3:1 مقابل المحيط ذي الصلة. الهدف الداخلي لنص القراءة الأساسي ≥7:1 حيث أمكن.</li>
+<li>أسماء الحالات والأزرار لا تعتمد على اختلاف اللون وحده. «Critical» يصاحبها نص ورمز تحذير، والصحيح/الخطأ لهما عبارة وسبب.</li>
+<li>اللون الأخضر يعني هوية أو نشاطًا مكتملًا بحسب السياق؛ لا يستخدم لإعلان أن مريضًا «آمن».</li>
+<li>ألوان الحالة الطبية مستقلة عن accent المستخدم. تبقى قيمة اختيار المستخدم القديمة محفوظة؛ يحوّل renderer الاختيار إلى زوج لوني مقروء دون تغيير معرفه.</li>
+<li>Emerald/Ocean/Violet/Rose/Amber/Teal تبقى اختيارات متاحة؛ يُختبر كل زوج نهاري/ليلي وحالات hover/focus/selected. اختيار Rose لا يُسوق بوصفه ذا تباين 4.5 مع الأحمر؛ لا توجد هذه النسبة بين القيم القديمة المقترحة.</li>
+<li>خلفية ECG وردية فاتحة ثابتة مقروءة، وخط الإشارة داكن، حتى في المظهر الليلي؛ أدوات المحيط ليلية. يقاس تباين الموجة والشبكة والوسوم على الورقة نفسها.</li>
+<li>لا تلوّن كل قسم أو بطاقة بلون جهاز مختلف. رمز صغير/عنوان نصي يكفي للتصنيف؛ اللون السريري أكثر بروزًا من لون الجهاز.</li>
+</ul>
+<h2 id="master-section-10" tabindex="-1">09 — الطباعة واللغة والرموز</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>الدور</th>
+<th align="right">الهاتف</th>
+<th align="right">Desktop</th>
+<th>line-height / weight</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>عنوان وجهة</td>
+<td align="right">26px</td>
+<td align="right">30px</td>
+<td>1.2 / 700</td>
+</tr>
+<tr>
+<td>عنوان موضوع</td>
+<td align="right">24px</td>
+<td align="right">28px</td>
+<td>1.25 / 700</td>
+</tr>
+<tr>
+<td>عنوان قسم</td>
+<td align="right">20px</td>
+<td align="right">22px</td>
+<td>1.35 / 650 أو وزن متاح</td>
+</tr>
+<tr>
+<td>عنوان بطاقة</td>
+<td align="right">17px</td>
+<td align="right">18px</td>
+<td>1.4 / 650</td>
+</tr>
+<tr>
+<td>نص طبي أساسي</td>
+<td align="right">16px</td>
+<td align="right">17px</td>
+<td>1.65 / 400–500</td>
+</tr>
+<tr>
+<td>نص ثانوي</td>
+<td align="right">14px</td>
+<td align="right">14px</td>
+<td>1.5 / 400–500</td>
+</tr>
+<tr>
+<td>شارة/وسم</td>
+<td align="right">12px</td>
+<td align="right">12px</td>
+<td>1.4 / 600</td>
+</tr>
+<tr>
+<td>أرقام قياس</td>
+<td align="right">14–16px</td>
+<td align="right">14–16px</td>
+<td>tabular-nums عند الحاجة</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>Plus Jakarta Sans المحلي للإنجليزية؛ system Arabic مناسب للنص العربي في المرحلة الأولى. إن اختير خط عربي إضافي يُرفق محليًا بترخيصه ويضاف إلى offline cache وميزانية الحجم.</li>
+<li>حجم القراءة الحالي محفوظ بخطوات 85/100/112/125/140%. يُختبر كذلك تكبير المتصفح إلى 200% وreflow عند 400% وفق المهمة.</li>
+<li>اختيار Bold محفوظ، ولا يحول كل النص إلى وزن 800. نص الجرعات والوحدات والعلامات الرياضية لا يتغير معناه أو يلتصق.</li>
+<li>أقصى طول سطر قراءة تقريبًا 65–75 حرفًا إنجليزيًا؛ يعاد ضبطه بصريًا للعربية دون تحويلها إلى معيار حروف ثابت.</li>
+<li>لا upper-case لفقرات أو عربية أو عناوين طويلة. تستخدم sentence case ثابتة.</li>
+<li>الأيقونات SVG محلية من عائلة واحدة، stroke 1.75–2، بقياس 20/24px. الاسم المرئي هو المرجع؛ emoji ليست أيقونات تشغيل أساسية.</li>
+<li>السهم يتبع اتجاه اللغة للتنقل فقط. موجة ECG ومحور الزمن والاشتقاقات والمصطلحات العلمية لا تعكس.</li>
+<li>مع RTL تستخدم logical properties و<code>bdi</code>/<code>dir=ltr</code> للوحدات والمعرفات. تبقى القراءة الإنجليزية الطبية LTR حتى لو كان chrome عربيًا.</li>
+<li>لا خط تحت لكل رابط داخل بطاقة؛ الروابط داخل النص مميزة بوضوح، والأزرار لها اسم فعل واضح.</li>
+</ul>
+<h2 id="master-section-11" tabindex="-1">10 — الحالات العامة لكل مكوّن</h2><p>كل مكوّن تفاعلي يملك: default، hover عند وجود مؤشر، focus-visible، pressed، selected/expanded عند الحاجة، disabled بسبب معلوم، busy، success، error. لا ينشأ معنى جديد لكل حالة عبر اللون وحده.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>المكوّن</th>
+<th>التصميم والسلوك المطلوب</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Primary button</td>
+<td>فعل رئيسي واحد لكل منطقة؛ ارتفاع 48px؛ نص قصير؛ busy يحافظ على العرض والاسم؛ يمنع تكرار عملية الحفظ/الاستيراد</td>
+</tr>
+<tr>
+<td>Secondary button</td>
+<td>surface وحد واضح؛ لا ينافس الأساسي؛ ارتفاع ≥44px</td>
+</tr>
+<tr>
+<td>Icon button</td>
+<td>مربع 44/48px؛ اسم متاح وtooltip لا يخفيه اللمس؛ disabled موضح</td>
+</tr>
+<tr>
+<td>Text link</td>
+<td>وجهة حقيقية بـ<code>a</code>؛ يدعم فتح تبويب ونسخ رابط؛ لا يستخدم زرًا مزيفًا للرابط</td>
+</tr>
+<tr>
+<td>Topic card</td>
+<td>عنوان، وصف موجز، تصنيف، حالة حفظ؛ رابط رئيسي واحد وزر حفظ مستقل بلا nesting تفاعلي</td>
+</tr>
+<tr>
+<td>Learning card</td>
+<td>نوع النشاط، عنوان، حالة، عدد المراحل إن معروف، فعل واحد؛ الوقت تقديري موسوم إن أضيف</td>
+</tr>
+<tr>
+<td>Chip filter</td>
+<td>نص + عدد إن مفيد؛ حالة اختيار متاحة؛ لا badge مضلل بأن العدد نتيجة اختبار إتقان</td>
+</tr>
+<tr>
+<td>Search field</td>
+<td>label دائم/متاح، placeholder مثال، clear، حالة نتائج؛ لا اعتماد على placeholder وحده</td>
+</tr>
+<tr>
+<td>Select</td>
+<td>native حين يكفي؛ لا قائمة مخصصة إلا لحاجة مثبتة؛ القيمة المختارة كاملة قابلة للقراءة</td>
+</tr>
+<tr>
+<td>Checkbox</td>
+<td>label قابل للنقر؛ مساحة ≥44px؛ نص بجانبه؛ لا خط شطب للمعلومة الطبية</td>
+</tr>
+<tr>
+<td>Switch</td>
+<td>نعم/لا حقيقيان فقط؛ الحالة مقروءة؛ لا يستعمل لاختيار من 3 خيارات</td>
+</tr>
+<tr>
+<td>Accordion</td>
+<td>button داخل heading، expanded/controls؛ فتح مستقل؛ لا طي تلقائي لقسم آخر</td>
+</tr>
+<tr>
+<td>Segmented navigation</td>
+<td>روابط إذا تغيرت الصفحة/المسار؛ ARIA tabs فقط إذا تبدلت panels داخل السياق نفسه</td>
+</tr>
+<tr>
+<td>Progress</td>
+<td>قيمة/إجمالي ووصف؛ عدد خطوات أو نشاط حقيقي؛ لا نسبة قراءة مشتقة من scroll</td>
+</tr>
+<tr>
+<td>Tooltip</td>
+<td>معلومة مساعدة فقط، تظهر keyboard/touch عند الحاجة؛ لا تحتوي شرطًا سريريًا أساسيًا</td>
+</tr>
+<tr>
+<td>Popover/menu</td>
+<td>anchoring ضمن الشاشة، Escape وخروج وتركيز عائد؛ لا hover فقط</td>
+</tr>
+<tr>
+<td>Toast</td>
+<td>رسالة حالة غير حرجة؛ 4–6 ثوانٍ؛ الإجراء المهم له بديل دائم؛ لا تسلسل يزعج القارئ</td>
+</tr>
+<tr>
+<td>Inline alert</td>
+<td>خطأ حفظ/أصل مفقود يبقى إلى حلّه؛ مع retry أو مسار واضح</td>
+</tr>
+<tr>
+<td>Dialog/sheet</td>
+<td>عنوان، وصف، زر إغلاق/خروج مناسب، focus محصور، scroll داخلي واحد، خلفية inert</td>
+</tr>
+<tr>
+<td>Skeleton</td>
+<td>للأصول غير المحملة فقط، قصير وبلا تذبذب مع reduced motion؛ لا شاشة تحميل مصطنعة للمحتوى المحلي</td>
+</tr>
+<tr>
+<td>Empty state</td>
+<td>سبب محدد + فعل مناسب؛ لا صورة تزيينية ضخمة ولا نهاية مسدودة</td>
+</tr>
+<tr>
+<td>Error state</td>
+<td>يصف ما تعذر، يحفظ العمل الحالي، يقدم retry/رجوع؛ لا يدعي نجاحًا</td>
+</tr>
+</tbody></table></div>
+<h2 id="master-section-12" tabindex="-1">11 — المكتبة: الشاشة الافتراضية</h2><p>ترتيب العرض على الهاتف:</p>
+<ol>
+<li>الشريط العلوي: EM Pocket، البحث، الإعدادات.</li>
+<li>عنوان Library وسطر قصير يعرّف المحتوى؛ لا hero طويل ولا شعار كبير متكرر.</li>
+<li>حقل بحث واضح «Search topics, findings or ECGs».</li>
+<li>صف تصنيف أجهزة قابل للتمرير مع زر «Filters» وعدد الفلاتر المفعلة. الفلاتر الثانوية لا تتزاحم منذ البداية.</li>
+<li>عدد النتائج واسم الفئة؛ زر Saved ثابت قابل للاكتشاف.</li>
+<li>قائمة المواضيع؛ عنوان ووصف من سطرين كحد أقصى في الفهرس فقط، مع إتاحة الاسم الكامل عند الالتفاف. ليست قائمة تشخيصات مرضى.</li>
+<li>رابط ثانوي «Start a learning session» إلى Learn؛ لا إدراج كل مسارات التعلم في الفهرس.</li>
+</ol>
+<p>Desktop: البحث أعلى مساحة العمل، sidebar للوجهات، تصنيف الأجهزة في عمود/صف محلي بحسب العرض، بطاقات بعمودين أو ثلاثة إذا بقي الاسم مقروءًا. لا قائمة جانبية ثانية تعرض 45 موضوعًا دائمًا بجوار 45 بطاقة.</p>
+<p>الفلاتر: الجهاز، سياق المريض الحالي في المصدر، مستوى أهمية التشخيصات داخل المرجع، والمحفوظ. يوضح الاسم أنها تصف <strong>المحتوى</strong>، لا تصنيف خطورة مريض. أسماء ومجموعات المصدر تحفظ؛ لا ينشأ ترشيح جديد يستبعد موضوعًا بلا مراجعة.</p>
+<ul>
+<li>البحث الشامل لا يتأثر بفلاتر مكتبة مخفية. داخل Library يمكن عرض scope مرئي «In these topics» فقط إذا اختاره المستخدم صراحة.</li>
+<li>اختيار عدة أجهزة: OR داخل المجموعة؛ المجموعات المختلفة AND. أي نموذج مختلف يكتب ويختبر قبل التنفيذ.</li>
+<li>Reset filters يمسح حالة التصفية الحالية فقط؛ لا يمسح المفضلة أو البحث الشامل أو التخزين.</li>
+<li>يحتفظ Back بموضع القائمة والفلاتر. لا يعاد ترتيب القائمة حسب التفاعل بصمت.</li>
+<li>الترتيب الافتراضي حسب مجموعات محتوى ثابتة ثم اسم الموضوع؛ Alphabetical اختيار واضح، وRecently opened قائمة ثانوية لا تتجاوز 6.</li>
+<li>حالة فارغة للمفضلة: «No saved topics yet» + رابط المكتبة، لا مطالبة بتسجيل دخول.</li>
+</ul>
+<h2 id="master-section-13" tabindex="-1">12 — البحث الشامل</h2><p>يبحث محليًا في عناوين المواضيع، البدائل المعروفة، الأقسام، الأعلام الحمراء، history/exam/workup/disposition/pearls/pitfalls، خطوات وأنماط ECG، حالات Explorer، الحالات التعليمية والوحدات والوسائط. الروابط والمصادر تظل قابلة للوصول حتى إذا لم تدخل نصوصها كلها الفهرس.</p>
+<p>التفاعل:</p>
+<ul>
+<li>على الهاتف يفتح سطح بحث كامل/شبه كامل مع Back وحقل واضح؛ Desktop panel تحت البحث بعرض مقروء، ويمكن توسيعه إلى شاشة نتائج.</li>
+<li>لا فتح تلقائي للوحة مفاتيح عند إغلاق التنبيه أو دخول موضوع. البحث يبدأ بفعل المستخدم.</li>
+<li>يبدأ التحديث بعد 120–150ms؛ لا يلزم Enter لإظهار اقتراحات. Enter يفتح النتيجة المحددة أو قائمة النتائج الكاملة.</li>
+<li>ترتيب التطابق: اسم/معرف دقيق، بادئة عنوان، مرادف مصادق عليه، ثم نص المحتوى. لا تستخدم خوارزمية غامضة لتقييم أولوية طبية.</li>
+<li>نتيجة واحدة: عنوان، اسم الموضوع/نوع النشاط، مقتطف واضح لا يقطع شرطًا مهمًا، اسم القسم. تمييز الكلمات بـmark مقروء في المظهرين.</li>
+<li>إظهار حتى 8 اقتراحات ثم «View all results». النتائج الكاملة تجمع بحسب النوع مع عدد ووسيلة تنقل بسيطة.</li>
+<li>ArrowDown/Up يتنقلان في الاقتراحات، Enter يفتح، Escape يغلق الاقتراحات ثم سطح البحث وفق الطبقة. التحكم لا يعمل أثناء كتابة IME composition.</li>
+<li><code>aria-live</code> يعلن عدد النتائج باعتدال، لا كل ضغطة؛ لا استخدام combobox/listbox إلا بتطبيق عقده كاملًا.</li>
+<li>فتح النتيجة: يفتح القسم المطوي، يركز عنوانه، يبرز المقتطف لفترة قصيرة بدون تغيير النص، ويحفظ سياق الرجوع.</li>
+<li>صفر نتائج: الاستعلام ظاهر، Clear، اقتراحات إملائية من قاموس معروف، Browse library. لا اختراع إجابة سريرية.</li>
+<li>الفشل في بناء الفهرس: تظل المكتبة والتنقل متاحين، مع تنبيه محلي وإعادة محاولة.</li>
+<li>لا سجل بحث دائم افتراضيًا ولا إرسال الاستعلامات لخادم. لا بحث في الملاحظات الخاصة دون اختيار صريح مستقل.</li>
+</ul>
+<h2 id="master-section-14" tabindex="-1">13 — الموضوع السريري الكامل</h2><p>الشاشة وحدة قراءة متصلة؛ أقسامها متاحة للقفز وليست عشرة تبويبات تختفي محتوياتها بالكامل. هذا يحافظ على البحث داخل الصفحة والطباعة والسياق الطبي.</p>
+<p>ترتيب الشاشة:</p>
+<ol>
+<li>Back مع المصدر، مسار تصنيف مختصر، عنوان الموضوع، الوصف، تاريخ مراجعة مصدر موضح النطاق.</li>
+<li>أفعال: Save، Quick، More. More تضم Print/Copy link؛ الممارسة رابط واضح قرب منطقة التعلم.</li>
+<li>Overview/Approach في بداية الصفحة، ثم شريط أقسام مختصر قابل للتمرير/قائمة Contents.</li>
+<li>Don’t miss وRed flags مفتوحان افتراضيًا عند القراءة الجديدة؛ إظهار عنوانهما وتنبيههما غير معتمد على تبويب مخفي.</li>
+<li>History، Exam، Workup، Disposition، Pearls &amp; pitfalls.</li>
+<li>Recall &amp; notes، See also، References.</li>
+</ol>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>حقل المصدر</th>
+<th>طريقة العرض الجديدة</th>
+<th>الاحتفاظ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>name/tag/overview/meta</td>
+<td>header ومقدمة موجزة</td>
+<td>النص الدقيق، لا وعود مدة غير محسوبة</td>
+</tr>
+<tr>
+<td>approach</td>
+<td>خطوات مرقمة كاملة؛ إبراز أول مجموعة بلا حذف البقية</td>
+<td>ترتيب وقيود المصدر</td>
+</tr>
+<tr>
+<td>dontMiss</td>
+<td>صف/بطاقة: الاسم + مستوى وصف المحتوى + السبب</td>
+<td>لا قص الوصف الطبي</td>
+</tr>
+<tr>
+<td>redFlags</td>
+<td>قائمة نصية واضحة مع checklist اختيارية للمراجعة التعليمية</td>
+<td>الاختيار لا يعني وجود العلامة لدى مريض ولا يحسب خطورة</td>
+</tr>
+<tr>
+<td>history</td>
+<td>مجموعات أسئلة/قرائن بعناوين قصيرة</td>
+<td>كل بند محفوظ</td>
+</tr>
+<tr>
+<td>exam</td>
+<td>مجموعات فحص مستقلة</td>
+<td>كل بند محفوظ</td>
+</tr>
+<tr>
+<td>workup</td>
+<td>عنوان مجموعة + بنود؛ جدول فقط إن كان علاقة صفوف/أعمدة</td>
+<td>لا إسقاط المجموعة التالية في الملخص</td>
+</tr>
+<tr>
+<td>disposition</td>
+<td>صف لكل مسار + شروطه وحدوده</td>
+<td>لا دمج يزيل استثناءات أو تحذيرات</td>
+</tr>
+<tr>
+<td>pearls/pitfalls</td>
+<td>فصل واضح؛ pitfalls مرئية عند القفز إليها</td>
+<td>التفريق بين معلومة وتوصية</td>
+</tr>
+<tr>
+<td>refs/evidence</td>
+<td>مصادر أصلية وتاريخ تحقق وحدود المراجعة</td>
+<td>الروابط واسم الوثيقة وتاريخها لا تاريخ واجهة مزيف</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>عرض كل الأقسام / طي الأقسام الثانوية أداة اختيارية. لا يعاد طي قسم وصل إليه بحث أو رابط.</li>
+<li>شريط الأقسام على الهاتف عناصر قصيرة + Contents لعرض الأسماء الكاملة؛ ليس scroll trap. Desktop فهرس داخلي بعرض 200–220px فقط عند وجود مساحة.</li>
+<li>ارتفاع sticky يقاس من الغلاف الفعلي؛ <code>scroll-margin-top</code> يمنع العنوان من الاختفاء. لا أرقام hardcoded متعارضة.</li>
+<li>لا تثبيت شريط الخطر فوق القارئ طوال التمرير؛ يظهر داخل المحتوى وفي Quick.</li>
+<li>أكثر/أقل للشرح الطويل لا يخفي الجرعة/المانع/الشرط المرتبط بجملة أساسية. أي تلخيص يحتاج مراجعة محتوى.</li>
+<li>روابط الممارسة توجه إلى حالة متوفرة مرتبطة بالموضوع. إن لم توجد، يكتب «Browse practice cases» بدل الادعاء بوجود حالة خاصة.</li>
+<li>زر Print يفتح اختيار نطاق: الموضوع الكامل / Quick / الرسم الحالي. فتح النافذة لا يدعي إنشاء PDF تلقائيًا.</li>
+</ul>
+<h2 id="master-section-15" tabindex="-1">14 — الأعلام الحمراء ونسخ الملخص</h2><ul>
+<li>checklist تعلم مؤقتة على مستوى الموضوع. عنوان صريح «Educational checklist»؛ لا تسمية «Patient risk».</li>
+<li>Select all/Clear إن وجدا محليان لهذه القائمة؛ لا تغيير في بيانات المصدر أو سجل طبي.</li>
+<li>مؤشر «3 selected» يمثل عناصر حددها المستخدم فقط. لا «High risk» ناتجة عن عدد الاختيارات.</li>
+<li>نسخ قائمة مختارة أو ملخص مرجعي يضم اسم الموضوع، توضيح أنه قالب تعليمي، مصدر/رابط وتاريخ إصدار المحتوى.</li>
+<li>ملخص النسخ لا يقول إن فحوصًا أجريت أو علامات وجدت أو علاجًا أعطي. يُراجع قالب handover الحالي لإزالة أي إيحاء بأنه تقرير مريض مكتمل.</li>
+<li>نجاح الحافظة يعلن بعد نجاح API. عند الرفض يظهر حقل نص readonly قابل للتحديد مع تعليمات نسخ يدوي. لا toast نجاح وهمي.</li>
+<li>لا تضمين الملاحظات الخاصة أو القيم التعليمية المختارة في رابط مشاركة افتراضي.</li>
+</ul>
+<h2 id="master-section-16" tabindex="-1">15 — العرض السريع Quick</h2><p>الهدف قراءة جزء مختار من المرجع بسرعة مع بقاء حدوده. لا تستبدل الصفحة المرجع الكامل ولا تضيف توصيات من عند التصميم.</p>
+<p>الترتيب: اسم الموضوع والاختيار ← نطاق تعليمي وتاريخ ← First minutes ← Escalate/Red flags ← Don’t miss ← Initial workup ← Reassessment/Disposition ← Open full pathway ← المصدر.</p>
+<ul>
+<li>القائمة الأولى تضم آخر موضوع فتحه المستخدم إن وجد، وإلا اختيارًا واضحًا لا يوهم بأن أول موضوع مناسب لحالة مريض.</li>
+<li>الأهم يُقرأ دون فتح أكورديون: الخطوات الأولية والتحذيرات. Secondary explanations قابلة للطي.</li>
+<li>لا اقتصاص آلي لأول 3 أو 6 بنود بوصفه ملخصًا مكتملًا. ينشأ <code>quickSummary</code> مصادق عليه لكل موضوع أو يعرض القسم الأصلي الكامل حتى تتم مراجعته.</li>
+<li>أي اختصار يظهر أنه «Selected reference points» مع رابط كل قسم؛ لا «Complete protocol».</li>
+<li>لا timer علاجي، لا تحديد جرعات فردية، لا حاسبات جديدة ضمن هذه المرحلة.</li>
+<li>النسخ والطباعة ثانويان، والفعل الرئيسي Open full pathway. ممارسة الحالة لا تزاحم الخطوات السريعة؛ تظهر في نهاية الشاشة.</li>
+<li>الهاتف: عمود واحد، عنوان قسم 18–20px، نص 16–17px، مسافات 16–24px. Desktop: First minutes + Red flags أولًا، ثم شبكة ثنائية إذا حافظت على ترتيب القراءة في DOM.</li>
+<li>المظهر الليلي يحافظ على قوة التحذير دون خلفية حمراء ممتدة لكل الشاشة.</li>
+</ul>
+<h2 id="master-section-17" tabindex="-1">16 — مركز التعلم Learn</h2><p>الترتيب على الهاتف للمستخدم العائد:</p>
+<ol>
+<li>عنوان Learn، وصف مختصر، رابط Progress.</li>
+<li><strong>Continue</strong>: نشاط جارٍ قابل للاستئناف فعلًا، مع اسمه ومرحلة حقيقية «Decision 2 of 3». إن كان المحفوظ مجرد آخر موضوع يكتب «Recently opened» وليس «45% completed».</li>
+<li><strong>Due for review</strong>: عدد مواضيع المراجعة المجدولة + Start review. الثقة الذاتية في قائمة مستقلة «Flagged for review»، فلا تخلط بالنظام الزمني.</li>
+<li><strong>Choose an activity</strong>: Cases / Tracks / Visuals / Preparation. أربعة مداخل موجزة، لا كتالوج كامل في الشاشة الأولى.</li>
+<li>مسار بداية واحد موصى به اختياريًا؛ «Browse all tracks» لغيره.</li>
+<li>Saved &amp; notes، ثم Progress &amp; backup في أسفل السياق.</li>
+</ol>
+<p>المستخدم الجديد يرى شرحًا قصيرًا وStart a short case أوStart with ECG basics، دون إحصائيات صفرية تملأ الشاشة. لا greetings شخصية مفترضة ولا avatar ولا streak عقابي.</p>
+<p>Desktop يحتفظ بنفس الأولوية: الاستئناف والمراجعة في الأعلى، أنواع الأنشطة بعدهما، ومسارات مقروءة بعمودين. لا dashboard مليئة بحلقات ونسب لا تساعد قرارًا.</p>
+<ul>
+<li>بطاقة واحدة رئيسية للاستئناف؛ «Other recent activities» قائمة ثانوية حتى 3 عناصر.</li>
+<li>لا زمن متبقٍ مصطنع. مدة النشاط إن أضيفت تقديرية بعد تجربة، ولا تستنتج من scroll أو من عدد الأسئلة وحده.</li>
+<li>مستوى Core/Applied/Advanced يغير prompts/عمق النقاش كما يفعل المصدر؛ لا يحجب المرجع أو يعلن تأهيل المستخدم لممارسة إجراء.</li>
+<li>لا حاجة لدمج صيغ بيانات المحركات الحالية كي تتوحد الواجهة. تستخدم adapter يحمل نوع النشاط ومعرفه وعنوانه وحالته ورابطه.</li>
+</ul>
+<h2 id="master-section-18" tabindex="-1">17 — قوائم الحالات والمسارات</h2><p>قائمة Cases لها نوعان واضحان: <strong>Short cases (12)</strong> و<strong>Evolving cases (6)</strong>، مع All / In progress / New / Review حسب البيانات الفعلية المتاحة لكل نوع. لا يوضع نوع غير قادر على استئناف دقيق داخل In progress بوعد زائف.</p>
+<p>بطاقة الحالة: النوع، المجال، العنوان، عدد الأسئلة/القرارات، حالة النشاط، زر Start/Resume/Revisit. وصف من سطرين في القائمة؛ النص السريري الكامل داخل الحالة. لا علامة «Mastered» أو نجوم تقييم طبية.</p>
+<p>المسار التعليمي يحوي هدفًا، تجهيزًا معرفيًا اختياريًا، قائمة أنشطة بمراجع ثابتة، وعدد خطوات. لا يُنشأ محتوى طبي جديد لتعبئة مسار جذاب. المسار الأول المقترح يستخدم المحتوى الموجود: Chest pain approach ← Normal ECG ← Chest pain short case ← reflection.</p>
+<ul>
+<li>حالة كل خطوة: Not started / Opened / Attempt completed / Marked reviewed بحسب النوع؛ لا توحيدها إلى «مكتمل» غامض.</li>
+<li>الترتيب المقترح قابل للتجاوز؛ جميع الأنشطة متاحة.</li>
+<li>الخطوة الأخيرة تعرض ما فعله المستخدم فعليًا وروابط مراجعة وتطبيق تعليمي تالٍ.</li>
+<li>المدة تظهر «Estimated» بعد اختبارها؛ لا countdown ولا إنهاء تلقائي.</li>
+<li>Challenge يومي اختياري محلي في مرحلة لاحقة، من مكتبة قائمة وبلا تذكير خارجي أو وعد محتوى يتجدد من الإنترنت.</li>
+<li>لا نظام مكافآت يربط الاستمرار بقرارات علاجية صحيحة ظاهريًا؛ التغذية الراجعة تركز على التفسير.</li>
+</ul>
+<h2 id="master-section-19" tabindex="-1">18 — الحالة القصيرة: التفاصيل الدقيقة</h2><ol>
+<li>Back to cases، نوع «Fictional teaching case»، عنوان وهدف.</li>
+<li>السيناريو كاملًا، مع إمكان الرجوع إليه أثناء الأسئلة.</li>
+<li>سؤال واحد ظاهر في كل مرحلة في القالب الجديد؛ العدد ظاهر «Question 1 of N». يوفر ملخص نهائي لجميع الأسئلة.</li>
+<li>الاختيار نص كامل، letter غير دلالي، هدف لمس كامل العرض، مسافة 12px بين البدائل.</li>
+<li>أول اختيار يثبت لهذه المحاولة. لا تغيّر ترتيب الخيارات عند resize أو فتح شرح أو العودة إلى السؤال.</li>
+<li>feedback: «Correct for this scenario» أو«Review this choice»، ثم السبب، ثم «Compare all options».</li>
+<li>Next يصبح متاحًا بعد الإجابة؛ لا انتقال تلقائي ولا وقت محدد.</li>
+<li>النهاية: اختيارات هذه المحاولة، سبب الإجابات، self-assessment، Full pathway، Retry، Next case.</li>
+</ol>
+<p>حالة unanswered منفصلة عن skipped، ولا يحسب فتح السؤال محاولة مكتملة. Retry ينشئ محاولة جديدة؛ لا يمحو السجل السابق بصمت. السؤال بعد الإجابة يعرض الخيارات كنص/حالة مقروءة، ولا يجعل المحتوى كله معتمًا بسبب disabled.</p>
+<p>عند العودة: إن كانت الإجابات لا تحفظ أصلًا خارج الجلسة يظهر ذلك صراحة. إضافة استئناف دائم للحالات القصيرة تحتاج مخطط بيانات جديدًا واختبار توافق منفصل؛ لا يُكتب فوق المفاتيح الحالية.</p>
+<h2 id="master-section-20" tabindex="-1">19 — الحالة المتطورة والتغذية الراجعة</h2><p>القالب: header ← patient scenario ← decision index ← teaching update ← السؤال والخيارات ← feedback ← Continue ← source. تحديث الحالة يوضح أن سيناريو الفريق التالي محدد تعليميًا، وليس محاكاة تنتج عن كل اختيار للمستخدم.</p>
+<ul>
+<li>يثبت seed ترتيب الخيارات للمحاولة نفسها.</li>
+<li>اختيار الإجابة قفل منطقي يمنع double submission. أزرار التنقل لا تتجاوز سؤالًا بلا إجابة إلا إذا صُممت Skip صراحة في نسخة لاحقة.</li>
+<li>بعد Continue ينتقل التركيز إلى عنوان التحديث الجديد، ويعلن «Decision 2 of 3» مرة واحدة، دون قراءة الصفحة كلها.</li>
+<li>العودة إلى مرحلة سابقة تسمح بالمراجعة، ولا تغير نتيجة first choice.</li>
+<li>Session resume يبقى ضمن sessionStorage الحالي، مع نص «In progress in this browser session». لا وعد ببقاء محاولة غير منتهية بعد إغلاق الجلسة ما لم ينفذ حفظ جديد موثق.</li>
+<li>debrief النهائي يعرض correct/total لهذه المحاولة وعدد المحاولات المسجلة وتاريخًا بصيغة واضحة؛ لا ترتيب للمستخدمين.</li>
+<li>يناقش البدائل والتصعيد وإعادة التقييم، ويعرض أسئلة المناقشة الثلاثة الحالية.</li>
+<li>خطأ الحفظ يحفظ النتيجة في الذاكرة الحالية، ويعلن «Available for this visit only» مع خيار export إذا أمكن.</li>
+<li>ترك حالة جارٍ العمل فيها لا يفتح confirmation مزعجًا إذا كان الاستئناف محفوظًا بالفعل. إن كانت هناك خسارة فعلية غير محفوظة تشرحها نافذة قصيرة.</li>
+</ul>
+<h2 id="master-section-21" tabindex="-1">20 — المراجعة والثقة والتقدم</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>المفهوم</th>
+<th>النص الصحيح</th>
+<th>ما لا يُستنتج منه</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>فتح موضوع</td>
+<td>Opened / Recently opened</td>
+<td>أنه قرئ كاملًا</td>
+</tr>
+<tr>
+<td>تأشير مراجعة</td>
+<td>Marked reviewed</td>
+<td>إتقان أو صحة قرار سريري</td>
+</tr>
+<tr>
+<td>ثقة ذاتية</td>
+<td>Got it / Partly / Review again</td>
+<td>نتيجة اختبار موضوعي</td>
+</tr>
+<tr>
+<td>إنهاء محاولة</td>
+<td>Attempt completed</td>
+<td>كفاءة مهنية</td>
+</tr>
+<tr>
+<td>صحيح/إجمالي</td>
+<td>First choices in this attempt</td>
+<td>تشخيص دقيق لمريض</td>
+</tr>
+<tr>
+<td>علامة وحدة</td>
+<td>Marked as read</td>
+<td>قدرة على إجراء مهارة عمليًا</td>
+</tr>
+<tr>
+<td>إكمال مسار</td>
+<td>Recorded activities completed</td>
+<td>شهادة أو اعتماد</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>الجدولة الحالية 1/3/7/14 أيام تبقى ببياناتها. تشرح بعبارة «Local review schedule»، ولا يصفها التصميم بأنها خوارزمية تعلم مثبتة لهذا المنتج.</li>
+<li>التواريخ تستخدم المنطقة الزمنية المحلية ويُختبر الانتقال بين الأيام وتغيير المنطقة؛ لا تغير مواعيد قديمة بإعادة تفسيرها بلا توافق.</li>
+<li>الفرز: Due الآن ثم الأقدم؛ Future منفصل. لا إظهار حالات الثقة الذاتية كأنها مؤجلة لنفس الجدولة إن لم تكن كذلك.</li>
+<li>التقدم قائمة واضحة حسب النوع، مع denominator معروف. لا نسبة كلية تجمع 45 موضوعًا و 69 ECG وأسئلة بأوزان مخترعة.</li>
+<li>يمكن عرض «8 topics marked reviewed» و«4 of 6 evolving cases attempted» كمقياسين منفصلين.</li>
+<li>أزرار إزالة علامة/إعادة جدولة تشرح أثرها على السجل المحلي، مع Undo عندما يكون الرجوع ممكنًا.</li>
+</ul>
+<h2 id="master-section-22" tabindex="-1">21 — المفضلة والملاحظات الخاصة</h2><ul>
+<li>المفضلة تظهر في Library ومن Learn. يمكن تمييز نوع العنصر عندما تمتد إلى findings أو أنشطة، دون خلط المخازن القديمة.</li>
+<li>الملاحظة الحالية للموضوع نص plain text حتى 800 حرف. label وعداد «420 / 800» وحالة Unsaved/Saved/Session only.</li>
+<li>Save صريح كما في السلوك الحالي. لا يحول النظام إلى autosave دون توضيح؛ يمكن حفظ draft محلي مستقل مستقبلًا مع بيان حالته.</li>
+<li>لا فقد عند تغيير تبويب/Back إذا كانت هناك مسودة: Save / Discard draft / Stay. إغلاق النظام نفسه لا يضمن تنفيذ callback؛ يوفر حفظ مسودة مصممًا إذا قررنا دعمه.</li>
+<li>لا تحويل note إلى HTML ولا تنفيذ روابط/أكواد منها. لا إرسالها للخادم أو إلحاقها برسالة feedback تلقائيًا.</li>
+<li>placeholder يقترح سؤال دراسة، مع سطر «Keep patient information out of personal notes».</li>
+<li>قائمة notes تعرض الموضوع ومعاينة قصيرة والتاريخ إن كان مسجلًا فعلًا؛ لا تاريخ وهمي مستنتج من آخر فتح.</li>
+<li>حذف ملاحظة له confirmation محدد، ولا يحذف المفضلة أو التقدم المرتبط.</li>
+<li>لا زر reset شامل في الواجهة الأولى؛ أي إزالة بيانات محددة تدخل صفحة Data controls مع اختيار نطاق وتأكيد واضح.</li>
+</ul>
+<h2 id="master-section-23" tabindex="-1">22 — وجهة ECG الجامعة</h2><p>أربع وجهات محلية: <strong>Guide / Cases / Recordings / Practice</strong>. داخل التطبيق تسمى الوجهة العامة ECG. تظل الروابط القديمة للدليل والاستكشاف فعالة.</p>
+<ul>
+<li>المدخل <code>#ecg-hub</code> يعرض Continue، Start with normal، وأربع روابط موجزة. لا يتكرر في كل شاشة داخلية.</li>
+<li>Guide: الخطوات السبع والأنماط والمكتبة الحالية، مع content rail وفتح مثال مرتبط.</li>
+<li>Cases: جميع الحالات الاصطناعية الـ 69، تصنيفها، اختيارها، وشرحها. هذه مكتبة كاملة غير محجوبة بمسار.</li>
+<li>Recordings: الـ 12 تسجيلًا الحقيقيًا، source labels، العرض، التعلم بدون كشف مبكر.</li>
+<li>Practice: self-description ثم reveal/locate/next مع سجل محلي. يوضح أي نوع ممارسة وأي تسجيلات مؤهلة لها.</li>
+<li>شارة النوع بالقرب من عنوان كل رسم: Synthetic teaching model / Recorded ECG / Schematic diagram. تظل ظاهرة في fullscreen والطباعة والنسخ.</li>
+<li>البحث العام يصل إلى اسم الحالة/النمط والهدف، ويحدد القسم المناسب داخل ECG.</li>
+</ul>
+<h2 id="master-section-24" tabindex="-1">23 — دليل ECG ذو الخطوات السبع</h2><ul>
+<li>شريط الخطوات يحافظ على الأسماء والمعرفات الأصلية. على الهاتف أزرار قصيرة مع قائمة «All steps»، ولا يشترط تمرير أفقي خفي للوصول للخطوة السابعة.</li>
+<li>كل خطوة: عنوان واضح ← هدف ← تفسير كامل ← رسم/أمثلة ← pitfalls/limits ← practice link.</li>
+<li>الأنماط الـ 18 لها عناوين وروابط ثابتة؛ لا تعاد صياغة OMI/STEMI/Wellens وغيرها لأغراض تسويقية.</li>
+<li>الصور الـ 27 تصنف وفق حقيقتها. الشكل التخطيطي لا يوضع على شبكة توحي بمعايرة إن لم يكن معايرًا.</li>
+<li>افتح الرسم لتكبيره؛ النسخة المكبرة نفس renderer والمعايير، لا صورة بديلة مختلفة.</li>
+<li>النص البديل يصف غرض المثال والاشتقاقات والمظهر العام وحدود الرسم؛ جدول قياسات مختار إن كان متاحًا فعليًا من النموذج.</li>
+<li>فتح source في تبويب جديد لا يغير حالة القراءة، ويكتب أنه يحتاج اتصالًا عند offline.</li>
+</ul>
+<h2 id="master-section-25" tabindex="-1">24 — حالات ECG: قائمة الحالة وشاشة القراءة</h2><p>القائمة: فئات موجودة من المصدر، بحث محلي، Saved findings، Learning path، اسم الحالة ونوعها. لا thumbnail صغير غير قابل للقراءة يحتل نصف البطاقة.</p>
+<p>شاشة الهاتف بالترتيب:</p>
+<ol>
+<li>Back + اسم الحالة + Synthetic teaching model.</li>
+<li>اختيار الحالة/الفئة؛ عنصر واحد لا صف selectors متكرر.</li>
+<li>سطر المعايرة ونوع التخطيط.</li>
+<li><strong>مساحة الرسم أولًا</strong>، بعرض متاح وscroll أفقي داخلي عند التكبير.</li>
+<li>إجراءات أساسية: Expand، Explain/Hide، Next finding. View options ثانوي يجمع zoom/gain/speed/comparison حيث متاح فعليًا.</li>
+<li>عنوان finding ورقمه «2 of N»، ثم الشرح والأهداف.</li>
+<li>منطقة التقدم/الحفظ/الممارسة والمسار مطوية اختياريًا تحت Learning tools، ولا تسبق الرسم ببطاقة ضخمة.</li>
+<li>المصدر وحدود المثال.</li>
+</ol>
+<p>Desktop: الرسم والشرح بعمودين عندما يكون عرض الرسم ≥760px؛ وإلا يعودان للترتيب الرأسي. مجموعة التحكم بجوار الرسم، ولا تنتقل إلى sidebar العام. اسم finding لا يتغير دون فعل أو تنقل واضح.</p>
+<ul>
+<li>الحالة العادية نقطة بداية مقترحة؛ اختيار deep link يفتح الحالة المطلوبة لا آخر حالة.</li>
+<li>إظهار overview للقائمة لا يخفي اسم الحالة أثناء الانتقال.</li>
+<li>لا animated monitor خلفية ولا glow على الموجة؛ الخطوط أدوات تعلم.</li>
+</ul>
+<h2 id="master-section-26" tabindex="-1">25 — عقد سلامة الرسم والمعايرة</h2><p>هذه متطلبات إطلاق، لا تفاصيل تجميل قابلة للتجاوز:</p>
+<ul>
+<li>لا تغيير لعينات التسجيلات أو معاملات المحرك أو توقيت الموجة في إعادة التصميم. أي تغيير علمي خارج هذه المواصفة له مراجعة مستقلة.</li>
+<li>سرعة الورق والكسب ومدى العرض والاشتقاقات ونوع النموذج ظاهرة. «25 mm/s، 10 mm/mV» تتبع الضبط الفعلي لا نصًا ثابتًا.</li>
+<li>الشاشة لا تضمن المليمتر الفيزيائي؛ القياس يستند إلى الشبكة/المحور/أداة النموذج، لا مسطرة على جهاز غير معاير.</li>
+<li>تكبير الرسم uniform؛ لا stretch للمحور الزمني أو الجهد مستقلًا. CSS لا يغير <code>viewBox</code> أوaspect ratio أوclipPaths بطريقة تحرف الإشارة.</li>
+<li>network of SVG IDs فريدة بين الأصل والمقارنة والتكبير؛ لا تصادم gradients/clip-path.</li>
+<li>العلامات تُلحق بـSVG الرسم داخل canvas فقط، لا بأول SVG في واجهة الأدوات. تبقى في إحداثيات الموجة عند zoom/resize/scroll/fullscreen.</li>
+<li>waveform/mark hits لا تعتمد على الرؤية الدقيقة: أزرار قائمة findings بديل كامل للمس.</li>
+<li>شبكة واشتقاقات V7–V9/Right-sided تظهر إذا تضمنها المثال، ولا تقص لاستكمال بطاقة قصيرة.</li>
+<li>الأعمدة المتتابعة زمنيًا معلّمة؛ لا توحي بأنها لحظة واحدة. المقارنة تستخدم نظام عرض متوافقًا وتعلن اختلاف توقيت الضربات.</li>
+<li>للمعايرة نبضة/مرجع مقروء إن وفره renderer. لا تضاف نبضة مزيفة إلى شكل غير معاير.</li>
+<li>الحدود والألوان والطباعة لا تخفي P waves أوST changes أوT end أومؤشرات lead labels.</li>
+<li>أسماء مناطق القياس تنقل طريقة القياس، مثل tangent QT عندما يكون هذا هو المطبق. لا استبدال القيمة المرئية بقيمة parameter بوصفهما متساويتين.</li>
+</ul>
+<h2 id="master-section-27" tabindex="-1">26 — العلامات والتكبير والمقارنة وأدوات القياس</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>الأداة</th>
+<th>السلوك</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Finding list</td>
+<td>أزرار بعنوان واضح؛ prev/next؛ تعداد؛ اختيار لا يعيد الرسم إلى حالة غير مطلوبة</td>
+</tr>
+<tr>
+<td>Highlight</td>
+<td>تشغيل/إيقاف بصري فقط؛ النص يبقى متاحًا؛ selected mark لها وصف وتركيز</td>
+</tr>
+<tr>
+<td>Region navigation</td>
+<td>إذا للـfinding مناطق عدة، يظهر «Region 1 of N»؛ keyboard بديل للمس</td>
+</tr>
+<tr>
+<td>Zoom</td>
+<td>نسب محددة وFit؛ لا يغير gain/speed؛ يحافظ على الموقع المستهدف منطقيًا</td>
+</tr>
+<tr>
+<td>Expand</td>
+<td>dialog/fullscreen بالقدرات المتاحة؛ إغلاق يعيد التركيز للزر الأصلي</td>
+</tr>
+<tr>
+<td>Compare normal</td>
+<td>نفس المعايير حيث ممكن؛ إعلان أنه نموذج مرجعي وليس ECG سابقًا للمريض</td>
+</tr>
+<tr>
+<td>Synchronized scroll</td>
+<td>داخل الرسمين فقط؛ لا يغير scroll الصفحة؛ يمكن تعطيله إن سبب حبسًا للحركة</td>
+</tr>
+<tr>
+<td>Calipers</td>
+<td>فقط حيث مدعومة حاليًا؛ label وحدات ونقطة بداية/نهاية، وتحريك keyboard/أزرار بديل للسحب</td>
+</tr>
+<tr>
+<td>Reset view</td>
+<td>يعيد zoom/scroll/marks حسب اسم محدد؛ لا يصفر تقدم التعلم</td>
+</tr>
+<tr>
+<td>Save finding</td>
+<td>يحفظ معرف الحالة+finding، مع حالة صادقة إذا تعذر التخزين</td>
+</tr>
+<tr>
+<td>Print ECG</td>
+<td>نفس signal والوسوم والمعايرة والمصدر وحدود المقياس الفيزيائي</td>
+</tr>
+</tbody></table></div>
+<p>في التكبير: شريط أعلى غير متراكب على الموجة، سطر المعايرة، مساحة رسم، وشرح قابل للكشف. Escape يغلق الطبقة الأعلى؛ pinch/drag لا يختطفان التنقل العام. احترام دوران الشاشة وsafe-area. وضع أفقي خيار مساعد لا شرط لقراءة المحتوى.</p>
+<h2 id="master-section-28" tabindex="-1">27 — ممارسة ECG</h2><ul>
+<li>اختيار الممارسة فعل صريح؛ لا كشف عنوان التشخيص في selector/title/alt قبل انتهاء مهمة وصف النمط عندما يقصد النشاط إخفاءه.</li>
+<li>يبدأ بوصف منهجي: rate/rhythm/axis/intervals/ST–T/summary وفق إمكانية المثال؛ لا يفرض قياسًا على اشتقاقات غير معروضة.</li>
+<li>Hint اختياري تدريجي، مع إعلان أن استخدامه لا ينتج شهادة أداء.</li>
+<li>Reveal يعرض تفسيرًا وحدودًا، لا مجرد «صح/خطأ» بلا سبب.</li>
+<li>Locate exercise: هدف وصف واضح، مؤشر keyboard أواختيار منطقة مكافئ، feedback بجوار المهمة، Show location دائم الوصول.</li>
+<li>Next practice يتجنب إعادة الحالة الحالية ويستعمل قائمة النشاط المسجلة كما في المحرك. كل الحالات متاحة للمراجعة حتى بعد إكمالها.</li>
+<li>تتبع محاولة/مشاهدة منفصل عن اكتمال case marked؛ لا تخلط المحاولات والإنجاز.</li>
+<li>Review saved findings يفتح finding نفسه، لا أول finding في الحالة.</li>
+<li>إذا فُقد معرف محفوظ بعد تحديث محتوى يظهر «This finding is no longer available» مع المحافظة على بقية السجل؛ لا crash أوحذف جماعي.</li>
+</ul>
+<h2 id="master-section-29" tabindex="-1">28 — التسجيلات الحقيقية والتعلم البصري</h2><p>التسجيلات:</p>
+<ul>
+<li>عنوان عام لا يكشف المصدر التشخيصي قبل reveal؛ رقم المصدر ظاهر ولا يتضمن هوية مريض.</li>
+<li>ضوابط source الموجودة: recording، full12-lead/rhythm أوsingle-lead، gain، lead. لا تعرض speed selector ما لم يطبقه renderer علميًا.</li>
+<li>rate/sample metadata من المصدر: 500Hz، 10s، الاشتقاقات والمعايرة كما في ملفات التحقق. لا إعادة sampling أوsmoothing تجميلي ضمن الخطة.</li>
+<li>Reveal dataset label يعرض statements واحتمالات/قيم الوسم كما سجلت دون تحويل unspecified إلى صفر أو 100.</li>
+<li>النص: dataset labels تخص التسجيل التاريخي، ولا تكفي وحدها لإثبات acute MI أوقرار علاج آني.</li>
+<li>اسم PTB-XL وإصداره وترخيصه ورابطه وrecord ID ظاهرة في المصدر والطباعة. بيانات provenance تبقى في المستودع، لا تُغيّر بقصد إخفاء عمر التسجيل.</li>
+<li>التحميل عند الطلب لا يجبره على تحميل مكتبة التسجيلات في أول paint؛ offline availability تؤكد بعد اكتمال cache الحقيقي.</li>
+<li>فشل التحميل يتيح Retry والرجوع؛ لا اختيار آخر صامت أوعرض waveform بديل يوحي بالنجاح.</li>
+</ul>
+<p>الوسائط الأخرى:</p>
+<ul>
+<li>ABG: العينتان الافتراضيتان ووحداتهما، المقارنة، primary/mixed processes، reveal وlimits؛ لا calculator patient-specific جديد.</li>
+<li>Lung ultrasound: وسم <strong>schematic/static</strong>، A/B-lines والحدود؛ لا ادعاء حركة رئة/انزلاق من شكل ثابت.</li>
+<li>Chest image: وسم <strong>diagram</strong>، projection/side إذا توفرا، وحدود استبعاد/تشخيص من الرسم.</li>
+<li>ECG pairs: أصل كل طرف، قياساته، اختلافاته وحدوده؛ لا نسب تغيّر أوإجابة مصطنعة.</li>
+<li>كل وسيط له وصف بديل وتفسير نصي؛ لا تعليم معتمد على لونين أوhover فقط.</li>
+</ul>
+<h2 id="master-section-30" tabindex="-1">29 — وحدات التحضير والإجراءات والمناقشة</h2><p>القائمة الحالية ست وحدات؛ أسماء ومحتوى كل واحدة في الملحق. الاسم العام <strong>Preparation</strong> أو<strong>Preparation &amp; discussion</strong>؛ لا «Certified skills».</p>
+<p>قالب الوحدة: عنوان ← هدف تعلم ← السياق والإشراف ← خطوات التحضير/الأسئلة الحالية ← مناقشة ← source/scope ← Mark as read.</p>
+<ul>
+<li>marked as read لا يعني أن المستخدم أجرى cardioversion أوsedation أوthoracic procedure.</li>
+<li>checklist تحضير إن وجدت تعليمية مؤقتة، منفصلة عن سجل إتقان أوclinical sign-off.</li>
+<li>زر «Read» يمكن التراجع عنه، مع حالة تخزين صادقة.</li>
+<li>وحدات handover/leadership/teaching تحت نفس القالب مع تسمية نوعها، لا إسقاطها لأن عنوان «Procedures» لا يصفها.</li>
+<li>الروابط من الحالة أوالموضوع تصل إلى القسم المناسب، وتعود إلى المصدر عبر Back.</li>
+</ul>
+<h2 id="master-section-31" tabindex="-1">30 — الإعدادات والتخصيص</h2><p>ترتيب Settings:</p>
+<ol>
+<li>Reading: حجم الخط، Bold، معاينة فقرة قصيرة.</li>
+<li>Appearance: Light/Dark؛ System خيار جديد مستقل إن أضيف دون تغيير قيمة theme القديمة بلا توافق. Accent palette مع أسماء وحالة اختيار.</li>
+<li>Navigation: وجهة فتح مفضلة اختيارية؛ default Library، والروابط المباشرة أعلى أولوية. عرض sidebar إن مناسب Desktop.</li>
+<li>Learning: Core/Applied/Advanced وشرح أنها prompts؛ روابط review/progress.</li>
+<li>Offline &amp; install: الحالة الفعلية، التثبيت، نسخة التطبيق، آخر تحقق محلي إن مسجل فعلًا.</li>
+<li>Your data: export/import، شرح التخزين المحلي، إدارة نطاقات بيانات محددة.</li>
+<li>About &amp; help: clinical notice، المصادر وحدود المحتوى، التراخيص، اختصارات لوحة المفاتيح، feedback.</li>
+</ol>
+<p>التغييرات فورية في الواجهة، لا زرSave لجميع التفضيلات. إذا فشل حفظها يظهر «Applied for this visit only». لا reload تلقائي عند تغيير accent أوfont. Reset appearance فقط يعيد إعدادات المظهر المحددة ويشرح ذلك؛ لا يمس التقدم.</p>
+<p>الاختصارات الحالية تبقى حيث لا تتعارض؛ مفاتيح الحرف الواحد قابلة للإيقاف في Settings لتلبية استخدامات قارئات الشاشة/الإملاء. لا تعمل داخلinput/textarea/contenteditable أوIME أوdialog نشط إلا ما يخصه. <code>/</code> للبحث، Escape لأعلى طبقة، وروابط مساعدة تعرض الاختصارات الفعلية بعد استخراجها من الكود. لا استبدال اختصارات المتصفح.</p>
+<h2 id="master-section-32" tabindex="-1">31 — التنبيه التعليمي والمساعدة والخصوصية</h2><ul>
+<li>نص التنبيه الحالي محفوظ بمعناه ونطاقه. المراجعة القانونية/السريرية لأي اختصار تتم منفصلة عن تخطيط النافذة.</li>
+<li>first visit: dialog بعنوان، نص قابل للقراءة، checkbox غير محدد، زر دخول غير مفعّل حتى الاختيار. لا يضغط الاختبار موافقة نيابة عن المستخدم.</li>
+<li>تغيير container إلى native dialog لا يعني توافقًا تلقائيًا. يحدد التركيز الأولي والمحتوى المقروء، وطريقة الخروج، والعودة، والقراءة على الهاتف.</li>
+<li>إذا سمح Escape بالإغلاق قبل الموافقة، يظهر سطح محايد «Review notice to continue» مع إعادة الفتح؛ لا يفتح المحتوى المقيد بالموافقة ولا يسجل قبولًا. في وضع إعادة قراءة الإشعار بعد الموافقة يعود Escape إلى التطبيق.</li>
+<li>لا popup onboarding آخر أوطلب إشعارات أوتثبيت فوق التنبيه.</li>
+<li>help قصيرة: كيف أبحث، كيفأراجع، ما معنى التقدم، كيفيعمل offline، كيفأحفظ نسخة. أيقونة مساعدة في موضع ثابت.</li>
+<li>feedback يفتح وسيلة الاتصال الحالية بفعل المستخدم؛ لا يرسل رسالة أوبيانات تلقائيًا. إرفاق نسخته أوملاحظاته اختياري صريح.</li>
+<li>لا حساب، لا طلب بيانات مرضى، لا analytics جديد افتراضيًا. أي instrumentation بحثي يصرّح نطاقه وطريقة موافقته وحذفه.</li>
+<li>صفحة About لا تدعي مراجعة مستقلة أواعتمادًا غير موجود. تاريخ بناء الواجهة وتاريخ فحص المصدر الطبي حقلان مختلفان.</li>
+</ul>
+<h2 id="master-section-33" tabindex="-1">32 — إدارة البيانات والنسخ الاحتياطي</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>المفتاح الحالي</th>
+<th>الالتزام</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>em-cps-prefs</code></td>
+<td>حفظ theme/accent/scale/bold/sidebar؛ لا إعادة تهيئة صامتة</td>
+</tr>
+<tr>
+<td><code>em-cps-learning</code></td>
+<td>حفظ reviewed/reviewPlan/saved/notes</td>
+</tr>
+<tr>
+<td><code>em-student-progress</code></td>
+<td>حفظ ratings/last</td>
+</tr>
+<tr>
+<td><code>em-ecg-learning-v1</code></td>
+<td>حفظ آخر حالة وfinding والتقدم والمراجعة وفق مخطط المصدر</td>
+</tr>
+<tr>
+<td><code>em-ecg-practice-v1</code></td>
+<td>حفظ معرفات المحاولات</td>
+</tr>
+<tr>
+<td><code>em-learning-focus-v1</code></td>
+<td>حفظ Core/Applied/Advanced</td>
+</tr>
+<tr>
+<td><code>em-workspace-progress-v1</code></td>
+<td>حفظ نتائج الحالات وقراءة الوحدات</td>
+</tr>
+<tr>
+<td><code>em-workspace-session-v1</code></td>
+<td>استئناف المحاولات ضمن عمر sessionStorage الحالي</td>
+</tr>
+<tr>
+<td><code>em-cps-disclaimer-agreed</code></td>
+<td>لا تسجيل قبول أو حذفه أو نقله بالنسخ الاحتياطي أثناء التصميم/الاختبار</td>
+</tr>
+</tbody></table></div>
+<p>لا قراءة أو كتابة أو ترحيل أو مسح مفاتيح التطبيق المدفوع <code>em-p-</code>. لا <code>localStorage.clear()</code> ولا نسخ شامل لكل ما على origin؛ كل عملية تستخدم قائمة صريحة بالمفاتيح الحرة المحددة.</p>
+<p>واجهة التصدير تشرح ما يتضمنه JSON وما يستثنيه، وتقترح اسم ملف وتاريخًا، وتوضح أنه قد يحتوي ملاحظات شخصية. بيانات الجلسة والاتفاق مستثناة من صيغة النسخ الاحتياطي الحالية.</p>
+<p>الاستيراد: اختيار ملف ← تحقق من حد 2MB ومخطط version 1 والقيم والعمق الآمن ← معاينة الأقسام وعدد العناصر ← Apply missing records ← نتيجة واضحة ← Reload اختياري بعد حفظ العمل الجاري. يحتفظ بالقيم الحالية عند التعارض، كما يفعل المصدر؛ لا يَعِد بدمج الأحدث زمنيًا وهو غير مطبق.</p>
+<p>يرفض المفاتيح غير المدعومة وخصائص prototype الخطرة والملفات غير الصالحة. إلغاء المعاينة لا يكتب شيئًا. عند فشل الاستيراد تُحاول استعادة القيم الأصلية ويُعلن بوضوح هل اكتملت الاستعادة؛ لا رسالة نجاح بعد فشل جزئي.</p>
+<p>الإضافات مثل لغة العرض ووجهة البداية وموضع القراءة لها مخطط مستقل مُنسّخ ومتوافق. لا تُحقن حقول داخل prefs بما يفسد قبول النسخ القديمة. دعمها ضمن التصدير يحتاج إصدارًا وتوافقًا موثقين.</p>
+<h2 id="master-section-34" tabindex="-1">33 — PWA والعمل دون اتصال والتحديث</h2><p>الحالات المرئية: Online / Offline setup pending / Offline ready / Offline with cached content / Setup failed / Update available / Updating / Update failed.</p>
+<ul>
+<li>«Offline ready» تعتمد على عامل نشط واكتمال أصوله المطلوبة؛ لا يكفي <code>navigator.onLine</code> أو حدث appinstalled.</li>
+<li>أول زيارة بلا اتصال ولا نسخة مخزنة لا يُوعَد بنجاحها. يُعرض تفسير وإعادة محاولة إذا أمكن تقديم صفحة فشل.</li>
+<li>الغلاف والأصول اللازمة والتسجيلات المحلية تدخل استراتيجية cache موثقة تحقق النطاق الموعود. المصادر الخارجية معلمة بأنها تحتاج اتصالًا.</li>
+<li>فشل JavaScript/CSS مطلوب أو رجوع HTML بدل الأصل يمنع تفعيل نسخة ناقصة؛ يحتفظ التطبيق بالنسخة العاملة حين يسمح عقد العامل بذلك.</li>
+<li>Update available يظهر كشريط صغير: «New version available — Refresh when ready». لا تحديث قسري خلال إجابة أو ملاحظة غير محفوظة.</li>
+<li>Refresh يفحص المسودات والجلسة الجارية، ويحفظ ما يستطيع وفق العقد، ويطلب قرارًا واضحًا عند وجود خطر خسارة فعلي.</li>
+<li>يحافظ التحديث على التقدم والملاحظات والتفضيلات. إزالة معرف محتوى لا تسبب reset عامًا.</li>
+<li>URLs وscope نسبيان للتثبيت. أسماء cache خاصة بمساره، والتنظيف محدود به. لا مسح لكل مخازن origin ولا إلغاء عمال التطبيقات الأخرى.</li>
+<li>manifest/start_url/scope واختصارات المواضيع تحافظ على هوية التطبيق المثبت؛ إضافة <code>id</code> أو تغيير الأصل تحتاج مراجعة الهوية أولًا.</li>
+<li>التثبيت اختياري. يقدم زرًا عند توفر prompt وتعليمات مناسبة للمنصة عند عدمه؛ لا يفترض وجود prompt في كل متصفح.</li>
+<li>حالة offline لا تحجب المحتوى المخزن، ولا تنشئ toast لكل طلب مصدر فاشل.</li>
+</ul>
+<h2 id="master-section-35" tabindex="-1">34 — الطباعة والتصدير والمشاركة</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>النطاق</th>
+<th>المخرجات</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>موضوع كامل</td>
+<td>جميع الأقسام الطبية والمصادر، بما فيها الأقسام المطوية</td>
+</tr>
+<tr>
+<td>Quick</td>
+<td>«Selected educational reference points» مع المصدر ورابط الأصل</td>
+</tr>
+<tr>
+<td>ECG</td>
+<td>الإشارة والاشتقاقات والسرعة والكسب ونوع المصدر وحدود المقياس</td>
+</tr>
+<tr>
+<td>نتيجة تعلم</td>
+<td>الاختيارات والشرح إذا اختير هذا النطاق؛ دون ملاحظات خاصة افتراضيًا</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>A4 وLetter؛ portrait للنص وlandscape اختيار مناسب لـECG. تبدأ الهوامش عند 12–15mm ثم تُراجع بالمعاينة.</li>
+<li>إخفاء التنقل والأزرار والفلاتر والـtooltips والـdialogs والـtoasts والتنبيه العائم. يبقى تذييل تعليمي مختصر مناسب للمطبوع.</li>
+<li>لا تطبع الملاحظة الخاصة أو تحديدات checklist التعليمية افتراضيًا.</li>
+<li>لا عنوان وحيد آخر الصفحة؛ البطاقة الطويلة تنقسم بدل القص؛ الجداول تكرر رؤوسها حيث يدعم المتصفح ذلك.</li>
+<li>ECG يحافظ على aspect ratio؛ لا يوصف مقياسه الفيزيائي بالدقة دون اختبار التحجيم والطابعة. النص: «Check print scale before physical measurement».</li>
+<li>رابط المشاركة يحمل route فقط؛ لا ملاحظات ولا إجابات. الحافظة لها fallback يدوي.</li>
+<li>تسمية الزر Print / Save as PDF إذا كان سلوكه <code>window.print()</code>؛ فتح نافذة الطباعة لا يعني إنشاء ملف تلقائيًا.</li>
+<li>تراخيص التسجيلات ومصادرها ترافق المخرجات وفق متطلباتها. لا watermark فوق الموجة.</li>
+</ul>
+<h2 id="master-section-36" tabindex="-1">35 — الحركة والطبقات والإيماءات</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>الحركة</th>
+<th>الهدف والمدة المقترحة</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hover / pressed</td>
+<td>100–140ms؛ تغير لون أو حد خفيف</td>
+</tr>
+<tr>
+<td>Popover</td>
+<td>120–160ms؛ opacity ومسافة صغيرة</td>
+</tr>
+<tr>
+<td>Dialog / sheet</td>
+<td>160–200ms؛ لا تأخير في إتاحة الخروج</td>
+</tr>
+<tr>
+<td>انتقال صفحة</td>
+<td>120–180ms اختياري، مع بديل فوري</td>
+</tr>
+<tr>
+<td>Accordion</td>
+<td>فوري أو حركة قصيرة تحفظ موضع القراءة</td>
+</tr>
+<tr>
+<td>Progress</td>
+<td>قيمة فورية؛ دون احتفال أو confetti</td>
+</tr>
+</tbody></table></div>
+<p><code>prefers-reduced-motion</code> يلغي التحريك والتمرير السلس غير الضروري، مع بقاء الحالة واضحة. View Transitions تحسين اختياري خلف فحص الدعم، ولا يتوقف عليه التنقل أو التركيز. لا morphing لإشارة ECG يوهم بتغير سريري.</p>
+<p>مقياس طبقات مركزي مقترح: base 0، sticky 20، nav 30، popover 40، modal 100، toast 110 عندما يلائم السياق، skip link 200. يُراعى native top layer؛ رفع z-index ليس حلًا عامًا.</p>
+<p>نافذة رئيسية واحدة في كل مرة؛ فتح الإعدادات يغلق القائمة السابقة ثم ينقل التركيز. لا عنصر تفاعلي في toast وراء dialog محجوب. لا swipe وحيد لأي وظيفة ولا إيماءة حذف بلا بديل. calipers والسحب لهما أزرار/لوحة مفاتيح؛ يبقى browser Back gesture متاحًا.</p>
+<h2 id="master-section-37" tabindex="-1">36 — الوصولية: عقد الاختبار</h2><p>الهدف <strong>WCAG 2.2 AA</strong>، مع أهداف لمس داخلية ≥44px وغالبًا 48px. لا ادعاء AAA شامل من اختيار عنصر HTML أو حجم زر وحده. المرجع: <a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</a>، <a href="https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/">Dialog pattern</a>، <a href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/">Tabs pattern</a>.</p>
+<ul>
+<li>headings متسلسلة، عنوان h1 للسياق الرئيسي، landmarks مسماة، وSkip to content.</li>
+<li>تغير route يحدث عنوان الصفحة وactive nav؛ الانتقال المقصود يركز عنوان المحتوى، وBack يعيد التركيز للعنصر المصدر إن بقي موجودًا.</li>
+<li>ARIA tabs فقط عند وجود panels حقيقية وتنفيذ الأسهم والحالات والتركيز كاملًا. الروابط لا تحمل roles وهمية.</li>
+<li>كل زر له اسم متاح يوافق نصه المرئي. <code>title</code> وحده غير كافٍ.</li>
+<li>focus لا يختفي خلف شريط ثابت، ويظهر على كل مظهر وaccent.</li>
+<li>كل وظيفة تعمل بلوحة المفاتيح، والتفاعل مع SVG له قائمة بديلة كاملة.</li>
+<li>تكبير النص 200% وreflow عند عرض 320 CSSpx؛ الاستثناء ثنائي الأبعاد مثل ECG داخل مساحته، وليس الصفحة كلها.</li>
+<li>text spacing دون قص؛ forced colors له حدود ومؤشرات غير لونية؛ reduced motion لا يفقد الوظائف.</li>
+<li>رسائل حالة معتدلة بـrole/status، بلا إعادة قراءة كامل DOM عند كل render.</li>
+<li>لا مدة مفروضة للتعلم ولا وميض ولا اتجاه شاشة إلزامي.</li>
+<li>فحص VoiceOver مع Safari وTalkBack مع Chrome وNVDA على Desktop عندما تتوفر البيئات؛ يُذكر ما اختبر فعلًا وما لم يتوفر.</li>
+</ul>
+<h2 id="master-section-38" tabindex="-1">37 — الحالات غير المثالية والاستثناءات</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>الحالة</th>
+<th>الاستجابة المرئية</th>
+<th>ما نحافظ عليه</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>رفض localStorage / quota</td>
+<td>Session only قرب الحفظ وفي Settings</td>
+<td>العمل الحالي في الذاكرة</td>
+</tr>
+<tr>
+<td>JSON محلي تالف</td>
+<td>تجاهل الجزء غير الصالح وتنبيه محدد، بلا مسح عام</td>
+<td>القيم السليمة والأصل حتى إصلاح اختياري</td>
+</tr>
+<tr>
+<td>رفض sessionStorage</td>
+<td>استئناف الزيارة الحالية فقط</td>
+<td>المرحلة داخل الذاكرة</td>
+</tr>
+<tr>
+<td>backup غير صالح / كبير</td>
+<td>سبب محدد واختيار ملف آخر</td>
+<td>لا كتابة لأي قيمة</td>
+</tr>
+<tr>
+<td>فشل استيراد جزئي</td>
+<td>نتيجة الاستعادة الفعلية</td>
+<td>الأصل متى نجحت استعادته</td>
+</tr>
+<tr>
+<td>رابط مجهول</td>
+<td>صفحة مساعدة وبحث ورجوع</td>
+<td>history والسياق</td>
+</tr>
+<tr>
+<td>رسم مفقود</td>
+<td>عنوان ووصف وRetry</td>
+<td>النص والتقدم</td>
+</tr>
+<tr>
+<td>lazy import فشل</td>
+<td>Retry دون reload قسري</td>
+<td>الشاشة السابقة واختياراتها</td>
+</tr>
+<tr>
+<td>JavaScript أساسي فشل</td>
+<td>رسالة فشل/إعادة تحميل، وnoscript عند تعطيله</td>
+<td>البيانات المحلية</td>
+</tr>
+<tr>
+<td>خط لم يحمل</td>
+<td>خط نظام بديل</td>
+<td>المقروئية والوحدات</td>
+</tr>
+<tr>
+<td>الحافظة رفضت</td>
+<td>حقل نسخ يدوي</td>
+<td>النص دون نجاح وهمي</td>
+</tr>
+<tr>
+<td>التثبيت غير متاح</td>
+<td>تعليمات المتصفح</td>
+<td>استخدام الويب</td>
+</tr>
+<tr>
+<td>مصدر خارجي بلا شبكة</td>
+<td>يحتاج اتصالًا</td>
+<td>المحتوى المحلي وموضع القراءة</td>
+</tr>
+<tr>
+<td>تحديث أثناء مسودة</td>
+<td>حفظ أو تأجيل صريح</td>
+<td>المسودة وفق قدرة التخزين</td>
+</tr>
+<tr>
+<td>معرف قديم أزيل</td>
+<td>توضيح ورابط مكافئ موثق</td>
+<td>بقية المحفوظات</td>
+</tr>
+<tr>
+<td>نافذتان</td>
+<td>إشعار تعارض بدل استبدال مسودة نشطة</td>
+<td>العمل في النافذتين</td>
+</tr>
+<tr>
+<td>IME / عربية</td>
+<td>تعطيل shortcuts أثناء composition</td>
+<td>الاستعلام المكتوب</td>
+</tr>
+<tr>
+<td>forced colors / reduced motion</td>
+<td>حدود وحالات نصية وبدائل حركة</td>
+<td>الوظائف</td>
+</tr>
+<tr>
+<td>landscape / notch / keyboard</td>
+<td>حساب المساحة الفعلية وsafe-area</td>
+<td>عناصر التحكم والحالة</td>
+</tr>
+<tr>
+<td>طباعة وdialog مفتوح</td>
+<td>نطاق الطباعة بلا overlay</td>
+<td>لا تسجيل موافقة</td>
+</tr>
+<tr>
+<td>تنقل سريع أثناء تحميل</td>
+<td>إلغاء/تجاهل النتيجة القديمة</td>
+<td>route الأحدث</td>
+</tr>
+<tr>
+<td>تغير توقيت الجهاز</td>
+<td>تفسير واضح للموعد دون إعادة كتابة الأصل</td>
+<td>timestamps الأصلية</td>
+</tr>
+</tbody></table></div>
+<h2 id="master-section-39" tabindex="-1">38 — معمارية التنفيذ المقترحة</h2><pre dir="ltr"><code>assets/css/
+  tokens.css       colors / spacing / type / layers
+  base.css         reset / typography / focus / forms
+  shell.css        responsive navigation / viewport
+  components.css   buttons / cards / dialogs / feedback
+  library.css      search / filters / list
+  topic.css        sections / notes / references
+  learn.css        hub / cases / tracks / progress
+  ecg.css          controls / canvas / explanations
+  quick.css        focused reference
+  print.css        print contract
+assets/ui/
+  shell.js              chrome / focus lifecycle
+  routes.js             parsing / aliases
+  search-ui.js          local index / results
+  components.js         safe shared render helpers
+  learning-adapter.js   existing engines → activity view
+  preferences-ui.js     compatible reading controls
+  state.js              temporary presentation state</code></pre><p>هذا تنظيم مقترح، لا اشتراط framework أو build dependency. المحتوى ومحركات ECG الحالية مصدر الحقيقة. يمكن البدء بواجهات صغيرة داخل الملفات القائمة ثم الفصل حين يثبت أنه يبسط الاعتماديات.</p>
+<ul>
+<li>modules وأيقونات وخطوط محلية؛ لا CDN لازم للتشغيل.</li>
+<li>renderer لا يعدل بيانات المحتوى أو يولد نصًا علاجيًا. حالة العرض منفصلة عن سجل التعلم.</li>
+<li>كل mount له cleanup للمستمعين والـobservers والـtimeouts والـobject URLs والتركيز.</li>
+<li>جذور DOM محددة، ومعرفات SVG فريدة؛ لا محدد عام لأول SVG ولا observer يكرر الزر نفسه.</li>
+<li>نص المستخدم plain text، والـHTML المسموح معقم، والاستيراد متحقق منه.</li>
+<li>layers الجديدة لها ترتيب صريح؛ legacy معزول بجذر شاشاته حتى استبدالها. لا تغليف عشوائي يعكس أسبقية <code>!important</code>.</li>
+<li>الهدف حل التعارضات، لا صفر <code>!important</code> شكلي يضر بالطباعة أو الوصولية.</li>
+<li>تحميل ملفات CSS مرتب ومقاس؛ التقسيم لا يحسن الأداء تلقائيًا. يقاس عدد الطلبات والحجم المضغوط والـcache.</li>
+<li>كل ملف جديد يدخل عقود release/precache/headers/اختبارات المسار النسبي.</li>
+</ul>
+<h2 id="master-section-40" tabindex="-1">39 — عقد الحالة والرجوع</h2><p>الحالة المؤقتة: الفلاتر والاستعلام والموضع، اختيار نتيجة البحث، الأقسام المفتوحة، zoom/region في ECG، عنصر فتح dialog، مؤشر الحالة، ومسودة الملاحظة. السجل الدائم يظل مخططات التعلم الحالية.</p>
+<ul>
+<li>لكل route حالة عرض مستقلة. العودة تستعيد الموضع مع ضبط الحدود إذا تغير طول المحتوى.</li>
+<li>معرف القسم أولى من رقم scroll؛ الرابط المباشر أولى من موضع قديم. تغيير الخط لا يَعِد بمطابقة بكسل قديم.</li>
+<li>اختيار ECG جديد يعيد ضبط العرض حسب عقد الأداة، ولا يمس التقدم. تغيير theme لا يعيد إنشاء محرك الإشارة إن لم يلزم.</li>
+<li>لا history لكل حرف بحث أو zoom أو حركة تمرير.</li>
+<li>storage event من نافذة أخرى لا يستبدل textarea نشطة؛ يعرض تعارضًا ويحفظ المسودتين حتى قرار صريح.</li>
+<li>لا يعتمد ضمان البيانات على beforeunload وحده؛ update يقيّم المسودات والجلسة قبل التحديث.</li>
+</ul>
+<h2 id="master-section-41" tabindex="-1">40 — الأداء والميزانيات</h2><p>الأرقام أهداف على جهاز وشبكة موثقين، لا وعد على «أي هاتف». عدد أسطر CSS لا يغني عن القياس.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>البند</th>
+<th>الهدف المبدئي</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Core Web Vitals</td>
+<td>LCP ≤2.5s، INP ≤200ms، CLS ≤0.1 عند percentile 75 إذا توفرت بيانات ميدانية كافية</td>
+</tr>
+<tr>
+<td>البحث بعد debounce</td>
+<td>نتائج مستقرة ≤150ms على الجهاز المرجعي</td>
+</tr>
+<tr>
+<td>تنقل موضوع مخزن</td>
+<td>content ready ≤200ms كهدف مختبري</td>
+</tr>
+<tr>
+<td>CSS الغلاف والقراءة</td>
+<td>≤100KB غير مضغوط كميزانية أولية تُراجع بعد الجرد</td>
+</tr>
+<tr>
+<td>JavaScript أولي</td>
+<td>لا تحميل تسجيلات ECG قبل الحاجة؛ مقارنة الحجم بخط الأساس</td>
+</tr>
+<tr>
+<td>الحزمة دون اتصال</td>
+<td>زيادة حجم مبررة لكل أصل ووظيفته وترخيصه</td>
+</tr>
+<tr>
+<td>الذاكرة</td>
+<td>لا تراكم بعد 50 تنقلًا وفتح/إغلاق التكبير</td>
+</tr>
+<tr>
+<td>الخطوط</td>
+<td>محلية، preload للمطلوب فقط، fallback مقروء</td>
+</tr>
+</tbody></table></div>
+<p>مصدر حدود المؤشرات: <a href="https://web.dev/articles/vitals">Web Vitals</a>. Lighthouse مختبري لا يثبت percentile ميدانيًا أو تحسن الاستبقاء. يختبر cold/warm cache وCPU throttle بإعدادات محفوظة. يُزال التزيين الثقيل قبل تقليص الشرح والمصادر.</p>
+<h2 id="master-section-42" tabindex="-1">41 — الرسومات التخطيطية للشاشات</h2><p>هذه رسومات بنية وترتيب، وليست نماذج نهائية بالبكسل. أسماء الواجهة الإنجليزية مقصودة لحفظ لغة المنتج الحالي.</p>
+<h3 id="master-section-43" tabindex="-1">41.1 Library على الهاتف</h3><pre dir="ltr"><code>┌──────────────────────────────────┐
+│ EM Pocket             Search  ⚙ │
+├──────────────────────────────────┤
+│ Library                          │
+│ [ Search topics and findings   ] │
+│ [All] [Cardio] [Resp]  Filters 2  │
+│ 45 topics                 Saved  │
+│ ┌──────────────────────────────┐ │
+│ │ Chest Pain              ☆    │ │
+│ │ Approach, threats and workup │ │
+│ │ Cardiovascular          →    │ │
+│ └──────────────────────────────┘ │
+│ ┌──────────────────────────────┐ │
+│ │ Shortness of Breath     ☆    │ │
+│ │ Structured educational ...  │ │
+│ └──────────────────────────────┘ │
+│       More topics in this list   │
+├──────────────────────────────────┤
+│ Library   Learn    ECG    Quick   │
+└──────────────────────────────────┘</code></pre><h3 id="master-section-44" tabindex="-1">41.2 Topic على الهاتف</h3><pre dir="ltr"><code>┌──────────────────────────────────┐
+│ ← Library              Search ⋯ │
+├──────────────────────────────────┤
+│ Cardiovascular                   │
+│ Chest Pain                       │
+│ Source checks: 8 Oct 2026         │
+│ [Save]  [Quick]  [Print in ⋯]     │
+│ [Approach] [Threats] [Contents ▾] │
+│ ┌──────────────────────────────┐ │
+│ │ Approach                    │ │
+│ │ Ordered complete content    │ │
+│ └──────────────────────────────┘ │
+│ ┌──────────────────────────────┐ │
+│ │ ! Don&#39;t miss                │ │
+│ │ Names + reasons + limits    │ │
+│ └──────────────────────────────┘ │
+│ Red flags / History / Exam ...   │
+│ Recall → Practice   Notes        │
+│ References + scope               │
+├──────────────────────────────────┤
+│ Library   Learn    ECG    Quick   │
+└──────────────────────────────────┘</code></pre><h3 id="master-section-45" tabindex="-1">41.3 Learn على الهاتف</h3><pre dir="ltr"><code>┌──────────────────────────────────┐
+│ Learn                 Search  ⚙ │
+├──────────────────────────────────┤
+│ ┌──────────────────────────────┐ │
+│ │ Continue                    │ │
+│ │ A fast rhythm, then a change │ │
+│ │ Decision 2 of 3             │ │
+│ │ [ Resume case → ]           │ │
+│ └──────────────────────────────┘ │
+│ Due for review: 4    [Review →]   │
+│ Choose an activity               │
+│ [Cases]          [Tracks]         │
+│ [Visuals]        [Preparation]    │
+│ Suggested: Start with normal ECG │
+│ Saved &amp; notes →   Progress →     │
+├──────────────────────────────────┤
+│ Library   Learn    ECG    Quick   │
+└──────────────────────────────────┘</code></pre><h3 id="master-section-46" tabindex="-1">41.4 Case على الهاتف</h3><pre dir="ltr"><code>┌──────────────────────────────────┐
+│ ← Cases               Search  ⚙ │
+├──────────────────────────────────┤
+│ FICTIONAL TEACHING CASE           │
+│ Case title                       │
+│ Patient scenario, full text      │
+│ Decision 1 of 3                  │
+│ Teaching update                  │
+│ Question                         │
+│ [ A  Complete option text      ] │
+│ [ B  Complete option text      ] │
+│ [ C  Complete option text      ] │
+│ ┌──────────────────────────────┐ │
+│ │ Review this choice          │ │
+│ │ Explanation and limitations │ │
+│ │ Compare all options ▾       │ │
+│ └──────────────────────────────┘ │
+│ [ Continue case →              ] │
+│ Full pathway →        Source ▾   │
+├──────────────────────────────────┤
+│ Library   Learn    ECG    Quick   │
+└──────────────────────────────────┘</code></pre><h3 id="master-section-47" tabindex="-1">41.5 ECG على الهاتف</h3><pre dir="ltr"><code>┌──────────────────────────────────┐
+│ ECG                   Search  ⚙ │
+│ Guide  Cases  Recordings Practice │
+├──────────────────────────────────┤
+│ Normal sinus model    Choose ▾   │
+│ SYNTHETIC TEACHING MODEL          │
+│ 25 mm/s · 10 mm/mV · layout label │
+│ ┌──────────────────────────────┐ │
+│ │ Original renderer viewport  │ │
+│ │ Lead labels and calibration │ │
+│ │ Scroll within when zoomed   │ │
+│ └──────────────────────────────┘ │
+│ [Expand] [Highlights] [Options ▾] │
+│ ← Finding 2 of N →               │
+│ Finding title                    │
+│ Explanation + source limits      │
+│ [Save finding] [Locate]           │
+│ Learning tools ▾     Source ▾    │
+├──────────────────────────────────┤
+│ Library   Learn    ECG    Quick   │
+└──────────────────────────────────┘</code></pre><h3 id="master-section-48" tabindex="-1">41.6 Quick على الهاتف</h3><pre dir="ltr"><code>┌──────────────────────────────────┐
+│ Quick                 Search  ⚙ │
+├──────────────────────────────────┤
+│ [ Choose topic                ▾] │
+│ Educational reference summary     │
+│ Topic title                      │
+│ First minutes                    │
+│   Complete approved short points │
+│ ! Red flags / escalation         │
+│   Source-linked warning text     │
+│ Don&#39;t miss                       │
+│ Initial workup                   │
+│ Reassessment / disposition       │
+│ [ Open full pathway →          ] │
+│ Copy reference template   Print  │
+│ Source and scope                 │
+├──────────────────────────────────┤
+│ Library   Learn    ECG    Quick   │
+└──────────────────────────────────┘</code></pre><h3 id="master-section-49" tabindex="-1">41.7 Desktop: موضوع / ECG</h3><pre dir="ltr"><code>┌──────────────┬───────────────────────────────────────────────────────┐
+│ EM Pocket    │ Search                                    Settings   │
+│              ├───────────────────────────────────────────────────────┤
+│ Library      │ ← Source context                                      │
+│ Learn        │ Topic / ECG title + source date                       │
+│ ECG          │                                                       │
+│ Quick        │ ┌────────────────────────────────┐ ┌────────────────┐ │
+│              │ │ Reading / calibrated canvas    │ │ Contents       │ │
+│ ───────────  │ │ max reading line length        │ │ OR explanation │ │
+│ Saved        │ │                                │ │                │ │
+│ Progress     │ │                                │ │                │ │
+│ Help         │ └────────────────────────────────┘ └────────────────┘ │
+│ Settings     │ Secondary tools below the primary work                │
+└──────────────┴───────────────────────────────────────────────────────┘</code></pre><h2 id="master-section-50" tabindex="-1">42 — خطة التنفيذ المرحلية ومعايير الخروج</h2><p>التقديرات أيام عمل لمطور/مصمم متفرغ، تُراجع بعد كل مرحلة؛ ليست موعدًا ملزمًا. مراجعة المحتوى والأجهزة قد تضيف وقتًا.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>المرحلة</th>
+<th>العمل</th>
+<th>التسليم</th>
+<th>بوابة الخروج</th>
+<th align="right">تقدير</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P0</td>
+<td>inventory/routes/storage/screenshots</td>
+<td>تغطية وقياسات baseline</td>
+<td>كل عنصر قديم مربوط بوجهة واختبار</td>
+<td align="right">2–3 أيام</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>نماذج Library/Topic/Learn/ECG/Quick</td>
+<td>نموذج تجربة</td>
+<td>تجربة مهام وتصحيح عيوبها</td>
+<td align="right">3–5</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>tokens/components/shell/focus</td>
+<td>غلاف جديد</td>
+<td>reflow/keyboard/legacy routes</td>
+<td align="right">3–5</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>library/search/topic/notes/print</td>
+<td>مرجع كامل</td>
+<td>45 موضوعًا بلا فرق بيانات</td>
+<td align="right">4–6</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>hub/cases/tracks/review/backup</td>
+<td>تعلم متصل</td>
+<td>12+6 حالات و 6 وحدات وسجل محفوظ</td>
+<td align="right">4–6</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>guide/cases/recordings/practice</td>
+<td>ECG موحد</td>
+<td>69 حالة/27 شكلًا/12 تسجيلًا بلا تحريف</td>
+<td align="right">4–7</td>
+</tr>
+<tr>
+<td>P6</td>
+<td>Quick/settings/offline/update</td>
+<td>تشغيل كامل</td>
+<td>ملخصات مراجعة وscope/cache سليم</td>
+<td align="right">3–5</td>
+</tr>
+<tr>
+<td>P7</td>
+<td>إزالة legacy وQA وإصلاحات</td>
+<td>نسخة مرشحة</td>
+<td>مصفوفة قبول وتقارير فعلية</td>
+<td align="right">4–6</td>
+</tr>
+</tbody></table></div>
+<p>العمل يتبع الاعتماديات. لا إعادة كتابة ضخمة لكل الملفات دفعة واحدة. كل منطقة تستبدل ضمن حد واضح، ويحذف legacy الخاص بها بعد إثبات بديلها. النموذج لا يصبح إنتاجًا تلقائيًا.</p>
+<h2 id="master-section-51" tabindex="-1">43 — الاختبارات والأدلة المطلوبة</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>المجال</th>
+<th>الفحص</th>
+<th>الدليل</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>المحتوى</td>
+<td>كل حقول المواضيع والمصادر</td>
+<td>مقارنة بنيوية/نصية؛ أي تغيير طبي يراجع منفصلًا</td>
+</tr>
+<tr>
+<td>المسارات</td>
+<td>القديم والجديد والمجهول</td>
+<td>direct links/history/Back</td>
+</tr>
+<tr>
+<td>البحث</td>
+<td>العناوين والمرادفات والمقاطع</td>
+<td>مجموعة استعلامات قبول مع سياق كامل</td>
+</tr>
+<tr>
+<td>التخزين</td>
+<td>المخططات القديمة ورفض الكتابة</td>
+<td>توافق وعدم لمس مفاتيح المدفوع</td>
+</tr>
+<tr>
+<td>التعلم</td>
+<td>الأنواع والمراحل والفشل</td>
+<td>seed/first choice/session/result/retry</td>
+</tr>
+<tr>
+<td>ECG</td>
+<td>الإشارة والعلامات والمقارنة</td>
+<td>كل الحالات وكل finding وSVG IDs</td>
+</tr>
+<tr>
+<td>التسجيلات</td>
+<td>العينات والوسوم والمصدر</td>
+<td>hashes وprovenance للـ 12</td>
+</tr>
+<tr>
+<td>الاستجابة</td>
+<td>320/360/390/430/600/768/900/1024/1280/1440/1920</td>
+<td>overflow ولقطات ومراجعة بصرية</td>
+</tr>
+<tr>
+<td>الوصولية</td>
+<td>keyboard/contrast/reflow/reader</td>
+<td>آلي ويدوي، مع اسم الجهاز والمتصفح</td>
+</tr>
+<tr>
+<td>الطباعة</td>
+<td>A4/Letter/full/quick/ECG</td>
+<td>معاينة PDF ومراجعة الصفحات</td>
+</tr>
+<tr>
+<td>دون اتصال</td>
+<td>cache cold/warm/lazy assets</td>
+<td>عامل جاهز ثم cold reopen بلا شبكة</td>
+</tr>
+<tr>
+<td>التحديث</td>
+<td>السابق→الجديد</td>
+<td>تقدم وملاحظات قبل/بعد وupdate prompt</td>
+</tr>
+<tr>
+<td>scope</td>
+<td>root/subdirectory/تطبيق آخر على origin</td>
+<td>تنظيف محدود ومسارات نسبية</td>
+</tr>
+<tr>
+<td>الأداء</td>
+<td>cold/warm/search/50 navigations</td>
+<td>logs وحجم ومقارنة baseline</td>
+</tr>
+<tr>
+<td>الأمان</td>
+<td>input/import/CSP/clipboard</td>
+<td>malformed data ولا unsafe-eval إضافي</td>
+</tr>
+</tbody></table></div>
+<p>يشغل <code>node --test tests/*.test.js</code> قبل النشر، مع فحص متصفح مناسب لكل تغيير UI. لا تحذف assertions السلامة لإخفاء regression. الاختبارات meaningful للسلوك والبيانات والفشل، وليست نسخًا للتنفيذ.</p>
+<p>Chrome emulation لا يثبت نجاح Safari الفعلي أو هاتف Android/iOS أو مراجعة اختصاصي ECG. يسجل التقرير «تم / لم يتوفر / فشل / أصلح وأعيد» بدقة.</p>
+<h2 id="master-section-52" tabindex="-1">44 — مصفوفة قبول كل شاشة</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>الشاشة</th>
+<th>العرض والبيانات</th>
+<th>التفاعل</th>
+<th>الفشل / الوصولية / النطاق</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Library</td>
+<td>45 موضوعًا، بحث، تصنيف</td>
+<td>حفظ/فلترة/رجوع</td>
+<td>صفر نتائج، keyboard، محلي</td>
+</tr>
+<tr>
+<td>Search</td>
+<td>مقتطف وسياق لكل نوع</td>
+<td>اختيار/فتح/Back</td>
+<td>فشل فهرس، focus، محلي</td>
+</tr>
+<tr>
+<td>Topic</td>
+<td>كل الحقول والمصادر</td>
+<td>jumps/notes/print</td>
+<td>storage fail، headings، full print</td>
+</tr>
+<tr>
+<td>Quick</td>
+<td>ملخص مصادق عليه</td>
+<td>selector/full/copy</td>
+<td>manual copy، ترتيب قراءة، quick print</td>
+</tr>
+<tr>
+<td>Learn</td>
+<td>استئناف ومراجعة صادقان</td>
+<td>resume/start</td>
+<td>empty/session only، labels</td>
+</tr>
+<tr>
+<td>Short case</td>
+<td>12 سيناريو وخيارات وشرح</td>
+<td>answer/next/retry</td>
+<td>فقد جلسة، fieldset/status</td>
+</tr>
+<tr>
+<td>Evolving case</td>
+<td>6 حالات ومراحل/debrief</td>
+<td>lock/continue/resume</td>
+<td>persist fail، question focus</td>
+</tr>
+<tr>
+<td>Tracks</td>
+<td>أهداف وأنشطة موجودة</td>
+<td>skip/continue</td>
+<td>missing activity، list/progress</td>
+</tr>
+<tr>
+<td>Preparation</td>
+<td>6 وحدات ومصادر</td>
+<td>mark read</td>
+<td>لا شهادة مهارة، storage fail</td>
+</tr>
+<tr>
+<td>Visuals</td>
+<td>5 أنواع وحدود</td>
+<td>reveal/compare</td>
+<td>lazy fail، وصف بديل</td>
+</tr>
+<tr>
+<td>ECG guide</td>
+<td>7 خطوات/18 نمطًا/27 شكلًا</td>
+<td>jumps/expand/practice</td>
+<td>missing figure، بدائل keyboard</td>
+</tr>
+<tr>
+<td>ECG case</td>
+<td>69 حالة ومعايرة</td>
+<td>zoom/marks/compare</td>
+<td>unknown finding، targets بديلة</td>
+</tr>
+<tr>
+<td>Recordings</td>
+<td>12 أصلًا ووسومها</td>
+<td>choose/reveal/view</td>
+<td>load fail، source labels، cache</td>
+</tr>
+<tr>
+<td>ECG practice</td>
+<td>وصف وتلميح وحدود</td>
+<td>reveal/locate/next</td>
+<td>store fail، بديل السحب</td>
+</tr>
+<tr>
+<td>Progress</td>
+<td>مقاييس منفصلة</td>
+<td>review/export/import</td>
+<td>invalid backup، حالات صريحة</td>
+</tr>
+<tr>
+<td>Settings</td>
+<td>قراءة ومظهر وبيانات</td>
+<td>immediate apply</td>
+<td>blocked write، أسماء controls</td>
+</tr>
+<tr>
+<td>Notice</td>
+<td>النص الحالي</td>
+<td>اتفاق صريح</td>
+<td>لا قبول في الاختبار، dialog focus</td>
+</tr>
+<tr>
+<td>Update</td>
+<td>حالة وخطوة تالية</td>
+<td>retry/defer</td>
+<td>نسخة قديمة عاملة، رسالة ثابتة</td>
+</tr>
+</tbody></table></div>
+<h2 id="master-section-53" tabindex="-1">45 — النشر والتراجع</h2><p>هذه خطة لنشر تنفيذ مستقبلي في نطاق الإذن المناسب وقت التنفيذ؛ لا تنشر وثائق التصميم باعتبارها runtime.</p>
+<ol>
+<li>commit محدد لنسخة مرشحة مجتازة، مع تقرير تغطية.</li>
+<li>تحديث جميع release tokens وCACHE_VERSION معًا عند تغيير الأصول التشغيلية؛ لا حاجة إلى إصدار تشغيل جديد لوثائق فقط.</li>
+<li>الحزمة: index/manifest/sw/_headers/.htaccess/assets فقط؛ تستبعد docs/dev/tests/.git وأي credentials أو ملفات التطبيق المدفوع.</li>
+<li>preview ثم فحص، وبعده نشر إنتاج مخول. لا نقل أصل أو DNS مفترض.</li>
+<li>تحقق حي من headers/MIME/hashes/token/worker والروابط وoffline؛ لا يكتفى برسالة CLI.</li>
+<li>التراجع يستعيد runtime مستقرًا بإصدار أصول جديد وcache أعلى، مع توافق المخططات؛ لا إعادة إصدار cache قديم باعتباره تراجعًا مضمونًا.</li>
+<li>التقرير يعرف commit وURL ونتائج الاختبار والقيود؛ هوية التثبيت والتقدم والتطبيقات المجاورة محفوظة.</li>
+</ol>
+<h2 id="master-section-54" tabindex="-1">46 — المخاطر والقرارات التي تمنعها</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>الخطر</th>
+<th>قرار الحد منه</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ضياع تفصيل سريري</td>
+<td>mapping لكل field؛ لا ملخص آلي غير مراجع</td>
+</tr>
+<tr>
+<td>زحام بديل في Learn</td>
+<td>استئناف واحد ومراجعة وأربعة مداخل</td>
+</tr>
+<tr>
+<td>Home ومكتبة مكررتان</td>
+<td>Library افتراضية وLearn للتعلم؛ لا وجهة خامسة</td>
+</tr>
+<tr>
+<td>تحريف ECG بـCSS</td>
+<td>renderer ثابت واختبارات الإحداثيات والمعايرة</td>
+</tr>
+<tr>
+<td>فقد روابط أو سجلات قديمة</td>
+<td>aliases ومخططات محفوظة</td>
+</tr>
+<tr>
+<td>CSS جديد فوق قديم بلا نهاية</td>
+<td>حد legacy ثم استبدال وإزالة بدليل</td>
+</tr>
+<tr>
+<td>ميزات حديثة لا تدعمها منصة</td>
+<td>progressive enhancement وفحص بيئة الهدف</td>
+</tr>
+<tr>
+<td>حذف important يضر بالطباعة</td>
+<td>فحوص screen/reduced motion/print</td>
+</tr>
+<tr>
+<td>تقدم يوهم بالإتقان</td>
+<td>مقاييس نشاط فعلية منفصلة</td>
+</tr>
+<tr>
+<td>إعادة بناء لا تنتهي</td>
+<td>بوابات مراحل وتسليم قابل للتجربة</td>
+</tr>
+<tr>
+<td>وعد offline يتجاهل المصادر</td>
+<td>نطاق محلي واضح وروابط خارجية موسومة</td>
+</tr>
+<tr>
+<td>محتوى علاجي جديد أثناء التصميم</td>
+<td>مراجعة مستقلة خارج تجميل الواجهة</td>
+</tr>
+</tbody></table></div>
+<h2 id="master-section-55" tabindex="-1">47 — تعريف اكتمال المشروع</h2><ul>
+<li><input disabled="" type="checkbox"> كل عنصر جرد قديم له مقابل قابل للوصول واختبار قبول.</li>
+<li><input disabled="" type="checkbox"> كل رابط قديم واختصار PWA يفتح السياق نفسه، وBack يحفظ المصدر.</li>
+<li><input disabled="" type="checkbox"> الغلاف والمكونات والحالات متسقة في الوجهات الأربع.</li>
+<li><input disabled="" type="checkbox"> لا filter خفي يؤثر في وجهة أخرى.</li>
+<li><input disabled="" type="checkbox"> كل 45 موضوعًا تحتفظ بحقوقها ومحتواها ومصادرها؛ Quick مراجع صراحة.</li>
+<li><input disabled="" type="checkbox"> 69 حالة ECG و 27 شكلًا و 12 تسجيلًا تجتاز الإشارة والعلامات والمعايرة والمصدر.</li>
+<li><input disabled="" type="checkbox"> حالات التعلم والثقة والمراجعة تمثل بيانات حقيقية بلا ادعاء إتقان.</li>
+<li><input disabled="" type="checkbox"> المفاتيح القديمة وهوية التثبيت والتطبيق المدفوع والتطبيقات المجاورة محفوظة.</li>
+<li><input disabled="" type="checkbox"> الوصولية والطباعة وتقليل الحركة والفشل مجتازة ضمن نطاق اختبار مسجل.</li>
+<li><input disabled="" type="checkbox"> تحديث PWA وoffline بعد التجهيز والتراجع مثبتة بالأدلة.</li>
+<li><input disabled="" type="checkbox"> اختبارات Node والفحص المحلي المناسب ناجحة؛ الأجهزة غير المفحوصة معلنة.</li>
+<li><input disabled="" type="checkbox"> legacy المستبدل محذوف، والحجم والأداء مقاسان.</li>
+<li><input disabled="" type="checkbox"> تقرير release صادق بشأن المتبقي وحدود الاعتماد السريري والوصولية.</li>
+</ul>
+<h2 id="master-section-56" tabindex="-1">48 — المراجع والملفات المرافقة</h2><ul>
+<li><a href="#coverage" data-doc-link="coverage">CONTENT-COVERAGE.md</a>: معرفات العناصر الحالية ومواضعها الجديدة ومعايير حفظها.</li>
+<li><a href="COLOR-CONTRAST.json">COLOR-CONTRAST.json</a>: حساب أزواج النص والخلفية المقترحة؛ لا يغني عن QA المكونات المركبة.</li>
+<li><a href="#contracts" data-doc-link="contracts">SCREEN-CONTRACTS.md</a>: الأفعال والحالات والنصوص والقواعد الدقيقة للمكونات والصفحات.</li>
+<li>الخطة السابقة: <code>/Users/aalimd/.gemini/antigravity/brain/842e5500-68d2-4383-b6b0-23040e40fdb1/complete-redesign-plan.md</code>؛ تصحح هذه المواصفة جردها وألوانها ووعودها، وتحدد التوافق والاختبار.</li>
+<li><a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</a>، <a href="https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html">حجم الهدف AA</a>، <a href="https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced.html">الحجم المحسّن AAA</a>، <a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html">التباين</a>.</li>
+<li><a href="https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/">WAI APG Dialog</a>، <a href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/">WAI APG Tabs</a>، <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Introduction">CSS Cascade</a>، <a href="https://web.dev/articles/vitals">Web Vitals</a>.</li>
+</ul>
+<p><strong>قاعدة الحسم:</strong> التفاصيل التي تظهر أثناء التنفيذ تضاف إلى عقد المكوّن ومصفوفة التغطية واختبار القبول. عبارة «كل شيء» لا تغني عن جرد متجدد وسجل حالات واضح.</p>
+</section><section class="document" data-document="contracts" hidden><h1 id="contracts-section-1" tabindex="-1">عقود الشاشات والمكونات — EM Pocket</h1><p>ملحق تنفيذي لـ<a href="#master" data-doc-link="master">المواصفة الرئيسية</a>. جميع التفاصيل هنا مقترحة للتنفيذ؛ لا تمثل تغييرًا أُجري على التطبيق. معرفات القبول ثابتة ليست أسماء classes إلزامية.</p>
+<h2 id="contracts-section-2" tabindex="-1">A — قواعد مشتركة لا تتغير بين الشاشات</h2><p><strong>A01 — ملكية الوجهة:</strong> شريط التطبيق يملك وجهة واحدة نشطة. الموضوع السريري يفعّل Library، الحالة التعليمية Learn، وأي رسم/تسجيل ECG يفعّل ECG، والعرض المختصر Quick. يمكن أن يبقى Back إلى المصدر المختلف دون تغيير ملكية الوجهة.</p>
+<p><strong>A02 — عناوين:</strong> اسم الصفحة في المتصفح «اسم المحتوى · EM Pocket». يختلف عنوان dialog عن عنوان الصفحة. لا تبقى «Library» عند الدخول إلى حالة.</p>
+<p><strong>A03 — نطاق العرض:</strong> لا scroll أفقي للصفحة عند 320px. يسمح به داخل ECG والجدول الذي يحتاج بعدين فعلًا، مع اسم ووصف وحل وصول بديل. الأزرار تلتف بدل اختصار نصها الحرج.</p>
+<p><strong>A04 — الحشو:</strong> هاتف 16px، بطاقة 16px، فصل أقسام 24px؛ الشاشات 320–359 تستخدم هامش 12px. Desktop 24–32px وبطاقة 20–24px. لا double padding داخل بطاقة ثم داخل كل سطر.</p>
+<p><strong>A05 — الرموز:</strong> 20px بجوار الأفعال و 24px في التنقل. لا أيقونة جهاز كبيرة كزخرفة بكل بطاقة؛ badge صغيرة اختيارية. كل رمز مستقل له label، والزخرفي aria-hidden.</p>
+<p><strong>A06 — كثافة القراءة:</strong> فقرات منطقية متصلة. القوائم للخطوات أو العناصر المتوازية، لا تفكيك جملة سريرية إلى tokens متباعدة. جدول عند وجود مقارنة حقيقية؛ لا جدول لتزيين كل فقرة.</p>
+<p><strong>A07 — الأرقام:</strong> عدد دقيق من مصدر الحالة، tabular-nums للصفوف المتغيرة، وصفر واضح عند الحاجة. null يعرض «Not specified»، لا صفر. لا تقريب يغير المعنى.</p>
+<p><strong>A08 — النص الطويل:</strong> title يلتف، button ينمو رأسيًا، badge يلتف إن لزم، والشرح السريري لا line-clamp. يسمح clamp لوصف فهرس غير سريري كامل ومتاح بعد الفتح فقط.</p>
+<p><strong>A09 — الحالات:</strong> disabled لا يقلل مقروئية شرح طبي؛ يجري تعطيل الفعل دون طمس النص. busy يحتفظ بالاسم والعرض. نجاح الحفظ يحتاج نجاح كتابة حقيقي.</p>
+<p><strong>A10 — عرض الهاتف الأفقي:</strong> لا force orientation، ولا استبدال واجهة مختلفة غير قابلة للرجوع. أدوات ECG تلتف، ومساحة الرسم تستفيد من العرض مع بقاء زر الإغلاق.</p>
+<p><strong>A11 — نمط الخط:</strong> line-height أساسي 1.65، حد أدنى body 16px في الإعداد الافتراضي. كل text token يتبع مقياس المستخدم، مع اختبار عدم قص الرسم والوسوم.</p>
+<p><strong>A12 — المحتوى الخارجي:</strong> يظهر اسم المصدر ويفتح كرابط حقيقي. <code>target=_blank</code> مصحوب بوصف ملائم وrel آمن؛ في offline يوضح احتياجه إلى اتصال.</p>
+<p><strong>A13 — الحالة المرئية:</strong> اختيار زرين لا يعرض لونين كافيين وحدهما؛ selected له اسم/علامة وحالة متاحة. no hover-only instructions.</p>
+<p><strong>A14 — القوائم المتعددة:</strong> عند فتح Menu جديدة تغلق السابقة؛ لا overlays متداخلة إلا ضرورة صريحة. Escape يغلق الأعلى فقط ثم يعيد التركيز لمصدرها.</p>
+<p><strong>A15 — أكواد ومصطلحات:</strong> الاشتقاقات والوحدات والمعرفات LTR مستقلة داخل العربية، ولا عكس لزمن ECG. العنوان الإنجليزي الطبي يحتفظ باتجاهه.</p>
+<h2 id="contracts-section-3" tabindex="-1">B — مواصفات الأبعاد لكل مكوّن</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>المكوّن</th>
+<th>الأبعاد الأساسية</th>
+<th>الحواف/الحشو</th>
+<th>تفاصيل</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C01</td>
+<td>زر أساسي</td>
+<td>ارتفاع أدنى 48px</td>
+<td>radius 10، padding 12×16</td>
+<td>نص 15–16px، أيقونة 20، gap 8</td>
+</tr>
+<tr>
+<td>C02</td>
+<td>زر ثانوي</td>
+<td>≥44px</td>
+<td>نفس نظام الحواف</td>
+<td>حد مقروء؛ لا ظل افتراضي</td>
+</tr>
+<tr>
+<td>C03</td>
+<td>زر رمز</td>
+<td>44×44 أو 48×48</td>
+<td>radius 10</td>
+<td>مساحة الرمز لا تحدد مساحة اللمس</td>
+</tr>
+<tr>
+<td>C04</td>
+<td>حقل بحث</td>
+<td>≥48px؛ عرض متاح</td>
+<td>padding 12–16</td>
+<td>clear button ≥44px دون تغطية النص</td>
+</tr>
+<tr>
+<td>C05</td>
+<td>بطاقة موضوع</td>
+<td>ارتفاع تلقائي</td>
+<td>radius 16، padding 16/20</td>
+<td>اسم 17–18px، وصف 14–15px، فصل 12</td>
+</tr>
+<tr>
+<td>C06</td>
+<td>بطاقة تعلم</td>
+<td>ارتفاع تلقائي</td>
+<td>مثل بطاقة الموضوع</td>
+<td>نوع وحالة وفعل؛ لا عدد متضارب</td>
+</tr>
+<tr>
+<td>C07</td>
+<td>شارة</td>
+<td>ارتفاع تلقائي، min24px</td>
+<td>radius 6، padding4×8</td>
+<td>نص 12px؛ ليست زرًا صغيرًا إذا تفاعلية</td>
+</tr>
+<tr>
+<td>C08</td>
+<td>filter chip</td>
+<td>min44px إذا تفاعلي</td>
+<td>radius10، padding8×12</td>
+<td>selected واضح؛ أسماء لا تختفي</td>
+</tr>
+<tr>
+<td>C09</td>
+<td>checkbox row</td>
+<td>min48px</td>
+<td>padding8×0</td>
+<td>مربع 20–22px وlabel واسع</td>
+</tr>
+<tr>
+<td>C10</td>
+<td>accordion header</td>
+<td>min52px</td>
+<td>padding12–16</td>
+<td>heading وbutton يملآن العرض</td>
+</tr>
+<tr>
+<td>C11</td>
+<td>feedback</td>
+<td>ارتفاع تلقائي</td>
+<td>radius12، padding16</td>
+<td>عنوان ثم سبب ثم روابط؛ لا fixed height</td>
+</tr>
+<tr>
+<td>C12</td>
+<td>inline alert</td>
+<td>ارتفاع تلقائي</td>
+<td>padding12–16</td>
+<td>رمز 20، نص وفعل مستقل</td>
+</tr>
+<tr>
+<td>C13</td>
+<td>toast</td>
+<td>max420px Desktop</td>
+<td>padding12×16</td>
+<td>الهاتف ضمن الهامش؛ فوق nav وبعيد عن keyboard</td>
+</tr>
+<tr>
+<td>C14</td>
+<td>dialog</td>
+<td>max560px</td>
+<td>radius20، padding24</td>
+<td>max-height من viewport؛ scroll داخلي واحد</td>
+</tr>
+<tr>
+<td>C15</td>
+<td>mobile sheet</td>
+<td>كامل العرض/المساحة عند الحاجة</td>
+<td>حواف أعلى 20 إذا جزئية</td>
+<td>ليس ارتفاعًا ثابتًا يقطع المحتوى</td>
+</tr>
+<tr>
+<td>C16</td>
+<td>topbar</td>
+<td>min56px</td>
+<td>padding مناسب للـsafe-area</td>
+<td>يزيد ارتفاعه عند النص الكبير</td>
+</tr>
+<tr>
+<td>C17</td>
+<td>bottom nav</td>
+<td>min64px + inset</td>
+<td>4 خلايا متساوية</td>
+<td>لا captions أصغر من 12px</td>
+</tr>
+<tr>
+<td>C18</td>
+<td>desktop sidebar</td>
+<td>248px أو 80px</td>
+<td>gap8، padding16</td>
+<td>أسماء واضحة/كشف مع labels لا tooltips فقط</td>
+</tr>
+<tr>
+<td>C19</td>
+<td>contents rail</td>
+<td>200–220px</td>
+<td>gap4–8</td>
+<td>يظهر فقط إن بقي عرض قراءة مناسب</td>
+</tr>
+<tr>
+<td>C20</td>
+<td>ECG canvas</td>
+<td>عرض مرن، نسبة renderer</td>
+<td>viewport مستقل</td>
+<td>لا فرض ارتفاع بطاقة يقص اشتقاقات</td>
+</tr>
+<tr>
+<td>C21</td>
+<td>answer option</td>
+<td>min56px</td>
+<td>padding16، gap12</td>
+<td>letter badge اختياري ونص يلتف كاملًا</td>
+</tr>
+<tr>
+<td>C22</td>
+<td>note textarea</td>
+<td>min3 أسطر</td>
+<td>padding12</td>
+<td>maxlength800؛ count/status خارج الحقل</td>
+</tr>
+<tr>
+<td>C23</td>
+<td>progress bar</td>
+<td>track6–8px</td>
+<td>radius صغير</td>
+<td>label «2 of3» مستقل؛ لا إطار زخرفي</td>
+</tr>
+<tr>
+<td>C24</td>
+<td>menu item</td>
+<td>min44px</td>
+<td>padding12×16</td>
+<td>label واضح، حذف مدمر منفصل</td>
+</tr>
+<tr>
+<td>C25</td>
+<td>table</td>
+<td>عرض المحتوى/100%</td>
+<td>cell padding12</td>
+<td>رؤوس وcaption عند الحاجة؛ overflow محلي</td>
+</tr>
+</tbody></table></div>
+<h2 id="contracts-section-4" tabindex="-1">C — الألوان والحواف والظلال والحالات</h2><ul>
+<li>الخلفية Canvas هادئة، والبطاقة Surface. shadow واحد خفيف للبطاقات القابلة للرفع عند الحاجة؛ البطاقات داخل الموضوع تعتمد الفواصل والمسافات أكثر من الظلال.</li>
+<li>border structural نهاري <code>#D7E2DC</code> وليلي <code>#354B42</code> للزخرفة فقط. حدود inputs والتحكم الفعلي تستخدم زوجًا أوضح: <code>#698078</code> على الأبيض، و<code>#91A99F</code> على surface الليلي، وقد فحصت ضمن COLOR-CONTRAST.</li>
+<li>focus ring أخضر الهوية على surface نهاري، ومنت/فاتح على surface ليلي. إن كان الزر من اللون نفسه يضاف offset واضح يميزه عن المحيط.</li>
+<li>hover primary نهاري <code>#0F5549</code> وactive <code>#0B453B</code> مع أبيض؛ لا تخفيض opacity للزر كله. ألوان hover/active الليلية تُشتق وتُختبر قبل دمجها، ولا يُفترض نجاح كل color-mix.</li>
+<li>ظلال أولية: card <code>0 2px 8px rgb(17 45 35 / 5%)</code>، popover <code>0 8px 24px rgb(10 25 20 / 14%)</code>. في الليل ظل أقل اعتمادًا وحد مناسب؛ الألوان هي tokens لا literals متناثرة.</li>
+<li>لا ظلال على كل نص، ولا gradient خلف فقرات طبية، ولا خطوط رفيعة جدًا للإشارة العلمية.</li>
+<li>selected card لا تعني نشاطًا مكتملًا؛ يختلف selection عن completion في النص والرمز.</li>
+<li>Critical/Warning/Completed/Info لها foreground/background ثابتان مستقلان عن accent. حالات «incorrect» التعليمية لا توصف بأنها خطأ طبي ارتكبه المستخدم فعليًا.</li>
+<li>tooltip يظهر عند hover وfocus، مع تأخير قصير فقط للفأرة، ولا يحمل معلومة لازمة للتشغيل أو شرطًا سريريًا.</li>
+<li>كل theme/scale/bold/viewport داخل اختبار snapshot بصري؛ لا الاكتفاء بمظهر افتراضي واحد.</li>
+</ul>
+<h2 id="contracts-section-5" tabindex="-1">D — انتقالات الحالة المعيارية</h2><h3 id="contracts-section-6" tabindex="-1">D01 — الحفظ</h3><details class="diagram-source"><summary>صيغة المخطط البنيوي</summary><pre dir="ltr"><code>stateDiagram-v2
+    [*] --&gt; Unsaved
+    Unsaved --&gt; Saving: Save
+    Saving --&gt; Saved: write succeeded
+    Saving --&gt; SessionOnly: write failed
+    Saved --&gt; Unsaved: edited
+    SessionOnly --&gt; Saving: retry</code></pre></details><p>يظل النص عند الفشل. لا spinner طويل على كتابة محلية؛ تعلن الحالة النصية بعد تحقق النتيجة. Save أثناء busy لا ينشئ عملية ثانية. Back يشرح الخسارة الفعلية إن وجدت.</p>
+<h3 id="contracts-section-7" tabindex="-1">D02 — إجابة السؤال</h3><p>Unanswered → Committed → Feedback → Next decision → Debrief. لا انتقال من Unanswered إلى Next بضغطة مضاعفة، ولا تغيير للاختيار بعد تسجيل first choice. Retry ينشئ attempt جديدة ولا يعيد وصف المحاولة السابقة كأنها لم تقع.</p>
+<h3 id="contracts-section-8" tabindex="-1">D03 — تحميل رسم/تسجيل</h3><p>Idle → Loading → Ready أوError. Retry من Error، وتغيير route يبطل النتيجة القديمة. spinner له اسم، والخطأ له عنوان ورابط عودة. لا waveform بديل يملأ مساحة الفشل بصمت.</p>
+<h3 id="contracts-section-9" tabindex="-1">D04 — استيراد نسخة</h3><p>No file → Validating → Preview أوRejected → Applying → Applied أوFailed/restored أوFailed/restoration incomplete. التطبيق لا يكتب أثناء Preview ولا يطبق ملفًا اختير لاحقًا إذا سبقه تحقق أبطأ لملف قديم.</p>
+<h3 id="contracts-section-10" tabindex="-1">D05 — تحديث PWA</h3><p>Current → Update found → Ready to refresh → Draft check → Defer أوRefresh → New current. خطأ التثبيت يبقي الحالة القديمة صريحة؛ لا يختفي شريط التحديث برسالة نجاح قبل تفعيل النسخة.</p>
+<h3 id="contracts-section-11" tabindex="-1">D06 — البحث</h3><p>Idle → Typing/composing → Results أوNo results أوIndex unavailable → Selected result → Section opened. فتح نتيجة يحفظ query/selection/scroll للرجوع. Clear query مختلف عن Reset library filters.</p>
+<h2 id="contracts-section-12" tabindex="-1">E — نصوص الواجهة المرجعية</h2><p>هذه نصوص إنجليزية مقترحة لأن المنتج الحالي إنجليزي. تُراجع لغويًا عند التنفيذ وتترجم ترجمة بشرية إن أضيفت العربية؛ لا تغيير للمحتوى الطبي لمجرد ملاءمة زر.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>الموضع</th>
+<th>النص المقترح</th>
+<th>القاعدة</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>بحث شامل</td>
+<td>Search topics, findings or ECGs</td>
+<td>النطاق الحقيقي شامل</td>
+</tr>
+<tr>
+<td>نتائج كاملة</td>
+<td>View all results</td>
+<td>لا يَعِد بعدد لم يحسب</td>
+</tr>
+<tr>
+<td>صفر نتائج</td>
+<td>No results for “…”</td>
+<td>الاستعلام escaped/plain text</td>
+</tr>
+<tr>
+<td>إجراء صفر نتائج</td>
+<td>Clear search / Browse library</td>
+<td>طريقان واضحان</td>
+</tr>
+<tr>
+<td>فلاتر</td>
+<td>Filters · 2 active</td>
+<td>العدد يعكس مجموعات/قيم محددة بعقد واحد</td>
+</tr>
+<tr>
+<td>reset</td>
+<td>Reset filters</td>
+<td>لا يمسح التقدم</td>
+</tr>
+<tr>
+<td>حفظ موضوع</td>
+<td>Save topic / Saved</td>
+<td>الاسم والحالة متطابقان</td>
+</tr>
+<tr>
+<td>إزالة حفظ</td>
+<td>Remove from saved</td>
+<td>لا حذف موضوع أو note</td>
+</tr>
+<tr>
+<td>استئناف مرحلة</td>
+<td>Resume case · Decision 2 of3</td>
+<td>فقط إن محفوظة فعليًا</td>
+</tr>
+<tr>
+<td>آخر موضوع</td>
+<td>Recently opened</td>
+<td>لا نسبة إنجاز مختلقة</td>
+</tr>
+<tr>
+<td>مدة تقديرية</td>
+<td>Estimated 5–8 min</td>
+<td>بعد قياس مبدئي؛ لا countdown</td>
+</tr>
+<tr>
+<td>مراجعة مجدولة</td>
+<td>Due for review</td>
+<td>مختلفة عن ضعف ثقة ذاتية</td>
+</tr>
+<tr>
+<td>ضعف ثقة</td>
+<td>Flagged for review</td>
+<td>ليست موعدًا محسوبًا بلا بيانات</td>
+</tr>
+<tr>
+<td>نتيجة تعلم</td>
+<td>First choices in this attempt</td>
+<td>ليست competency score</td>
+</tr>
+<tr>
+<td>correct</td>
+<td>Correct for this scenario</td>
+<td>مع سبب وحدود</td>
+</tr>
+<tr>
+<td>incorrect</td>
+<td>Review this choice</td>
+<td>مع شرح البديل</td>
+</tr>
+<tr>
+<td>reveal</td>
+<td>Reveal explanation</td>
+<td>لا كشف تشخيص في اسم سابق مخفي</td>
+</tr>
+<tr>
+<td>وحدة</td>
+<td>Mark as read</td>
+<td>لا «Skill completed»</td>
+</tr>
+<tr>
+<td>ثقة ذاتية</td>
+<td>Got it / Partly / Review again</td>
+<td>توضيح Self-rated</td>
+</tr>
+<tr>
+<td>note</td>
+<td>Private study note</td>
+<td>تخزين محلي</td>
+</tr>
+<tr>
+<td>لم يحفظ</td>
+<td>Unsaved changes</td>
+<td>يبقى مرئيًا</td>
+</tr>
+<tr>
+<td>حفظ ناجح</td>
+<td>Saved on this device</td>
+<td>بعد كتابة ناجحة</td>
+</tr>
+<tr>
+<td>حفظ فشل</td>
+<td>Available for this visit only</td>
+<td>ليس «Saved»</td>
+</tr>
+<tr>
+<td>نسخ ناجح</td>
+<td>Reference template copied</td>
+<td>لا يوحي بhandover مريض مكتمل</td>
+</tr>
+<tr>
+<td>نسخ رفض</td>
+<td>Clipboard unavailable — copy manually</td>
+<td>textarea قابل للتحديد</td>
+</tr>
+<tr>
+<td>offline pending</td>
+<td>Offline setup pending</td>
+<td>لا وعد مبكر</td>
+</tr>
+<tr>
+<td>offline ready</td>
+<td>Ready for offline use</td>
+<td>بعد العامل والأصول المطلوبة</td>
+</tr>
+<tr>
+<td>رابط مصدر</td>
+<td>External source · internet required</td>
+<td>عند offline أوفي help</td>
+</tr>
+<tr>
+<td>تحديث</td>
+<td>New version available</td>
+<td>إجراء Refresh when ready</td>
+</tr>
+<tr>
+<td>source date</td>
+<td>Selected source checks: 8 Oct2026</td>
+<td>نطاق المراجعة لا اعتماد شامل</td>
+</tr>
+<tr>
+<td>صناعي</td>
+<td>Synthetic teaching model</td>
+<td>ظاهر قرب الرسم</td>
+</tr>
+<tr>
+<td>حقيقي</td>
+<td>Recorded ECG · PTB-XL</td>
+<td>يظهر المصدر والإصدار داخل details</td>
+</tr>
+<tr>
+<td>تخطيطي</td>
+<td>Schematic diagram</td>
+<td>لا قياس فيزيائي مفترض</td>
+</tr>
+<tr>
+<td>قيمة مجهولة</td>
+<td>Not specified</td>
+<td>null ليست صفرًا</td>
+</tr>
+<tr>
+<td>Quick</td>
+<td>Selected educational reference points</td>
+<td>نطاق الملخص واضح</td>
+</tr>
+<tr>
+<td>print</td>
+<td>Print / Save as PDF</td>
+<td>سلوك browser print الحقيقي</td>
+</tr>
+<tr>
+<td>import</td>
+<td>Add missing records</td>
+<td>السلوك الحالي يحتفظ بالقيم الموجودة</td>
+</tr>
+<tr>
+<td>رفض import</td>
+<td>Unsupported backup format</td>
+<td>لا كتابة جزئية</td>
+</tr>
+<tr>
+<td>اتفاق</td>
+<td>Accept &amp; enter EM Pocket</td>
+<td>فعل صريح بعد checkbox</td>
+</tr>
+<tr>
+<td>About</td>
+<td>Educational reference</td>
+<td>لا اعتماد/تشخيص فردي</td>
+</tr>
+</tbody></table></div>
+<h2 id="contracts-section-13" tabindex="-1">F — شاشة Library: العقد القابل للاختبار</h2><p><strong>الدخول:</strong> <code>./</code> أو<code>#library</code>، ومسار العودة من topic. لا تحميل للمكتبة الحقيقية ECG قبل طلبها.</p>
+<p><strong>الصفوف:</strong> header → title/search → system filters → result count/saved → topics → learning link. على 320px لا أيقونات تصنيف كبيرة ولا صف metadata مزدحم. Saved زر ثانوي مستقل عن عنوان نتيجة.</p>
+<p><strong>الفلاتر المفصلة:</strong> groups الأصلية + patient context: All/Pediatric/Pregnancy/Older adult/Immunocompromised/Trauma. أهمية التشخيصات All/Critical/Emergent/Common كما في المصدر، مع شرح أن الوصف للمحتوى. لا تعامل «Common» كأنها «Stable patient».</p>
+<p><strong>حالة الرجوع:</strong> يعود focus للعنوان أوالكارت الذي فتحه، مع نفس الفلاتر والموضع. تغيير الفلاتر يعلن count بعد الاستقرار، ولا يركز أعلى الصفحة كل مرة.</p>
+<p><strong>قبول:</strong> كل topic له card، ولا تكرار معرفات، ولا card تفاعلية داخل button أخرى، ولا فقد اسم بسبب line-clamp.</p>
+<h2 id="contracts-section-14" tabindex="-1">G — شاشة Topic: خريطة التفاصيل</h2><ul>
+<li>عنوان ومصدر/تاريخ ومجال، ثم Save/Quick/More.</li>
+<li>القسم المستهدف بالرابط/البحث يفتح، ويُنقل focus إلى عنوانه، وباقي الأقسام تبقى قابلة للوصول.</li>
+<li>Accordion لا يعاد بناؤه عند ضغط Save. checkbox لا يسبب إعادة تصيير كاملة تفقد موضع القارئ.</li>
+<li>حقل ملاحظة أسفل منطقة تعلم واضحة؛ التنبيه الطبي ليس watermark على النص.</li>
+<li>جدول workup يحتوي عناوين مجموعات كاملة؛ عمود نص متعدد الأسطر أفضل من scroll إذا ليست هناك مقارنة ثنائية حقيقية.</li>
+<li>مصادر الروابط: اسم الجهة والوثيقة/السنة، حقل checked من المحتوى، وسطر limits. no auto-current-year update.</li>
+<li>See also يضم روابط ثابتة بالاسم الحقيقي، لا next عشوائي بحسب card index.</li>
+<li>نسخة Print تفتح كل الأقسام الطبية، وتستبعد notes/selection إن لم يختارهما المستخدم.</li>
+</ul>
+<h2 id="contracts-section-15" tabindex="-1">H — Learn وProgress: ترتيب الأولوية</h2><ul>
+<li>New: تعريف مختصر + Start a short case + ECG basics + أنواع الأنشطة؛ لا سبع بطاقات صفر.</li>
+<li>Returning: Resume إن كان دقيقًا، ثم Due review، ثم أنواع الأنشطة، ثم مسار مقترح، ثم السجل.</li>
+<li>Completed all: «Revisit a case» و«Review saved findings»؛ لا «You mastered emergency medicine».</li>
+<li>Progress: مجموعات مستقلة للمواضيع/الحالات القصيرة إن توافرت بيانات محاولاتها/الحالات المتطورة/ECG/الوحدات. لا اختلاق counters للحالات القصيرة التي لا يخزن محركها نتائج إجابات دائمة.</li>
+<li>Backup داخل Progress، وبرابط ثانوي من Settings. preview يوضح التعارضات وعدد الأقسام دون عرض notes الخاصة كلها على شاشة عامة.</li>
+<li>مستوى التعلم control واحد مشترك، ليس selector يتكرر في كل بطاقة. شرح اختلاف prompts متاح بجانبه.</li>
+</ul>
+<h2 id="contracts-section-16" tabindex="-1">I — Quick: عملية اعتماد الملخصات</h2><ol>
+<li>استخراج حقول المصدر الحالية بلا تغيير النص.</li>
+<li>تحديد نقاط ملخص لكل موضوع وسبب اختيارها.</li>
+<li>التحقق من بقاء الاستثناءات والقيود والموانع مرتبطة بالنقطة المختصرة.</li>
+<li>مراجعة بشرية سريرية للـ 45 ملخصًا، مع reviewer/date/scope إذا توفرت فعلًا.</li>
+<li>إلى حين الاعتماد يُعرض النص الأصلي للقسم كاملًا تحت عنوانه؛ لا حذف باستعمال slice كافٍ لوحده.</li>
+<li>اختبار روابط الملخص إلى original section، والنسخ والطباعة وحدود العرض.</li>
+</ol>
+<p>لا تبني UX على توفر ملخصات أوجرعات أوscore calculators لم يراجعها أحد. غياب ملخص معتمد حالة محتوى معلومة، لا فراغ يملأه المطور بعلاج جديد.</p>
+<h2 id="contracts-section-17" tabindex="-1">J — ECG: نقاط تدقيق قبل اعتماد أي تغيير بصري</h2><ul>
+<li>نفس مسارات الموجة عند نفس المدخلات قبل/بعد CSS.</li>
+<li>عرض كل lead label وعدم قص الصف الأخير أوsupplemental leads.</li>
+<li>المعايرة المعلنة توافق renderer؛ zoom لا يُسمى gain.</li>
+<li>لا تحويل SVG إلى bitmap منخفض الدقة للنسخة المكبرة أوالطباعة.</li>
+<li>العلامات على الرسم نفسه، وتوافق جميع targets في الحالات الـ 69.</li>
+<li>أسماء SVG فريدة في original/reference/fullscreen معًا.</li>
+<li>أصلي ومقارنة لا يستخدمان نفس IDs حتى لو كانا في DOM مختلف شكليًا داخل page واحدة.</li>
+<li>المقارنة reference synthetic لا يُسمى «Previous ECG».</li>
+<li>Practice لا يسرب جوابًا في alt/title/heading/selector عند الإخفاء المقصود؛ البديل النصي يصف الشكل والمهمة دون إفسادها.</li>
+<li>full12-lead وfocused strip ليسا قابلين للتبادل دون تسمية؛ لا 12-lead مزعوم من leads مركبة غير مدعومة.</li>
+<li>بيانات التسجيلات وأرقامها وsource statements وlikelihood null محفوظة.</li>
+<li>الرسم في الوضع الليلي لا يبدل الإشارة إلى لون يختفي فوق الورقة.</li>
+<li>القياس بضوابط أصلية/keyboard، ومؤشرات المنطقة يمكن اختيارها من قائمة نصية.</li>
+<li>يراجع normal/Wellens A/B/posterior/Brugada/TCA/arrhythmias وأقصى ارتفاع/عرض ومختلف تنسيقات المكتبة بصريًا، مع فحص آلي لكل المعرفات.</li>
+</ul>
+<h2 id="contracts-section-18" tabindex="-1">K — Settings وNotice وData: قرارات دقيقة</h2><p>Settings صفحة قابلة للرابط، وتستخدم sheet فقط كتقديم responsive لها؛ Back/Escape يعودان لمصدر صحيح. معاينة Reading فقرة ثابتة قصيرة دون حالة مريض أوجرعة تتغير.</p>
+<p>Accent يحتفظ بالمعرفات الستة القديمة. معاينة اللون لا تغير critical/warning. اختيار dark يحدّث native color-scheme وtheme-color ضمن نفس العملية، مع اختبار عدم flash أثناء startup.</p>
+<p>Notice الأول لا يعتبر checkbox focus أوضغط Escape اتفاقًا. في review mode يظل القبول القديم محترمًا؛ لا طلب موافقة متكرر بسبب تغيير CSS. الاختبارات لا تضغط Accept نيابة عن المستخدم، وتعزل عرضها في DOM مؤقت دون كتابة مفتاح الاتفاق.</p>
+<p>Data controls لا تُدخل عملية reset شاملة ضمن تفضيل لون. إزالة محددة: اختيار نطاق → عدد/وصف ما سيحذف → confirmation باسم الفعل → نتيجة. لا مسح cache أوبيانات paid أواتفاق إلا طلب منفصل صريح يحدد هذا النطاق، ولا يلزم تقديم هذه العملية ضمن إصدار إعادة التصميم الأول.</p>
+<h2 id="contracts-section-19" tabindex="-1">L — مواصفات التقييم والقرارات المفتوحة المحدودة</h2><p>قرارات التصميم الأساسية محسومة في الوثيقة. تبقى التفاصيل التالية للتحقق التجريبي، ولا تُترك فارغة لتمنع بدء النموذج:</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>القرار</th>
+<th>الافتراضي المقترح</th>
+<th>طريقة الحسم</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>موضع Contents</td>
+<td>صف قصير على الهاتف، rail Desktop إن اتسع</td>
+<td>اختبار الوصول إلى قسم غير أول</td>
+</tr>
+<tr>
+<td>أحجام الخط/المسافات</td>
+<td>tokens المذكورة</td>
+<td>قارئ سريع ومتعلم مع text scaling</td>
+</tr>
+<tr>
+<td>العناوين الإنجليزية الأربعة</td>
+<td>Library/Learn/ECG/Quick</td>
+<td>فهم معنى الوجهة دون شرح طويل</td>
+</tr>
+<tr>
+<td>وحدات القراءة مقابل accordion</td>
+<td>critical مفتوح، secondary مطوي جزئيًا</td>
+<td>اكتشاف المعلومات والبحث والطباعة</td>
+</tr>
+<tr>
+<td>استئناف short cases دائم</td>
+<td>غير موعود في الإصدار الأول</td>
+<td>تصميم schema/backup منفصل إذا ثبتت الحاجة</td>
+</tr>
+<tr>
+<td>نسبة CSS المنخفضة</td>
+<td>ميزانية مقاسة لا نسبة 60% ثابتة</td>
+<td>bytes gzip/style conflicts/الأداء</td>
+</tr>
+<tr>
+<td>مدة الأنشطة</td>
+<td>لا مدة قبل قياس</td>
+<td>تجربة فعلية مع range موسوم Estimated</td>
+</tr>
+<tr>
+<td>قياس الاستبقاء</td>
+<td>بلا tracking تلقائي جديد</td>
+<td>دراسة اختيارية وموافقة ونطاق محدد</td>
+</tr>
+<tr>
+<td>لغة عربية للمنتج</td>
+<td>تهيئة RTL دون ترجمة طبية تلقائية</td>
+<td>مشروع ترجمة ومراجعة بشرية منفصل</td>
+</tr>
+</tbody></table></div>
+<p>جلسة تقييم مقترحة: 5–8 مشاركين متنوعي الخبرة في جولة أولية، ثم جولة ثانية بعد الإصلاح؛ هذا حجم بحث نوعي مقترح لا عينة إحصائية لإثبات مضاعفة الاستبقاء. مهام: العثور على قسم، العودة لنتيجة بحث، استئناف حالة، قراءة ECG مع finding، حفظ note، فتح مصدر، استخدام offline، وطباعة نطاق صحيح. يسجل الإكمال والخطأ والتردد والزمن وملاحظات المشارك، دون بيانات مرضى.</p>
+<h2 id="contracts-section-20" tabindex="-1">M — قائمة إغلاق مهمة تنفيذية صغيرة</h2><p>قبل إغلاق أي مهمة UI: مكوّن/شاشة محددان، وسلوك قبل/بعد، حالات فشل، دعم keyboard، نطاق عرض ضيق، مظهر ليلي، تكبير نص، طباعة إن كانت معنية، scope تخزين، اختبار مناسب، لقطة ومراجعة بصرية، release token إذا تغير أصل منشور، وتقرير صادق لما لم يُفحص. هذه قائمة عمل داخلية؛ لا تُعرض للمستخدم النهائي داخل المنتج.</p>
+</section><section class="document" data-document="coverage" hidden><h1 id="coverage-section-1" tabindex="-1">مصفوفة تغطية المحتوى الحالي</h1><p>ملحق لـ<a href="#master" data-doc-link="master">المواصفة الرئيسية</a>، مستخرج من مصدر التطبيق في commit <code>545162d</code>. هذه معرفات جرد وقبول مستقبلي؛ لا تعني أن إعادة التصميم نُفذت أو أن العناصر أدناه اختبرت في واجهتها الجديدة. بعض العناصر تظهر في أكثر من مساحة، ولا يجوز جمعها كنسبة إتقان واحدة.</p>
+<h2 id="coverage-section-2" tabindex="-1">1 — جميع المواضيع السريرية (45)</h2><p>لكل موضوع تحفظ approach/dontMiss/history/exam/workup/redFlags/disposition/pitfalls/refs، ومتى وجدت overview/pearls/tag/name/icon. تُفحص البنود داخل المجموعات، لا عدد المجموعات وحده. كل موضوع له Library → Topic، وQuick مصادق عليه أو عرض قسم المصدر كاملًا حتى مراجعته.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>قبول</th>
+<th>المعرف</th>
+<th>الاسم الحالي</th>
+<th>الرابط الثابت</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>T01</td>
+<td><code>chest-pain</code></td>
+<td>Chest Pain</td>
+<td><code>#chest-pain</code></td>
+</tr>
+<tr>
+<td>T02</td>
+<td><code>dyspnea</code></td>
+<td>Shortness of Breath</td>
+<td><code>#dyspnea</code></td>
+</tr>
+<tr>
+<td>T03</td>
+<td><code>abdominal-pain</code></td>
+<td>Abdominal Pain</td>
+<td><code>#abdominal-pain</code></td>
+</tr>
+<tr>
+<td>T04</td>
+<td><code>headache</code></td>
+<td>Headache</td>
+<td><code>#headache</code></td>
+</tr>
+<tr>
+<td>T05</td>
+<td><code>ams</code></td>
+<td>Altered Mental Status</td>
+<td><code>#ams</code></td>
+</tr>
+<tr>
+<td>T06</td>
+<td><code>syncope</code></td>
+<td>Syncope</td>
+<td><code>#syncope</code></td>
+</tr>
+<tr>
+<td>T07</td>
+<td><code>weakness</code></td>
+<td>Weakness &amp; Fatigue</td>
+<td><code>#weakness</code></td>
+</tr>
+<tr>
+<td>T08</td>
+<td><code>gib</code></td>
+<td>GI Bleeding</td>
+<td><code>#gib</code></td>
+</tr>
+<tr>
+<td>T09</td>
+<td><code>fever</code></td>
+<td>Fever &amp; Sepsis</td>
+<td><code>#fever</code></td>
+</tr>
+<tr>
+<td>T10</td>
+<td><code>dizziness</code></td>
+<td>Dizziness &amp; Vertigo</td>
+<td><code>#dizziness</code></td>
+</tr>
+<tr>
+<td>T11</td>
+<td><code>back-pain</code></td>
+<td>Low Back Pain</td>
+<td><code>#back-pain</code></td>
+</tr>
+<tr>
+<td>T12</td>
+<td><code>red-eye</code></td>
+<td>Red Eye &amp; Eye Emergencies</td>
+<td><code>#red-eye</code></td>
+</tr>
+<tr>
+<td>T13</td>
+<td><code>joint-pain</code></td>
+<td>Acute Joint Pain</td>
+<td><code>#joint-pain</code></td>
+</tr>
+<tr>
+<td>T14</td>
+<td><code>coma</code></td>
+<td>Coma &amp; Depressed LOC</td>
+<td><code>#coma</code></td>
+</tr>
+<tr>
+<td>T15</td>
+<td><code>pelvic-pain</code></td>
+<td>Acute Pelvic Pain (Women)</td>
+<td><code>#pelvic-pain</code></td>
+</tr>
+<tr>
+<td>T16</td>
+<td><code>vaginal-bleeding</code></td>
+<td>Vaginal Bleeding</td>
+<td><code>#vaginal-bleeding</code></td>
+</tr>
+<tr>
+<td>T17</td>
+<td><code>scrotal-pain</code></td>
+<td>Scrotal Pain &amp; Swelling</td>
+<td><code>#scrotal-pain</code></td>
+</tr>
+<tr>
+<td>T18</td>
+<td><code>seizures</code></td>
+<td>Seizures</td>
+<td><code>#seizures</code></td>
+</tr>
+<tr>
+<td>T19</td>
+<td><code>sore-throat</code></td>
+<td>Sore Throat &amp; Neck</td>
+<td><code>#sore-throat</code></td>
+</tr>
+<tr>
+<td>T20</td>
+<td><code>hemoptysis</code></td>
+<td>Hemoptysis</td>
+<td><code>#hemoptysis</code></td>
+</tr>
+<tr>
+<td>T21</td>
+<td><code>shock</code></td>
+<td>Shock</td>
+<td><code>#shock</code></td>
+</tr>
+<tr>
+<td>T22</td>
+<td><code>nausea-vomiting</code></td>
+<td>Nausea &amp; Vomiting</td>
+<td><code>#nausea-vomiting</code></td>
+</tr>
+<tr>
+<td>T23</td>
+<td><code>diarrhea</code></td>
+<td>Diarrhea</td>
+<td><code>#diarrhea</code></td>
+</tr>
+<tr>
+<td>T24</td>
+<td><code>jaundice</code></td>
+<td>Jaundice</td>
+<td><code>#jaundice</code></td>
+</tr>
+<tr>
+<td>T25</td>
+<td><code>cyanosis</code></td>
+<td>Cyanosis</td>
+<td><code>#cyanosis</code></td>
+</tr>
+<tr>
+<td>T26</td>
+<td><code>overdose</code></td>
+<td>Poisoning &amp; Overdose</td>
+<td><code>#overdose</code></td>
+</tr>
+<tr>
+<td>T27</td>
+<td><code>pediatric-fever</code></td>
+<td>Pediatric Fever</td>
+<td><code>#pediatric-fever</code></td>
+</tr>
+<tr>
+<td>T28</td>
+<td><code>suicidal</code></td>
+<td>Agitation &amp; Suicidal Ideation</td>
+<td><code>#suicidal</code></td>
+</tr>
+<tr>
+<td>T29</td>
+<td><code>diplopia</code></td>
+<td>Diplopia</td>
+<td><code>#diplopia</code></td>
+</tr>
+<tr>
+<td>T30</td>
+<td><code>constipation</code></td>
+<td>Constipation</td>
+<td><code>#constipation</code></td>
+</tr>
+<tr>
+<td>T31</td>
+<td><code>limb-ischemia</code></td>
+<td>Acute Limb Ischemia</td>
+<td><code>#limb-ischemia</code></td>
+</tr>
+<tr>
+<td>T32</td>
+<td><code>hyperglycemia</code></td>
+<td>DKA, HHS &amp; Adrenal Crisis</td>
+<td><code>#hyperglycemia</code></td>
+</tr>
+<tr>
+<td>T33</td>
+<td><code>heat-cold</code></td>
+<td>Heat Stroke &amp; Hypothermia</td>
+<td><code>#heat-cold</code></td>
+</tr>
+<tr>
+<td>T34</td>
+<td><code>palpitations</code></td>
+<td>Palpitations &amp; Dysrhythmia</td>
+<td><code>#palpitations</code></td>
+</tr>
+<tr>
+<td>T35</td>
+<td><code>focal-neurologic-deficit</code></td>
+<td>Focal Neurologic Deficit / Suspected Stroke</td>
+<td><code>#focal-neurologic-deficit</code></td>
+</tr>
+<tr>
+<td>T36</td>
+<td><code>airway-stridor</code></td>
+<td>Airway Symptoms &amp; Stridor</td>
+<td><code>#airway-stridor</code></td>
+</tr>
+<tr>
+<td>T37</td>
+<td><code>rash</code></td>
+<td>Rash, Purpura &amp; Dermatologic Emergencies</td>
+<td><code>#rash</code></td>
+</tr>
+<tr>
+<td>T38</td>
+<td><code>flank-pain</code></td>
+<td>Flank Pain &amp; Renal Colic</td>
+<td><code>#flank-pain</code></td>
+</tr>
+<tr>
+<td>T39</td>
+<td><code>urinary-retention</code></td>
+<td>Urinary Symptoms &amp; Acute Retention</td>
+<td><code>#urinary-retention</code></td>
+</tr>
+<tr>
+<td>T40</td>
+<td><code>edema</code></td>
+<td>Peripheral Edema</td>
+<td><code>#edema</code></td>
+</tr>
+<tr>
+<td>T41</td>
+<td><code>anaphylaxis</code></td>
+<td>Anaphylaxis &amp; Angioedema</td>
+<td><code>#anaphylaxis</code></td>
+</tr>
+<tr>
+<td>T42</td>
+<td><code>multiple-trauma</code></td>
+<td>Multiple Trauma / Primary Survey</td>
+<td><code>#multiple-trauma</code></td>
+</tr>
+<tr>
+<td>T43</td>
+<td><code>falls-geriatric-trauma</code></td>
+<td>Falls &amp; Geriatric Trauma</td>
+<td><code>#falls-geriatric-trauma</code></td>
+</tr>
+<tr>
+<td>T44</td>
+<td><code>pregnancy-emergency</code></td>
+<td>Pregnancy-Related Emergency</td>
+<td><code>#pregnancy-emergency</code></td>
+</tr>
+<tr>
+<td>T45</td>
+<td><code>pediatric-respiratory-distress</code></td>
+<td>Child with Respiratory Distress</td>
+<td><code>#pediatric-respiratory-distress</code></td>
+</tr>
+</tbody></table></div>
+<h2 id="coverage-section-3" tabindex="-1">2 — خطوات دليل ECG (7)</h2><p>ECG → Guide؛ title/summary/details/pearl/pitfall والرسوم المرتبطة محفوظة.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>قبول</th>
+<th>المعرف</th>
+<th>الاسم الحالي</th>
+<th>الرابط / مرجع الشكل</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>G01</td>
+<td><code>rate-calibration</code></td>
+<td>Calibration, Leads &amp; Rate</td>
+<td><code>#ecg~step-rate-calibration</code></td>
+</tr>
+<tr>
+<td>G02</td>
+<td><code>rhythm-axis</code></td>
+<td>Rhythm Branch &amp; Axis</td>
+<td><code>#ecg~step-rhythm-axis</code></td>
+</tr>
+<tr>
+<td>G03</td>
+<td><code>intervals</code></td>
+<td>Intervals (PR, QRS, QTc)</td>
+<td><code>#ecg~step-intervals</code></td>
+</tr>
+<tr>
+<td>G04</td>
+<td><code>hypertrophy</code></td>
+<td>Voltage, Chambers &amp; Low Voltage</td>
+<td><code>#ecg~step-hypertrophy</code></td>
+</tr>
+<tr>
+<td>G05</td>
+<td><code>ischemia-map</code></td>
+<td>Ischemia Map &amp; Fifth UDMI Lead Criteria</td>
+<td><code>#ecg~step-ischemia-map</code></td>
+</tr>
+<tr>
+<td>G06</td>
+<td><code>omi-equivalents</code></td>
+<td>OMI Equivalents &amp; What Is Not STEMI</td>
+<td><code>#ecg~step-omi-equivalents</code></td>
+</tr>
+<tr>
+<td>G07</td>
+<td><code>toxic-metabolic-mimics</code></td>
+<td>Deadly Mimics, Toxic &amp; Metabolic</td>
+<td><code>#ecg~step-toxic-metabolic-mimics</code></td>
+</tr>
+</tbody></table></div>
+<h2 id="coverage-section-4" tabindex="-1">3 — أنماط دليل ECG (18)</h2><p>ECG → Guide؛ كل نمط ومعاييره وحدوده وروابط أمثلته محفوظة.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>قبول</th>
+<th>المعرف</th>
+<th>الاسم الحالي</th>
+<th>الرابط / مرجع الشكل</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P01</td>
+<td><code>stemi-criteria</code></td>
+<td>Classic STEMI Millimetre Criteria</td>
+<td><code>#ecg~pattern-stemi-criteria</code></td>
+</tr>
+<tr>
+<td>P02</td>
+<td><code>hyperacute-t</code></td>
+<td>Hyperacute T Waves</td>
+<td><code>#ecg~pattern-hyperacute-t</code></td>
+</tr>
+<tr>
+<td>P03</td>
+<td><code>wellens</code></td>
+<td>Wellens Syndrome (Type A &amp; B)</td>
+<td><code>#ecg~pattern-wellens</code></td>
+</tr>
+<tr>
+<td>P04</td>
+<td><code>dewinter</code></td>
+<td>de Winter T Waves</td>
+<td><code>#ecg~pattern-dewinter</code></td>
+</tr>
+<tr>
+<td>P05</td>
+<td><code>sgarbossa</code></td>
+<td>Smith-Modified Sgarbossa (LBBB &amp; Paced)</td>
+<td><code>#ecg~pattern-sgarbossa</code></td>
+</tr>
+<tr>
+<td>P06</td>
+<td><code>posterior-omi</code></td>
+<td>Isolated Posterior OMI</td>
+<td><code>#ecg~pattern-posterior-omi</code></td>
+</tr>
+<tr>
+<td>P07</td>
+<td><code>avr-lmca</code></td>
+<td>aVR STE with Diffuse ST Depression</td>
+<td><code>#ecg~pattern-avr-lmca</code></td>
+</tr>
+<tr>
+<td>P08</td>
+<td><code>hyperkalemia</code></td>
+<td>Hyperkalemia Spectrum &amp; Sine Wave</td>
+<td><code>#ecg~pattern-hyperkalemia</code></td>
+</tr>
+<tr>
+<td>P09</td>
+<td><code>hypokalemia</code></td>
+<td>Hypokalemia, U Waves &amp; Long QU</td>
+<td><code>#ecg~pattern-hypokalemia</code></td>
+</tr>
+<tr>
+<td>P10</td>
+<td><code>hypothermia</code></td>
+<td>Hypothermia &amp; Osborn (J) Waves</td>
+<td><code>#ecg~pattern-hypothermia</code></td>
+</tr>
+<tr>
+<td>P11</td>
+<td><code>brugada</code></td>
+<td>Brugada Type 1 ECG Pattern</td>
+<td><code>#ecg~pattern-brugada</code></td>
+</tr>
+<tr>
+<td>P12</td>
+<td><code>pe-strain</code></td>
+<td>Acute PE &amp; RV Strain</td>
+<td><code>#ecg~pattern-pe-strain</code></td>
+</tr>
+<tr>
+<td>P13</td>
+<td><code>pericarditis-ber</code></td>
+<td>Pericarditis vs BER vs OMI</td>
+<td><code>#ecg~pattern-pericarditis-ber</code></td>
+</tr>
+<tr>
+<td>P14</td>
+<td><code>tca-toxicity</code></td>
+<td>TCA / Sodium-Channel Blockade</td>
+<td><code>#ecg~pattern-tca-toxicity</code></td>
+</tr>
+<tr>
+<td>P15</td>
+<td><code>wpw</code></td>
+<td>WPW and Pre-excited AF</td>
+<td><code>#ecg~pattern-wpw</code></td>
+</tr>
+<tr>
+<td>P16</td>
+<td><code>vt-vs-svt</code></td>
+<td>VT vs SVT with Aberrancy</td>
+<td><code>#ecg~pattern-vt-vs-svt</code></td>
+</tr>
+<tr>
+<td>P17</td>
+<td><code>complete-heart-block</code></td>
+<td>High-Grade AV Block &amp; Complete Heart Block</td>
+<td><code>#ecg~pattern-complete-heart-block</code></td>
+</tr>
+<tr>
+<td>P18</td>
+<td><code>electrical-alternans</code></td>
+<td>Low Voltage &amp; Electrical Alternans</td>
+<td><code>#ecg~pattern-electrical-alternans</code></td>
+</tr>
+</tbody></table></div>
+<h2 id="coverage-section-5" tabindex="-1">4 — مكتبة الأشكال (27)</h2><p>ECG → Guide/linked figure؛ نفس الرسم والتعليق والعلامات، مع تمييز المعاير من التخطيطي.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>قبول</th>
+<th>المعرف</th>
+<th>الاسم الحالي</th>
+<th>الرابط / مرجع الشكل</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F01</td>
+<td><code>rate-calibration</code></td>
+<td>Calibration, speed and rate</td>
+<td><code>rate-calibration</code></td>
+</tr>
+<tr>
+<td>F02</td>
+<td><code>rhythm-axis</code></td>
+<td>Rhythm branch and axis</td>
+<td><code>rhythm-axis</code></td>
+</tr>
+<tr>
+<td>F03</td>
+<td><code>intervals</code></td>
+<td>PR, QRS, QTc intervals</td>
+<td><code>intervals</code></td>
+</tr>
+<tr>
+<td>F04</td>
+<td><code>hypertrophy</code></td>
+<td>Voltage, Chambers and Low Voltage</td>
+<td><code>hypertrophy</code></td>
+</tr>
+<tr>
+<td>F05</td>
+<td><code>omi-equivalents</code></td>
+<td>OMI equivalents at a glance</td>
+<td><code>omi-equivalents</code></td>
+</tr>
+<tr>
+<td>F06</td>
+<td><code>toxic-metabolic-mimics</code></td>
+<td>Bizarre = metabolic/toxic</td>
+<td><code>toxic-metabolic-mimics</code></td>
+</tr>
+<tr>
+<td>F07</td>
+<td><code>stemi-criteria</code></td>
+<td>Inferior STEMI pattern — II, III, aVF with aVL mirror</td>
+<td><code>stemi-criteria</code></td>
+</tr>
+<tr>
+<td>F08</td>
+<td><code>hyperacute-t</code></td>
+<td>Hyperacute T — normal vs hyperacute vs hyperK</td>
+<td><code>hyperacute-t</code></td>
+</tr>
+<tr>
+<td>F09</td>
+<td><code>wellens</code></td>
+<td>Wellens syndrome — Type A vs Type B</td>
+<td><code>wellens</code></td>
+</tr>
+<tr>
+<td>F10</td>
+<td><code>dewinter</code></td>
+<td>de Winter pattern — precordial STD with tall T waves</td>
+<td><code>dewinter</code></td>
+</tr>
+<tr>
+<td>F11</td>
+<td><code>sgarbossa</code></td>
+<td>Smith-modified Sgarbossa positive</td>
+<td><code>sgarbossa</code></td>
+</tr>
+<tr>
+<td>F12</td>
+<td><code>posterior-omi</code></td>
+<td>Posterior OMI mirror pattern</td>
+<td><code>posterior-omi</code></td>
+</tr>
+<tr>
+<td>F13</td>
+<td><code>avr-lmca</code></td>
+<td>aVR elevation with diffuse ST depression</td>
+<td><code>avr-lmca</code></td>
+</tr>
+<tr>
+<td>F14</td>
+<td><code>hyperkalemia</code></td>
+<td>Severe hyperkalaemia pattern</td>
+<td><code>hyperkalemia</code></td>
+</tr>
+<tr>
+<td>F15</td>
+<td><code>hypokalemia</code></td>
+<td>Hypokalaemia with U waves</td>
+<td><code>hypokalemia</code></td>
+</tr>
+<tr>
+<td>F16</td>
+<td><code>hypothermia</code></td>
+<td>Hypothermia with Osborn waves</td>
+<td><code>hypothermia</code></td>
+</tr>
+<tr>
+<td>F17</td>
+<td><code>brugada</code></td>
+<td>Brugada type 1 pattern</td>
+<td><code>brugada</code></td>
+</tr>
+<tr>
+<td>F18</td>
+<td><code>pe-strain</code></td>
+<td>Pulmonary embolism strain pattern</td>
+<td><code>pe-strain</code></td>
+</tr>
+<tr>
+<td>F19</td>
+<td><code>pericarditis-ber</code></td>
+<td>Acute pericarditis pattern</td>
+<td><code>pericarditis-ber</code></td>
+</tr>
+<tr>
+<td>F20</td>
+<td><code>tca-toxicity</code></td>
+<td>Tricyclic / sodium-channel blockade</td>
+<td><code>tca-toxicity</code></td>
+</tr>
+<tr>
+<td>F21</td>
+<td><code>wpw</code></td>
+<td>Wolff–Parkinson–White pre-excitation</td>
+<td><code>wpw</code></td>
+</tr>
+<tr>
+<td>F22</td>
+<td><code>vt-vs-svt</code></td>
+<td>Monomorphic ventricular tachycardia</td>
+<td><code>vt-vs-svt</code></td>
+</tr>
+<tr>
+<td>F23</td>
+<td><code>complete-heart-block</code></td>
+<td>Complete heart block</td>
+<td><code>complete-heart-block</code></td>
+</tr>
+<tr>
+<td>F24</td>
+<td><code>electrical-alternans</code></td>
+<td>Electrical alternans</td>
+<td><code>electrical-alternans</code></td>
+</tr>
+<tr>
+<td>F25</td>
+<td><code>ischemia-map</code></td>
+<td>Fifth UDMI — Ischemia Map &amp; Measured Criteria</td>
+<td><code>ischemia-map</code></td>
+</tr>
+<tr>
+<td>F26</td>
+<td><code>atrial-fibrillation</code></td>
+<td>Atrial fibrillation</td>
+<td><code>atrial-fibrillation</code></td>
+</tr>
+<tr>
+<td>F27</td>
+<td><code>normal-12lead</code></td>
+<td>Normal sinus rhythm · full 12-lead</td>
+<td><code>normal-12lead</code></td>
+</tr>
+</tbody></table></div>
+<h2 id="coverage-section-6" tabindex="-1">5 — جميع حالات ECG Explorer (69)</h2><p>ECG → Cases/Practice؛ جميع findings والأهداف والضوابط والمقارنة وحدود المثال محفوظة.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>قبول</th>
+<th>المعرف</th>
+<th>الاسم الحالي</th>
+<th>الرابط / مرجع الشكل</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>E01</td>
+<td><code>normal</code></td>
+<td>Normal sinus rhythm</td>
+<td><code>#ecg-explorer~normal</code></td>
+</tr>
+<tr>
+<td>E02</td>
+<td><code>af</code></td>
+<td>Atrial fibrillation</td>
+<td><code>#ecg-explorer~af</code></td>
+</tr>
+<tr>
+<td>E03</td>
+<td><code>sinus-brady</code></td>
+<td>Sinus bradycardia</td>
+<td><code>#ecg-explorer~sinus-brady</code></td>
+</tr>
+<tr>
+<td>E04</td>
+<td><code>sinus-tachy</code></td>
+<td>Sinus tachycardia</td>
+<td><code>#ecg-explorer~sinus-tachy</code></td>
+</tr>
+<tr>
+<td>E05</td>
+<td><code>flutter</code></td>
+<td>Atrial flutter · 2:1 conduction</td>
+<td><code>#ecg-explorer~flutter</code></td>
+</tr>
+<tr>
+<td>E06</td>
+<td><code>svt</code></td>
+<td>Regular narrow-complex SVT</td>
+<td><code>#ecg-explorer~svt</code></td>
+</tr>
+<tr>
+<td>E07</td>
+<td><code>junctional</code></td>
+<td>Junctional escape rhythm</td>
+<td><code>#ecg-explorer~junctional</code></td>
+</tr>
+<tr>
+<td>E08</td>
+<td><code>vt-vs-svt</code></td>
+<td>Monomorphic ventricular tachycardia</td>
+<td><code>#ecg-explorer~vt-vs-svt</code></td>
+</tr>
+<tr>
+<td>E09</td>
+<td><code>preexcited-af</code></td>
+<td>Pre-excited atrial fibrillation</td>
+<td><code>#ecg-explorer~preexcited-af</code></td>
+</tr>
+<tr>
+<td>E10</td>
+<td><code>sinus-arrhythmia</code></td>
+<td>Respiratory sinus arrhythmia</td>
+<td><code>#ecg-explorer~sinus-arrhythmia</code></td>
+</tr>
+<tr>
+<td>E11</td>
+<td><code>sinus-pause</code></td>
+<td>Sinus pause</td>
+<td><code>#ecg-explorer~sinus-pause</code></td>
+</tr>
+<tr>
+<td>E12</td>
+<td><code>mat</code></td>
+<td>Multifocal atrial tachycardia</td>
+<td><code>#ecg-explorer~mat</code></td>
+</tr>
+<tr>
+<td>E13</td>
+<td><code>flutter-variable</code></td>
+<td>Atrial flutter · variable conduction</td>
+<td><code>#ecg-explorer~flutter-variable</code></td>
+</tr>
+<tr>
+<td>E14</td>
+<td><code>inferior-stemi</code></td>
+<td>Inferior STEMI pattern</td>
+<td><code>#ecg-explorer~inferior-stemi</code></td>
+</tr>
+<tr>
+<td>E15</td>
+<td><code>wellens-a</code></td>
+<td>Wellens pattern · Type A</td>
+<td><code>#ecg-explorer~wellens-a</code></td>
+</tr>
+<tr>
+<td>E16</td>
+<td><code>wellens-b</code></td>
+<td>Wellens pattern · Type B</td>
+<td><code>#ecg-explorer~wellens-b</code></td>
+</tr>
+<tr>
+<td>E17</td>
+<td><code>de-winter</code></td>
+<td>de Winter pattern</td>
+<td><code>#ecg-explorer~de-winter</code></td>
+</tr>
+<tr>
+<td>E18</td>
+<td><code>anterior-stemi</code></td>
+<td>Anterior STEMI pattern</td>
+<td><code>#ecg-explorer~anterior-stemi</code></td>
+</tr>
+<tr>
+<td>E19</td>
+<td><code>lateral-stemi</code></td>
+<td>Lateral STEMI pattern</td>
+<td><code>#ecg-explorer~lateral-stemi</code></td>
+</tr>
+<tr>
+<td>E20</td>
+<td><code>hyperacute-t</code></td>
+<td>Hyperacute T-wave comparison</td>
+<td><code>#ecg-explorer~hyperacute-t</code></td>
+</tr>
+<tr>
+<td>E21</td>
+<td><code>sgarbossa</code></td>
+<td>Modified Sgarbossa patterns</td>
+<td><code>#ecg-explorer~sgarbossa</code></td>
+</tr>
+<tr>
+<td>E22</td>
+<td><code>posterior-omi</code></td>
+<td>Posterior occlusion pattern</td>
+<td><code>#ecg-explorer~posterior-omi</code></td>
+</tr>
+<tr>
+<td>E23</td>
+<td><code>avr-lmca</code></td>
+<td>Diffuse ST depression with aVR elevation</td>
+<td><code>#ecg-explorer~avr-lmca</code></td>
+</tr>
+<tr>
+<td>E24</td>
+<td><code>rv-infarction</code></td>
+<td>Inferior infarction with right-sided leads</td>
+<td><code>#ecg-explorer~rv-infarction</code></td>
+</tr>
+<tr>
+<td>E25</td>
+<td><code>regional-ischemia</code></td>
+<td>Regional ST depression and T inversion</td>
+<td><code>#ecg-explorer~regional-ischemia</code></td>
+</tr>
+<tr>
+<td>E26</td>
+<td><code>old-inferior-q</code></td>
+<td>Inferior Q-wave pattern</td>
+<td><code>#ecg-explorer~old-inferior-q</code></td>
+</tr>
+<tr>
+<td>E27</td>
+<td><code>first-degree</code></td>
+<td>First-degree AV block</td>
+<td><code>#ecg-explorer~first-degree</code></td>
+</tr>
+<tr>
+<td>E28</td>
+<td><code>mobitz-i</code></td>
+<td>Mobitz I · Wenckebach</td>
+<td><code>#ecg-explorer~mobitz-i</code></td>
+</tr>
+<tr>
+<td>E29</td>
+<td><code>mobitz-ii</code></td>
+<td>Mobitz II AV block</td>
+<td><code>#ecg-explorer~mobitz-ii</code></td>
+</tr>
+<tr>
+<td>E30</td>
+<td><code>two-to-one</code></td>
+<td>2:1 AV block</td>
+<td><code>#ecg-explorer~two-to-one</code></td>
+</tr>
+<tr>
+<td>E31</td>
+<td><code>rbbb</code></td>
+<td>Right bundle branch block</td>
+<td><code>#ecg-explorer~rbbb</code></td>
+</tr>
+<tr>
+<td>E32</td>
+<td><code>lbbb</code></td>
+<td>Left bundle branch block</td>
+<td><code>#ecg-explorer~lbbb</code></td>
+</tr>
+<tr>
+<td>E33</td>
+<td><code>ventricular-paced</code></td>
+<td>Ventricular paced rhythm</td>
+<td><code>#ecg-explorer~ventricular-paced</code></td>
+</tr>
+<tr>
+<td>E34</td>
+<td><code>complete-heart-block</code></td>
+<td>Complete AV block</td>
+<td><code>#ecg-explorer~complete-heart-block</code></td>
+</tr>
+<tr>
+<td>E35</td>
+<td><code>wpw</code></td>
+<td>Ventricular pre-excitation · WPW pattern</td>
+<td><code>#ecg-explorer~wpw</code></td>
+</tr>
+<tr>
+<td>E36</td>
+<td><code>axis-left</code></td>
+<td>Left axis deviation</td>
+<td><code>#ecg-explorer~axis-left</code></td>
+</tr>
+<tr>
+<td>E37</td>
+<td><code>axis-right</code></td>
+<td>Right axis deviation</td>
+<td><code>#ecg-explorer~axis-right</code></td>
+</tr>
+<tr>
+<td>E38</td>
+<td><code>axis-extreme</code></td>
+<td>Extreme QRS axis</td>
+<td><code>#ecg-explorer~axis-extreme</code></td>
+</tr>
+<tr>
+<td>E39</td>
+<td><code>lafb</code></td>
+<td>Left anterior fascicular block</td>
+<td><code>#ecg-explorer~lafb</code></td>
+</tr>
+<tr>
+<td>E40</td>
+<td><code>lpfb</code></td>
+<td>Left posterior fascicular block</td>
+<td><code>#ecg-explorer~lpfb</code></td>
+</tr>
+<tr>
+<td>E41</td>
+<td><code>pacing-capture-failure</code></td>
+<td>Ventricular pacing · failure to capture</td>
+<td><code>#ecg-explorer~pacing-capture-failure</code></td>
+</tr>
+<tr>
+<td>E42</td>
+<td><code>pacing-undersensing</code></td>
+<td>Ventricular pacing · undersensing</td>
+<td><code>#ecg-explorer~pacing-undersensing</code></td>
+</tr>
+<tr>
+<td>E43</td>
+<td><code>long-qt</code></td>
+<td>Prolonged QT</td>
+<td><code>#ecg-explorer~long-qt</code></td>
+</tr>
+<tr>
+<td>E44</td>
+<td><code>pvc</code></td>
+<td>Premature ventricular complex</td>
+<td><code>#ecg-explorer~pvc</code></td>
+</tr>
+<tr>
+<td>E45</td>
+<td><code>pac</code></td>
+<td>Premature atrial complex</td>
+<td><code>#ecg-explorer~pac</code></td>
+</tr>
+<tr>
+<td>E46</td>
+<td><code>vf</code></td>
+<td>Ventricular fibrillation</td>
+<td><code>#ecg-explorer~vf</code></td>
+</tr>
+<tr>
+<td>E47</td>
+<td><code>torsades</code></td>
+<td>Torsades de pointes pattern</td>
+<td><code>#ecg-explorer~torsades</code></td>
+</tr>
+<tr>
+<td>E48</td>
+<td><code>asystole</code></td>
+<td>Asystole · verify the recording</td>
+<td><code>#ecg-explorer~asystole</code></td>
+</tr>
+<tr>
+<td>E49</td>
+<td><code>pea</code></td>
+<td>Pulseless electrical activity · clinical case</td>
+<td><code>#ecg-explorer~pea</code></td>
+</tr>
+<tr>
+<td>E50</td>
+<td><code>hyperkalemia</code></td>
+<td>Hyperkalemia · three appearances</td>
+<td><code>#ecg-explorer~hyperkalemia</code></td>
+</tr>
+<tr>
+<td>E51</td>
+<td><code>hypokalemia</code></td>
+<td>Hypokalemia pattern</td>
+<td><code>#ecg-explorer~hypokalemia</code></td>
+</tr>
+<tr>
+<td>E52</td>
+<td><code>hypothermia</code></td>
+<td>Hypothermia · J wave</td>
+<td><code>#ecg-explorer~hypothermia</code></td>
+</tr>
+<tr>
+<td>E53</td>
+<td><code>tca-toxicity</code></td>
+<td>Sodium-channel blockade pattern</td>
+<td><code>#ecg-explorer~tca-toxicity</code></td>
+</tr>
+<tr>
+<td>E54</td>
+<td><code>hypocalcemia</code></td>
+<td>Hypocalcemia · prolonged ST/QT</td>
+<td><code>#ecg-explorer~hypocalcemia</code></td>
+</tr>
+<tr>
+<td>E55</td>
+<td><code>hypercalcemia</code></td>
+<td>Hypercalcemia · short ST/QT</td>
+<td><code>#ecg-explorer~hypercalcemia</code></td>
+</tr>
+<tr>
+<td>E56</td>
+<td><code>brugada</code></td>
+<td>Brugada type 1 pattern</td>
+<td><code>#ecg-explorer~brugada</code></td>
+</tr>
+<tr>
+<td>E57</td>
+<td><code>pe-strain</code></td>
+<td>Right ventricular strain pattern</td>
+<td><code>#ecg-explorer~pe-strain</code></td>
+</tr>
+<tr>
+<td>E58</td>
+<td><code>pericarditis-ber</code></td>
+<td>Pericarditis pattern</td>
+<td><code>#ecg-explorer~pericarditis-ber</code></td>
+</tr>
+<tr>
+<td>E59</td>
+<td><code>electrical-alternans</code></td>
+<td>Electrical alternans</td>
+<td><code>#ecg-explorer~electrical-alternans</code></td>
+</tr>
+<tr>
+<td>E60</td>
+<td><code>hypertrophy</code></td>
+<td>LVH voltage and low-voltage comparison</td>
+<td><code>#ecg-explorer~hypertrophy</code></td>
+</tr>
+<tr>
+<td>E61</td>
+<td><code>early-repolarization</code></td>
+<td>Early repolarization pattern</td>
+<td><code>#ecg-explorer~early-repolarization</code></td>
+</tr>
+<tr>
+<td>E62</td>
+<td><code>lvh-full</code></td>
+<td>LVH voltage · full ECG</td>
+<td><code>#ecg-explorer~lvh-full</code></td>
+</tr>
+<tr>
+<td>E63</td>
+<td><code>low-voltage-full</code></td>
+<td>Low QRS voltage · full ECG</td>
+<td><code>#ecg-explorer~low-voltage-full</code></td>
+</tr>
+<tr>
+<td>E64</td>
+<td><code>rvh-full</code></td>
+<td>Right ventricular hypertrophy pattern</td>
+<td><code>#ecg-explorer~rvh-full</code></td>
+</tr>
+<tr>
+<td>E65</td>
+<td><code>lae-full</code></td>
+<td>Left atrial abnormality pattern</td>
+<td><code>#ecg-explorer~lae-full</code></td>
+</tr>
+<tr>
+<td>E66</td>
+<td><code>rae-full</code></td>
+<td>Right atrial abnormality pattern</td>
+<td><code>#ecg-explorer~rae-full</code></td>
+</tr>
+<tr>
+<td>E67</td>
+<td><code>limb-reversal</code></td>
+<td>Right/left arm electrode reversal</td>
+<td><code>#ecg-explorer~limb-reversal</code></td>
+</tr>
+<tr>
+<td>E68</td>
+<td><code>high-v1-v2</code></td>
+<td>High V1/V2 placement · illustrative mimic</td>
+<td><code>#ecg-explorer~high-v1-v2</code></td>
+</tr>
+<tr>
+<td>E69</td>
+<td><code>artifact-vt</code></td>
+<td>Motion artifact mimicking VT</td>
+<td><code>#ecg-explorer~artifact-vt</code></td>
+</tr>
+</tbody></table></div>
+<h2 id="coverage-section-7" tabindex="-1">6 — الحالات القصيرة (12)</h2><p>Learn → Short cases؛ السيناريو والأسئلة والبدائل والتفسير والتقييم الذاتي محفوظة.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>قبول</th>
+<th>المعرف</th>
+<th>الاسم الحالي</th>
+<th>الرابط / مرجع الشكل</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S01</td>
+<td><code>chest-pain</code></td>
+<td>Pressure after exertion</td>
+<td><code>#study~case-chest-pain</code></td>
+</tr>
+<tr>
+<td>S02</td>
+<td><code>palpitations</code></td>
+<td>A fast rhythm with poor perfusion</td>
+<td><code>#study~case-palpitations</code></td>
+</tr>
+<tr>
+<td>S03</td>
+<td><code>ams</code></td>
+<td>Confusion during insulin treatment</td>
+<td><code>#study~case-ams</code></td>
+</tr>
+<tr>
+<td>S04</td>
+<td><code>overdose</code></td>
+<td>Slow breathing after an opioid</td>
+<td><code>#study~case-overdose</code></td>
+</tr>
+<tr>
+<td>S05</td>
+<td><code>syncope</code></td>
+<td>Collapse with a warning symptom</td>
+<td><code>#study~case-syncope</code></td>
+</tr>
+<tr>
+<td>S06</td>
+<td><code>hyperglycemia</code></td>
+<td>Ketosis with low potassium</td>
+<td><code>#study~case-hyperglycemia</code></td>
+</tr>
+<tr>
+<td>S07</td>
+<td><code>back-pain</code></td>
+<td>Back pain with new bladder symptoms</td>
+<td><code>#study~case-back-pain</code></td>
+</tr>
+<tr>
+<td>S08</td>
+<td><code>scrotal-pain</code></td>
+<td>Sudden unilateral scrotal pain</td>
+<td><code>#study~case-scrotal-pain</code></td>
+</tr>
+<tr>
+<td>S09</td>
+<td><code>gib</code></td>
+<td>Bleeding with circulatory compromise</td>
+<td><code>#study~case-gib</code></td>
+</tr>
+<tr>
+<td>S10</td>
+<td><code>focal-neurologic-deficit</code></td>
+<td>New unilateral weakness</td>
+<td><code>#study~case-focal-neurologic-deficit</code></td>
+</tr>
+<tr>
+<td>S11</td>
+<td><code>anaphylaxis</code></td>
+<td>Wheeze after a food exposure</td>
+<td><code>#study~case-anaphylaxis</code></td>
+</tr>
+<tr>
+<td>S12</td>
+<td><code>dyspnea</code></td>
+<td>Abrupt deterioration during positive-pressure ventilation</td>
+<td><code>#study~case-dyspnea</code></td>
+</tr>
+</tbody></table></div>
+<h2 id="coverage-section-8" tabindex="-1">7 — الحالات المتطورة (6)</h2><p>Learn → Evolving cases؛ المراحل والاختيارات الأولى والجلسة والمناقشة والمصادر محفوظة.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>قبول</th>
+<th>المعرف</th>
+<th>الاسم الحالي</th>
+<th>الرابط / مرجع الشكل</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C01</td>
+<td><code>resus</code></td>
+<td>A fast rhythm, then a change</td>
+<td><code>#learn~case-resus</code></td>
+</tr>
+<tr>
+<td>C02</td>
+<td><code>trauma</code></td>
+<td>Deterioration after chest trauma</td>
+<td><code>#learn~case-trauma</code></td>
+</tr>
+<tr>
+<td>C03</td>
+<td><code>infant</code></td>
+<td>An infant who becomes quieter</td>
+<td><code>#learn~case-infant</code></td>
+</tr>
+<tr>
+<td>C04</td>
+<td><code>pregnancy</code></td>
+<td>Pain and collapse in early pregnancy</td>
+<td><code>#learn~case-pregnancy</code></td>
+</tr>
+<tr>
+<td>C05</td>
+<td><code>opioid</code></td>
+<td>Awake, then drowsy again</td>
+<td><code>#learn~case-opioid</code></td>
+</tr>
+<tr>
+<td>C06</td>
+<td><code>self-harm</code></td>
+<td>A reassuring score is not the whole story</td>
+<td><code>#learn~case-self-harm</code></td>
+</tr>
+</tbody></table></div>
+<h2 id="coverage-section-9" tabindex="-1">8 — وحدات التحضير والمناقشة (6)</h2><p>Learn → Preparation؛ لا حذف لوحدات القيادة والتعليم لأنها ليست إجراءً تقنيًا.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>قبول</th>
+<th>المعرف</th>
+<th>الاسم الحالي</th>
+<th>الرابط / مرجع الشكل</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>M01</td>
+<td><code>sedation</code></td>
+<td>Procedural sedation preparation</td>
+<td><code>#learn~module-sedation</code></td>
+</tr>
+<tr>
+<td>M02</td>
+<td><code>cardioversion</code></td>
+<td>Cardioversion team preparation</td>
+<td><code>#learn~module-cardioversion</code></td>
+</tr>
+<tr>
+<td>M03</td>
+<td><code>thoracic</code></td>
+<td>Chest emergency preparation</td>
+<td><code>#learn~module-thoracic</code></td>
+</tr>
+<tr>
+<td>M04</td>
+<td><code>handover</code></td>
+<td>A focused SBAR handover</td>
+<td><code>#learn~module-handover</code></td>
+</tr>
+<tr>
+<td>M05</td>
+<td><code>leadership</code></td>
+<td>Leading a resuscitation huddle</td>
+<td><code>#learn~module-leadership</code></td>
+</tr>
+<tr>
+<td>M06</td>
+<td><code>teaching</code></td>
+<td>Teach and review a difficult decision</td>
+<td><code>#learn~module-teaching</code></td>
+</tr>
+</tbody></table></div>
+<h2 id="coverage-section-10" tabindex="-1">9 — التسجيلات الحقيقية (12)</h2><p>ECG → Recordings. كل record ID يبقى مع العينات والمعايرة والمصدر والوسوم الأصلية. null يعني قيمة غير محددة، ولا يتحول إلى صفر. ملفات التحقق المستقلة الحالية في <code>../ECG-SOURCE-VERIFICATION-2026-10-08.json</code>.</p>
+<div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>قبول</th>
+<th>Record ID</th>
+<th>Source statements كما في الملف المحلي</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R01</td>
+<td><code>3</code></td>
+<td>NORM — Normal ECG (100); SR — Sinus rhythm (unspecified)</td>
+</tr>
+<tr>
+<td>R02</td>
+<td><code>7</code></td>
+<td>NORM — Normal ECG (100); SR — Sinus rhythm (unspecified)</td>
+</tr>
+<tr>
+<td>R03</td>
+<td><code>4117</code></td>
+<td>AFIB — Atrial fibrillation (100)</td>
+</tr>
+<tr>
+<td>R04</td>
+<td><code>4401</code></td>
+<td>AFIB — Atrial fibrillation (100)</td>
+</tr>
+<tr>
+<td>R05</td>
+<td><code>172</code></td>
+<td>CRBBB — Complete right bundle branch block (100); LAFB — Left anterior fascicular block (100); SR — Sinus rhythm (unspecified)</td>
+</tr>
+<tr>
+<td>R06</td>
+<td><code>256</code></td>
+<td>CLBBB — Complete left bundle branch block (100); PVC — Ventricular premature complex (100); SR — Sinus rhythm (unspecified)</td>
+</tr>
+<tr>
+<td>R07</td>
+<td><code>41</code></td>
+<td>LAFB — Left anterior fascicular block (100); SR — Sinus rhythm (unspecified)</td>
+</tr>
+<tr>
+<td>R08</td>
+<td><code>102</code></td>
+<td>ISCAL — Anterolateral ischemic changes (50); 1AVB — First-degree AV block (100); SR — Sinus rhythm (unspecified)</td>
+</tr>
+<tr>
+<td>R09</td>
+<td><code>30</code></td>
+<td>LVH — Left ventricular hypertrophy (100); SR — Sinus rhythm (unspecified)</td>
+</tr>
+<tr>
+<td>R10</td>
+<td><code>257</code></td>
+<td>ASMI — Anteroseptal myocardial infarction pattern (50); IMI — Inferior myocardial infarction pattern (100); PAC — Atrial premature complex (unspecified); LOWT — Low T-wave amplitude (unspecified); STD_ — ST depression (unspecified); SR — Sinus rhythm (unspecified)</td>
+</tr>
+<tr>
+<td>R11</td>
+<td><code>177</code></td>
+<td>ASMI — Anteroseptal myocardial infarction pattern (100); SR — Sinus rhythm (unspecified)</td>
+</tr>
+<tr>
+<td>R12</td>
+<td><code>144</code></td>
+<td>PACE — Pacemaker rhythm (100)</td>
+</tr>
+</tbody></table></div>
+<h2 id="coverage-section-11" tabindex="-1">10 — مساحات التعلم البصري (5)</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>قبول</th>
+<th>المعرف</th>
+<th>الموطن</th>
+<th>رابط محفوظ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>V01</td>
+<td><code>recordings</code></td>
+<td>ECG → Recordings — Recorded ECGs</td>
+<td><code>#learn~visual-recordings</code></td>
+</tr>
+<tr>
+<td>V02</td>
+<td><code>abg</code></td>
+<td>Learn → Visuals — Blood gases</td>
+<td><code>#learn~visual-abg</code></td>
+</tr>
+<tr>
+<td>V03</td>
+<td><code>lung</code></td>
+<td>Learn → Visuals — Lung ultrasound</td>
+<td><code>#learn~visual-lung</code></td>
+</tr>
+<tr>
+<td>V04</td>
+<td><code>chest</code></td>
+<td>Learn → Visuals — Chest imaging</td>
+<td><code>#learn~visual-chest</code></td>
+</tr>
+<tr>
+<td>V05</td>
+<td><code>ecg-pairs</code></td>
+<td>Learn → Visuals — ECG pairs</td>
+<td><code>#learn~visual-ecg-pairs</code></td>
+</tr>
+</tbody></table></div>
+<h2 id="coverage-section-12" tabindex="-1">11 — شاشات مساندة لا تسقط من الجرد</h2><div class="table-scroll" role="region" aria-label="جدول المواصفة" tabindex="0"><table>
+<thead>
+<tr>
+<th>العنصر</th>
+<th>الموطن</th>
+<th>ما يجب اختباره</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>المفضلة والملاحظات</td>
+<td>Library / Learn</td>
+<td>القديم والجديد، الحفظ والرفض، المسودة والرجوع</td>
+</tr>
+<tr>
+<td>قائمة المراجعة</td>
+<td>Learn → Review</td>
+<td>المواعيد القديمة، المنطقة الزمنية، التقييم الذاتي منفصل</td>
+</tr>
+<tr>
+<td>التقدم</td>
+<td>Learn → Progress</td>
+<td>مقاييس صحيحة لكل نوع دون مجموع إتقان</td>
+</tr>
+<tr>
+<td>النسخ الاحتياطي</td>
+<td>Progress / Settings link</td>
+<td>صيغة version1، preview، رفض ملفات، تعارض واستعادة</td>
+</tr>
+<tr>
+<td>المظهر والقراءة</td>
+<td>Settings</td>
+<td>الخطوات الخمس، bold، accent الستة، theme، التخزين</td>
+</tr>
+<tr>
+<td>التنبيه التعليمي</td>
+<td>Notice / About</td>
+<td>النص والاتفاق القديم والتركيز والطباعة</td>
+</tr>
+<tr>
+<td>التثبيت والتحديث</td>
+<td>Settings / inline status</td>
+<td>أصل ومسار ثابتان، نسخة جاهزة، عمل جارٍ</td>
+</tr>
+<tr>
+<td>النسخ والطباعة والمشاركة</td>
+<td>Topic / Quick / ECG</td>
+<td>لا بيانات خاصة، لا نجاح وهمي، معايرة ومصادر</td>
+</tr>
+<tr>
+<td>البحث الشامل</td>
+<td>Shell</td>
+<td>كل أنواع المحتوى، مقتطف وسياق وروابط</td>
+</tr>
+<tr>
+<td>الفشل والروابط المجهولة</td>
+<td>All views</td>
+<td>لا شاشة بيضاء، لا reset عام، retry مناسب</td>
+</tr>
+</tbody></table></div>
+<h2 id="coverage-section-13" tabindex="-1">12 — قاعدة التحقق عند التنفيذ</h2><p>لكل صف: old route يفتح، new destination تظهر، المحتوى محفوظ، الفعل يعمل، فشل التخزين/التحميل مفهوم، keyboard متاح، عرض 320px سليم، وتحافظ الطباعة/offline على النطاق الموعود. يضاف عمود status/evidence في سجل تنفيذ لاحق؛ لا توضع علامة Pass لهذه الخطة وحدها.</p>
+</section><section class="document" data-document="colors" hidden><h1 tabindex="-1">أزواج الألوان المقترحة</h1><p>تحقق حسابي لـ36 زوجًا صلبًا من النص/الخلفية أو حدود التحكم. لا يمثل اعتمادًا للوصولية على مستوى المكوّن أو التطبيق.</p><div class="palette"><article class="swatch"><div class="sample" style="color:#172B28;background:#F6F8F7" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">canvas-light</h2><p dir="ltr">#172B28 / #F6F8F7</p><p>التباين 13.94:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#172B28;background:#FFFFFF" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">surface-light</h2><p dir="ltr">#172B28 / #FFFFFF</p><p>التباين 14.87:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#4B635D;background:#FFFFFF" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">muted-light</h2><p dir="ltr">#4B635D / #FFFFFF</p><p>التباين 6.48:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#FFFFFF;background:#146B5C" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">primary-light</h2><p dir="ltr">#FFFFFF / #146B5C</p><p>التباين 6.39:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#115544;background:#E8F5F0" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">selected-light</h2><p dir="ltr">#115544 / #E8F5F0</p><p>التباين 7.79:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#991B1B;background:#FEF2F2" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">critical-light</h2><p dir="ltr">#991B1B / #FEF2F2</p><p>التباين 7.60:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#92400E;background:#FFFBEB" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">warning-light</h2><p dir="ltr">#92400E / #FFFBEB</p><p>التباين 6.84:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#166534;background:#ECFDF5" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">completed-light</h2><p dir="ltr">#166534 / #ECFDF5</p><p>التباين 6.77:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#1E40AF;background:#EFF6FF" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">info-light</h2><p dir="ltr">#1E40AF / #EFF6FF</p><p>التباين 8.01:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#FFFFFF;background:#B91C1C" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">error-action-light</h2><p dir="ltr">#FFFFFF / #B91C1C</p><p>التباين 6.47:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#E9F1EE;background:#101917" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">canvas-dark</h2><p dir="ltr">#E9F1EE / #101917</p><p>التباين 15.58:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#E9F1EE;background:#182522" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">surface-dark</h2><p dir="ltr">#E9F1EE / #182522</p><p>التباين 13.78:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#B4C8C0;background:#182522" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">muted-dark</h2><p dir="ltr">#B4C8C0 / #182522</p><p>التباين 9.02:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#10251E;background:#84D6BE" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">primary-dark</h2><p dir="ltr">#10251E / #84D6BE</p><p>التباين 9.46:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#B9EFDB;background:#203D34" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">selected-dark</h2><p dir="ltr">#B9EFDB / #203D34</p><p>التباين 9.24:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#FFC7CE;background:#3A1F24" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">critical-dark</h2><p dir="ltr">#FFC7CE / #3A1F24</p><p>التباين 10.21:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#F8D59B;background:#352B19" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">warning-dark</h2><p dir="ltr">#F8D59B / #352B19</p><p>التباين 9.92:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#B6E8C5;background:#1B3528" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">completed-dark</h2><p dir="ltr">#B6E8C5 / #1B3528</p><p>التباين 9.67:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#C2D8FF;background:#1D2C43" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">info-dark</h2><p dir="ltr">#C2D8FF / #1D2C43</p><p>التباين 9.75:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#3A1F24;background:#FFC7CE" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">error-action-dark</h2><p dir="ltr">#3A1F24 / #FFC7CE</p><p>التباين 10.21:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#FFFFFF;background:#0F5549" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">primary-hover-light</h2><p dir="ltr">#FFFFFF / #0F5549</p><p>التباين 8.69:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#FFFFFF;background:#0B453B" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">primary-active-light</h2><p dir="ltr">#FFFFFF / #0B453B</p><p>التباين 10.89:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#FFFFFF;background:#146B5C" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">emerald-action-light</h2><p dir="ltr">#FFFFFF / #146B5C</p><p>التباين 6.39:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#10251E;background:#84D6BE" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">emerald-action-dark</h2><p dir="ltr">#10251E / #84D6BE</p><p>التباين 9.46:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#FFFFFF;background:#075985" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">ocean-action-light</h2><p dir="ltr">#FFFFFF / #075985</p><p>التباين 7.56:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#082F49;background:#7DD3FC" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">ocean-action-dark</h2><p dir="ltr">#082F49 / #7DD3FC</p><p>التباين 8.32:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#FFFFFF;background:#6D28D9" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">violet-action-light</h2><p dir="ltr">#FFFFFF / #6D28D9</p><p>التباين 7.10:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#2E1065;background:#C4B5FD" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">violet-action-dark</h2><p dir="ltr">#2E1065 / #C4B5FD</p><p>التباين 8.25:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#FFFFFF;background:#A21CAF" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">rose-action-light</h2><p dir="ltr">#FFFFFF / #A21CAF</p><p>التباين 6.32:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#4A044E;background:#F0ABFC" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">rose-action-dark</h2><p dir="ltr">#4A044E / #F0ABFC</p><p>التباين 8.41:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#FFFFFF;background:#92400E" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">amber-action-light</h2><p dir="ltr">#FFFFFF / #92400E</p><p>التباين 7.09:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#451A03;background:#FCD34D" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">amber-action-dark</h2><p dir="ltr">#451A03 / #FCD34D</p><p>التباين 10.39:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#FFFFFF;background:#115E59" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">teal-action-light</h2><p dir="ltr">#FFFFFF / #115E59</p><p>التباين 7.58:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#042F2E;background:#5EEAD4" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">teal-action-dark</h2><p dir="ltr">#042F2E / #5EEAD4</p><p>التباين 9.78:1 · الحد 4.5:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#698078;background:#FFFFFF" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">input-border-light</h2><p dir="ltr">#698078 / #FFFFFF</p><p>التباين 4.23:1 · الحد 3:1 · ناجح</p></article><article class="swatch"><div class="sample" style="color:#91A99F;background:#182522" dir="ltr">EM Pocket · Aa 123</div><h2 dir="ltr">input-border-dark</h2><p dir="ltr">#91A99F / #182522</p><p>التباين 6.32:1 · الحد 3:1 · ناجح</p></article></div></section><footer>المصدر التحريري: ملفات المواصفة المحلية. التباين المحسوب لا يغني عن اختبار المكونات. لا نشر أو تنفيذ لتصميم التطبيق ضمن هذه الوثائق.</footer></main></div>
+<script>
+const entries=[{"id":"master-section-2","key":"master","title":"01 — قرار المنتج والنتيجة المطلوبة"},{"id":"master-section-3","key":"master","title":"02 — الجرد الذي يجب أن يبقى متاحًا"},{"id":"master-section-4","key":"master","title":"03 — سيناريوهات الاستخدام المرجعية"},{"id":"master-section-5","key":"master","title":"04 — هندسة المعلومات"},{"id":"master-section-6","key":"master","title":"05 — المسارات القديمة والجديدة"},{"id":"master-section-7","key":"master","title":"06 — الغلاف العام وتوزيع المساحات"},{"id":"master-section-8","key":"master","title":"07 — نظام المسافات والأبعاد"},{"id":"master-section-9","key":"master","title":"08 — الألوان والهوية الدلالية"},{"id":"master-section-10","key":"master","title":"09 — الطباعة واللغة والرموز"},{"id":"master-section-11","key":"master","title":"10 — الحالات العامة لكل مكوّن"},{"id":"master-section-12","key":"master","title":"11 — المكتبة: الشاشة الافتراضية"},{"id":"master-section-13","key":"master","title":"12 — البحث الشامل"},{"id":"master-section-14","key":"master","title":"13 — الموضوع السريري الكامل"},{"id":"master-section-15","key":"master","title":"14 — الأعلام الحمراء ونسخ الملخص"},{"id":"master-section-16","key":"master","title":"15 — العرض السريع Quick"},{"id":"master-section-17","key":"master","title":"16 — مركز التعلم Learn"},{"id":"master-section-18","key":"master","title":"17 — قوائم الحالات والمسارات"},{"id":"master-section-19","key":"master","title":"18 — الحالة القصيرة: التفاصيل الدقيقة"},{"id":"master-section-20","key":"master","title":"19 — الحالة المتطورة والتغذية الراجعة"},{"id":"master-section-21","key":"master","title":"20 — المراجعة والثقة والتقدم"},{"id":"master-section-22","key":"master","title":"21 — المفضلة والملاحظات الخاصة"},{"id":"master-section-23","key":"master","title":"22 — وجهة ECG الجامعة"},{"id":"master-section-24","key":"master","title":"23 — دليل ECG ذو الخطوات السبع"},{"id":"master-section-25","key":"master","title":"24 — حالات ECG: قائمة الحالة وشاشة القراءة"},{"id":"master-section-26","key":"master","title":"25 — عقد سلامة الرسم والمعايرة"},{"id":"master-section-27","key":"master","title":"26 — العلامات والتكبير والمقارنة وأدوات القياس"},{"id":"master-section-28","key":"master","title":"27 — ممارسة ECG"},{"id":"master-section-29","key":"master","title":"28 — التسجيلات الحقيقية والتعلم البصري"},{"id":"master-section-30","key":"master","title":"29 — وحدات التحضير والإجراءات والمناقشة"},{"id":"master-section-31","key":"master","title":"30 — الإعدادات والتخصيص"},{"id":"master-section-32","key":"master","title":"31 — التنبيه التعليمي والمساعدة والخصوصية"},{"id":"master-section-33","key":"master","title":"32 — إدارة البيانات والنسخ الاحتياطي"},{"id":"master-section-34","key":"master","title":"33 — PWA والعمل دون اتصال والتحديث"},{"id":"master-section-35","key":"master","title":"34 — الطباعة والتصدير والمشاركة"},{"id":"master-section-36","key":"master","title":"35 — الحركة والطبقات والإيماءات"},{"id":"master-section-37","key":"master","title":"36 — الوصولية: عقد الاختبار"},{"id":"master-section-38","key":"master","title":"37 — الحالات غير المثالية والاستثناءات"},{"id":"master-section-39","key":"master","title":"38 — معمارية التنفيذ المقترحة"},{"id":"master-section-40","key":"master","title":"39 — عقد الحالة والرجوع"},{"id":"master-section-41","key":"master","title":"40 — الأداء والميزانيات"},{"id":"master-section-42","key":"master","title":"41 — الرسومات التخطيطية للشاشات"},{"id":"master-section-50","key":"master","title":"42 — خطة التنفيذ المرحلية ومعايير الخروج"},{"id":"master-section-51","key":"master","title":"43 — الاختبارات والأدلة المطلوبة"},{"id":"master-section-52","key":"master","title":"44 — مصفوفة قبول كل شاشة"},{"id":"master-section-53","key":"master","title":"45 — النشر والتراجع"},{"id":"master-section-54","key":"master","title":"46 — المخاطر والقرارات التي تمنعها"},{"id":"master-section-55","key":"master","title":"47 — تعريف اكتمال المشروع"},{"id":"master-section-56","key":"master","title":"48 — المراجع والملفات المرافقة"},{"id":"contracts-section-2","key":"contracts","title":"A — قواعد مشتركة لا تتغير بين الشاشات"},{"id":"contracts-section-3","key":"contracts","title":"B — مواصفات الأبعاد لكل مكوّن"},{"id":"contracts-section-4","key":"contracts","title":"C — الألوان والحواف والظلال والحالات"},{"id":"contracts-section-5","key":"contracts","title":"D — انتقالات الحالة المعيارية"},{"id":"contracts-section-12","key":"contracts","title":"E — نصوص الواجهة المرجعية"},{"id":"contracts-section-13","key":"contracts","title":"F — شاشة Library: العقد القابل للاختبار"},{"id":"contracts-section-14","key":"contracts","title":"G — شاشة Topic: خريطة التفاصيل"},{"id":"contracts-section-15","key":"contracts","title":"H — Learn وProgress: ترتيب الأولوية"},{"id":"contracts-section-16","key":"contracts","title":"I — Quick: عملية اعتماد الملخصات"},{"id":"contracts-section-17","key":"contracts","title":"J — ECG: نقاط تدقيق قبل اعتماد أي تغيير بصري"},{"id":"contracts-section-18","key":"contracts","title":"K — Settings وNotice وData: قرارات دقيقة"},{"id":"contracts-section-19","key":"contracts","title":"L — مواصفات التقييم والقرارات المفتوحة المحدودة"},{"id":"contracts-section-20","key":"contracts","title":"M — قائمة إغلاق مهمة تنفيذية صغيرة"},{"id":"coverage-section-2","key":"coverage","title":"1 — جميع المواضيع السريرية (45)"},{"id":"coverage-section-3","key":"coverage","title":"2 — خطوات دليل ECG (7)"},{"id":"coverage-section-4","key":"coverage","title":"3 — أنماط دليل ECG (18)"},{"id":"coverage-section-5","key":"coverage","title":"4 — مكتبة الأشكال (27)"},{"id":"coverage-section-6","key":"coverage","title":"5 — جميع حالات ECG Explorer (69)"},{"id":"coverage-section-7","key":"coverage","title":"6 — الحالات القصيرة (12)"},{"id":"coverage-section-8","key":"coverage","title":"7 — الحالات المتطورة (6)"},{"id":"coverage-section-9","key":"coverage","title":"8 — وحدات التحضير والمناقشة (6)"},{"id":"coverage-section-10","key":"coverage","title":"9 — التسجيلات الحقيقية (12)"},{"id":"coverage-section-11","key":"coverage","title":"10 — مساحات التعلم البصري (5)"},{"id":"coverage-section-12","key":"coverage","title":"11 — شاشات مساندة لا تسقط من الجرد"},{"id":"coverage-section-13","key":"coverage","title":"12 — قاعدة التحقق عند التنفيذ"}],root=document,panels=[...document.querySelectorAll('[data-document]')],tabs=[...document.querySelectorAll('[data-tab]')],input=document.getElementById('section-search'),toc=document.getElementById('toc'),status=document.getElementById('matches');let current='master';
+const contents=document.getElementById('contents'),wide=matchMedia('(min-width:901px)');contents.open=wide.matches;wide.addEventListener('change',e=>contents.open=e.matches);new ResizeObserver(([e])=>document.documentElement.style.setProperty('--reader-header-size',e.target.getBoundingClientRect().height+'px')).observe(document.querySelector('header'));
+const norm=s=>s.toLowerCase().normalize('NFKD').replace(/[ً-ٰٟ]/g,'').replace(/[أإآ]/g,'ا');
+for(const e of entries){const h=document.getElementById(e.id);let node=h.nextElementSibling,parts=[e.title];while(node&&!/^H[12]$/.test(node.tagName)){parts.push(node.textContent);node=node.nextElementSibling;}e.searchText=norm(parts.join(' '));}
+function draw(){toc.replaceChildren();const q=norm(input.value.trim());const filtered=entries.filter(e=>(q||e.key===current)&&(!q||e.searchText.includes(q)));for(const e of filtered){const li=document.createElement('li'),a=document.createElement('a');a.textContent=(q?({master:'المواصفة',contracts:'العقود',coverage:'الجرد'}[e.key])+': ':'')+e.title;a.href='#'+e.id;a.onclick=ev=>{ev.preventDefault();show(e.key,false);const h=document.getElementById(e.id);h.scrollIntoView();h.focus({preventScroll:true});history.replaceState(null,'','#'+e.id);};li.append(a);toc.append(li);}status.textContent=q?filtered.length+' قسمًا مطابقًا':current==='colors'?'36 زوجًا محسوبًا':filtered.length+' قسمًا في هذه الوثيقة';}
+function show(key,focus=true){current=key;panels.forEach(p=>p.hidden=p.dataset.document!==key);tabs.forEach(t=>{if(t.dataset.tab===key)t.setAttribute('aria-current','page');else t.removeAttribute('aria-current');});draw();if(focus){const h=document.querySelector('[data-document="'+key+'"] h1');h.scrollIntoView();h.focus({preventScroll:true});history.replaceState(null,'','#'+key);}}
+tabs.forEach(t=>t.onclick=()=>show(t.dataset.tab));input.addEventListener('input',draw);document.querySelectorAll('[data-doc-link]').forEach(a=>a.onclick=e=>{e.preventDefault();show(a.dataset.docLink);});document.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>{show('master',false);const e=entries.find(e=>e.key==='master'&&e.title.startsWith(b.dataset.jump+' —'));if(e){const h=document.getElementById(e.id);h.scrollIntoView();h.focus({preventScroll:true});}});document.getElementById('theme').onclick=()=>{const dark=document.documentElement.dataset.theme==='dark'||(!document.documentElement.dataset.theme&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.dataset.theme=dark?'light':'dark';};const hash=decodeURIComponent(location.hash.slice(1));const entry=entries.find(e=>e.id===hash);if(entry){show(entry.key,false);requestAnimationFrame(()=>document.getElementById(entry.id).scrollIntoView());}else if(['master','contracts','coverage','colors'].includes(hash))show(hash,false);else draw();
+</script></body></html>

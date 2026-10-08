@@ -310,7 +310,7 @@
     if (lesson.length) {
       var findings = document.createElement('section'); findings.className = 'ecg-findings'; findings.setAttribute('aria-label', 'Key findings');
       findings.innerHTML = '<strong>Key findings · select to circle in red</strong><div class="ecg-finding-buttons">' + lesson.map(function (f, i) { return '<button type="button" data-finding="' + i + '" aria-pressed="false">' + esc(f.title) + '</button>'; }).join('') + '</div><p class="ecg-finding-detail" role="status"></p>';
-      box.querySelector('.ecg-workbench-paper').before(findings);
+      box.querySelector('.ecg-workbench-paper').after(findings);
     }
     box.querySelector('.ecg-workbench-paper').insertAdjacentHTML('beforebegin', '<p class="ecg-paper-help">Scroll inside the ECG to inspect the full tracing.</p>');
     if (spec) {

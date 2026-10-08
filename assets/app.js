@@ -626,24 +626,11 @@
     /* ---------- sidebar ---------- */
     function buildSidebar() {
         const list = document.getElementById('sideList');
-        list.innerHTML = '<button type="button" class="side-item side-home" data-home="1"><i class="ico" data-cat="home" aria-hidden="true">' + GROUP_SVG.home + '</i>All presentations<span class="side-count">' + DATA.length + '</span></button>' +
-            GROUPS.map((g, groupIndex) => {
-            const items = g.ids.map(id => BY_ID[id]).filter(Boolean);
-            if (!items.length) return '';
-            return '<details class="side-group"' + (groupIndex === 0 ? ' open' : '') + '><summary class="side-label">' + esc(g.title) + ' <span class="side-count">' + items.length + '</span></summary>' +
-                items.map(cp =>
-                    '<button type="button" class="side-item" data-id="' + cp.id + '"><i class="ico" data-cat="' + catFor(cp.id) + '" data-id="' + cp.id + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(cp.id), cp.id)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</i>' + esc(cp.name) + '</button>'
-                ).join('') + '</details>';
-        }).join('');
-        list.addEventListener('click', (e) => {
-            const btn = e.target.closest('.side-item');
-            if (!btn) return;
-            if (btn.dataset.home) { showHome(); closeSidebar(); }
-            else if (btn.dataset.ecg) { showEcg(); closeSidebar(); }
-            else if (btn.dataset.explorer) { showExplorer(); closeSidebar(); }
-            else { showPresentation(btn.dataset.id); closeSidebar(); }
-        });
+        list.innerHTML = [['home','Library','home'],['study','Learn','references'],['ecg','ECG','ecg'],['shift','Quick','first-minutes']].map(([key,label,icon]) =>
+            '<button type="button" class="side-item" data-nav="'+key+'"><i class="ico" aria-hidden="true">'+(key==='home'?GROUP_SVG.home:semanticSvg(SEMANTIC_ICONS[icon] || SEMANTIC_ICONS.generic))+'</i>'+label+'</button>').join('') +
+            '<div class="side-divider"></div><div class="side-secondary"><a class="side-btn" href="#study~saved">Saved topics</a><a class="side-btn" href="#learn~progress">Progress &amp; backup</a><a class="side-btn" href="#settings">Settings &amp; offline</a></div>';
     }
+
     function markActive(id) {
         document.querySelectorAll('.side-item').forEach(b =>
             b.classList.toggle('active',
@@ -661,8 +648,7 @@
         const sidebar = document.getElementById('sidebar');
         if (!sidebar) return;
         const mobile = sidebarIsMobile();
-        const hiddenMenu = (mobile && !sidebar.classList.contains('open')) ||
-            (!mobile && document.documentElement.classList.contains('sidebar-collapsed'));
+        const hiddenMenu = mobile; // Mobile uses the four-destination bottom navigation.
         try {
             if ('inert' in sidebar) sidebar.inert = hiddenMenu;
             else if (hiddenMenu) sidebar.setAttribute('inert', '');
@@ -754,9 +740,8 @@
         const count = severityCount(cp);
         const label = severityFilter === 'all' ? 'critical' : SEV_LABEL[severityFilter].toLowerCase();
         return '<button type="button" class="cp-card" data-id="' + cp.id + '" data-cat="' + catFor(cp.id) + '">' +
-            '<span class="cp-count">' + count + ' ' + label + ' diagnoses</span>' +
             '<div class="cp-ico" data-cat="' + catFor(cp.id) + '" data-id="' + cp.id + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(cp.id), cp.id)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</div>' +
-            '<h3>' + esc(cp.name) + '</h3><p>' + esc(cp.tag) + '</p>' +
+            '<div class="cp-info"><h3 class="cp-name">' + esc(cp.name) + '</h3><p class="cp-desc">' + esc(cp.tag) + '</p><span class="cp-count">' + count + ' ' + label + ' diagnoses</span></div>' +
             (isReviewed(cp.id) ? '<span class="cp-reviewed">' + semanticSvg(SEMANTIC_ICONS['completed'], 'review-check') + ' ' + esc(reviewLabel(cp.id)) + '</span>' : '') +
             (isSaved(cp.id) ? '<span class="cp-saved">' + STAR_SVG.filled + ' Saved</span>' : '') +
             '<span class="cp-disclosure" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['chevron-right']) + '</span>' +
@@ -772,7 +757,7 @@
         /* Reading a topic is part of the Presentations library, so the source tab stays
            lit (iOS keeps the originating tab selected until the user leaves the section).
            Every learn sub-view reports 'study' because it lives in the Practice workspace. */
-        const activeNavKey = view === 'presentation' ? 'home' : view;
+        const activeNavKey = view === 'presentation' ? 'home' : view === 'ecg-explorer' ? 'ecg' : view;
         document.body.dataset.view = view;
         document.querySelectorAll('[data-nav]').forEach(function (el) {
             const on = (el.getAttribute('data-nav') === activeNavKey);
@@ -821,7 +806,7 @@
         markActive(null);
         syncNav('home');
         setTitle(null);
-        setStageContext('All emergency medicine presentations');
+        setStageContext('Presentation library');
         if (!DATA.length) {
             stage.innerHTML = '<p class="empty-filter">Could not load presentations. Confirm <code>assets/data.js</code> uploaded with index.html.</p>';
             return;
@@ -838,13 +823,7 @@
         const visibleCount = visible.length;
         const filtered = librarySystem !== 'all' || patientFilter !== 'all' || severityFilter !== 'all';
         stage.innerHTML =
-            '<section class="home-intro">' +
-            '<span class="study-kicker">YOUR EMERGENCY MEDICINE WORKSPACE</span>' +
-            '<h1>What would you like to learn?</h1>' +
-            '<p>Find a presentation, learn to read an ECG, or work through a case.</p>' +
-            '<div class="home-meta"><span>' + DATA.length + ' presentations</span><span>' + reviewedIds().length + ' reviewed</span><span id="offlineStatus">' + esc(offlineStatus) + '</span></div></section>' +
-            (window.EM_LEARNING ? window.EM_LEARNING.homeHtml() : '') +
-            studyDashboardHtml() +
+            '<section class="home-intro library-only"><span class="study-kicker">EM POCKET · REFERENCE</span><h1>Library</h1><p>Find an emergency presentation and explore its approach, warning signs, workup and disposition.</p><div class="home-meta"><span>' + DATA.length + ' presentations</span><span id="offlineStatus">' + esc(offlineStatus) + '</span></div></section>' +
             '<section class="presentation-library" id="presentationLibrary" aria-labelledby="presentationLibraryTitle" tabindex="-1">' +
             '<div class="library-head"><div><h2 id="presentationLibraryTitle">Presentation library</h2><p>' + visibleCount + ' of ' + DATA.length + ' presentations · grouped by clinical system</p></div>' +
             '</div><div class="library-toolbar"><label class="library-system">Clinical system<select id="librarySystem">' +
@@ -896,10 +875,8 @@
     }
 
     function showHome() {
-        if (location.hash) {
-            history.pushState(null, '', location.pathname + location.search);
-        }
-        renderHome();
+        const open = () => { history.pushState(null, '', location.pathname + location.search + '#library'); if(window.POCKET_DESIGN)window.POCKET_DESIGN.park(); renderHome(); if(window.POCKET_DESIGN)window.POCKET_DESIGN.afterRoute(); };
+        if (!window.POCKET_DESIGN || window.POCKET_DESIGN.beforeRoute(open)) open();
     }
 
     /* ---------- study queue and case practice ---------- */
@@ -960,9 +937,9 @@
     /* ---------- shift-ready view ---------- */
     const SHIFT_STEP_KEYS = ['first-minutes', 'red-flags', 'workup', 'dont-miss', 'disposition'];
     function shiftHtml(cp) {
-        const immediateWorkup = (cp.workup && cp.workup[0]) ? cp.workup[0][1].slice(0, 4) : [];
-        const critical = cp.dontMiss.filter(d => d[1] === 'critical').slice(0, 5);
-        const escalation = (cp.disposition || []).slice(-2);
+        const immediateWorkup = (cp.workup || []).flatMap(w => w[1].map(item => w[0] + ': ' + item));
+        const critical = cp.dontMiss;
+        const escalation = (cp.disposition || []);
         const practice = practiceTarget(cp.id);
         const step = function (n, title) {
             const iconKey = SHIFT_STEP_KEYS[n - 1] || 'generic';
@@ -975,14 +952,14 @@
             '<div><span class="shift-kicker">' + semanticSvg(SEMANTIC_ICONS['first-minutes'], 'kicker-svg') + ' FOCUSED SHIFT VIEW</span><h1>' + esc(cp.name) + '</h1><p>' + esc(cp.tag) + '</p></div>' +
             '</div>' +
             '<div class="shift-head-actions">' +
-            '<button type="button" class="handover-btn" id="copyHandoverBtn" title="Copy handover summary"><span class="btn-icon btn-emoji" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['references'], 'btn-svg') + '</span><span>Copy handover</span></button>' +
+            '<button type="button" class="handover-btn" id="copyHandoverBtn" title="Copy educational reference"><span class="btn-icon btn-emoji" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['references'], 'btn-svg') + '</span><span>Copy reference</span></button>' +
             '<button type="button" class="review-btn" data-full-id="' + cp.id + '"><span class="btn-icon btn-emoji" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['generic'], 'btn-svg') + '</span><span>Open full pathway</span></button>' +
             '<a class="review-btn" href="' + esc(practice.href) + '"><span>' + esc(practice.label) + '</span></a>' +
             '</div></div>' +
-            '<div class="shift-warning"><span class="ios-icon-badge ios-emoji-badge warning-badge" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['red-flags'], 'warning-svg') + '</span><span>Educational first-pass aid. Reassess the patient, confirm doses and use local protocols.</span></div>' +
-            '<div class="shift-grid"><section>' + step(1, 'First minutes') + '<ol>' + (cp.approach || []).slice(0, 3).map(x => '<li>' + esc(x) + '</li>').join('') + '</ol></section>' +
-            '<section class="shift-red">' + step(2, 'Escalate now if') + '<ul>' + (cp.redFlags || []).slice(0, 6).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></section>' +
-            '<section>' + step(3, 'Immediate workup') + '<ul>' + immediateWorkup.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></section>' +
+            '<div class="shift-warning"><span class="ios-icon-badge ios-emoji-badge warning-badge" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['red-flags'], 'warning-svg') + '</span><span>Educational reference. All approach, red-flag, workup, differential and disposition items from this presentation are shown. Use the full pathway for history, examination and sources.</span></div>' +
+            '<div class="shift-grid"><section>' + step(1, 'Approach') + '<ol>' + (cp.approach || []).map(x => '<li>' + esc(x) + '</li>').join('') + '</ol></section>' +
+            '<section class="shift-red">' + step(2, 'Escalate now if') + '<ul>' + (cp.redFlags || []).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></section>' +
+            '<section>' + step(3, 'Workup') + '<ul>' + immediateWorkup.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></section>' +
             '<section class="shift-crit">' + step(4, 'Don’t miss') + '<ul>' + critical.map(x => '<li><strong>' + esc(x[0]) + '</strong><br><small>' + esc(x[2]) + '</small></li>').join('') + '</ul></section>' +
             '<section class="shift-disposition">' + step(5, 'Disposition lane') + escalation.map(x => '<div><strong>' + esc(x[0]) + '</strong><p>' + esc(x[1]) + '</p></div>').join('') + '</section></div></section>';
     }
@@ -1011,7 +988,7 @@
     function manualCopyField(text) {
         const box = stage.querySelector('#handoverFallback');
         if (!box) return;
-        box.innerHTML = '<label for="handoverFallbackText">Clipboard blocked — copy the handover manually</label>' +
+        box.innerHTML = '<label for="handoverFallbackText">Clipboard blocked — copy the reference manually</label>' +
             '<textarea id="handoverFallbackText" rows="6" readonly></textarea>';
         const field = box.querySelector('textarea');
         field.value = text;
@@ -1023,15 +1000,15 @@
     function copyHandoverSummary(text) {
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(function () {
-                toast('Handover summary copied to clipboard.');
+                toast('Educational reference copied to clipboard.');
             }).catch(function () {
-                if (legacyCopyText(text)) toast('Handover summary copied to clipboard.');
+                if (legacyCopyText(text)) toast('Educational reference copied to clipboard.');
                 else { toast('Clipboard blocked. Select the text and copy it manually.'); manualCopyField(text); }
             });
             return;
         }
-        if (legacyCopyText(text)) { toast('Handover summary copied to clipboard.'); return; }
-        toast('Clipboard unavailable in this browser. Copy the handover manually.');
+        if (legacyCopyText(text)) { toast('Educational reference copied to clipboard.'); return; }
+        toast('Clipboard unavailable in this browser. Copy the reference manually.');
         manualCopyField(text);
     }
 
@@ -1039,13 +1016,15 @@
         const copyBtn = stage.querySelector('#copyHandoverBtn');
         if (!copyBtn) return;
         copyBtn.addEventListener('click', function () {
-            const rfText = (cp.redFlags || []).slice(0, 5).join('; ');
-            const immediateWorkup = (cp.workup && cp.workup[0]) ? cp.workup[0][1].slice(0, 4) : [];
-            const text = 'EM Pocket Bedside Handover: ' + cp.name + '\n' +
+            const rfText = (cp.redFlags || []).join('; ');
+            const immediateWorkup = (cp.workup || []).flatMap(w => w[1].map(item => w[0] + ': ' + item));
+            const text = 'EM Pocket educational reference (not a patient handover): ' + cp.name + '\n' +
                 'Red Flags: ' + (rfText || 'None listed') + '\n' +
-                'First Minutes: ' + ((cp.approach || []).slice(0, 3).join('; ') || 'Standard resuscitation') + '\n' +
-                'Immediate Workup: ' + (immediateWorkup.join('; ') || 'Per protocol') + '\n' +
-                'Reference: EM Pocket (offline clinical education)';
+                'Approach: ' + ((cp.approach || []).join('; ') || 'Standard resuscitation') + '\n' +
+                'Workup: ' + (immediateWorkup.join('; ') || 'Per protocol') + '\n' +
+                'Important diagnoses: ' + cp.dontMiss.map(d=>d[0]+': '+d[2]).join('; ') + '\n' +
+                'Disposition: ' + cp.disposition.map(d=>d[0]+': '+d[1]).join('; ') + '\n' +
+                'Sources: ' + cp.refs.join('; ') + '\nEducational reference. Apply clinical judgment and local protocols.';
             copyHandoverSummary(text);
         });
     }
@@ -1059,7 +1038,12 @@
             stage.querySelector('[data-home]').addEventListener('click', showHome);
             return;
         }
-        const cp = BY_ID[id] || BY_ID[currentId] || DATA[0];
+        if (!id || !BY_ID[id]) {
+            currentId=null; syncNav('shift');setTitle('Quick');setStageContext('Quick reference');
+            stage.innerHTML='<header class="design-header"><span class="study-kicker">EM POCKET · FOCUSED REFERENCE</span><h1>Quick</h1><p>Choose a presentation to see its approach, red flags, workup, important diagnoses and disposition together.</p></header><section class="settings-section"><label for="quickPresentation">Presentation</label><select id="quickPresentation"><option value="">Choose a presentation…</option>'+DATA.map(cp=>'<option value="'+cp.id+'">'+esc(cp.name)+'</option>').join('')+'</select><p class="clinical-safety-note">Educational reference. Read the full pathway for history, examination, supporting sources and context.</p></section>';
+            stage.querySelector('#quickPresentation').onchange=function(){if(this.value)showShift(this.value);};window.scrollTo({top:0});return;
+        }
+        const cp = BY_ID[id];
         currentId = cp.id; markActive(cp.id); syncNav('shift'); setTitle('Shift view · ' + cp.name);
         setStageContext('Focused shift view for ' + cp.name);
         stage.innerHTML = '<div class="shift-topline">' +
@@ -1083,7 +1067,7 @@
     }
 
     function showShift(id) {
-        const fallbackId = id || currentId || (DATA[0] && DATA[0].id);
+        const fallbackId = id || currentId;
         const route = 'shift' + (fallbackId ? '~' + fallbackId : '');
         if ((location.hash || '').replace('#', '') === route) renderShift((route.split('~')[1]));
         else location.hash = route;
@@ -1138,6 +1122,7 @@
         if (!h || h === lastTopbarH) return;
         lastTopbarH = h;
         document.documentElement.style.setProperty('--topbar-h', h + 'px');
+        document.documentElement.style.setProperty('--topbar-height', h + 'px');
     }
 
     /* Reading progress. Module scope: registered by init() on scroll/resize and
@@ -1313,7 +1298,7 @@
         return '<div class="dx-grid">' + items.map(d => {
             const name = d[0], sev = d[1], key = d[2];
             return '<div class="dx-card sev-' + sev + '"><h3>' + sevDot(sev) + esc(name) +
-                ' <span class="sev-tag">' + (SEV_LABEL[sev] || sev) + '</span></h4>' +
+                ' <span class="sev-tag">' + (SEV_LABEL[sev] || sev) + '</span></h3>' +
                 '<div class="dx-key"><strong>Key:</strong> ' + esc(key) + '</div></div>';
         }).join('') + '</div>';
     }
@@ -1369,7 +1354,6 @@
             : '';
 
         stage.innerHTML =
-            '<div class="read-progress" aria-hidden="true"><i id="readBar"></i></div>' +
             '<div class="pres-layout" data-cat="' + catFor(cp.id) + '">' +
             '<div class="pres-rail-wrap">' + presentationRailHtml() + '</div>' +
             '<div class="pres-main">' +
@@ -1395,7 +1379,7 @@
             sectionCard('', 'Interactive Red-Flag Checklist',
                 '<div class="rf-box"><div class="rf-banner" id="rfBanner"></div>' +
                 '<p style="font-size:.78rem;color:var(--ink-soft);margin-bottom:6px">' +
-                'Tick what your patient has — the banner updates as you go.</p><div class="rf-tools"><button type="button" class="rf-clear" id="clearRedFlags">Clear selected</button><button type="button" class="rf-clear" id="copyReview">Copy review</button></div>' + rfItems +
+                'Select warning signs for educational review. Selections stay in this session and are not a patient record or a severity score.</p><div class="rf-tools"><button type="button" class="rf-clear" id="clearRedFlags">Clear selected</button><button type="button" class="rf-clear" id="copyReview">Copy review</button></div>' + rfItems +
                 '<div class="rf-progress"><i id="rfBar"></i></div></div>', isClosed('red-flags'), 'red-flags') +
 
             sectionCard('', 'Focused History', clusterGrid(cp.history), isClosed('history', true), 'history') +
@@ -1546,7 +1530,8 @@
     function showPresentation(id, target) {
         const route = id + (target ? '~' + target : '');
         if ((location.hash || '').replace('#', '') === route) {
-            renderPresentation(id, target);
+            const render=()=>{if(window.POCKET_DESIGN)window.POCKET_DESIGN.park();renderPresentation(id,target);if(window.POCKET_DESIGN)window.POCKET_DESIGN.afterRoute();};
+            if(!window.POCKET_DESIGN || window.POCKET_DESIGN.beforeRoute(render))render();
         } else {
             location.hash = route;
         }
@@ -1943,7 +1928,7 @@
     }
     function showEcg(target) {
         const route = 'ecg' + (target ? '~' + target : '');
-        if ((location.hash || '').replace('#', '') === route) renderEcg(target);
+        if ((location.hash || '').replace('#', '') === route) {const render=()=>{if(window.POCKET_DESIGN)window.POCKET_DESIGN.park();renderEcg(target);if(window.POCKET_DESIGN)window.POCKET_DESIGN.afterRoute();};if(!window.POCKET_DESIGN || window.POCKET_DESIGN.beforeRoute(render))render();}
         else location.hash = route;
     }
 
@@ -1954,7 +1939,7 @@
     }
     function renderExplorer(id) {
         currentId = null;
-        markActive('ecg-explorer'); syncNav('explorer'); setTitle('ECG Explorer');
+        markActive('ecg-explorer'); syncNav('ecg'); setTitle('ECG Explorer');
         setStageContext('ECG Explorer');
         stage.innerHTML = '<section class="ecg-explorer"></section>';
         try {
@@ -1969,16 +1954,31 @@
         stage.focus({ preventScroll: true }); announce('Viewing ECG Explorer');
     }
 
-    function applyRoute(preservePosition) {
+    function applyRoute(preservePosition, approved) {
+        const requested = location.href;
+        const design = window.POCKET_DESIGN;
+        if (design && !approved && !design.beforeRoute(() => { history.replaceState(null, '', requested); applyRoute(preservePosition, true); })) return;
+        if (design) design.park();
         const route = (location.hash || '').replace('#', '').split('~');
         const id = route[0], target = route[1];
-        if (id === 'learn' && window.EM_LEARNING) { currentId=null; markActive('study'); syncNav('study'); setTitle('Learning workspace'); setStageContext('Learning workspace'); window.EM_LEARNING.mount(stage,target||'practice'); announce('Learning workspace'); }
+        if (id === 'search' && design) {currentId=null;syncNav('home');setTitle('Search');setStageContext('Search results');let query='';try{query=decodeURIComponent(route.slice(1).join('~')||'');}catch(_){}design.search(query);}
+        else if (id === 'settings' && design) { currentId=null; syncNav('settings'); setTitle('Settings'); setStageContext('Settings and offline'); design.settings(); }
+        else if (id === 'learn' && window.EM_LEARNING) {
+            currentId=null; markActive('study'); syncNav(target==='visual-recordings'?'ecg':'study'); setTitle('Learn'); setStageContext('Learning workspace');
+            if(design && (!target || ['home','tracks','short'].includes(target) || target.startsWith('track-'))) design.learn(target || 'home');
+            else window.EM_LEARNING.mount(stage,target||'practice');
+            announce('Learning workspace');
+        }
+        else if (id === 'library') { if (target === 'saved') renderStudy('saved'); else renderHome(preservePosition); }
+        else if (id === 'ecg-hub' && design) { currentId=null; syncNav('ecg'); setTitle('ECG'); setStageContext('ECG learning'); design.ecg(); }
         else if (id === 'study') renderStudy(target || 'due');
         else if (id === 'shift') renderShift(target);
         else if (id === 'ecg-explorer') renderExplorer(target);
         else if (id === ECG_TOPIC_ID) renderEcg(target);
         else if (id && BY_ID[id]) renderPresentation(id, target, preservePosition);
-        else renderHome();
+        else if (!id || id === 'presentationLibrary') renderHome();
+        else { syncNav('home'); setTitle('Page not found'); setStageContext('Page not found'); stage.innerHTML='<section class="design-empty"><h1>Page not found</h1><p>This link does not match a presentation or learning page.</p><a class="design-action" href="#library">Open the library</a></section>'; }
+        if(design)design.afterRoute();
     }
 
     function refreshActiveRoute() {
@@ -2131,6 +2131,15 @@
         if (searchCursor >= 0 && items[searchCursor]) items[searchCursor].scrollIntoView({ block: 'nearest' });
     }
 
+    function findSearchHits(q) {
+        if(!q || q.length<2)return [];
+        const ql = q.toLowerCase();
+        return SEARCH_INDEX.filter(x =>
+            x.title.toLowerCase().indexOf(ql) !== -1 ||
+            (x.sub && x.sub.toLowerCase().indexOf(ql) !== -1)
+        ).sort((a,b)=>{const score=x=>{const title=x.title.toLowerCase();return title===ql?100:title.startsWith(ql)&&(!title[ql.length]||/[^a-z0-9]/.test(title[ql.length]))?80:title.includes(ql)?40:20;};return score(b)-score(a);});
+    }
+
     function runSearch(q) {
         const pop = ensureResultsPop();
         searchCursor = -1;
@@ -2139,11 +2148,8 @@
         const clearBtn = document.getElementById('searchClearBtn');
         if (clearBtn) clearBtn.hidden = !q;
         if (!q || q.length < 2) { hideSearchResults(pop); return; }
-        const ql = q.toLowerCase();
-        const hits = SEARCH_INDEX.filter(x =>
-            x.title.toLowerCase().indexOf(ql) !== -1 ||
-            (x.sub && x.sub.toLowerCase().indexOf(ql) !== -1)
-        ).sort((a,b)=>{const score=x=>{const title=x.title.toLowerCase();return title===ql?100:title.startsWith(ql)&&(!title[ql.length]||/[^a-z0-9]/.test(title[ql.length]))?80:title.includes(ql)?40:20;};return score(b)-score(a);}).slice(0, 12);
+        const allHits=findSearchHits(q);
+        const hits=allHits.slice(0,12);
         pop.innerHTML = hits.length
             ? hits.map((h, i) =>
                 '<button type="button" class="res-item" id="search-result-' + i + '" data-id="' + h.cpId + '" data-target="' + h.target + '" role="option" aria-selected="false">' +
@@ -2152,6 +2158,7 @@
                 '<div class="r-sub">' + (h.sub ? esc(h.sub) : '') + '</div></div>' +
                 '<span class="r-tag">' + esc(h.kind) + '</span></button>').join('')
             : '<div class="res-item"><div class="r-sub">No results for \u201C' + esc(q) + '\u201D</div></div>';
+        if(allHits.length>12)pop.insertAdjacentHTML('beforeend','<button type="button" class="res-item search-all" id="search-result-12" role="option" aria-selected="false" data-id="search" data-target="'+esc(q)+'">View all '+allHits.length+' results →</button>');
         pop.style.display = 'block';
         if (input) input.setAttribute('aria-expanded', 'true');
         if (hits.length) {
@@ -2166,7 +2173,8 @@
             }));
     }
     function openSearchHit(id, target) {
-        if (id === 'learn') location.hash='learn~'+target;
+        if (id === 'search') location.hash='search~'+encodeURIComponent(target);
+        else if (id === 'learn') location.hash='learn~'+target;
         else if (id === 'ecg-explorer') showExplorer(target);
         else if (id === ECG_TOPIC_ID) showEcg(target || '');
         else showPresentation(id, target);
@@ -2255,7 +2263,7 @@
         } catch (e) {}
         const meta = document.getElementById('themeColor');
         if (meta) {
-            meta.setAttribute('content', dark ? '#151d27' : '#ffffff');
+            meta.setAttribute('content', dark ? '#101917' : '#f6f8f7');
         }
     }
     function bindPrefs() {
@@ -2335,6 +2343,7 @@
         if (!overlay || !check || !btn) return;
 
         overlay.hidden = false;
+        if (overlay.showModal && !overlay.open) overlay.showModal();
         overlay.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
         ['.main', '.sidebar'].forEach(function (sel) {
@@ -2366,6 +2375,7 @@
     function hideDisclaimer() {
         const overlay = document.getElementById('disclaimerOverlay');
         if (!overlay) return;
+        if (overlay.close && overlay.open) overlay.close();
         overlay.hidden = true;
         overlay.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
@@ -2388,6 +2398,7 @@
         const linkBtn = document.getElementById('disclaimerLinkBtn');
         if (!overlay || !check || !btn) return;
 
+        overlay.addEventListener('cancel', e => { e.preventDefault(); if(isDisclaimerAgreed())hideDisclaimer(); });
         check.addEventListener('change', () => {
             btn.disabled = !check.checked;
             try {
@@ -2597,10 +2608,10 @@
                 closeSidebar();
                 if (document.getElementById('ecgLightbox') || document.getElementById('ecgWorkbench')) closeEcgLightbox();
                 if (navKey === 'home') showHome();
-                else if (navKey === 'study') { location.hash = 'learn~practice'; }
+                else if (navKey === 'study') { location.hash = 'learn~home'; }
                 else if (navKey === 'shift') showShift(currentId);
                 else if (navKey === 'explorer') showExplorer();
-                else if (navKey === 'ecg') showEcg();
+                else if (navKey === 'ecg') location.hash = 'ecg-hub';
             });
         });
 
@@ -2663,24 +2674,7 @@
         });
         const toolsToggle = document.getElementById('toolsToggle');
         const topbarTools = document.getElementById('topbarTools');
-        if (toolsToggle && topbarTools) {
-            toolsToggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const open = !topbarTools.classList.contains('open');
-                topbarTools.classList.toggle('open', open);
-                document.body.classList.toggle('tools-open', open);
-                toolsToggle.setAttribute('aria-expanded', String(open));
-                toolsToggle.setAttribute('aria-label', open ? 'Close reading settings' : 'Open reading settings');
-            });
-            document.addEventListener('click', (e) => {
-                if (topbarTools.classList.contains('open') && !topbarTools.contains(e.target) && e.target !== toolsToggle && !toolsToggle.contains(e.target)) {
-                    topbarTools.classList.remove('open');
-                    document.body.classList.remove('tools-open');
-                    toolsToggle.setAttribute('aria-expanded', 'false');
-                    toolsToggle.setAttribute('aria-label', 'Open reading settings');
-                }
-            });
-        }
+        if (toolsToggle && topbarTools) toolsToggle.addEventListener('click', () => { location.hash='settings'; });
 
         const installBtn = document.getElementById('installBtn');
         function isInstalled() {
@@ -2791,6 +2785,7 @@
             const overlay = document.getElementById('disclaimerOverlay');
             const sidebar = document.getElementById('sidebar');
             if (overlay && !overlay.hidden) return;
+            if (document.querySelector('dialog[open]')) return;
             if (document.getElementById('ecgWorkbench') || document.getElementById('ecgLightbox')) return;
             if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
             if (sidebarIsMobile() && sidebar.classList.contains('open') && e.key !== 'Escape') return;
@@ -2817,9 +2812,9 @@
                 return;
             }
             if (e.key === 'h' || e.key === 'H') { e.preventDefault(); showHome(); }
-            if (e.key === 's' || e.key === 'S') { e.preventDefault(); location.hash='learn~practice'; }
+            if (e.key === 's' || e.key === 'S') { e.preventDefault(); location.hash='learn~home'; }
             if (e.key === 'v' || e.key === 'V') { e.preventDefault(); showShift(currentId); }
-            if ((e.key === 'e' || e.key === 'E') && getEcg()) { e.preventDefault(); showEcg(); }
+            if ((e.key === 'e' || e.key === 'E') && getEcg()) { e.preventDefault(); location.hash='ecg-hub'; }
             const routeName = (location.hash || '').replace('#', '').split('~')[0];
             if (routeName === ECG_TOPIC_ID && (e.key === '[' || e.key === ']')) {
                 const ecg = getEcg();
@@ -2844,9 +2839,10 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261008-clinical-v30').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261008-redesign-v31').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Works offline'));
                     const applyUpdate = () => {
+                        if(window.POCKET_DESIGN && !window.POCKET_DESIGN.beforeRoute(() => window.location.reload()))return;
                         const waiting = registration.waiting;
                         if (waiting) {
                             try { waiting.postMessage({ type: 'SKIP_WAITING' }); } catch (e) {}
@@ -2878,7 +2874,8 @@
         }
     }
 
-    if (document.readyState === 'loading') {
+    window.EM_POCKET_UI = { stage, esc, dueIds, savedIds, reviewedIds, noteFor, toast, findSearchHits, setStageContext, syncNav, showDisclaimer, get offlineStatus(){return offlineStatus;} };
+    if (document.readyState !== 'complete') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
