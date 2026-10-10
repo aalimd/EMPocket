@@ -510,7 +510,7 @@
   let svg='<svg class="ecg-svg ecg-paper ecg-calibrated" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Synthetic teaching rhythm strip">'+E.renderPaperGrid(width,height)+'<text x="20" y="28" font-size="17">SYNTHETIC · 25 mm/s · 10 mm/mV · 6 seconds</text>';
   data.lanes.forEach((lead,lane)=>{const base=210+lane*270;svg+='<text x="20" y="'+(base-115)+'" font-size="22">'+lead+'</text>';let d='';for(let t=0;t<=6000;t+=2)d+=(t?' L':'M')+(80+t*.2).toFixed(2)+','+(base-voltage(t,data,lane)*80).toFixed(2);svg+='<path class="ecg-trace ecg-signal" d="'+d+'" fill="none" stroke="#111" stroke-width="2.5"/>';});
   svg+='<path d="M20,'+(height-20)+' v-80 h40 v80" fill="none" stroke="#111" stroke-width="2"/><text x="85" y="'+(height-25)+'" font-size="16">1 mV / 200 ms</text></svg>';
-  const findings=record.lessons.map(f=>({title:f.title,explanation:f.explanation,targets:lessonTargets(f,data)}));
+  const findings=record.lessons.map(f=>({title:f.title,explanation:f.explanation,leads:(f.leads||[data.lanes[f.lane]]).filter(lead=>data.lanes.includes(lead)),targets:lessonTargets(f,data)}));
   return {svg,width,height,data,findings,format:'Focused rhythm strip',caption:'Synthetic educational strip · 6 seconds · selected leads, not a full 12-lead.',scale:'25 mm/s · 10 mm/mV'};
  }
  function renderPanel(record) {
@@ -528,6 +528,16 @@
   entry.findings.splice(0,entry.findings.length,...item.findings);
   entry.caption=item.caption+' Grid and waveform share a calibrated scale; on-screen millimetres depend on zoom. Selected morphology, not a clinically validated patient ECG.';
   entry.figureLabel='Calibrated synthetic ECG';entry.calibrated=true;entry.hasReference=false;
+  // Focused lead views use the final calibrated drawing, after replacing older sketches.
+  entry.previewPanels=item.data.lanes.map((lead,lane)=>({title:lead+' · focused segment',viewBox:'0 '+(70+lane*270)+' 340 260'}));
+  entry.guideFocus=true;
+  if(record.sharedLibrary==='pericarditis-ber'&&entry.learning)entry.learning.startPanel=item.data.lanes.indexOf('II');
+  if(entry.learning&&record.sharedLibrary==='hypokalemia')entry.learning.answer='Exclude a separate U wave. This calibrated model ends T at 380 ms and U at 620 ms after QRS onset; QT ends at T, not U. When the waves merge on a patient ECG, use another lead with a clear T endpoint.';
+  if(entry.learning&&record.sharedLibrary==='tca-toxicity'){
+   entry.learning.question='Do a widened QRS and terminal R in aVR prove TCA poisoning?';
+   entry.learning.answer='No. This calibrated example models QRS 160 ms and a terminal R of 4 mm in aVR. Measure on the stated grid, then assess exposure, prior ECG and perfusion; several drugs and other causes can produce similar findings.';
+  }
+
  }
  window.ECG_CURRICULUM={cases,sources,normalReference:record=>renderCore({...record,kind:'reference-normal',name:'Normal sinus reference',summary:'Normal sinus model at 75/min, with matching lead views and printed gain. This is a synthetic comparison, not a prior patient ECG.'}),build:record=>record.core?renderCore(record):record.library?renderPanel(record):renderStrip(record),stripData,voltage};
 }());

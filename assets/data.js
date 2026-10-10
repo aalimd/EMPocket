@@ -1434,22 +1434,25 @@ const ECG_DATA = {
     steps: [
         {
             num: 1,
+            sources: [{"label": "AHA ST/T measurement", "url": "https://doi.org/10.1161/CIRCULATIONAHA.108.191096"}, {"label": "Fourth UDMI: TP reference", "url": "https://doi.org/10.1161/CIR.0000000000000617"}],
             id: 'rate-calibration',
             name: 'Calibration, Leads & Rate',
             icon: '⏱️',
             summary: 'Confirm the tracing is real, then count the ventricular rate yourself.',
             details: [
                 '<strong>Standard calibration:</strong> Paper speed 25 mm/s (1 small box = 40 ms; 1 large box = 200 ms). Voltage 10 mm/mV (1 small box = 0.1 mV; 2 large boxes = 1.0 mV). Check the calibration rectangle at the left edge.',
-                '<strong>Lead placement before diagnosis:</strong> V1–V2 in the 4th intercostal space at the sternal edge. High V1/V2 creates late RBBB-like rSR′ and can mimic Brugada or posterior OMI. Limb reversal: negative P and QRS in lead I with positive aVR.',
-                '<strong>Regular rate (300 rule):</strong> R wave on a heavy line, then 300 ÷ large boxes to the next R: 300, 150, 100, 75, 60, 50, 43, 37. Exact: 1500 ÷ small boxes.',
-                '<strong>Irregular rate (6-second rule):</strong> QRS count across 30 large boxes × 10. Mandatory in AF, flutter with variable block, or frequent ectopy.',
-                '<strong>ED rate meaning:</strong> Instability is perfusion, not a magic number. Cardiovert if the rate is causing shock, ischemia, heart failure, or AMS. Machine rates fail on artifact, tall T waves, and pacemaker spikes — count it yourself.'
+                '<strong>Baseline and ST measurement:</strong> TP segment = end of T to start of the next P; use a clear, flat TP segment in the same lead as the isoelectric reference. PR segment = end of P to start of QRS (not the PR interval). If TP is obscured by tachycardia, a flat, undisplaced PR segment can be a practical reference; a depressed PR, as in pericarditis, can exaggerate apparent STE. Identify the J point (end of QRS/start of ST) and measure its vertical displacement from that reference. At 10 mm/mV, 1 small box = 1 mm = 0.1 mV; below the reference is ST depression. Do not measure from the top of P, the R peak, or the T peak. Repeat a noisy or drifting tracing rather than force a measurement.',
+                '<strong>Lead placement before diagnosis:</strong> V1 at the right and V2 at the left sternal edge in the 4th intercostal space (ICS). V4: 5th ICS, midclavicular; V3 midway between V2/V4; V5 anterior axillary and V6 midaxillary, both at the horizontal level of V4. Accidentally high V1/V2 can create an rSr′ pattern, abnormal P waves and false anterior changes; repeat at the correct positions before interpreting them. Negative P/QRS in I with positive aVR suggests right/left arm reversal; verify electrodes and precordial progression before diagnosing reversal or dextrocardia.',
+                '<strong>Regular rate (300 rule):</strong> R wave on a heavy line, then 300 ÷ large boxes to the next R: 300, 150, 100, 75, 60, 50, 43, 37. Exact at 25 mm/s: 1500 ÷ small boxes. Count the R-to-R distance; an R need not land exactly on a heavy grid line. At 50 mm/s use 600 ÷ large boxes or 3000 ÷ small boxes; each small box is then 20 ms.',
+                '<strong>Irregular rate (6-second rule):</strong> QRS count across 30 large boxes × 10 estimates the average ventricular rate. A 10-second strip × 6 is another option. Use a known strip duration in AF, variable flutter or ectopy; a single R–R interval is not the average rate.',
+                '<strong>ED rate meaning:</strong> Instability is perfusion, not a magic number. An unstable tachyarrhythmia causing shock, ischemia, acute heart failure or altered mental status (AMS) needs prompt cardioversion; sinus tachycardia from sepsis, hypovolemia or hypoxia needs treatment of its cause. Sustained polymorphic VT needs an unsynchronized shock. Machine rates fail on artifact, tall T waves, and pacemaker spikes — count it yourself.'
             ],
             pearl: 'Never trust a machine rate or axis on a tachycardic, paced, or artifact-laden tracing. Confirm speed and gain before you call low voltage or LVH.',
             pitfall: 'Missing half-standard (5 mm/mV) or double-standard (20 mm/mV) calibration can mimic or hide low voltage and LVH. Document V1/V2 placement: accidental misplacement can alter morphology, while intentionally labelled high leads can reveal Brugada Type 1.'
         },
         {
             num: 2,
+            sources: [{"label": "AHA conduction and axis", "url": "https://doi.org/10.1161/CIRCULATIONAHA.108.191095"}],
             id: 'rhythm-axis',
             name: 'Rhythm Branch & Axis',
             icon: '🧭',
@@ -1457,7 +1460,8 @@ const ECG_DATA = {
             details: [
                 '<strong>The ED rhythm branch (do this before naming the rhythm):</strong> (1) Fast or slow? (2) Regular or irregular? (3) Narrow (&lt;120 ms) or wide (≥120 ms)? That triad is the ACLS fork.',
                 '<strong>Sinus activity and conduction:</strong> in uncomplicated 1:1 sinus rhythm, P before every QRS and QRS after every P; P usually upright in I/II and inverted in aVR; assess morphology and P–QRS conduction separately. Sinus origin can coexist with AV delay/block; a normal PR is not required for sinus activity.',
-                '<strong>Frontal axis (I and aVF, then confirm with II):</strong>',
+                '<strong>How to read atrial activity:</strong> inspect a longer II strip and V1. Compare P–P and R–R intervals, then ask whether every P conducts. Irregularly irregular R–R without organized P supports AF; regular flutter activity can be hidden in QRS/T. A regular rate near 150/min should prompt a search for 2:1 flutter, but does not establish it.',
+                '<strong>Frontal axis (I and aVF, then confirm with II):</strong> use net QRS polarity, not P or T polarity: positive deflection greater than total negative deflection is net positive. A nearly equiphasic complex makes the quadrant shortcut uncertain; check other limb leads and the perpendicular lead.',
                 '• <strong>Normal (about −30° to +90°):</strong> Net positive in I and aVF. If aVF is negative, check lead II — positive II means 0° to −30° (physiologic), not pathologic LAD.',
                 '• <strong>Pathologic LAD (−30° to −90°):</strong> I positive, aVF negative, II negative → LAFB, LVH, inferior infarct, or LBBB.',
                 '• <strong>RAD (+90° to +180°):</strong> I negative, aVF positive → RVH, acute PE, LPFB, lateral infarct, COPD, sodium-channel toxicity, or limb reversal.',
@@ -1469,21 +1473,23 @@ const ECG_DATA = {
         },
         {
             num: 3,
+            sources: [{"label": "AHA QT measurement", "url": "https://doi.org/10.1161/CIRCULATIONAHA.108.191096"}, {"label": "AHA conduction", "url": "https://doi.org/10.1161/CIRCULATIONAHA.108.191095"}],
             id: 'intervals',
             name: 'Intervals (PR, QRS, QTc)',
             icon: '📏',
             summary: 'PR (AV conduction), QRS (ventricular conduction), QTc (repolarization risk) — in that order.',
             details: [
+                '<strong>Measure endpoints before applying cutoffs:</strong> PR is P onset to QRS onset; QRS is its first deflection to the J point. Use the earliest onset and latest end across simultaneous leads when assessing global QRS duration. QT is QRS onset to the end of T, not R peak to T peak. Use a lead with a clear T end (often II or V5/V6); a tangent to the steepest terminal T limb intersecting the baseline is a reproducible method. Exclude a separate U wave and choose another lead if T/U fusion prevents a reliable endpoint. Use the same lead and method for serial comparisons.',
                 '<strong>PR (normal 120–200 ms / 3–5 small boxes):</strong>',
                 '• Short (&lt;120 ms): pre-excitation / WPW (delta wave) first. Isolated short PR without a delta wave is not an ED emergency label.',
                 '• Long (&gt;200 ms): first-degree AV block — note it, look harder if the patient is on AV-nodal blockers or has Lyme/ischemia.',
-                '• Dropped beats: Mobitz I (Wenckebach — lengthening PR, usually AV-nodal) vs Mobitz II (fixed PR, unexpected drop — infranodal, pacing prep). 2:1 block cannot be typed on PR alone — treat as high-grade if the QRS is wide or the patient is unstable. Complete heart block: AV dissociation, regular escape.',
+                '• Dropped beats: Mobitz I (Wenckebach — lengthening PR, usually AV-nodal) vs Mobitz II (fixed PR, unexpected drop — infranodal, pacing prep). 2:1 block cannot be typed on PR alone — treat as high-grade if the QRS is wide or the patient is unstable. Complete heart block: independent P and QRS rhythms with no conducted atrial beats, often with a regular escape. AV dissociation alone is not proof of complete block; it also occurs in VT.',
                 '• PR depression with aVR PR elevation supports pericarditis, but is not diagnostic. Territorial STE plus reciprocal STD raises urgent concern for coronary occlusion.',
                 '<strong>QRS (usually &lt;110 ms; ACLS wide-complex threshold ≥120 ms):</strong> 110–119 ms requires morphology/context rather than a blanket normal label.',
                 '• Wide (≥120 ms): LBBB/RBBB, VT, paced, hyperK, sodium-channel blockade (TCA, flecainide), WPW.',
                 '• <strong>RBBB:</strong> rsR′ in V1–V2, wide slurred S in I, aVL, V5–V6.',
                 '• <strong>LBBB:</strong> broad QS or rS in V1, broad notched R in I, aVL, V5–V6 without Q waves. New LBBB alone is not a STEMI equivalent (2025 ACC/AHA).',
-                '<strong>QTc:</strong> Bazett (QT/√RR) over-corrects when the rate is fast — use Fridericia (QT/∛RR) or a tachycardic-aware method. Practical prolonged-QTc thresholds: ≥450 ms in men and ≥460 ms in women; formula, age and QRS duration matter. <strong>ED danger zone ≥500 ms</strong> (TdP). Short QTc (&lt;360 ms, especially &lt;330 ms) raises SQTS/hypercalcemia/digoxin questions. With bundle branch block, consider JT/JTc rather than raw QTc.',
+                '<strong>QTc calculation:</strong> use QT and RR in seconds, then convert the result to milliseconds. Example: QT 0.38 s and RR 0.80 s gives Bazett QTc ≈425 ms. In irregular rhythms, review several representative beats; a single machine value may be misleading. <strong>QTc:</strong> Bazett (QT/√RR) over-corrects when the rate is fast — use Fridericia (QT/∛RR) or a tachycardic-aware method. Practical prolonged-QTc thresholds: ≥450 ms in men and ≥460 ms in women; formula, age and QRS duration matter. <strong>ED danger zone ≥500 ms</strong> (TdP). Short QTc (&lt;360 ms, especially &lt;330 ms) raises SQTS/hypercalcemia/digoxin questions. With bundle branch block, consider JT/JTc rather than raw QTc.',
                 '• Sustained polymorphic VT/TdP: immediate unsynchronized shock, including when a pulse is present; synchronization is unreliable. IV magnesium 2 g for TdP even if the magnesium is “normal”; overdrive pacing if pause-dependent and magnesium fails. Pull QT-prolonging drugs and replete K⁺/Mg²⁺.'
             ],
             pearl: 'The half-RR rule is only a rough screen and can miss prolonged QT at slow rates or overcall it at fast rates. Measure QT and calculate QTc. QTc ≥500 ms is an ED action item, not a curiosity.',
@@ -1491,34 +1497,38 @@ const ECG_DATA = {
         },
         {
             num: 4,
+            sources: [{"label": "AHA chamber patterns", "url": "https://doi.org/10.1161/CIRCULATIONAHA.108.191097"}],
             id: 'hypertrophy',
             name: 'Voltage, Chambers & Low Voltage',
             icon: '🫀',
-            summary: 'LVH/RVH change the ST-T baseline. Low voltage and alternans change the next test.',
+            summary: 'LVH/RVH can produce secondary ST-T changes. Low voltage and alternans change the next test.',
             details: [
-                '<strong>LVH voltage (supportive, not a stand-alone ED diagnosis):</strong> First confirm gain. At 10 mm/mV, Sokolow–Lyon is S in V1 + R in V5/V6 ≥35 mm, or R in aVL ≥11 mm. Cornell is R aVL + S V3 &gt;28 mm (men) or &gt;20 mm (women). Voltage has limited sensitivity/specificity: confirm suspected structural disease with echo, not the ECG alone.',
-                '• <strong>LV strain:</strong> asymmetric down-sloping STD + inverted T in I, aVL, V5–V6. Chronic strain is not ACS — but new or changing ST/T is.',
+                '<strong>LVH voltage (supportive, not a stand-alone ED diagnosis):</strong> First confirm gain. At 10 mm/mV, Sokolow–Lyon is S-wave depth in V1 + the larger R-wave height in V5 or V6 ≥35 mm, or R in aVL ≥11 mm. Cornell is R aVL + S V3 &gt;28 mm (men) or &gt;20 mm (women). Voltage has limited sensitivity/specificity: confirm suspected structural disease with echo, not the ECG alone.',
+                '• <strong>LV strain:</strong> asymmetric down-sloping STD + inverted T in I, aVL, V5–V6. A stable strain pattern can be chronic; new or changing ST/T raises concern for ischemia but is not specific for ACS. Symptoms and serial ECGs still matter.',
                 '<strong>RVH:</strong> dominant R in V1 (R/S &gt; 1, R &gt; 7 mm) + RAD + RV strain (TWI/STD V1–V3 ± inferior). Differential of tall R in V1: RVH, RBBB, posterior OMI, WPW, lead misplacement, Duchenne, dextrocardia.',
                 '<strong>Atrial abnormality (an ECG clue, not a chamber-size diagnosis):</strong> RAE pattern — peaked P ≥2.5 mm in II. LAE pattern — notched P ≥120 ms in II, or a terminal negative P component in V1 that is ≥1 mm deep and ≥40 ms wide. Confirm anatomy with echo when it matters.',
+                '<strong>How to measure voltage:</strong> R height and S depth are measured separately from the same isoelectric baseline; add their positive magnitudes for LVH criteria. Low-voltage QRS amplitude is peak-to-peak (highest positive to deepest negative QRS), not R height alone. At 5 mm/mV, double the displayed millimetres to compare with standard-gain criteria. Electrical alternans is alternating beat-to-beat QRS size/direction; exclude breathing, motion and ectopy.',
                 '<strong>Low voltage:</strong> QRS &lt;5 mm in <strong>all</strong> limb leads or &lt;10 mm in <strong>all</strong> precordial leads; one small complex does not establish the diagnosis. Confirm gain first. Low voltage alone is nonspecific; low voltage + sinus tachycardia + electrical alternans should trigger immediate POCUS/echo for effusion/tamponade.',
-                '<strong>LV aneurysm vs acute STE:</strong> persistent STE with deep Q waves, no reciprocal depression, stable vs an old ECG. Acute OMI has reciprocal change and evolving T waves.'
+                '<strong>LV aneurysm vs acute STE:</strong> persistent STE with Q waves and an unchanged prior tracing can support an aneurysm pattern. Reciprocal changes or evolving ST/T increase concern for acute ischemia, but their absence does not exclude occlusion; a new symptomatic presentation still needs urgent ACS assessment.'
             ],
             pearl: 'Young, thin, or athletic chests often exceed Sokolow–Lyon without pathologic LVH. Pair voltage with LA enlargement and strain, and always compare with a prior ECG.',
             pitfall: 'Calling anteroseptal MI from RVH (tall R V1), or calling lateral ischemia from chronic LV strain without looking at an old tracing. Missing tamponade because “the ECG is low voltage from obesity.”'
         },
         {
             num: 5,
+            sources: [{"label": "Fifth UDMI (2026), Table 5", "url": "https://doi.org/10.1093/eurheartj/ehag101"}, {"label": "Fourth UDMI: supplemental leads", "url": "https://doi.org/10.1161/CIR.0000000000000617"}],
             id: 'ischemia-map',
             name: 'Ischemia Map & Fifth UDMI Lead Criteria',
             icon: '🗺️',
             summary: 'Use the Fifth Universal Definition lead-by-lead: ≥1 mm in every standard lead except V2–V3; add posterior or right-sided leads when the 12-lead leaves a clinical gap.',
             details: [
+                '<strong>Apply the measurement from Step 1:</strong> measure J-point displacement from the same-lead TP reference, using PR only when flat and undisplaced if TP is not visible. Report lead, amount, gain and any baseline uncertainty. Example: III has 1 mm STE but II/aVF do not meet their threshold — that alone does not satisfy the two-contiguous-lead rule. STE = ST elevation; STD = ST depression; TWI = T-wave inversion; OMI = occlusion myocardial infarction.',
                 '<strong>Fifth Universal Definition (2026) — new J-point STE in two contiguous leads:</strong> <strong>≥1.0 mm in every standard 12-lead except V2–V3</strong> (I, aVL, II, III, aVF, V1, V4–V6). There is no single-lead STEMI rule; interpret anatomically contiguous lead groups and the clinical presentation. These thresholds do not apply unchanged in LBBB, paced rhythm, or LVH.',
                 '• <strong>V2–V3 only:</strong> ≥2.5 mm in men &lt;40 years, ≥2.0 mm in men ≥40 years, or ≥1.5 mm in women regardless of age.',
                 '• <strong>Inferior (II, III, aVF):</strong> usually RCA or LCx. STE III &gt; II supports RCA. Reciprocal STD in aVL is a high-yield clue; obtain right-sided leads when inferior injury is present.',
                 '• <strong>Septal/anterior (V1–V4) and lateral (I, aVL, V5–V6):</strong> look for a contiguous distribution, reciprocal inferior change, and dynamic evolution. Isolated I/aVL change can be high-lateral/diagonal ischemia, but still needs context and comparison.',
                 '<strong>Supplemental leads — record, do not infer:</strong> with inferior OMI, record V3R–V6R (especially V4R) for RV involvement; STE ≥0.5 mm is supportive (≥1.0 mm in men &lt;30 years). With V1–V3 depression or suspected LCx occlusion, record V7 (left posterior axillary), V8 (mid-scapular), and V9 (left paraspinal) in the V6 horizontal plane; STE ≥0.5 mm supports posterior infarction (use ≥1.0 mm in men &lt;40 years for greater specificity).',
-                '<strong>Ischemic changes beyond STE (Fifth UDMI):</strong> new horizontal/downsloping STD ≥0.5 mm in ≥2 contiguous leads; new or dynamic T-wave inversion ≥1 mm in ≥2 contiguous leads; broad symmetric hyperacute T waves disproportionate to the QRS in ≥2 contiguous leads; pathologic Q waves ≥40 ms and/or ≥25% of the R wave in ≥2 contiguous leads.',
+                '<strong>Ischemic changes beyond STE (Fifth UDMI):</strong> new horizontal/downsloping STD ≥0.5 mm at the J point in ≥2 contiguous leads; new or dynamic T-wave inversion ≥1 mm in ≥2 contiguous leads; broad symmetric hyperacute T waves disproportionate to the QRS in ≥2 contiguous leads; pathologic Q waves ≥40 ms and/or a depth ≥25% of R height in the same lead, in ≥2 contiguous leads. Measure Q duration from Q onset to its return to baseline and depth from baseline to its nadir. Q waves can occur in acute or prior infarction and nonischemic conditions; they cannot date an infarct by themselves.',
                 '<strong>Posterior and occlusion clues:</strong> posterior MI is suggested by STD ≥1 mm in V1, V2, and/or V3, particularly with a dominant R in V1/V2, with V7–V9 adding supportive evidence; negative posterior leads do not exclude occlusion. High-risk ischemic patterns include de Winter, Wellens and modified Sgarbossa findings. Wellens often reflects reperfusion and does not prove current occlusion. Aslanger and South African flag are described pattern clues with a smaller evidence base; use urgent clinical/ACS assessment rather than any pattern alone.',
                 '<strong>Serial and prior ECGs:</strong> compare with an old tracing and repeat promptly with ongoing/recurrent symptoms or an initially nondiagnostic ECG. A normal or sub-threshold first ECG does not exclude an acute coronary occlusion.'
             ],
@@ -1527,18 +1537,20 @@ const ECG_DATA = {
         },
         {
             num: 6,
+            sources: [{"label": "2025 ACC/AHA ACS guideline", "url": "https://doi.org/10.1016/j.jacc.2024.11.009"}, {"label": "Modified Sgarbossa study", "url": "https://doi.org/10.1016/j.annemergmed.2012.07.119"}],
             id: 'omi-equivalents',
             name: 'OMI Equivalents & What Is Not STEMI',
             icon: '🚨',
             summary: 'Occlusion MI that misses millimetre STEMI criteria — and the patterns that are no longer automatic lab activations.',
             details: [
+                '<strong>Read each pattern as a sequence:</strong> identify the involved leads, measure J/ST/T from a valid baseline, then check QRS direction, reciprocal leads, symptoms and prior/serial tracings. Concordant means ST displacement follows the dominant QRS direction; discordant means the opposite. These focused teaching panels do not replace a full 12-lead or prove current artery patency.',
                 '<strong>Paradigm:</strong> STEMI/NSTEMI classification remains the guideline framework. OMI is a proposed clinical framework for recognizing acute coronary occlusion, including presentations below STE thresholds; ECG alone does not establish artery patency. New or presumed-new <strong>LBBB alone is not a STEMI equivalent</strong> (2025 ACC/AHA/ACEP ACS) — use Smith-modified Sgarbossa plus the patient.',
                 '<strong>1. Wellens (high-risk anterior ischemic pattern):</strong> pain-free after resolved angina. Type A (~25%): biphasic T in V2–V3. Type B (~75%): deep symmetric inverted T in V2–V3 ± V4–V5. Preserved R waves, little or no STE, no pathologic Q. <em>Stress testing is contraindicated.</em> Recurrent pain or T-wave pseudonormalisation raises concern for recurrent ischemia and requires immediate reassessment.',
-                '<strong>2. de Winter T waves (high-risk coronary occlusion pattern):</strong> 1–3 mm upsloping J-point STD in precordial leads into tall, broad, symmetric T waves. STE in aVR is common but not required. Activate as anterior OMI.',
-                '<strong>3. Smith-modified Sgarbossa (LBBB or ventricular paced):</strong> positive if <em>any</em> of: (1) concordant STE ≥ 1 mm in a lead with a positive QRS; (2) concordant STD ≥ 1 mm in V1–V3; (3) discordant STE ≥1 mm with ST/S ratio ≤ −0.25 (STE ≥ 25% of S-wave depth). Original Sgarbossa’s 5 mm discordant rule missed many anterior occlusions.',
+                '<strong>2. de Winter T waves (high-risk coronary occlusion pattern):</strong> 1–3 mm upsloping J-point STD in precordial leads into tall, broad, symmetric T waves. STE in aVR is common but not required. With compatible ongoing ischemia, seek immediate cardiology/reperfusion assessment under the local ACS pathway.',
+                '<strong>3. Smith-modified Sgarbossa (LBBB or ventricular paced):</strong> positive if <em>any</em> of: (1) concordant STE ≥ 1 mm in a lead with a positive QRS; (2) concordant STD ≥ 1 mm in V1–V3; (3) discordant STE ≥1 mm with ST/S ratio ≤ −0.25 (STE ≥ 25% of S-wave depth). Use absolute magnitudes for a bedside calculation: J-point STE 2 mm divided by S depth 8 mm = 0.25 (signed ratio −0.25). Measure both in the same lead from the same baseline. A negative modified rule does not exclude occlusion; the original fixed 5 mm rule alone is less sensitive.',
                 '<strong>4. Isolated posterior OMI:</strong> horizontal STD V1–V3, upright T, tall R (R/S &gt; 1 in V2). V7–V9 STE ≥ 0.5 mm supports posterior infarction in the appropriate clinical context; ≥1 mm is more specific in men under 40. Do not call this “anterior ischemia.”',
                 '<strong>5. aVR STE + widespread STD:</strong> severe subendocardial ischemia from LMCA/3VD/proximal LAD <em>or</em> demand ischemia (shock, hypoxia, anemia, AS). <strong>Not automatic code STEMI if the patient is stable</strong> (2025 ACS: high-risk NSTE-ACS → urgent angiography). Immediate activation if unstable or the rest of the ECG is occlusive.',
-                '<strong>6. Hyperacute T waves:</strong> earliest OMI sign (minutes). Broad, bulky, symmetric T that dwarfs a small R; loss of normal ST-T concavity. Precedes millimetre STE. Serial ECGs.',
+                '<strong>6. Hyperacute T waves:</strong> can appear early in ischemia. Broad, bulky T waves disproportionate to QRS in a regional distribution are concerning, especially when new or evolving. There is no universal height cutoff; T need not exceed R, and this appearance does not always precede STE. Compare serial ECGs and potassium; morphology alone does not prove occlusion.',
                 '<strong>7. Aslanger pattern:</strong> STE in III but not other inferior leads; STD in at least one of V4–V6, not V2, with a positive terminal T; ST in V1 higher than V2. This described pattern raises concern for inferior infarction with multivessel disease. It is not a standalone proof of occlusion.'
             ],
             pearl: 'Coronary occlusion can occur below STEMI thresholds. Wellens needs urgent ACS assessment even when pain-free; de Winter with suspected ongoing ischemia warrants immediate cardiology/reperfusion assessment.',
@@ -1546,21 +1558,23 @@ const ECG_DATA = {
         },
         {
             num: 7,
+            sources: [{"label": "2025 AHA special circumstances", "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation/"}, {"label": "ESC: pericarditis assessment", "url": "https://www.escardio.org/communities/councils/cardiology-practice/scientific-documents-and-publications/ejournal/volume-15/Diagnosis-of-acute-pericarditis/"}],
             id: 'toxic-metabolic-mimics',
             name: 'Deadly Mimics, Toxic & Metabolic',
             icon: '🧪',
             summary: 'HyperK, channelopathy, PE strain, pericarditis vs BER, sodium-channel blockade, hypothermia, and tamponade.',
             details: [
+                '<strong>Use the whole tracing and clinical context:</strong> compare P, PR, QRS and QT as well as ST/T across leads. ECG patterns cannot measure electrolyte concentrations, exclude PE, diagnose tamponade physiology, or establish drug toxicity alone. Obtain the relevant laboratory tests, temperature, medication history and bedside echo without delaying treatment of an unstable patient.',
                 '<strong>Hyperkalemia:</strong> peaked T, prolonged PR, diminished P, wide QRS or sine-wave changes may occur without a reliable sequence. A normal ECG does not exclude dangerous hyperkalemia. For life-threatening changes attributed to hyperkalemia, give IV calcium and potassium shifting/removal treatment using the local emergency protocol, with ECG and glucose monitoring. Cardiac arrest requires the ALS special-circumstances pathway.',
                 '<strong>Hypokalemia:</strong> flat T, ST depression, U waves (best V2–V3), apparent long QU, ectopy, TdP risk. Replete K⁺ and Mg²⁺. Looks a little like ischemia — check the potassium.',
-                '<strong>Calcium disorders:</strong> hypercalcemia shortens QT (short ST); hypocalcemia lengthens QT (long ST segment with a normal T).',
+                '<strong>Calcium disorders:</strong> hypercalcemia shortens QT (short ST); hypocalcemia can lengthen QT mainly by prolonging ST; T morphology may also vary. Confirm with calcium testing rather than QT alone.',
                 '<strong>Hypothermia:</strong> Osborn (J) waves — positive hump at the J point, biggest in V2–V5 — plus bradycardia, AF, long PR/QRS/QT, shivering artifact. VF risk during handling. Treatment is rewarming, not an antiarrhythmic chase.',
                 '<strong>Brugada Type 1:</strong> coved STE ≥2 mm with a negative T in at least one V1–V2 lead. Fever and sodium-channel drugs may unmask it. Record standard 4th ICS positions and, when indicated, labelled 2nd/3rd ICS right-precordial leads. A Type 1 pattern needs clinical evaluation and exclusion of phenocopies.',
                 '<strong>PE / RV strain:</strong> sinus tachycardia is the common finding. S1Q3T3 is neither sensitive nor specific. More useful: TWI in V1–V4 ± inferior leads, new RBBB, RAD. Normal ECG does not exclude PE.',
-                '<strong>Pericarditis vs BER vs OMI:</strong> pericarditis — diffuse concave STE, PR depression, PR elevation/STD in aVR, Spodick sign, reciprocal STD outside aVR/V1 is atypical but no ECG sign alone excludes myocardial inflammation or ACS. BER — fish-hook J-point notching (often V4), ST/T ratio in V6 &lt; 0.25. <strong>Territorial STE with reciprocal STD requires urgent ACS assessment.</strong>',
-                '<strong>TCA / sodium-channel blockade:</strong> sinus tach, QRS &gt; 100 ms (seizure risk) / &gt; 160 ms (arrhythmia), terminal R in aVR ≥ 3 mm. Sodium bicarbonate 1–2 mEq/kg IV under the poison-centre protocol; reassess QRS, perfusion, sodium, potassium and pH. Avoid pH &gt;7.55 or sodium &gt;155 mmol/L; do not keep dosing solely to force QRS &lt;100 ms. Avoid class Ia/Ic agents.',
-                '<strong>Electrical alternans + low voltage + tachycardia:</strong> tamponade until bedside echo. Low voltage alone is not tamponade.',
-                '<strong>Digoxin effect vs toxicity:</strong> scooped STD is “digitalis effect,” not a diagnosis of toxicity. Toxicity: ectopy, bidirectional VT, atrial tach with block. Fab fragments; discuss calcium with toxicology if hyperK is from digoxin.'
+                '<strong>Pericarditis vs BER vs OMI:</strong> pericarditis — diffuse concave STE, PR depression, PR elevation/STD in aVR, Spodick sign, reciprocal STD outside aVR/V1 is atypical but no ECG sign alone excludes myocardial inflammation or ACS. Early repolarization (often called BER) — J-point notch/slur and stability on a prior ECG are supportive. The V6 ST/T ratio is only an adjunct: divide J-point height by positive T height using the same PR reference in this historical comparison; &lt;0.25 favours early repolarization, &gt;0.25 favours pericarditis. A displaced PR makes this different from true TP-referenced STE. Neither ratio nor concavity excludes ACS. <strong>Territorial STE with reciprocal STD requires urgent ACS assessment.</strong>',
+                '<strong>TCA / sodium-channel blockade:</strong> sinus tachycardia, widened QRS and a prominent terminal R in aVR are clues. In TCA poisoning, QRS &gt;100 ms and &gt;160 ms are associated with increased seizure and ventricular-arrhythmia risk respectively; they are not universal thresholds for every sodium-channel blocker. A terminal R ≥3 mm in aVR is supportive, not diagnostic. Sodium bicarbonate 1–2 mEq/kg IV under the poison-centre protocol; reassess QRS, perfusion, sodium, potassium and pH. Avoid pH &gt;7.55 or sodium &gt;155 mmol/L; do not keep dosing solely to force QRS &lt;100 ms. Avoid class Ia/Ic agents.',
+                '<strong>Electrical alternans + low voltage + tachycardia:</strong> urgent bedside echo for effusion/tamponade assessment. This combination raises suspicion but does not establish tamponade; low voltage alone is nonspecific.',
+                '<strong>Digoxin effect vs toxicity:</strong> scooped STD is “digitalis effect,” not a diagnosis of toxicity. Toxicity: ectopy, bidirectional VT, atrial tach with block. For suspected life-threatening toxicity, urgently involve toxicology and assess indications for digoxin immune Fab; scooped ST alone is not an indication. Interpret drug levels with dose timing, renal function and electrolytes.'
             ],
             pearl: 'A wide, slow or sine-wave rhythm in a compatible context warrants urgent hyperkalemia treatment while potassium is measured. Consider toxins and other causes in parallel; use formulation-specific calcium and glucose monitoring.',
             pitfall: 'Giving beta-blockers, diltiazem, or amiodarone to a wide-complex bradycardia that is actually hyperK. Calling territorial STE “pericarditis” because it is concave.'

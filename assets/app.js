@@ -1622,33 +1622,33 @@
     }
     var ECG_WAVE_INFO = {
         p: ["P wave — atrial depolarisation","Inspect P shape and its relationship to each QRS. Sinus P waves are usually upright in I and II and inverted in aVR. Adult P duration is normally <120 ms. Abnormal P-wave size or shape can suggest atrial abnormality, but does not measure chamber size or replace echocardiography."],
-        pr: ["PR interval — P onset to QRS onset","Adult PR is normally 120–200 ms. A consistently prolonged PR with 1:1 conduction is first-degree AV block. A short PR with a delta wave and widened QRS suggests ventricular pre-excitation. Interpret a short PR without a delta wave with P morphology and rhythm; it does not establish an accessory pathway."],
-        qrs: ["QRS complex — ventricular depolarisation","Measure QRS onset to end. Adult QRS is usually under 110 ms; at least 120 ms is wide. Bundle-branch block requires the appropriate lead morphology as well as duration. Ventricular rhythms, pacing, pre-excitation, electrolytes and drugs can also widen QRS. A narrow QRS usually reflects rapid His-Purkinje conduction but does not prove supraventricular origin."],
-        st: ["ST segment — measure acute STE at the J point","The J point is the end of QRS. Use it for acute ST-elevation thresholds, with the correct lead, age and sex criteria. Compare the baseline, adjacent leads, reciprocal changes and prior ECG. ST shape alone cannot distinguish occlusion, pericarditis or early repolarisation. New or dynamic ST-T changes require clinical assessment and serial ECGs."],
+        pr: ['PR interval — P onset to QRS onset', 'Measure from the first P deflection to the first QRS deflection, not from P peak to R peak. Adult PR is normally 120–200 ms: 3–5 small boxes at 25 mm/s. The PR segment is only P end to QRS onset; do not confuse it with the interval. Prolonged PR with 1:1 conduction supports first-degree AV block. Short PR with a delta wave and widened QRS suggests pre-excitation; isolated short PR does not establish an accessory pathway.'],
+        qrs: ['QRS complex — first deflection to J point', 'Measure onset to end, including an initial Q or delta wave, not just the R width. Across simultaneous leads use the earliest onset and latest end for global duration. Adult QRS is usually under 110 ms; 110–119 ms needs context; at least 120 ms (3 small boxes at 25 mm/s) is wide. BBB requires lead morphology as well as duration. Pacing, ventricular rhythms, pre-excitation, drugs and electrolytes can widen QRS.'],
+        st: ['ST segment — J point relative to TP / PR', 'ST runs from the J point (QRS end) to T onset. For acute STE criteria, measure vertical J-point displacement from a flat TP segment in the same lead (T end to next P onset). If TP is obscured, a flat, undisplaced PR segment (P end to QRS onset) is a practical alternative. Depressed PR can exaggerate apparent STE: compare TP, especially in pericarditis. At 10 mm/mV, one small vertical box is 1 mm = 0.1 mV. A 1 mm rise describes STE but is not automatically STEMI: assess two contiguous leads with the appropriate age/sex thresholds. If baseline drift or artifact prevents reliable measurement, repeat the ECG. Shape alone does not identify the cause.'],
         t: ["T wave — inspect shape and lead distribution","T-wave polarity and amplitude vary by lead. New regional, bulky T waves may be hyperacute; narrow peaked T waves may suggest hyperkalemia. Neither shape proves its cause. Deep symmetric or positive-then-negative T waves in V2–V3 after resolved ischemic pain suggest Wellens. Compare serial ECGs, symptoms, electrolytes, QRS and QT."],
-        qt: ["QT interval — QRS onset to T-wave end","Use a lead with a clear T-wave end and exclude a separate U wave. Read the selected diagram labels; examples differ. State the correction formula: Bazett uses QT/√RR in seconds, overcorrects at fast rates and undercorrects at slow rates. AHA practical prolonged-QTc thresholds are ≥450 ms in men and ≥460 ms in women; >500 ms raises torsades risk. Wide QRS requires adjusted QT or JT assessment."],
+        qt: ['QT interval — QRS onset to T-wave end', 'Use a clear terminal T limb, often in II or V5/V6. Extend a tangent to its steepest terminal slope to the baseline to estimate T end; exclude a separate U wave and use another lead if T/U fusion prevents measurement. Use the same lead/method on serial ECGs. Bazett QTc = QT/√RR with both in seconds; multiply by 1000 for ms. QT 0.38 s and RR 0.80 s gives about 425 ms. Bazett overcorrects at fast rates and undercorrects at slow rates; consider Fridericia QT/∛RR. Practical prolonged thresholds are ≥450 ms in men and ≥460 ms in women; ≥500 ms raises torsades concern. With wide QRS, assess adjusted QT or JT.'],
         cal: ["Calibration — 1 mV / 200 ms reference","At 25 mm/s and 10 mm/mV, a small box represents 40 ms and 0.1 mV. Confirm speed and gain before measuring. Screen size and zoom change physical on-screen millimetres while preserving waveform-to-grid scale. Voltage alone does not establish anatomical hypertrophy; low voltage or alternans needs clinical correlation and, when indicated, echocardiography."],
         narrow: ["Narrow QRS — usually supraventricular conduction","A narrow QRS usually reflects activation through the His-Purkinje system. Determine the rhythm from atrial activity, P-to-QRS relationships and RR regularity, not width alone. Sinus, atrial, AV-nodal and junctional rhythms may all be narrow."],
         wide: ["Wide QRS — ≥120 ms","Consider ventricular rhythm, bundle-branch block, pacing, pre-excitation, electrolyte disturbance and sodium-channel blockade. AV dissociation, capture or fusion beats and suitable morphology favour VT. Treat an undifferentiated wide-complex tachycardia as VT; instability requires immediate emergency management."],
         psinus: ["Sinus P — inspect atrial-to-ventricular timing","Look for P waves with sinus morphology, usually upright in II and inverted in aVR. Assess whether each P conducts and whether PR is stable. Sinus rhythm can be slow or fast, and sinus atrial activity can coexist with AV block. Absent obvious P waves alone does not diagnose AF."],
-        axis: ["Frontal QRS axis — I, aVF and II","Positive I and aVF indicate an axis between 0° and +90°. With positive I and negative aVF, use lead II: a positive II can still be normal (−30° to 0°); negative II supports left-axis deviation. Right or extreme axes have several causes and do not identify a fascicular block alone."],
+        axis: ['Frontal QRS axis — net polarity in I, aVF and II', 'Use QRS net deflection: compare total positive and negative deflections, not the T wave or tallest R alone. Positive I and aVF suggest 0° to +90°. Positive I with negative aVF: positive II can still be normal (−30° to 0°); negative II supports left-axis deviation. Negative I/positive aVF suggests right axis; both negative suggests extreme axis. Near-equiphasic leads need other limb leads/perpendicular-lead assessment. Axis alone does not establish VT, PE or a fascicular block.'],
         reg: ["Regularity — compare successive RR intervals","Use several RR intervals. For irregular rhythms, count QRS complexes over a known duration: 6 seconds ×10 or 10 seconds ×6 estimates beats/min. Truly irregular RR with no organised P waves supports AF; exclude ectopy, variable atrial conduction and artifact."],
         v1: ['V1 deep S wave \u2014 7.5 mm displayed at 5 mm/mV = 15 mm standard equivalent', 'Lead V1 sits over the septum and right ventricle: the normal small septal r reflects left-to-right septal depolarisation, then the deep S reflects the left ventricle depolarising away. This tracing uses half gain (5 mm/mV), so the displayed 7.5 mm S equals 15 mm at standard 10 mm/mV gain. A tall R wave in V1 instead raises RVH, posterior infarction, right bundle-branch block, pre-excitation, or lead-placement concerns.'],
         v5: ['V5 tall R wave \u2014 11 mm displayed at 5 mm/mV = 22 mm standard equivalent', 'Lead V5 faces the lateral left ventricle: a tall R with downsloping ST depression and asymmetric T inversion is a pressure-overload strain pattern, not primary ischaemia by itself. At half gain, the displayed 11 mm R equals 22 mm standard; S in V1 plus R in V5 is therefore 15 + 22 = 37 mm, meeting Sokolow\u2013Lyon. Voltage remains a screening clue and must be interpreted with the patient, old ECG, and echo when needed.'],
         chambers: ['Chamber-pattern clues \u2014 supportive ECG findings, not chamber-size diagnoses', 'RAE pattern: a peaked P wave at least 2.5 mm in lead II. LAE pattern: a notched P wave at least 120 ms in II, or a terminal negative V1 P component at least 1 mm deep and 40 ms wide. RVH pattern: dominant R in V1 (R/S >1 and R >7 mm), right-axis deviation, and sometimes anterior/inferior strain. These patterns are neither sensitive nor specific enough to replace echocardiography.'],
-        lowv: ['Low voltage \u2014 QRS under 5 mm in every limb lead, under 10 mm in every chest lead', 'Here 3 mm complexes with preserved timing \u2014 low voltage narrows nothing and widens nothing, it only shrinks. A single small complex does not make the diagnosis: assess every lead in the relevant set and confirm gain first. Causes include effusion/tamponade, emphysema, obesity, anasarca, infiltrative/restrictive disease, and hypothyroidism. Low voltage with new electrical alternans and sinus tachycardia warrants immediate POCUS/echo for pericardial effusion and tamponade physiology.'],
-        ant: ['Anterior STE — V2–V3 are the only sex/age-specific standard leads', 'Fifth UDMI J-point thresholds in two contiguous leads: V2–V3 2.5 mm in men under 40, 2.0 mm in men 40 and over, 1.5 mm in women; every other standard lead uses 1.0 mm. Interpret with symptoms, reciprocal findings, prior ECG, and serial change.'],
-        inf: ['Inferior STE — 1 mm standard-lead rule; add right-sided leads', 'Fifth UDMI uses 1.0 mm at the J point in all standard leads other than V2–V3, including II, III, aVF, I, aVL, and V4–V6. Inferior STE with reciprocal STD in aVL should prompt V3R–V6R, especially V4R, to assess RV involvement.'],
-        mirror: ['Mirror STD in aVL — reciprocal of inferior OMI, not a second ischaemia', 'ST depression in aVL that mirrors inferior STE is reciprocal change seen from the opposite wall. MIRROR mnemonic — inferior UP (II, III, aVF), aVL DOWN. Territorial STE plus mirror STD means OMI until proven otherwise and greatly increases specificity: pericarditis shows diffuse STE with no reciprocal STD except aVR/V1. Use right-sided leads to assess RV involvement; compare prior and serial ECGs. V4R does not independently confirm inferior occlusion.'],
+        lowv: ['Low voltage — measure the whole QRS peak-to-peak', 'Measure highest positive to deepest negative QRS deflection, not R height alone. At 10 mm/mV, under 5 mm in every limb lead OR under 10 mm in every chest lead defines low voltage in that set. A single small complex is insufficient; confirm gain first. Causes include effusion, obesity, emphysema, edema and infiltrative disease. Low voltage plus alternans and sinus tachycardia warrants urgent bedside echo; this combination does not by itself diagnose tamponade.'],
+        ant: ['Anterior STE — V2–V3 are the only sex/age-specific standard leads', 'Measure J-point height from a same-lead flat TP baseline (PR only if TP is obscured and PR is flat/undisplaced). Fifth UDMI thresholds in two contiguous leads: V2–V3 2.5 mm in men under 40, 2.0 mm in men 40 and over, 1.5 mm in women; every other standard lead uses 1.0 mm. Interpret with symptoms, reciprocal findings, prior ECG, and serial change.'],
+        inf: ['Inferior STE — 1 mm standard-lead rule; add right-sided leads', 'Use a same-lead flat TP reference, or flat undisplaced PR if TP is obscured. Fifth UDMI uses 1.0 mm at the J point in all standard leads other than V2–V3, including II, III, aVF, I, aVL, and V4–V6. Inferior STE with reciprocal STD in aVL should prompt V3R–V6R, especially V4R, to assess RV involvement.'],
+        mirror: ['Reciprocal ST depression in aVL — an inferior ischemia clue', 'Measure aVL J/ST displacement from its own valid baseline. Opposite ST changes accompanying inferior STE increase concern for inferior ischemia in a compatible presentation; they do not alone prove occlusion or exclude myocardial inflammation. Uncomplicated pericarditis usually lacks reciprocal depression outside aVR/V1. Compare prior/serial ECGs and obtain right-sided leads for RV assessment.'],
         hyperacute: ["Hyperacute T — regional, bulky and disproportionate","Look for broad T waves that are large relative to their QRS, especially when new in adjacent leads or changing over time. They may precede ST elevation. There is no universal height cutoff and morphology alone does not prove occlusion. Assess reciprocal changes, electrolytes and mimics; escalate promptly when symptoms and ECG suggest ongoing ischemia."],
         hyperk: ["Hyperkalemia — inspect P, PR, QRS and T together","Possible findings include peaked T waves, diminished or absent P waves, PR prolongation and QRS widening. Changes do not follow a reliable sequence and a normal ECG does not exclude dangerous hyperkalemia. Check potassium and the clinical setting urgently; treat life-threatening changes under the local emergency protocol. Coronary ischemia may coexist."],
         wellens: ["Wellens — anterior T changes after resolved ischemic pain","V2–V3 show positive-then-negative biphasic T waves or deep symmetric inversion, with preserved R waves, little STE and no pathological Q waves. This high-risk pattern is strongly associated with LAD disease; ECG does not prove the exact lesion or current artery patency. Arrange urgent cardiology assessment. Recurrent pain or T-wave pseudonormalisation needs immediate reassessment. Avoid exercise stress testing."],
-        dewinter: ['de Winter — upsloping STD into tall T; anterior OMI without STE', 'de Winter shows 1–3 mm upsloping J-point ST depression in the precordial leads continuing into tall, prominent, symmetric T waves, with STE in aVR common but not required — about 2% of anterior LAD occlusions, with the mortality of anterior STEMI. The pattern can evolve into frank anterior STE or appear only on the first tracing. Immediate cath-lab activation; treat as anterior OMI, not nonspecific ischemia.'],
+        dewinter: ['de Winter — depressed J point rising into tall T waves', 'Look for about 1–3 mm upsloping J-point ST depression in the precordial leads continuing into prominent symmetric T waves. Measure from a valid same-lead baseline; aVR STE is common but not required. This high-risk pattern may evolve and is not identified by T height alone. With a compatible ongoing ischemic presentation, obtain immediate cardiology/reperfusion assessment under the local ACS pathway.'],
         ischa: ['Ischaemia without STE — contiguous STD, T-wave, or Q-wave change', 'Fifth UDMI ischemic findings include new horizontal or downsloping STD of at least 0.5 mm in two contiguous leads and new or dynamic T-wave inversion of at least 1 mm in two contiguous leads. Broad symmetric hyperacute T waves disproportionate to the QRS are also concerning. Serial ECGs and troponin are required; no STE does not rule out occlusion.'],
         post: ['Posterior ischemia — confirm the anterior mirror with V7–V9', 'Fifth UDMI flags STD of at least 1 mm in V1, V2, and/or V3, especially with a dominant R in V1/V2, as a posterior MI clue. Record V7–V9 in the V6 horizontal plane; STE of at least 0.5 mm supports posterior infarction (1 mm gives greater specificity in men under 40).'],
-        sgSte: ["Modified Sgarbossa 1 — concordant STE ≥1 mm","With LBBB or ventricular pacing, look for ≥1 mm J-point elevation in a lead with a predominantly positive QRS. This is a positive modified Sgarbossa finding. In a compatible ischemic presentation, use an urgent reperfusion pathway; the finding alone does not prove coronary occlusion."],
-        sgStd: ["Modified Sgarbossa 2 — STD ≥1 mm in V1–V3","ST depression ≥1 mm in V1, V2 or V3 with LBBB or ventricular pacing is a positive modified Sgarbossa finding. It warrants urgent evaluation for occlusion in a compatible presentation. A negative rule does not exclude acute coronary occlusion."],
-        sgDis: ["Modified Sgarbossa 3 — excessive discordant STE","With a predominantly negative QRS, look for ≥1 mm J-point elevation at least 25% of the preceding S-wave depth (signed ST/S ≤ −0.25). The proportional criterion improves on a fixed 5 mm threshold alone. Interpret with symptoms, prior ECGs and serial change."],
+        sgSte: ["Modified Sgarbossa 1 — concordant STE ≥1 mm","Measure J-point height from a valid same-lead baseline. With LBBB or ventricular pacing, look for ≥1 mm J-point elevation in a lead with a predominantly positive QRS. This is a positive modified Sgarbossa finding. In a compatible ischemic presentation, use an urgent reperfusion pathway; the finding alone does not prove coronary occlusion."],
+        sgStd: ["Modified Sgarbossa 2 — STD ≥1 mm in V1–V3","Measure J-point depression from a valid same-lead baseline. ST depression ≥1 mm in V1, V2 or V3 with LBBB or ventricular pacing is a positive modified Sgarbossa finding. It warrants urgent evaluation for occlusion in a compatible presentation. A negative rule does not exclude acute coronary occlusion."],
+        sgDis: ['Modified Sgarbossa 3 — same-lead STE / S depth', 'With predominantly negative QRS, measure J-point elevation and preceding S depth from the same isoelectric baseline. STE must be ≥1 mm AND at least 25% of S depth. Example: 2 mm STE / 8 mm S depth = 0.25 in absolute magnitudes, or −0.25 with signed S voltage. Apply in LBBB or ventricular pacing, with clinical context; a negative rule does not exclude occlusion.'],
         rr: ["RR interval — ventricular cycle length","For a regular rhythm, rate = 60,000/RR in milliseconds. At 25 mm/s, 300 divided by the number of large boxes is a shortcut. For irregular rhythms, count QRS complexes over a longer known strip duration. Determine rhythm from atrial activity and atrioventricular relationships as well as regularity."]
     };
     function ecgWaveText(w) {
@@ -1662,6 +1662,12 @@
             var entry = lib[id];
             if (!entry || (!entry.svg && !entry.png)) return '<p class="empty-filter" role="status">ECG figure unavailable. Use the written criteria and a reviewed tracing.</p>';
             var title = String(entry.title || id);
+            var learning = entry.learning;
+            var purposeHtml = learning ? '<div class="ecg-image-purpose"><strong>What to learn</strong><p>' + esc(learning.purpose) + '</p></div>' : '';
+            var readingHtml = learning && entry.findings && entry.findings.length ? '<details class="ecg-image-reading"><summary>Read this image in order</summary><p>Select a feature to open its explanation and red highlight.</p><ol>' + entry.findings.map(function (finding, index) {
+                return '<li><button type="button" class="ecg-tool" data-ecg-finding="' + index + '">' + esc(finding.title) + '</button></li>';
+            }).join('') + '</ol></details>' : '';
+            var checkHtml = learning ? '<details class="ecg-image-check"><summary>Check yourself: ' + esc(learning.question) + '</summary><p>' + esc(learning.answer) + '</p></details>' : '';
             var caption = String(entry.caption || 'Teaching diagram; not a patient recording.');
             var sourceHtml = Array.isArray(entry.sources) && entry.sources.length
                 ? '<figcaption><span class="ecg-schem">' + esc(entry.figureLabel || 'Evidence map') + '</span>' + esc(entry.sourceNote || 'Criteria shown are source-checked; this is not a patient ECG tracing.') + ' Sources: ' + entry.sources.map(function (source) {
@@ -1671,7 +1677,7 @@
             var tools = '<div class="ecg-tools" role="group" aria-label="Diagram tools for ' + esc(title) + '">'
                 + '<button type="button" class="ecg-tool"' + (id === 'normal-12lead' ? ' hidden' : '') + ' data-ecg-tool="anno" data-ecg-fig-btn="' + esc(id) + '" aria-pressed="true" title="Show or hide measurement labels">Annotations</button>'
                 + (entry.hasReference ? '<button type="button" class="ecg-tool" data-ecg-tool="compare" aria-pressed="false" title="Modeled same-lead normal reference at matching QRS onset times">Normal reference</button>' : '')
-                + '<button type="button" class="ecg-tool" data-ecg-tool="expand" data-ecg-fig-btn="' + esc(id) + '" title="Enlarge the ECG, inspect findings and use available measurement tools">Explore ECG</button>'
+                + '<button type="button" class="ecg-tool" data-ecg-tool="expand" data-ecg-fig-btn="' + esc(id) + '" title="Open guided findings, highlights and available measurement tools">Explore ECG</button>'
                 + '</div>';
             var hasHot = entry.svg && entry.svg.indexOf('ecg-hot') !== -1;
             var waveOrder = ['cal','p','pr','qrs','st','t','qt','rr','narrow','wide','psinus','axis','reg','v1','v5','chambers','lowv','ant','inf','mirror','hyperacute','hyperk','wellens','dewinter','sgSte','sgStd','sgDis','post','ischa'];
@@ -1684,20 +1690,26 @@
             if (entry.png) {
                 var pngSrc = String(entry.png).replace(/"/g, '%22');
                 var alt = esc(title + ' — ' + caption).replace(/"/g, '&quot;');
-                return '<figure class="ecg-fig" data-ecg-fig="' + esc(id) + '"><div class="ecg-media">'
+                return '<figure class="ecg-fig" data-ecg-fig="' + esc(id) + '">' + purposeHtml + '<div class="ecg-media">'
                     + '<img class="ecg-img" src="' + pngSrc + '" alt="' + alt + '" loading="lazy" decoding="async" onerror="this.style.display=\'none\';var w=this.parentNode.querySelector(\'.ecg-svg-wrap\');if(w) w.hidden=false;">'
                     + '<div class="ecg-svg-wrap" hidden>' + ecgSvgWithRef(entry.svg, entry.noCompare) + '</div></div>'
                     + sourceHtml + tools
-                    + waveBtns + inspector + '</figure>';
+                    + waveBtns + inspector + readingHtml + checkHtml + '</figure>';
             }
-            var panelSelect = '', cardSvg = entry.svg;
+            var panelSelect = '', cardSvg = entry.svg, focused = false;
             if (entry.previewPanels && entry.previewPanels.length) {
                 var fullView = cardSvg.match(/viewBox="([^"]+)"/)[1];
-                panelSelect = '<label class="ecg-panel-select">Focus <select aria-label="Diagram focus" data-ecg-panel><option value="' + esc(fullView) + '" selected>Whole diagram</option>' + entry.previewPanels.map(function (p) { return '<option value="' + esc(p.viewBox) + '">' + esc(p.title) + '</option>'; }).join('') + '</select></label>';
+                var compact = typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches;
+                var initialPanel = compact && learning ? entry.previewPanels[learning.startPanel] : null;
+                var initialView = initialPanel ? initialPanel.viewBox : fullView;
+                focused = !!initialPanel;
+                cardSvg = cardSvg.replace(/viewBox="[^"]+"/, 'viewBox="' + initialView + '"');
+                panelSelect = '<label class="ecg-panel-select">View <select aria-label="Diagram focus" data-ecg-panel><option value="' + esc(fullView) + '"' + (!focused ? ' selected' : '') + '>Whole diagram</option>' + entry.previewPanels.map(function (p) { return '<option value="' + esc(p.viewBox) + '"' + (p === initialPanel ? ' selected' : '') + '>' + esc(p.title) + '</option>'; }).join('') + '</select></label>';
             }
-            return '<figure class="ecg-fig" data-ecg-fig="' + esc(id) + '">' + panelSelect + '<div class="ecg-media"' + ' tabindex="0" role="region" aria-label="ECG figure; scroll horizontally to inspect"' + '><div class="ecg-svg-wrap">' + ecgSvgWithRef(cardSvg, entry.noCompare) + '</div></div>'
+            var viewHint = entry.previewPanels ? '<p class="ecg-view-hint">Choose one view to read its labels, then compare the other views. Whole diagram restores the full context.</p>' : '';
+            return '<figure class="ecg-fig" data-ecg-fig="' + esc(id) + '" data-focused="' + String(focused) + '">' + purposeHtml + panelSelect + viewHint + '<div class="ecg-media"' + ' tabindex="0" role="region" aria-label="ECG figure; scroll horizontally to inspect"' + '><div class="ecg-svg-wrap">' + ecgSvgWithRef(cardSvg, entry.noCompare) + '</div></div>'
                 + sourceHtml + tools
-                + waveBtns + inspector + '</figure>';
+                + waveBtns + inspector + readingHtml + checkHtml + '</figure>';
         } catch (e) { console.error('ECG figure failed:', id, e); return '<p class="empty-filter" role="status">ECG figure could not be rendered. Reload or use the written criteria.</p>'; }
     }
     function openEcgLightbox(figId, returnTo) {
@@ -1743,6 +1755,21 @@
             if (ret && ret.focus) ret.focus();
         } catch (e) {}
     }
+    function ecgFoundationsHtml() {
+        return '<section class="ecg-foundations" aria-labelledby="ecgFoundationTitle">'
+            + '<h2 id="ecgFoundationTitle">New to ECGs? Start with one normal beat</h2>'
+            + '<p>First learn the normal sequence. Then use Steps 1–3 for measurement and rhythm, Step 4 for voltage, Step 5 for ischemia, and Steps 6–7 for high-risk patterns and mimics.</p>'
+            + '<svg class="ecg-beat-map" viewBox="0 0 420 210" role="img" aria-labelledby="ecgBeatTitle ecgBeatDesc"><title id="ecgBeatTitle">One normal P–QRS–T sequence and the next P</title><desc id="ecgBeatDesc">P is followed by a flat PR segment, QRS, a J point, ST and T. The flat TP segment connects T end to the next P. This is a concept sketch without a measurement grid.</desc>'
+            + '<path fill="none" stroke="currentColor" opacity=".4" stroke-dasharray="4 4" d="M20 130 H410"/><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" d="M20 130 H60 C68 130 70 102 80 102 C90 102 92 130 100 130 H160 L165 140 L175 50 L185 150 L200 130 H240 C252 130 254 94 270 94 C287 94 297 130 310 130 H360 C368 130 370 102 380 102 C390 102 392 130 400 130 H410"/>'
+            + '<g fill="currentColor" font-family="system-ui,sans-serif" font-size="18" font-weight="600" text-anchor="middle"><text x="80" y="86">P</text><text x="154" y="165">Q</text><text x="175" y="32">R</text><text x="190" y="180">S</text><text x="270" y="78">T</text><text x="380" y="86">P</text><text x="126" y="118">PR</text><text x="223" y="118">ST</text><text x="335" y="118">TP</text></g>'
+            + '<circle fill="var(--accent)" cx="200" cy="130" r="4"/><text fill="var(--accent)" font-size="16" font-family="system-ui,sans-serif" x="224" y="158">J point</text><path fill="none" stroke="currentColor" stroke-width="1.5" d="M202 134 L214 148"/></svg>'
+            + '<p class="ecg-view-hint">Concept sketch · not to scale. PR, ST and TP labels here identify segments, not measured intervals. Actual wave shape and polarity vary by lead.</p>'
+            + '<dl class="ecg-foundation-key"><dt>P</dt><dd>Atrial electrical activation (depolarization).</dd><dt>QRS</dt><dd>Ventricular electrical activation. Q is the first negative deflection before R; R is positive; S is negative after R. A lead need not show all three.</dd><dt>T</dt><dd>Ventricular electrical recovery (repolarization).</dd><dt>J / ST / TP</dt><dd>J ends QRS and starts ST. TP is T end to the next P: find this reference before deciding that ST is raised or depressed.</dd></dl>'
+            + '<details class="ecg-foundation-extra"><summary>Before the first measurement: paper and lead basics</summary><p>Read left to right for time and up/down for voltage. At 25 mm/s and 10 mm/mV, one small box is 40 ms horizontally and 0.1 mV vertically. PR interval includes the P wave; PR segment starts after P ends.</p><p>A 12-lead ECG uses 10 electrodes to create 12 electrical views. I, II, III, aVR, aVL and aVF view the frontal plane; V1–V6 are chest views. A positive wave points toward a lead’s positive direction; a negative wave points away. Different lead shapes do not automatically mean disease.</p></details>'
+            + '<details class="ecg-image-check"><summary>Check yourself: why does PR interval start before PR segment?</summary><p>The interval starts at P onset and includes P. The segment starts at P end. Both end at QRS onset. Find these endpoints again in the measured image in Step 1.</p></details>'
+            + '<p class="ecg-foundation-next">Start below with calibration. In every image, read its goal, follow the numbered features, then try the question before revealing the explanation.</p></section>';
+    }
+
     function ecgDetailList(details) {
         return '<ul class="ecg-details">' + (details || []).map(function (line) {
             const t = String(line);
@@ -1856,6 +1883,9 @@
                 '<p class="ecg-summary">' + esc(s.summary) + '</p>' +
                 ecgFigure(s.id) + (s.id === 'rate-calibration' ? ecgFigure('normal-12lead') : '') +
                 ecgDetailList(s.details) +
+                (s.sources ? '<p class="ecg-leads"><strong>Sources:</strong> ' + s.sources.map(function (source) {
+                    return '<a href="' + esc(source.url) + '" target="_blank" rel="noopener">' + esc(source.label) + '</a>';
+                }).join(' · ') + '</p>' : '') +
                 '<div class="pp-grid ecg-pp"><div class="pp-box pearls"><h4>Pearl</h4><p>' + esc(s.pearl || '') + '</p></div>' +
                 '<div class="pp-box pitfalls"><h4>Pitfall</h4><p>' + esc(s.pitfall || '') + '</p></div></div>',
                 s.num !== 1, 'ecg-step-' + s.id);
@@ -1921,7 +1951,7 @@
             '</div>' +
             stepNav +
             '<p class="student-safety">'+esc(ecg.firstPass[0])+'</p><details class="reference-firstpass"><summary>Urgent ECG assessment · reference checklist</summary>'+firstPassHtml+'</details>'+
-            stepsHtml +
+            ecgFoundationsHtml() + stepsHtml +
             killerHtml +
             '<div class="severity-slot" data-severity-slot></div>' +
             sectionCard('', 'Pattern library',
@@ -1958,6 +1988,7 @@
                 var svg = select.closest('.ecg-fig').querySelector('.ecg-media svg');
                 if (!svg) return;
                 svg.setAttribute('viewBox', select.value);
+                select.closest('.ecg-fig').setAttribute('data-focused', String(select.selectedIndex > 0));
                 // Equivalent inspector buttons remain available below the crop.
                 svg.querySelectorAll('.ecg-hot').forEach(function (hot) { hot.setAttribute('tabindex', select.selectedIndex ? '-1' : '0'); });
             }
@@ -2714,6 +2745,12 @@
     } catch (e) {}
     try {
         document.addEventListener('click', function (e) {
+            var findingButton = e.target && e.target.closest ? e.target.closest('[data-ecg-finding]') : null;
+            if (findingButton && window.ECG_INTERACTIVE) {
+                var figure = findingButton.closest('.ecg-fig');
+                if (figure) window.ECG_INTERACTIVE.open(figure.getAttribute('data-ecg-fig'), findingButton, { finding: Number(findingButton.getAttribute('data-ecg-finding')) });
+                return;
+            }
             var btn = e.target && e.target.closest ? e.target.closest('[data-ecg-tool]') : null;
             if (!btn) return;
             var fig = btn.closest('.ecg-fig');
@@ -3090,7 +3127,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261010-ui-modern-design-v42').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261010-ecg-v44').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Ready for offline use'));
                     const applyUpdate = () => {
                         if(window.POCKET_DESIGN && !window.POCKET_DESIGN.beforeRoute(() => window.location.reload()))return;
