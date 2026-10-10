@@ -17,9 +17,34 @@
     const notes = new WeakMap();
     let stableUrl = location.href, pending = null;
     let settingsReturn = null, returningFromSettings = null;
-    const header = (k,title,text) => '<header class="design-header"><span class="study-kicker">'+esc(k)+'</span><h1 tabindex="-1">'+esc(title)+'</h1><p>'+esc(text)+'</p></header>';
+    function getCardIcon(title, url) {
+        if (!window.EM_ICONS) return '';
+        const map = window.EM_ICONS.map || {};
+        const svg = window.EM_ICONS.svg;
+        const u = String(url || '');
+        const t = String(title || '');
+        if (u.includes('practice') || t.includes('decision')) return svg(map['practice'] || map.generic, 'card-ico-svg');
+        if (u.includes('short') || t.includes('recall')) return svg(map['first-minutes'] || map.generic, 'card-ico-svg');
+        if (u.includes('tracks') || t.includes('track')) return svg(map['learn'] || map.generic, 'card-ico-svg');
+        if (u.includes('visual') || t.includes('findings')) return svg(map['diplopia'] || map.generic, 'card-ico-svg');
+        if (u.includes('skills') || t.includes('Prepare')) return svg(map['completed'] || map.generic, 'card-ico-svg');
+        if (u.includes('due') || t.includes('Review')) return svg(map['due'] || map.generic, 'card-ico-svg');
+        if (u === '#ecg' || t.includes('guide')) return svg(map['ecg'] || map.generic, 'card-ico-svg');
+        if (u === '#ecg-explorer' || t.includes('cases')) return svg(map['cardio'] || map.generic, 'card-ico-svg');
+        return svg(map.generic, 'card-ico-svg');
+    }
+    const header = (k,title,text) => {
+        let ico = 'generic';
+        if (title === 'Learn') ico = 'learn';
+        else if (title === 'ECG') ico = 'ecg';
+        else if (title === 'Search') ico = 'generic';
+        else if (title === 'Settings') ico = 'generic';
+        else if (title === 'Short cases') ico = 'practice';
+        const badge = window.EM_ICONS ? '<div class="design-hero-badge" aria-hidden="true">' + window.EM_ICONS.svg(window.EM_ICONS.map[ico] || window.EM_ICONS.map.generic, 'hero-badge-svg') + '</div>' : '';
+        return '<header class="design-header"><div class="design-hero-card">' + badge + '<div class="design-hero-body"><span class="study-kicker">' + esc(k) + '</span><h1 tabindex="-1">' + esc(title) + '</h1><p>' + esc(text) + '</p></div></div></header>';
+    };
     const action = (url,label,primary=false) => '<a class="design-action'+(primary?' primary':'')+'" href="'+esc(url)+'">'+esc(label)+' <span aria-hidden="true">→</span></a>';
-    const card = (stat,title,text,url,label) => '<article class="design-card"><span class="design-stat">'+esc(stat)+'</span><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+action(url,label)+'</article>';
+    const card = (stat,title,text,url,label) => '<article class="design-card"><div class="design-card-top"><span class="design-card-badge" aria-hidden="true">' + getCardIcon(title, url) + '</span><span class="design-stat">' + esc(stat) + '</span></div><h2>' + esc(title) + '</h2><p>' + esc(text) + '</p>' + action(url,label) + '</article>';
     function park() {
         if (location.hash.split('~')[0] === '#settings' && new URL(stableUrl).hash.split('~')[0] !== '#settings') {
             settingsReturn = { hash: new URL(stableUrl).hash || '#library', y: window.scrollY, title: stage.querySelector('h1')?.textContent || 'Library' };
@@ -110,7 +135,7 @@
         stage.querySelector('[data-search-more]').onclick=()=>{shown+=40;draw();};draw();
     }
     function settings() {
-        stage.innerHTML=header('THE EM POCKET · ON THIS DEVICE','Settings','Manage offline access, installation and your learning records on this device.')+'<section class="settings-section"><h2>Reading &amp; appearance</h2><p>Use Aa in the top bar to change text size, appearance and colour without leaving your page.</p><button type="button" class="design-action" data-display-options>Open display options</button></section><section class="settings-section"><h2>Offline access & installation</h2><p class="settings-offline" id="offlineStatus">'+esc(ui.offlineStatus)+'</p><p>After offline setup succeeds, presentations, learning activities and ECG data are available without a connection. External reference links require internet access.</p><div id="settingsInstall"></div><details><summary>Install instructions</summary><p>On iPhone or iPad, open this site in Safari, choose Share, then Add to Home Screen. On supported desktop and Android browsers, use the browser’s Install app option.</p></details></section><section class="settings-section"><h2>Your learning records</h2><p>Export a backup or review an import before adding missing records. Existing records and preferences are preserved.</p>'+action('#learn~progress','Progress & backup')+'</section><section class="settings-section"><h2>About The EM Pocket</h2><p>An independent, free emergency medicine learning reference. No account is required.</p><div class="design-links"><button type="button" class="design-action" data-clinical-notice>Clinical notice</button><a class="design-action" href="mailto:apps@aamd.sa?subject=The%20EM%20Pocket%20feedback">Send feedback</a><button type="button" class="design-action" data-print>Print / Save as PDF</button></div><p>Release 20261008-note-save-guard-v40 · Content sources and review dates are listed with each presentation.</p></section>';
+        stage.innerHTML=header('THE EM POCKET · ON THIS DEVICE','Settings','Manage offline access, installation and your learning records on this device.')+'<section class="settings-section"><h2>Reading &amp; appearance</h2><p>Use Aa in the top bar to change text size, appearance and colour without leaving your page.</p><button type="button" class="design-action" data-display-options>Open display options</button></section><section class="settings-section"><h2>Offline access & installation</h2><p class="settings-offline" id="offlineStatus">'+esc(ui.offlineStatus)+'</p><p>After offline setup succeeds, presentations, learning activities and ECG data are available without a connection. External reference links require internet access.</p><div id="settingsInstall"></div><details><summary>Install instructions</summary><p>On iPhone or iPad, open this site in Safari, choose Share, then Add to Home Screen. On supported desktop and Android browsers, use the browser’s Install app option.</p></details></section><section class="settings-section"><h2>Your learning records</h2><p>Export a backup or review an import before adding missing records. Existing records and preferences are preserved.</p>'+action('#learn~progress','Progress & backup')+'</section><section class="settings-section"><h2>About The EM Pocket</h2><p>An independent, free emergency medicine learning reference. No account is required.</p><div class="design-links"><button type="button" class="design-action" data-clinical-notice>Clinical notice</button><a class="design-action" href="mailto:apps@aamd.sa?subject=The%20EM%20Pocket%20feedback">Send feedback</a><button type="button" class="design-action" data-print>Print / Save as PDF</button></div><p>Release 20261010-ui-modern-design-v42 · Content sources and review dates are listed with each presentation.</p></section>';
         const back=settingsReturn || {hash:'#library',y:0,title:'Library'};
         const backButton=document.createElement('button');backButton.type='button';backButton.className='back-btn settings-return';backButton.textContent='Back to '+back.title;
         backButton.onclick=()=>{returningFromSettings=back;location.hash=back.hash;};stage.prepend(backButton);

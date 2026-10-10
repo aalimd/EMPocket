@@ -870,7 +870,7 @@
         currentId = null;
         markActive(null);
         syncNav('home');
-        setTitle(null);
+        setTitle('Library');
         setStageContext('Presentation library');
         if (!DATA.length) {
             stage.innerHTML = '<p class="empty-filter">Could not load presentations. Confirm <code>assets/data.js</code> uploaded with index.html.</p>';
@@ -889,13 +889,21 @@
         const filtered = librarySystem !== 'all' || patientFilter !== 'all' || severityFilter !== 'all';
         const activeFilters = [librarySystem, patientFilter, severityFilter].filter(v => v !== 'all').length;
         stage.innerHTML =
-            '<section class="home-intro library-only"><span class="study-kicker">THE EM POCKET · REFERENCE</span><h1>Library</h1><p>Find an emergency presentation and explore its approach, warning signs, workup and disposition.</p><div class="home-meta"><span>' + DATA.length + ' presentations</span><span id="offlineStatus">' + esc(offlineStatus) + '</span></div></section>' +
+            '<section class="home-intro library-only">' +
+            '<div class="home-hero-card">' +
+            '<div class="home-hero-badge" aria-hidden="true">' + GROUP_SVG.home + '</div>' +
+            '<div class="home-hero-body">' +
+            '<span class="study-kicker">' + semanticSvg(SEMANTIC_ICONS['generic'], 'kicker-svg') + ' THE EM POCKET · REFERENCE</span>' +
+            '<h1>Library</h1>' +
+            '<p>Find an emergency presentation and explore its approach, warning signs, workup and disposition.</p>' +
+            '<div class="home-meta"><span><span class="meta-dot"></span> ' + DATA.length + ' presentations</span><span id="offlineStatus">' + esc(offlineStatus) + '</span></div>' +
+            '</div></div></section>' +
             '<section class="presentation-library" id="presentationLibrary" aria-labelledby="presentationLibraryTitle" tabindex="-1">' +
-            '<div class="library-head"><div><h2 id="presentationLibraryTitle">Presentation library</h2><p>' + visibleCount + ' of ' + DATA.length + ' presentations · grouped by clinical system</p></div>' +
-            '<a class="design-action" href="#library~saved">Saved topics · ' + savedIds().length + '</a></div><div class="library-toolbar"><label class="library-system">Clinical system<select id="librarySystem">' +
+            '<div class="library-head"><div><h2 id="presentationLibraryTitle"><span class="sec-inline-ico" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['generic'], 'badge-svg') + '</span> Presentation library</h2><p>' + visibleCount + ' of ' + DATA.length + ' presentations · grouped by clinical system</p></div>' +
+            '<a class="design-action" href="#library~saved">' + STAR_SVG.filled + ' <span>Saved topics · ' + savedIds().length + '</span></a></div><div class="library-toolbar"><label class="library-system"><span class="lib-system-label"><span class="lib-ico" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['cardio'], 'field-svg') + '</span> Clinical system</span><select id="librarySystem">' +
             '<option value="all"' + (librarySystem === 'all' ? ' selected' : '') + '>All clinical systems</option>' +
             GROUPS.map(g => '<option value="' + esc(g.title) + '"' + (librarySystem === g.title ? ' selected' : '') + '>' + esc(g.title) + '</option>').join('') + '</select></label>' +
-            '<div class="library-filter-controls"><details class="library-filters"' + (libraryFiltersOpen ? ' open' : '') + '><summary>Patient context' + (patientFilter !== 'all' ? ' · ' + esc(PATIENT_FILTER_OPTIONS.find(f => f[0] === patientFilter)[1]) : '') + '</summary>' + patientFiltersHtml() + '</details></div></div>' +
+            '<div class="library-filter-controls"><details class="library-filters"' + (libraryFiltersOpen ? ' open' : '') + '><summary><span class="lib-ico" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['peds'], 'field-svg') + '</span> Patient context' + (patientFilter !== 'all' ? ' · ' + esc(PATIENT_FILTER_OPTIONS.find(f => f[0] === patientFilter)[1]) : '') + '</summary>' + patientFiltersHtml() + '</details></div></div>' +
             (filtered ? '<div class="library-filter-status" role="status"><span>Filters · ' + activeFilters + ' active · ' + visibleCount + ' presentations</span><button type="button" data-reset-library>Reset filters</button></div>' : '') +
             (groupsHtml || '<div class="empty-filter"><h3>No matching presentations</h3><p>Clear the filters to return to the full library.</p></div>') + '</section>';
         bindCards(stage);
@@ -2490,7 +2498,7 @@
         } catch (e) {}
         const meta = document.getElementById('themeColor');
         if (meta) {
-            meta.setAttribute('content', dark ? '#101917' : '#f6f8f7');
+            meta.setAttribute('content', dark ? '#0a0f16' : '#f6f8f7');
         }
     }
     function bindPrefs() {
@@ -3082,7 +3090,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261008-note-save-guard-v40').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261010-ui-modern-design-v42').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Ready for offline use'));
                     const applyUpdate = () => {
                         if(window.POCKET_DESIGN && !window.POCKET_DESIGN.beforeRoute(() => window.location.reload()))return;

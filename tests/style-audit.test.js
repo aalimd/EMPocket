@@ -909,3 +909,82 @@ test('enlarged bold text fits the complete reading and learning flows at 320px',
         }
     } finally {await cdp('Emulation.setDeviceMetricsOverride',{...VIEWPORT,deviceScaleFactor:2,mobile:true});}
 });
+
+test('every route names itself in the document title',async t=>{
+    if(!await ready(t))return;
+    for(const [route,title] of [['#library','Library · The EM Pocket'],['#learn~home','Learn · The EM Pocket'],['#ecg-hub','ECG · The EM Pocket'],['#shift','Quick · The EM Pocket'],['#settings','Settings · The EM Pocket'],['#chest-pain','Chest Pain · The EM Pocket']]){
+        await load(route,300);
+        assert.equal(await evaluate(`document.title`),title,route);
+    }
+});
+
+test('active library filters report one count and a reset that keeps progress',async t=>{
+    if(!await ready(t))return;await load('#library');
+    assert.equal(await evaluate(`!!document.querySelector('.library-filter-status')`),false);
+    await evaluate(`document.querySelector('.chip[data-sev="critical"]').click()`);await wait(250);
+    const r=await evaluate(`(function(){var s=document.querySelector('.library-filter-status');return {text:s.querySelector('span').textContent.replace(/\\s+/g,' ').trim(),reset:s.querySelector('[data-reset-library]').textContent.trim(),cards:document.querySelectorAll('.cp-card').length};})()`);
+    assert.match(r.text,/^Filters · 1 active · \d+ presentations$/);
+    assert.equal(r.reset,'Reset filters');
+    assert.ok(r.cards>=1);
+    await evaluate(`document.querySelector('[data-reset-library]').click()`);await wait(300);
+    assert.equal(await evaluate(`!!document.querySelector('.library-filter-status')`),false);
+    assert.equal(await evaluate(`document.querySelector('.chip[data-sev="all"]').classList.contains('active')`),true);
+});
+
+test('search with no results keeps two clear paths out of the dead end',async t=>{
+    if(!await ready(t))return;await load('#library');
+    await evaluate(`(function(){var i=document.getElementById('searchInput');i.value='zzzzq';i.dispatchEvent(new Event('input',{bubbles:true}));})()`);await wait(500);
+    const r=await evaluate(`(function(){var p=document.querySelector('.results-pop');return {text:p.textContent,actions:[...p.querySelectorAll('[data-search-action]')].map(b=>b.textContent.trim())};})()`);
+    assert.match(r.text,/No results for/);
+    assert.deepEqual(r.actions,['Clear search','Browse library']);
+    await evaluate(`document.querySelector('[data-search-action="clear"]').click()`);await wait(200);
+    assert.equal(await evaluate(`document.getElementById('searchInput').value`),'');
+    assert.equal(await evaluate(`document.querySelector('.results-pop').style.display`),'none');
+});
+
+test('answer feedback names the scenario rather than a bare verdict',async t=>{
+    if(!await ready(t))return;await load('#learn~case-resus');
+    await evaluate(`(function(){var c=window.EM_LEARNING_DATA.cases.filter(c=>c.id==='resus')[0];var id=c.steps[0].options.filter(o=>o.correct)[0].id;document.querySelector('[data-evolving-choice="'+id+'"]').click();})()`);await wait(400);
+    const r=await evaluate(`(function(){var f=document.querySelector('.workspace-feedback');return {heading:f.querySelector('h3').textContent.trim(),padding:getComputedStyle(f).padding};})()`);
+    assert.equal(r.heading,'Correct for this scenario');
+    assert.ok(parseFloat(r.padding)>=16,'feedback padding '+r.padding);
+});
+
+test('offline state and print actions use the shared reference wording',async t=>{
+    if(!await ready(t))return;await load('#settings');
+    assert.equal(await evaluate(`document.getElementById('offlineStatus').textContent.trim()`),'Ready for offline use');
+    assert.equal(await evaluate(`document.getElementById('searchInput').placeholder`),'Search topics, findings or ECGs');
+    const print=await evaluate(`(function(){var b=[...document.querySelectorAll('[data-print]')].pop();return b?b.textContent.trim():'none';})()`);
+    assert.equal(print,'Print / Save as PDF');
+});
+
+test('primary hover reads the tested token in both themes and every accent',async t=>{
+    if(!await ready(t))return;await load('#library');
+    for(const mode of ['light','dark'])for(const accent of ['emerald','ocean','violet','rose','amber','teal']){
+        await evaluate(`document.documentElement.dataset.theme=${JSON.stringify(mode)};document.documentElement.dataset.accent=${JSON.stringify(accent)}`);
+        const r=await evaluate(`(function(){
+            var b=document.createElement('button');b.className='design-action primary';b.textContent='probe';
+            b.setAttribute('style','position:fixed;top:60px;left:20px;z-index:2147483647');
+            document.body.appendChild(b);
+            var token=getComputedStyle(document.documentElement).getPropertyValue('--primary-hover').trim();
+            var active=getComputedStyle(document.documentElement).getPropertyValue('--primary-active').trim();
+            var on=getComputedStyle(document.documentElement).getPropertyValue('--on-fill').trim();
+            /* @imported modules are not listed in document.styleSheets, so the
+               cascade has to be walked through CSSImportRule as well. */
+            var rule='';
+            function walk(rules){
+                for(var j=0;j<rules.length;j++){
+                    var s=rules[j];
+                    if(s.type===3&&s.styleSheet)walk(s.styleSheet.cssRules);
+                    else if(s.cssRules)walk(s.cssRules);
+                    if(s.selectorText&&/\\.design-action\\.primary:active/.test(s.selectorText)&&/var\\(--primary-active\\)/.test(s.cssText))rule='yes';
+                }
+            }
+            for(var i=0;i<document.styleSheets.length;i++){try{walk(document.styleSheets[i].cssRules);}catch(e){}}
+            var out={token:token,active:active,on:on,rule:rule};
+            b.remove();return out;})()`);
+        assert.match(r.token,/^#[0-9a-f]{6}$/,mode+'/'+accent+' hover token');
+        assert.match(r.active,/^#[0-9a-f]{6}$/,mode+'/'+accent+' active token');
+        assert.equal(r.rule,'yes',mode+'/'+accent+' active rule resolves to its token');
+    }
+});

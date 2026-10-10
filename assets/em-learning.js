@@ -263,7 +263,7 @@
     let recordingsPromise = null;
     function loadRecordings() {
         if (!recordingsPromise) {
-            recordingsPromise = import('./ecg-recordings.js?v=20261008-note-save-guard-v40')
+            recordingsPromise = import('./ecg-recordings.js?v=20261010-ui-modern-design-v42')
                 .catch(function () { recordingsPromise = null; });
         }
         return recordingsPromise || Promise.resolve();
