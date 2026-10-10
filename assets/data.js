@@ -894,7 +894,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — jaundice', 'Tokyo G
 {
 id: 'cyanosis', name: 'Cyanosis', icon: '🔵',
 tag: 'Blue from lung, heart, or the blood itself?',
-overview: 'Cyanosis is ≥4–5 g/dL of deoxyhemoglobin (central) or local stasis (peripheral). The trap is that dyshemoglobinemias may cause cyanosis with a normal PaO₂; significant methemoglobinemia often drives SpO₂ toward 85%, while sulfhemoglobinemia readings vary. Chocolate-brown blood that does not redden on oxygen is the bedside clue. Treat the airway and the cause — methylene blue for methemoglobin (not in G6PD).',
+overview: 'Visible cyanosis classically occurs at approximately 5 g/dL of deoxyhemoglobin in capillary blood; this is an approximate teaching value, not a fixed diagnostic threshold. Peripheral cyanosis can reflect local stasis. The trap is that dyshemoglobinemias may cause cyanosis with a normal PaO₂; significant methemoglobinemia often drives SpO₂ toward 85%, while sulfhemoglobinemia readings vary. Chocolate-brown blood that does not redden on oxygen is the bedside clue. Treat the airway and the cause — methylene blue for methemoglobin (not in G6PD).',
 approach: [
     'Central (tongue/lips) vs peripheral (nail beds only).',
     'SpO₂ stuck ~85% with a normal PaO₂ is a saturation gap — send co-oximetry (methemoglobin, CO).',
@@ -1626,7 +1626,7 @@ const ECG_DATA = {
             leads: 'V1–V6; aVR often',
             criteria: '1–3 mm upsloping J-point STD in the precordial leads continuing into tall, prominent, symmetric T waves. STE in aVR is common but not required.',
             significance: 'A high-risk occlusion pattern, commonly associated with LAD disease, that can occur without classic STE. The exact culprit anatomy cannot be inferred from the ECG alone.',
-            action: 'Immediate cath-lab activation. Treat as anterior OMI, not “nonspecific anterior ischemia.”',
+            action: 'With compatible ongoing ischemia, seek immediate cardiology/reperfusion assessment under the local ACS pathway. Treat as a high-risk coronary occlusion pattern.',
             caution: 'The pattern can evolve into frank anterior STE or appear only on the first tracing. Do not wait for millimetre STE.'
         },
         {
