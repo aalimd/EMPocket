@@ -14,3 +14,4 @@
 .ecg-foundations{margin-block:24px;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--card)}.ecg-beat-map{display:block;width:100%;max-width:620px;height:auto;margin:18px auto}.ecg-foundation-key{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px}.ecg-foundation-key dd{margin:0}
 .ecg-image-purpose,.ecg-image-reading,.ecg-image-check{padding:14px;border-top:1px solid var(--line)}.ecg-view-hint{padding:8px 14px;margin:0}.ecg-foundations summary,.ecg-image-reading summary,.ecg-image-check summary{min-height:44px}.ecg-image-reading button{max-width:100%}
 .ecg-fig[data-focused="true"] .ecg-svg-wrap{min-width:0}
+.explorer-paper[data-zoomed="true"]{cursor:grab}.explorer-paper[data-zoomed="true"]:active{cursor:grabbing}

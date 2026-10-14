@@ -260,7 +260,7 @@
       const source=curriculum&&curriculum.sources[item.record.source];
       host.innerHTML='<div class="explorer-heading"><div class="explorer-heading-main"><span class="ios-icon-badge ios-emoji-badge explorer-hero-badge" aria-hidden="true">' + ico('chart', 'badge-svg') + '</span><div><p class="explorer-kicker">ECG LEARNING LIBRARY</p><h1>ECG Explorer</h1><p>'+cases.length+' teaching examples. Select a finding to see exactly where to look.</p></div></div><button type="button" class="ex-button" data-action="'+(expanded?'close':'enlarge')+'"><span class="btn-icon btn-emoji" aria-hidden="true">'+(expanded?ico('close'):ico('enlarge'))+'</span><span>'+(expanded?'Close enlarged view':'Enlarge ECG')+'</span></button></div>'+
         '<div class="explorer-controls"><label>Teaching ECG<select data-control="case" aria-label="Teaching ECG">'+options+'</select></label><button type="button" class="ex-button" data-action="previous" aria-label="Previous ECG">‹ Previous</button><button type="button" class="ex-button" data-action="next" aria-label="Next ECG">Next ›</button><label>Zoom<select data-control="zoom" aria-label="ECG zoom">'+[['1','Whole ECG'],['1.5','150%'],['2','200%'],['3','300%']].map(([v,t])=>'<option value="'+v+'"'+(v===state.zoom?' selected':'')+'>'+t+'</option>').join('')+'</select></label><button type="button" class="ex-button" data-action="practice" aria-pressed="'+state.practice+'"><span class="btn-icon btn-emoji" aria-hidden="true">'+ico('target')+'</span><span>ECG Practice</span></button>'+(!hidden?'<button type="button" class="ex-button" data-action="highlights" aria-pressed="'+state.highlights+'"><span class="btn-icon btn-emoji" aria-hidden="true">'+ico('highlights')+'</span><span>Red highlights</span></button>':'')+'</div>'+
-        (item.record.stem?'<p class="explorer-clinical-stem">'+esc(item.record.stem)+'</p>':'')+'<div class="explorer-layout"><section class="explorer-sheet" aria-label="ECG teaching paper"><div class="explorer-paper-hint">'+esc(item.scale)+' <span>Whole ECG overview · select a finding for detail.</span></div><div class="explorer-paper" tabindex="0" role="region" aria-label="ECG paper; scroll to inspect"><div class="explorer-canvas" style="width:'+Number(state.zoom)*100+'%">'+paperSvg+'</div></div><p class="explorer-caption">'+esc(item.caption)+'</p></section>'+
+        (item.record.stem?'<p class="explorer-clinical-stem">'+esc(item.record.stem)+'</p>':'')+'<div class="explorer-layout"><section class="explorer-sheet" aria-label="ECG teaching paper"><div class="explorer-paper-hint">'+esc(item.scale)+' <span>Whole ECG overview · select a finding for detail.</span></div><div class="explorer-paper"'+(state.zoom!=='1'?' data-zoomed="true"':'')+' tabindex="0" role="region" aria-label="ECG paper; scroll to inspect"><div class="explorer-canvas" style="width:'+Number(state.zoom)*100+'%">'+paperSvg+'</div></div><p class="explorer-caption">'+esc(item.caption)+'</p></section>'+
         '<aside class="explorer-findings" aria-label="Diagnosis and findings">'+(hidden?'<div class="findings-header"><span class="ios-icon-badge ios-emoji-badge finding-badge" aria-hidden="true">'+ico('notes')+'</span><div><p class="explorer-kicker">YOUR INTERPRETATION</p><h2>Read before revealing</h2></div></div><p>What are the rate, rhythm and important findings? Use the whole ECG.</p>':'<div class="findings-header"><span class="ios-icon-badge ios-emoji-badge finding-badge" aria-hidden="true">'+ico('search')+'</span><div><p class="explorer-kicker">'+esc(item.format)+' · CURRENT DIAGNOSIS / PATTERN</p><h2>'+esc(item.record.name)+'</h2></div></div><p>'+esc(item.record.summary)+'</p>')+
         (state.practice?'<label class="explorer-answer">Your interpretation<textarea data-control="answer" rows="3" placeholder="Rate, rhythm, intervals, ST–T changes…">'+esc(state.answer)+'</textarea></label>':'')+
         (hidden?'<button type="button" class="ex-button ex-primary" data-action="reveal"><span class="btn-icon btn-emoji" aria-hidden="true">'+ico('idea')+'</span><span>Reveal diagnosis &amp; findings</span></button>':'<h3><span class="ios-icon-badge ios-emoji-badge sec-badge-sm" aria-hidden="true">'+ico('target')+'</span>Findings <span>'+item.findings.length+'</span></h3><div class="explorer-finding-list">'+item.findings.map((f,i)=>'<button type="button" data-finding="'+i+'" aria-pressed="'+(i===state.finding)+'"><span>'+String(i+1).padStart(2,'0')+'</span>'+esc(f.title)+'</button>').join('')+'</div><div class="explorer-explanation" role="status"><strong>'+esc(item.findings[state.finding].title)+'</strong><p>'+esc(item.findings[state.finding].explanation)+'</p><button class="ex-button" type="button" data-action="focus"><span class="btn-icon btn-emoji" aria-hidden="true">'+ico('focus')+'</span><span>Focus this finding</span></button></div><a class="explorer-guide-link" href="#ecg~'+item.record.guide+'">Open the ECG guide →</a>')+(!hidden&&source?'<p class="explorer-source"><a target="_blank" rel="noopener noreferrer" href="'+source.url+'">'+esc(source.label)+'</a></p>':'')+'</aside></div>';
@@ -307,7 +307,7 @@
       const learningTools=document.createElement('details');learningTools.className='explorer-learning-tools';learningTools.open=state.learningToolsOpen;
       learningTools.innerHTML='<summary>Learning tools <span>'+progress.completed.length+' / '+cases.length+' studied</span></summary>';
       learningTools.addEventListener('toggle',()=>{if(learningTools.isConnected)state.learningToolsOpen=learningTools.open;});
-      toolbar.before(learningTools);learningTools.append(progressBar);
+      host.querySelector('.explorer-layout').after(learningTools);learningTools.append(progressBar);
       if(!state.practice){
         const pathPanel=document.createElement('details');pathPanel.className='explorer-path';pathPanel.open=state.pathOpen;
         pathPanel.innerHTML='<summary><span class="ios-icon-badge ios-emoji-badge sec-badge-sm" aria-hidden="true">' + ico('compass') + '</span><span>Suggested learning path</span> <span class="path-sub">Start here or choose any case</span></summary><p>Optional order · take one example at a time. Completion records what you studied, not a proficiency score.</p><ol>'+pathways.map((path,i)=>'<li><strong>'+esc(path.title)+'</strong><p>'+esc(path.objective)+'</p><small>Suggested preparation: '+esc(path.prior)+' · '+path.ids.filter(id=>progress.completed.includes(id)).length+' / '+path.ids.length+' studied</small><button class="ex-button" data-action="pathway" data-path="'+i+'">'+(state.path===i?'Continue this stage':'Start this stage')+'</button></li>').join('')+'</ol>';
@@ -322,7 +322,7 @@
         checklist.addEventListener('toggle',()=>{if(checklist.isConnected)state.checklistOpen=checklist.open;});host.querySelector('.explorer-answer').before(checklist);
         if(hidden){const hint=document.createElement('div');hint.className='explorer-hint';hint.innerHTML='<button class="ex-button" data-action="hint" aria-expanded="'+state.hint+'"><span class="btn-icon btn-emoji" aria-hidden="true">' + ico('idea') + '</span><span>'+(state.hint?'Hide reading hint':'Give me a reading hint')+'</span></button>'+(state.hint?'<p role="status">Start with the recording labels and what leads are available. Describe the timing, then the repeating wave shapes. Write an observation before choosing a diagnosis; you can leave uncertain items unanswered.</p>':'');host.querySelector('[data-action="reveal"]').before(hint);}
       }
-      if(state.zoom!=='1'){const whole=document.createElement('button');whole.className='ex-button explorer-whole';whole.dataset.action='whole';whole.textContent='Whole ECG';host.querySelector('.explorer-paper-hint').append(whole);}
+      {const zBtn=document.createElement('button');zBtn.type='button';zBtn.className='ex-button explorer-whole';zBtn.dataset.action=state.zoom!=='1'?'whole':'zoom-in';zBtn.textContent=state.zoom!=='1'?'Whole ECG':'Zoom 200%';host.querySelector('.explorer-paper-hint').append(zBtn);}
       if(!suppress&&state.highlights)host.querySelector('.explorer-caption').append(document.createTextNode(' Tap a red region to inspect it; keyboard users can Tab to a region and press Enter.'));
 
       if(!hidden){
@@ -349,19 +349,33 @@
       if(state.practice&&state.revealed&&!state.locating){const note=document.createElement('p');note.className='explorer-practice-feedback';note.textContent='Compare your interpretation with each explained finding below. Your written answer is not automatically graded.';host.querySelector('.explorer-answer').after(note);}
       if(expanded&&root.isConnected)render(root,false);
     }
-    function locate(host) {
+    function locate(host,scrollPaper) {
       const mark=host.querySelectorAll('.explorer-canvas .ecg-finding-marks ellipse')[state.region],paper=host.querySelector('.explorer-paper');if(!mark)return;
       const a=mark.getBoundingClientRect(),b=paper.getBoundingClientRect();paper.scrollLeft+=a.left-b.left-40;paper.scrollTop+=a.top-b.top-40;
-      const detail=host.querySelector('.explorer-explanation');if(detail)detail.scrollIntoView({block:window.innerWidth<=1100?'start':'nearest',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+      const target=scrollPaper?paper:host.querySelector('.explorer-explanation');if(target)target.scrollIntoView({block:window.innerWidth<=1100?'start':'nearest',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
     }
     function bind(host,expanded) {
-      let cursor={x:0,y:0};
+      let cursor={x:0,y:0},pan=null,didPan=false;
       function checkLocation(x,y){
         const correct=model().findings[state.finding].targets.some(r=>containsPoint(r,x,y));
         state.locationFeedback=correct?'Correct region. Reveal the explanation to check the waveform feature.':'That point is outside the marked teaching region. Try another lead or segment, or show the explanation.';
         const feedback=host.querySelector('.explorer-location-feedback');if(feedback)feedback.textContent=state.locationFeedback;
       }
+      host.addEventListener('pointerdown',event=>{
+        const paper=event.target.closest('.explorer-paper');
+        if(!paper||state.zoom==='1'||state.locating||event.pointerType==='touch'||event.button!==0)return;
+        pan={paper,x:event.clientX,y:event.clientY,sl:paper.scrollLeft,st:paper.scrollTop};didPan=false;
+      },{signal:lifecycle.signal});
+      host.addEventListener('pointermove',event=>{
+        if(!pan)return;
+        const dx=event.clientX-pan.x,dy=event.clientY-pan.y;
+        if(Math.abs(dx)>4||Math.abs(dy)>4)didPan=true;
+        if(didPan){pan.paper.scrollLeft=pan.sl-dx;pan.paper.scrollTop=pan.st-dy;}
+      },{signal:lifecycle.signal});
+      host.addEventListener('pointerup',()=>{pan=null;},{signal:lifecycle.signal});
+      host.addEventListener('pointercancel',()=>{pan=null;},{signal:lifecycle.signal});
       host.addEventListener('click',event=>{
+        if(didPan){didPan=false;return;}
         const paper=event.target.closest('.explorer-paper');if(!paper)return;
         const svg=paper.querySelector('svg'),point=svg.createSVGPoint();point.x=event.clientX;point.y=event.clientY;const p=point.matrixTransform(svg.getScreenCTM().inverse());if(state.locating){checkLocation(p.x,p.y);return;}
         if((state.practice&&!state.revealed)||!state.highlights)return;
@@ -434,14 +448,15 @@
         else if(action==='locate-practice'){state.locating=!state.locating;state.locationFeedback='';}
         else if(action==='show-location'){state.locating=false;state.highlights=true;}
         else if(action==='highlights')state.highlights=!state.highlights;
+        else if(action==='zoom-in')state.zoom='2';
         else if(action==='focus'){state.zoom='2';state.highlights=true;}
         else return;
         if(action==='show-location')state.findingMenu=true;
         render(host,expanded);
         const focus=host.querySelector(index!==undefined||action==='show-location'?'[data-finding="'+(index!==undefined?index:state.finding)+'"]':'[data-action="'+(action==='reveal'?'practice':action)+'"]');if(focus){const chooser=focus.closest('.explorer-finding-chooser');if(chooser&&!chooser.open)chooser.querySelector('summary').focus({preventScroll:true});else focus.focus({preventScroll:true});}
-        if(index!==undefined||['focus','finding-previous','finding-next','region'].includes(action))locate(host);
+        if(index!==undefined||['focus','finding-previous','finding-next','region'].includes(action))locate(host,action==='focus');
         if(['pathway','mixed-practice','exit-path'].includes(action)){const picker=host.querySelector('[data-control="case"]');picker.focus({preventScroll:true});host.querySelector('.explorer-controls').scrollIntoView({block:'start',behavior:'auto'});}
-        if(action==='whole')host.querySelector('.explorer-paper').focus({preventScroll:true});
+        if(action==='whole'||action==='zoom-in')host.querySelector('.explorer-paper').focus({preventScroll:true});
         if(action==='locate-practice'&&state.locating){const paper=host.querySelector('.explorer-paper');paper.focus({preventScroll:true});host.querySelector('.explorer-sheet').scrollIntoView({block:'start',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}
         if(action==='show-location')locate(host);
       },{signal:lifecycle.signal});

@@ -682,6 +682,7 @@
     }
     function dispClass(title) {
         const t = String(title).toLowerCase();
+        /* .d-discharge .d-admit .d-icu */
         if (t.indexOf('discharge') === 0) return 'd-discharge';
         if (t.indexOf('admit') === 0 || t.indexOf('urgent') === 0) return 'd-admit';
         return 'd-icu';
@@ -691,7 +692,7 @@
     function buildSidebar() {
         const list = document.getElementById('sideList');
         list.innerHTML = [['home','Library','home'],['study','Learn','references'],['ecg','ECG','ecg'],['shift','Quick','first-minutes']].map(([key,label,icon]) =>
-            '<button type="button" class="side-item" data-nav="'+key+'"><i class="ico" aria-hidden="true">'+(key==='home'?GROUP_SVG.home:semanticSvg(SEMANTIC_ICONS[icon] || SEMANTIC_ICONS.generic))+'</i>'+label+'</button>').join('') +
+            '<button type="button" class="side-item" data-nav="'+key+'" title="'+label+'" aria-label="'+label+'"><i class="ico" aria-hidden="true">'+(key==='home'?GROUP_SVG.home:semanticSvg(SEMANTIC_ICONS[icon] || SEMANTIC_ICONS.generic))+'</i>'+label+'</button>').join('') +
             '<div class="side-divider"></div><div class="side-secondary"><a class="side-btn" href="#library~saved">Saved topics</a><a class="side-btn" href="#learn~progress">Progress &amp; backup</a><a class="side-btn" href="#settings">Settings &amp; offline</a></div>';
     }
 
@@ -956,10 +957,10 @@
     /* ---------- study queue and case practice ---------- */
     function topicListHtml(ids, empty) {
         const unique = ids.filter((id, index) => topicRecord(id) && ids.indexOf(id) === index);
-        if (!unique.length) return '<p class="study-empty">' + esc(empty) + '</p>';
+        if (!unique.length) return '<div class="study-empty"><p>' + esc(empty) + '</p><div class="res-empty-actions"><a class="btn" href="#library">Browse library</a><a class="btn" href="#learn~practice">Practice cases</a></div></div>';
         return '<div class="study-topic-list">' + unique.map(function (id) {
             const cp = topicRecord(id);
-            return '<button type="button" class="study-topic" data-id="' + cp.id + '"' + (cp.id === ECG_TOPIC_ID ? ' data-ecg="1"' : '') + '><span class="study-topic-ico" data-cat="' + catFor(cp.id) + '" data-id="' + cp.id + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(cp.id), cp.id)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</span><div><strong>' + esc(cp.name) + '</strong><small>' + esc(isReviewed(cp.id) ? reviewLabel(cp.id) : 'Not yet reviewed') + (noteFor(cp.id) ? ' · note saved' : '') + '</small></div><b>→</b></button>';
+            return '<button type="button" class="study-topic" data-id="' + cp.id + '"' + (cp.id === ECG_TOPIC_ID ? ' data-ecg="1"' : '') + '><span class="study-topic-ico" data-cat="' + catFor(cp.id) + '" data-id="' + cp.id + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(cp.id), cp.id)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</span><div><strong>' + esc(cp.name) + '</strong><small>' + esc(isReviewed(cp.id) ? reviewLabel(cp.id) : 'Not yet reviewed') + (noteFor(cp.id) ? ' · note saved' : '') + '</small></div><span class="cta-arrow" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['chevron-right']) + '</span></button>';
         }).join('') + '</div>';
     }
     function caseHtml() {
@@ -984,7 +985,7 @@
         const body = chosen === 'case' ? caseHtml() :
             '<section class="study-page"><div class="study-page-head">' + backButtonHtml('data-home="1"') + '<span class="study-kicker">PERSONAL STUDY SPACE</span><h1>' + (chosen === 'due' ? 'Review queue' : 'Saved topics') + '</h1><p>' + (chosen === 'due' ? 'Topics return after 1, 3, 7, and 14 days of review. Complete a review to move it to the next interval.' : 'Use saved topics for weak areas, upcoming rotations, or cases you want to discuss.') + '</p></div>' +
             topicListHtml(chosen === 'due' ? dueIds() : savedIds(), chosen === 'due' ? 'Nothing is due yet. Mark a topic reviewed to start its spaced-review schedule.' : 'No saved topics yet. Save one from any presentation.') + '</section>';
-        stage.innerHTML = '<nav class="study-tabs" aria-label="Personal study navigation"><a href="#learn~practice">Practice</a><button type="button" data-study="due"' + (chosen === 'due' ? ' aria-current="page"' : '') + ' class="' + (chosen === 'due' ? 'active' : '') + '" aria-label="Review queue">Review <span>' + dueIds().length + '</span></button><button type="button" data-study="saved"' + (chosen === 'saved' ? ' aria-current="page"' : '') + ' class="' + (chosen === 'saved' ? 'active' : '') + '" aria-label="Saved topics">Saved</button><a href="#learn~progress">Progress</a></nav>' + body;
+        stage.innerHTML = '<nav class="study-tabs" aria-label="Personal study navigation"><a href="#learn~practice">Practice</a><a href="#learn~visuals">Visuals</a><a href="#learn~skills">Preparation</a><button type="button" data-study="due"' + (chosen === 'due' ? ' aria-current="page"' : '') + ' class="' + (chosen === 'due' ? 'active' : '') + '" aria-label="Review queue">Review <span>' + dueIds().length + '</span></button><button type="button" data-study="saved"' + (chosen === 'saved' ? ' aria-current="page"' : '') + ' class="' + (chosen === 'saved' ? 'active' : '') + '" aria-label="Saved topics">Saved</button><a href="#learn~progress">Progress</a></nav>' + body;
         stage.querySelectorAll('[data-home]').forEach(btn => btn.addEventListener('click', goBack));
         stage.querySelectorAll('[data-study]').forEach(btn => btn.addEventListener('click', () => showStudy(btn.dataset.study)));
         stage.querySelectorAll('[data-next-case]').forEach(btn => btn.addEventListener('click', () => { caseCursor += 1; renderStudy('case'); }));
@@ -1119,7 +1120,23 @@
         }
         if (!id || !BY_ID[id]) {
             currentId=null; syncNav('shift');setTitle('Quick');setStageContext('Quick reference');
-            stage.innerHTML='<header class="design-header"><span class="study-kicker">THE EM POCKET · FOCUSED REFERENCE</span><h1>Quick</h1><p>Choose a presentation to see its approach, red flags, workup, important diagnoses and disposition together.</p></header><section class="settings-section"><label for="quickPresentation">Presentation</label><select id="quickPresentation"><option value="">Choose a presentation…</option>'+DATA.map(cp=>'<option value="'+cp.id+'">'+esc(cp.name)+'</option>').join('')+'</select><p class="clinical-safety-note">Educational reference. Read the full pathway for history, examination, supporting sources and context.</p></section>';
+            const highAcuity=['chest-pain','dyspnea','shock','ams','seizures','anaphylaxis','multiple-trauma','weakness'].filter(k=>BY_ID[k]);
+            const personalIds=[...new Set([...savedIds(),...reviewedIds()])].filter(k=>BY_ID[k]).slice(0,8);
+            const personalHtml=personalIds.length?'<section class="settings-section"><h2>Saved &amp; recently reviewed</h2><p>Jump directly to the quick reference for topics you saved or reviewed.</p><div class="design-links">'+personalIds.map(k=>'<a class="design-action" href="#shift~'+esc(k)+'">'+esc(BY_ID[k].name)+' <span aria-hidden="true">→</span></a>').join('')+'</div></section>':'';
+            const decisionRulesHtml='<section class="settings-section"><h2>Bedside decision rules &amp; criteria</h2><p>Validated clinical decision frameworks referenced across pathways. Apply with clinical judgment and full pathway context.</p>' +
+                '<details><summary>HEART Pathway &amp; High-Sensitivity Troponin (Chest Pain)</summary><p><strong>Components (0–2 points each):</strong> History (slightly / moderately / highly suspicious), ECG (normal / nonspecific repolarization / significant ST deviation), Age (&lt;45 / 45–64 / ≥65 yr), Risk factors (0 / 1–2 / ≥3 or known atherosclerotic disease), Troponin (≤1× / 1–3× / &gt;3× normal limit). Low-risk HEART (0–3) with a non-ischemic ECG and negative serial hs-cTn on a validated 0/1-h or 0/2-h pathway supports early outpatient follow-up; ongoing ischemic pain, hemodynamic instability or STEMI/OMI equivalents bypass scoring for urgent coronary care. <a href="#shift~chest-pain">Open Chest Pain quick sheet →</a></p></details>' +
+                '<details><summary>PERC Rule &amp; PE Pretest Assessment (Dyspnea / Chest Pain)</summary><p><strong>Apply PERC only when clinical pretest probability is low (&lt;15%).</strong> All 8 criteria must be met to exclude PE without D-dimer: age &lt;50 yr, HR &lt;100/min, room-air SpO₂ ≥95%, no unilateral leg swelling, no hemoptysis, no recent surgery or trauma requiring hospitalization within 4 weeks, no prior DVT/PE, and no exogenous estrogen use. If PERC is positive or pretest probability is moderate, use age-adjusted D-dimer (age × 10 ng/mL FEU if &gt;50 yr) or YEARS criteria before CTPA. <a href="#shift~dyspnea">Open Acute Dyspnea quick sheet →</a></p></details>' +
+                '<details><summary>NEXUS &amp; Canadian C-Spine Clearance (Blunt Trauma)</summary><p><strong>NEXUS low-risk criteria (all 5 required to clear clinically):</strong> no posterior midline cervical tenderness, no evidence of intoxication, normal alertness (GCS 15), no focal neurologic deficit, and no painful distracting injury. <strong>Canadian C-Spine Rule (alert, stable patients):</strong> any high-risk factor (age ≥65 yr, dangerous mechanism, extremity paresthesias) mandates imaging; if absent and a low-risk factor allows, assess active 45° left and right neck rotation. <a href="#shift~multiple-trauma">Open Multiple Trauma quick sheet →</a></p></details>' +
+                '<details><summary>PECARN Pediatric Head Trauma Rule (Head Injury)</summary><p><strong>Age &lt;2 years:</strong> GCS &lt;15, altered mental status or palpable skull fracture → CT head; non-frontal scalp hematoma, LOC ≥5 s, severe mechanism or not acting normally per parent → observation vs CT based on clinical factors. <strong>Age ≥2 years:</strong> GCS &lt;15, altered mental status or signs of basilar skull fracture → CT head; any LOC, vomiting, severe mechanism or severe headache → observation vs CT. <a href="#shift~headache">Open Headache quick sheet →</a></p></details>' +
+                '<details><summary>Anaphylaxis Criteria &amp; First-Line IM Epinephrine</summary><p><strong>Recognize:</strong> acute skin/mucosal involvement plus respiratory compromise or reduced BP/end-organ hypoperfusion, or rapid multi-system involvement after likely allergen. <strong>Immediate treatment:</strong> IM epinephrine 1:1000 (1 mg/mL) into mid-anterolateral thigh — adults ≥50 kg: 0.3–0.5 mg IM (max 0.5 mg); children: 0.01 mg/kg IM (0.15 mg for 7.5–25 kg; 0.3 mg for ≥25–30 kg), repeat every 5–15 min as needed, supine positioning with leg elevation, oxygen and IV crystalloid bolus (20 mL/kg). Antihistamines and steroids never replace epinephrine. <a href="#shift~anaphylaxis">Open Anaphylaxis quick sheet →</a></p></details>' +
+                '<details><summary>Status Epilepticus Timed Escalation (0–40 min)</summary><p><strong>0–5 min:</strong> airway protection, oxygen, immediate capillary blood glucose, IV/IO access. <strong>5–20 min (First-line benzodiazepine):</strong> IM midazolam 10 mg (&gt;40 kg) or 5 mg (13–40 kg) (0.2 mg/kg, max 10 mg) if no IV, or IV lorazepam 0.1 mg/kg (max 4 mg/dose, may repeat once). <strong>20–40 min (Second-line ESETT agents — equal efficacy):</strong> IV levetiracetam 60 mg/kg (max 4500 mg), fosphenytoin 20 mg PE/kg (max 1500 mg PE), or valproate 40 mg/kg (max 3000 mg; avoid in pregnancy or hepatic disease). <a href="#shift~seizures">Open Seizures quick sheet →</a></p></details>' +
+                '</section>';
+            const medsHtml='<section class="settings-section"><h2>Critical airway, vasoactive &amp; antidote reference</h2><p>Educational summary of high-acuity emergency medications. Verify patient weight, contraindications and local institutional protocols.</p>' +
+                '<details><summary>Rapid Sequence Intubation (RSI) Induction &amp; Paralytics</summary><p><strong>Induction:</strong> Ketamine 1–2 mg/kg IV (bronchodilatory, preserves hemodynamics; severe catecholamine depletion can still drop BP); Etomidate 0.3 mg/kg IV (hemodynamically neutral; reduce to 0.15–0.2 mg/kg in shock). <strong>Paralysis:</strong> Rocuronium 1.2 mg/kg IV (no hyperkalemia risk; longer duration); Succinylcholine 1.5 mg/kg IV (contraindicated in hyperkalemia, burns/crush/denervation/stroke &gt;48–72 h, malignant hyperthermia or neuromuscular disease). Always prepare push-dose/infusion vasopressor and post-intubation analgesia/sedation before paralysis. <a href="#shift~airway-stridor">Open Airway &amp; Stridor quick sheet →</a></p></details>' +
+                '<details><summary>Shock First-Line Vasopressors &amp; Inotropes</summary><p><strong>Norepinephrine (0.05–0.5 mcg/kg/min IV):</strong> first-line vasopressor in septic, vasodilatory and hypotensive cardiogenic shock (target MAP ≥65 mmHg). <strong>Epinephrine (0.05–0.5 mcg/kg/min IV):</strong> first-line for anaphylactic shock refractory to IM doses, post-arrest shock or second-line addition in septic/bradycardic shock. <strong>Dobutamine (2–20 mcg/kg/min IV):</strong> inotrope for low-output cardiogenic shock or septic myocardial dysfunction once MAP is supported. <a href="#shift~shock">Open Shock quick sheet →</a></p></details>' +
+                '<details><summary>High-Yield Antidotes &amp; Hyperkalemia Stabilization</summary><p><strong>Acetaminophen:</strong> N-acetylcysteine (NAC) per Rumack-Matthew nomogram (single acute ingestion &lt;24 h) or empirically for staggered/repeated/&gt;24 h/unknown-time ingestions with detectable APAP or elevated transaminases. <strong>Opioids:</strong> Naloxone 0.04–0.4 mg IV titrated to restore respiratory drive, not full agitation. <strong>TCA / Na-channel blockade:</strong> Sodium bicarbonate 1–2 mEq/kg IV bolus for QRS &gt;100 ms, ventricular arrhythmia or hypotension (avoid pH &gt;7.55 or Na &gt;155 mEq/L). <strong>Severe Hyperkalemia with ECG changes:</strong> IV calcium gluconate 10% 10–30 mL (or calcium chloride 10% 5–10 mL via secure/central line) first for membrane stabilization, then regular insulin 10 U IV + dextrose 25–50 g, nebulized albuterol 10–20 mg and potassium elimination. <a href="#shift~overdose">Open Poisoning &amp; Overdose quick sheet →</a></p></details>' +
+                '</section>';
+            stage.innerHTML='<header class="design-header"><span class="study-kicker">THE EM POCKET · FOCUSED REFERENCE</span><h1>Quick</h1><p>Choose a presentation to see its approach, red flags, workup, important diagnoses and disposition together.</p></header><section class="settings-section"><label for="quickPresentation">Presentation</label><select id="quickPresentation"><option value="">Choose a presentation…</option>'+DATA.map(cp=>'<option value="'+cp.id+'">'+esc(cp.name)+'</option>').join('')+'</select><p class="clinical-safety-note">Educational reference. Read the full pathway for history, examination, supporting sources and context.</p><h2>Critical first-minutes pathways</h2><div class="design-links">'+highAcuity.map(k=>'<a class="design-action" href="#shift~'+esc(k)+'">'+esc(BY_ID[k].name)+' <span aria-hidden="true">→</span></a>').join('')+'</div></section>'+personalHtml+decisionRulesHtml+medsHtml;
             stage.querySelector('#quickPresentation').onchange=function(){if(this.value)showShift(this.value);};window.scrollTo({top:0});return;
         }
         const cp = BY_ID[id];
@@ -1457,7 +1474,7 @@
 
             sectionCard('', 'Interactive Red-Flag Checklist',
                 '<div class="rf-box"><div class="rf-banner" id="rfBanner"></div>' +
-                '<p style="font-size:.78rem;color:var(--ink-soft);margin-bottom:6px">' +
+                '<p class="clinical-safety-note">' +
                 'Select warning signs for educational review. Selections stay in this session and are not a patient record or a severity score.</p><div class="rf-tools"><button type="button" class="rf-clear" id="clearRedFlags">Clear selected</button><button type="button" class="rf-clear" id="copyReview">Copy review</button></div>' + rfItems +
                 '<div class="rf-progress"><i id="rfBar"></i></div></div>', isClosed('red-flags'), 'red-flags') +
 
@@ -2219,6 +2236,7 @@
             });
         }
         if(window.ECG_EXPLORER)window.ECG_EXPLORER.cases.forEach(c=>idx.unshift({cpId:'ecg-explorer',target:c.id,title:c.name,sub:c.category+' · '+c.id.replace(/-/g,' ')+' · '+c.summary,kind:'Interactive ECG'}));
+        if(window.STUDENT_LEARNING&&Array.isArray(window.STUDENT_LEARNING.cases))window.STUDENT_LEARNING.cases.forEach(c=>idx.unshift({cpId:'study',target:'case-'+c.id,title:c.title,sub:'Short case · '+c.stem,kind:'Short case'}));
         if(window.EM_LEARNING) idx.unshift(...window.EM_LEARNING.searchItems());
         return idx;
     }
@@ -2268,13 +2286,37 @@
         if (searchCursor >= 0 && items[searchCursor]) items[searchCursor].scrollIntoView({ block: 'nearest' });
     }
 
+    function highlightMatch(text, query) {
+        const raw = String(text || '');
+        const tokens = String(query || '').trim().split(/\s+/).filter(t => t.length >= 2)
+            .map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+        if (!tokens.length) return esc(raw);
+        const re = new RegExp('(' + tokens.join('|') + ')', 'gi');
+        return raw.split(re).map((part, idx) => idx % 2 === 1 ? '<mark>' + esc(part) + '</mark>' : esc(part)).join('');
+    }
+
     function findSearchHits(q) {
-        if(!q || q.length<2)return [];
-        const ql = q.toLowerCase();
-        return SEARCH_INDEX.filter(x =>
-            x.title.toLowerCase().indexOf(ql) !== -1 ||
-            (x.sub && x.sub.toLowerCase().indexOf(ql) !== -1)
-        ).sort((a,b)=>{const score=x=>{const title=x.title.toLowerCase();return title===ql?100:title.startsWith(ql)&&(!title[ql.length]||/[^a-z0-9]/.test(title[ql.length]))?80:title.includes(ql)?40:20;};return score(b)-score(a);});
+        if(!q)return [];
+        const ql = String(q).trim().toLowerCase();
+        if(ql.length<2)return [];
+        const tokens = ql.split(/\s+/).filter(Boolean);
+        return SEARCH_INDEX.filter(x => {
+            const title = x.title.toLowerCase();
+            const sub = x.sub ? x.sub.toLowerCase() : '';
+            if (title.indexOf(ql) !== -1 || sub.indexOf(ql) !== -1) return true;
+            return tokens.length > 1 && tokens.every(t => title.indexOf(t) !== -1 || sub.indexOf(t) !== -1);
+        }).sort((a,b)=>{
+            const score=x=>{
+                const title=x.title.toLowerCase();
+                if(title===ql)return 100;
+                if(title.startsWith(ql)&&(!title[ql.length]||/[^a-z0-9]/.test(title[ql.length])))return 80;
+                if(title.includes(ql))return 60;
+                if(tokens.length>1&&tokens.every(t=>title.includes(t)))return 45;
+                if(x.sub&&x.sub.toLowerCase().includes(ql))return 30;
+                return 20;
+            };
+            return score(b)-score(a);
+        });
     }
 
     function runSearch(q) {
@@ -2291,8 +2333,8 @@
             ? hits.map((h, i) =>
                 '<button type="button" class="res-item" id="search-result-' + i + '" data-id="' + h.cpId + '" data-target="' + h.target + '" role="option" aria-selected="false">' +
                 '<span class="res-ico" data-cat="' + catFor(h.cpId) + '" data-id="' + h.cpId + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(h.cpId), h.cpId)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</span>' +
-                '<div class="res-body"><div class="r-title">' + esc(h.title) + '</div>' +
-                '<div class="r-sub">' + (h.sub ? esc(h.sub) : '') + '</div></div>' +
+                '<div class="res-body"><div class="r-title">' + highlightMatch(h.title, q) + '</div>' +
+                '<div class="r-sub">' + (h.sub ? highlightMatch(h.sub, q) : '') + '</div></div>' +
                 '<span class="r-tag">' + esc(h.kind) + '</span></button>').join('')
             : '<div class="res-item res-empty"><div class="r-sub">No results for \u201C' + esc(q) + '\u201D</div><div class="res-empty-actions"><button type="button" class="btn" data-search-action="clear">Clear search</button><button type="button" class="btn" data-search-action="browse">Browse library</button></div></div>';
         if(allHits.length>12)pop.insertAdjacentHTML('beforeend','<button type="button" class="res-item search-all" id="search-result-12" role="option" aria-selected="false" data-id="search" data-target="'+esc(q)+'">View all '+allHits.length+' results →</button>');
@@ -2331,6 +2373,8 @@
     function openSearchHit(id, target) {
         if (id === 'search') location.hash='search~'+encodeURIComponent(target);
         else if (id === 'learn') location.hash='learn~'+target;
+        else if (id === 'study') location.hash='study~'+target;
+        else if (id === 'shift') showShift(target);
         else if (id === 'ecg-explorer') showExplorer(target);
         else if (id === ECG_TOPIC_ID) showEcg(target || '');
         else showPresentation(id, target);
@@ -3127,7 +3171,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261011-ecg-v45').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261014-ecg-v46').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Ready for offline use'));
                     const applyUpdate = () => {
                         if(window.POCKET_DESIGN && !window.POCKET_DESIGN.beforeRoute(() => window.location.reload()))return;
@@ -3162,7 +3206,7 @@
         }
     }
 
-    window.EM_POCKET_UI = { stage, esc, dueIds, savedIds, reviewedIds, noteFor, saveCurrentNote, toast, findSearchHits, setStageContext, syncNav, showDisclaimer, openReadingPanel, closeReadingPanel, get offlineStatus(){return offlineStatus;} };
+    window.EM_POCKET_UI = { stage, esc, highlightMatch, dueIds, savedIds, reviewedIds, noteFor, saveCurrentNote, toast, findSearchHits, setStageContext, syncNav, showDisclaimer, openReadingPanel, closeReadingPanel, get offlineStatus(){return offlineStatus;} };
     if (document.readyState !== 'complete') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

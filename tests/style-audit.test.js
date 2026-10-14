@@ -502,7 +502,7 @@ test('four destinations have coherent active states including legacy ECG and rec
 test('all learning hubs expose their complete local collections and valid reading tracks',async t=>{
     if(!await ready(t))return;await load('#learn~home');
     assert.equal(await evaluate(`document.querySelectorAll('.design-grid .design-card').length`),6);
-    await load('#learn~short');assert.equal(await evaluate(`document.querySelectorAll('.design-card').length`),12);
+    await load('#learn~short');assert.equal(await evaluate(`document.querySelectorAll('.design-card').length`),18);
     await load('#learn~tracks');assert.equal(await evaluate(`document.querySelectorAll('.design-card').length`),6);
     const errors=await evaluate(`(async()=>{const out=[];for(const link of [...document.querySelectorAll('.design-card a')]){location.hash=link.hash;await new Promise(r=>setTimeout(r,50));if(!document.querySelector('.design-track-list a'))out.push(link.hash);for(const a of document.querySelectorAll('.design-track-list a')){const id=a.hash.slice(1).split('~')[0];if(!['ecg','ecg-explorer','learn'].includes(id)&&!window.CP_DATA.some(c=>c.id===id))out.push(a.hash);}}return out;})()`);assert.deepEqual(errors,[]);
 });

@@ -533,6 +533,7 @@
   entry.guideFocus=true;
   if(record.sharedLibrary==='pericarditis-ber'&&entry.learning)entry.learning.startPanel=item.data.lanes.indexOf('II');
   if(entry.learning&&record.sharedLibrary==='hypokalemia')entry.learning.answer='Exclude a separate U wave. This calibrated model ends T at 380 ms and U at 620 ms after QRS onset; QT ends at T, not U. When the waves merge on a patient ECG, use another lead with a clear T endpoint.';
+  if(entry.learning&&record.sharedLibrary==='brugada')entry.learning.question='Can this pattern alone establish Brugada syndrome?';
   if(entry.learning&&record.sharedLibrary==='tca-toxicity'){
    entry.learning.question='Do a widened QRS and terminal R in aVR prove TCA poisoning?';
    entry.learning.answer='No. This calibrated example models QRS 160 ms and a terminal R of 4 mm in aVR. Measure on the stated grid, then assess exposure, prior ECG and perfusion; several drugs and other causes can produce similar findings.';
