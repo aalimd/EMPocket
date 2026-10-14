@@ -598,6 +598,10 @@
     window.ECG_SVG[id].figureLabel = 'Schematic · not to scale';
     if (item.useEngine) window.ECG_SVG[id].traceSpec = { pattern: id, lanes: item.display, options: item.engineOpts || {}, waves: item.waves || {}, note: item.note };
     window.ECG_SVG[id].noCompare = true;
-    window.ECG_SVG[id].svg = caseSvg(item, id);
+    // Deferred: the schematic is drawn the first time its svg is read.
+    var entry = window.ECG_SVG[id], drawn, done = false;
+    Object.defineProperty(entry, 'svg', { configurable: true, enumerable: true,
+      get: function () { if (!done) { done = true; drawn = caseSvg(item, id); } return drawn; },
+      set: function (v) { done = true; drawn = v; } });
   });
 }());

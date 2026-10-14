@@ -120,13 +120,24 @@
       spec.waves = { Early: 'hyperk', Advanced: 'hyperk', Severe: 'hyperk' };
       spec.note = 'Three possible hyperkalemia appearances, not a predictable sequence or potassium-level scale.';
     }
-    var result = render(spec);
-    entry.svg = result.svg;
-    if (!/complete-heart-block|vt-vs-svt|atrial-fibrillation/.test(id)) {
-      entry.previewPanels = result.rows.map(function (row) {
+    // Drawing is deferred until a consumer first reads svg/previewPanels, so the
+    // startup pass no longer renders every calibrated panel on the main thread.
+    var withPanels = !/complete-heart-block|vt-vs-svt|atrial-fibrillation/.test(id);
+    var lazy = {}, done = false;
+    var compute = function () {
+      if (done) return; done = true;
+      var result = render(spec);
+      lazy.svg = result.svg;
+      if (withPanels) lazy.previewPanels = result.rows.map(function (row) {
         return { title: (laneLabels[row.lane] || row.lane) + ' · focused segment', viewBox: '0 ' + row.top + ' ' + Math.min(340, result.width) + ' ' + (row.bottom - row.top + 8) };
       });
-    }
+    };
+    lazy.previewPanels = entry.previewPanels;
+    (withPanels ? ['svg', 'previewPanels'] : ['svg']).forEach(function (key) {
+      Object.defineProperty(entry, key, { configurable: true, enumerable: true,
+        get: function () { compute(); return lazy[key]; },
+        set: function (v) { compute(); lazy[key] = v; } });
+    });
     entry.calibrated = true;
     entry.figureLabel = 'Calibrated simulation';
     entry.caption = 'Synthetic focused leads, not a patient recording or a full 12-lead. Each small box represents 40 ms / 0.1 mV at this setting. ' + spec.note;
@@ -265,10 +276,25 @@
 
   Object.keys(lib).forEach(function (id) {
     var entry = lib[id];
+    var decorate = function (svg) {
+      var vb = svg.match(/viewBox="([^"]+)"/)[1].split(/\s+/).map(Number);
+      var grid = E.renderPaperGrid(vb[2], vb[3]).replace(/ecgEngMinor/g, id + '-decorativeMinor').replace(/ecgEngMajor/g, id + '-decorativeMajor');
+      return svg.replace(/(<svg[^>]*>)/, '$1' + '<g class="ecg-decorative-paper" aria-hidden="true">' + grid + '</g>');
+    };
+    var desc = Object.getOwnPropertyDescriptor(entry, 'svg');
+    if (desc && desc.get && entry.traceSpec) return; // calibrated render: own <pattern> paper
+    if (desc && desc.get) {
+      // Deferred drawing: decorate on first read. Calibrated renders carry their own
+      // <pattern> paper and are left unchanged, exactly as the eager pass did.
+      var resolved, ready = false;
+      Object.defineProperty(entry, 'svg', { configurable: true, enumerable: true,
+        get: function () { if (!ready) { ready = true; var v = desc.get(); resolved = (!v || v.includes('<pattern')) ? v : decorate(v); } return resolved; },
+        set: function (v) { ready = true; resolved = v; } });
+      entry.caption += ' Background grid is decorative; do not measure this schematic with its boxes.';
+      return;
+    }
     if (!entry.svg || entry.svg.includes('<pattern')) return;
-    var vb = entry.svg.match(/viewBox="([^"]+)"/)[1].split(/\s+/).map(Number);
-    var grid = E.renderPaperGrid(vb[2], vb[3]).replace(/ecgEngMinor/g, id + '-decorativeMinor').replace(/ecgEngMajor/g, id + '-decorativeMajor');
-    entry.svg = entry.svg.replace(/(<svg[^>]*>)/, '$1' + '<g class="ecg-decorative-paper" aria-hidden="true">' + grid + '</g>');
+    entry.svg = decorate(entry.svg);
     entry.caption += ' Background grid is decorative; do not measure this schematic with its boxes.';
   });
 

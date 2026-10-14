@@ -522,8 +522,21 @@
  }
  // Reuse calibrated drawings in the guide and its enlarged viewer too. Mutate
  // the shared lesson array so the viewer cannot retain obsolete schematic targets.
+ // Rendering the nine calibrated strips costs ~1s of main thread on a phone, so it
+ // is deferred: each shared entry computes its calibrated drawing the first time
+ // any consumer reads one of the replaced fields. Values are identical to the
+ // previous eager pass; only the timing changes.
+ const SHARED_KEYS=['svg','findings','caption','figureLabel','calibrated','hasReference','previewPanels','guideFocus','learning'];
  for(const record of cases.filter(c=>c.sharedLibrary)){
-  const item=renderStrip(record),entry=lib[record.sharedLibrary];
+  const target=lib[record.sharedLibrary];if(!target)continue;
+  const raw={};let ready=false;
+  const ensure=()=>{if(ready)return;ready=true;calibrateShared(record,raw);};
+  for(const key of SHARED_KEYS){const d=Object.getOwnPropertyDescriptor(target,key);if(d)Object.defineProperty(raw,key,d);else raw[key]=undefined;Object.defineProperty(target,key,{configurable:true,enumerable:true,get(){ensure();return raw[key];},set(v){ensure();raw[key]=v;}});}
+ }
+ function calibrateShared(record,entry){
+  // Both fields are replaced below; drop any deferred drawing without rendering it.
+  for(const k of ['svg','previewPanels'])Object.defineProperty(entry,k,{value:undefined,writable:true,configurable:true,enumerable:true});
+  const item=renderStrip(record);
   entry.svg=item.svg.replace(/ecgEngMinor|ecgEngMajor/g,id=>record.id+'-'+id);
   entry.findings.splice(0,entry.findings.length,...item.findings);
   entry.caption=item.caption+' Grid and waveform share a calibrated scale; on-screen millimetres depend on zoom. Selected morphology, not a clinically validated patient ECG.';
