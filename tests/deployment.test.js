@@ -27,14 +27,16 @@ test('all shipped references and precache URLs exist at root and nested deployme
  }
 });
 test('Cloudflare cache rules are nonoverlapping and mirror Apache runtime classes',()=>{
- const regular='no-cache, max-age=0, must-revalidate',image='public, max-age=604800';
+ const regular='no-cache, max-age=0, must-revalidate',image='public, max-age=604800',stamped='public, max-age=31536000, immutable';
  for(const ref of refs.concat('./','index.html','sw.js','manifest.json')) {
   const pathname=new URL(ref,'https://example.test').pathname;
-  const expected=pathname==='/sw.js'?'no-cache, no-store, must-revalidate':/\.(png|svg|webp|jpg|jpeg|gif|ico)$/.test(pathname)?image:regular;
+  /* Runtime JS/CSS/font URLs always carry the release token, so they are immutable. */
+  if(/^\/assets\/.*\.(js|css|ttf)$/.test(pathname))assert.match(ref,/\?v=/,ref);
+  const expected=pathname==='/sw.js'?'no-cache, no-store, must-revalidate':/\.(png|svg|webp|jpg|jpeg|gif|ico)$/.test(pathname)?image:/^\/assets\/.*\.(js|css|ttf)$/.test(pathname)?stamped:regular;
   assert.deepEqual(headers(ref)['Cache-Control'],[expected],ref);
  }
  assert.match(apache,/html\|js\|json\|css/);
- for(const value of [regular,image,'no-cache, no-store, must-revalidate'])assert.ok(apache.includes('"'+value+'"'));
+ for(const value of [regular,image,stamped,'no-cache, no-store, must-revalidate'])assert.ok(apache.includes('"'+value+'"'));
  assert.deepEqual(headers('/manifest.json')['Content-Type'],['application/manifest+json']);
  assert.match(apache,/ForceType application\/manifest\+json/);
 });
@@ -79,7 +81,7 @@ test('every imported CSS module and font resolves locally with the same release 
   assert.ok(url.pathname.startsWith('/nested/assets/css/'));
   assert.equal(url.searchParams.get('v'),release);
   assert.ok(worker.includes("'./"+url.pathname.replace('/nested/','')+url.search+"'"));
-  assert.deepEqual(headers(url.pathname)['Cache-Control'],['no-cache, max-age=0, must-revalidate']);
+  assert.deepEqual(headers(url.pathname)['Cache-Control'],['public, max-age=31536000, immutable']);
  }
  for(const file of modules)for(const m of fs.readFileSync(file,'utf8').matchAll(/url\('([^']+)'\)/g)) {
   const resolved=path.resolve(path.dirname(file),m[1].split('?')[0]);assert.ok(fs.existsSync(resolved),resolved);
