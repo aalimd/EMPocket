@@ -263,7 +263,7 @@
     let recordingsPromise = null;
     function loadRecordings() {
         if (!recordingsPromise) {
-            recordingsPromise = import('./ecg-recordings.js?v=20261011-ecg-v45')
+            recordingsPromise = import('./ecg-recordings.js?v=20261014-mobile-v46')
                 .catch(function () { recordingsPromise = null; });
         }
         return recordingsPromise || Promise.resolve();
