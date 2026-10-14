@@ -120,7 +120,9 @@
   const header=document.querySelector('.topbar').getBoundingClientRect();
   const tabs=document.querySelector('.ios-tabbar').getBoundingClientRect();
   document.querySelectorAll('.library-filter-controls > details[open], .severity-slot > details[open]').forEach(menu=>{
-   const trigger=menu.querySelector('summary').getBoundingClientRect();
+   // The popup is positioned against its offset parent (the wider controls row), not the summary.
+   const pop=menu.querySelector('.patient-filter, .chips'),anchor=pop&&pop.offsetParent&&pop.offsetParent!==document.body?pop.offsetParent:menu.querySelector('summary');
+   const trigger=anchor.getBoundingClientRect();
    const below=innerHeight-tabs.height-trigger.bottom-24;
    const above=trigger.top-Math.max(0,header.bottom)-24;
    const flip=below<180&&above>below;

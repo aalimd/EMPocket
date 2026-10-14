@@ -67,7 +67,8 @@ test('the stylesheet has explicit modules, one drawing layer and a bounded size'
     assert.equal(modules.length,8);
     assert.equal(new Set(modules).size,8);
     assert.match(css,/@layer scientific/);
-    assert.ok(css.length<100000,'Modular CSS must not grow back into the 433 KB patch cascade');
+    /* Raised 100000 -> 104000 for the Oct 2026 phone ergonomics block (bars, inputs, type floor). */
+    assert.ok(css.length<104000,'Modular CSS must not grow back into the 433 KB patch cascade');
     assert.doesNotMatch(css,/!important[^{}]*\{/);
 });
 

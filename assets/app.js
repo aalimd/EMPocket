@@ -1457,7 +1457,7 @@
 
             sectionCard('', 'Interactive Red-Flag Checklist',
                 '<div class="rf-box"><div class="rf-banner" id="rfBanner"></div>' +
-                '<p style="font-size:.78rem;color:var(--ink-soft);margin-bottom:6px">' +
+                '<p style="font-size:max(13px,.8125rem);color:var(--ink-soft);margin-bottom:6px">' +
                 'Select warning signs for educational review. Selections stay in this session and are not a patient record or a severity score.</p><div class="rf-tools"><button type="button" class="rf-clear" id="clearRedFlags">Clear selected</button><button type="button" class="rf-clear" id="copyReview">Copy review</button></div>' + rfItems +
                 '<div class="rf-progress"><i id="rfBar"></i></div></div>', isClosed('red-flags'), 'red-flags') +
 
@@ -2355,7 +2355,9 @@
     function normalizePrefs(value) {
         const prefs = isRecord(value) ? value : {};
         return {
-            theme: prefs.theme === 'dark' ? 'dark' : 'light',
+            /* No stored choice follows the device (prefers-color-scheme); an explicit
+               Light or Dark choice still overrides it. */
+            theme: prefs.theme === 'dark' || prefs.theme === 'light' ? prefs.theme : 'system',
             accent: normalizeAccent(prefs.accent),
             scale: nearestScale(prefs.scale),
             bold: typeof prefs.bold === 'boolean' ? prefs.bold : false,
@@ -2493,9 +2495,39 @@
         positionReadingPanel();
         document.getElementById('readingStatus').textContent = saved ? 'Saved on this device.' : 'Applied for this session. Device storage is unavailable.';
     }
+    /* Phones: the header slides away while reading down and returns on any upward
+       scroll, near the top, or while search is in use. */
+    function bindBarAutoHide() {
+        let lastY = window.scrollY || 0, ticking = false, userScrollAt = 0;
+        /* Only a reader's own scroll hides the bar; programmatic jumps (scrollIntoView,
+           section links, restored positions) keep layout-dependent popups stable. */
+        ['touchmove', 'wheel', 'keydown'].forEach(function (type) { window.addEventListener(type, function () { userScrollAt = Date.now(); }, { passive: true }); });
+        const phone = window.matchMedia ? window.matchMedia('(max-width: 920px)') : null;
+        const update = function () {
+            ticking = false;
+            const y = Math.max(0, window.scrollY || 0);
+            const searching = document.activeElement && document.activeElement.id === 'searchInput';
+            let hide = document.body.classList.contains('bar-hidden');
+            const popupOpen = !!document.querySelector('.topbar details[open], .library-filter-controls > details[open], .severity-slot > details[open]');
+            if (!phone || !phone.matches || y < 80 || searching || popupOpen) hide = false;
+            else if (Date.now() - userScrollAt > 800) { lastY = y; return; }
+            else if (y > lastY + 6) hide = true;
+            else if (y < lastY - 6) hide = false;
+            else return;
+            lastY = y;
+            document.body.classList.toggle('bar-hidden', hide);
+        };
+        window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+        const input = document.getElementById('searchInput');
+        if (input) input.addEventListener('focus', function () { document.body.classList.remove('bar-hidden'); });
+    }
+    function systemPrefersDark() {
+        try { return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches); } catch (e) { return false; }
+    }
     function applyPrefs(p) {
         const r = document.documentElement;
-        const dark = p.theme === 'dark';
+        const system = p.theme !== 'dark' && p.theme !== 'light';
+        const dark = p.theme === 'dark' || (system && systemPrefersDark());
         const accent = normalizeAccent(p.accent);
         r.setAttribute('data-theme', dark ? 'dark' : 'light');
         r.setAttribute('data-accent', accent);
@@ -2514,7 +2546,10 @@
             themeBtn.innerHTML = THEME_SVG.moon + '<span>Dark</span>';
             themeBtn.setAttribute('aria-label', 'Dark appearance');
         }
-        if (themeLight) { themeLight.innerHTML = THEME_SVG.sun + '<span>Light</span>'; themeLight.setAttribute('aria-label', 'Light appearance'); themeLight.setAttribute('aria-pressed', String(!dark)); }
+        if (themeBtn) themeBtn.setAttribute('aria-pressed', String(p.theme === 'dark'));
+        if (themeLight) { themeLight.innerHTML = THEME_SVG.sun + '<span>Light</span>'; themeLight.setAttribute('aria-label', 'Light appearance'); themeLight.setAttribute('aria-pressed', String(p.theme === 'light')); }
+        const themeSystem = document.getElementById('themeSystem');
+        if (themeSystem) themeSystem.setAttribute('aria-pressed', String(system));
         if (boldBtn) boldBtn.setAttribute('aria-pressed', p.bold === true ? 'true' : 'false');
         if (label) label.textContent = Math.round(scale * 100) + '%';
         const fontDown = document.getElementById('fontDown');
@@ -2535,6 +2570,13 @@
     function bindPrefs() {
         let p = loadPrefs();
         applyPrefs(p);
+        const themeSystem = document.getElementById('themeSystem');
+        if (themeSystem) themeSystem.addEventListener('click', function () { p = loadPrefs(); p.theme = 'system'; changeReadingPrefs(p); });
+        try {
+            const mq = window.matchMedia('(prefers-color-scheme: dark)');
+            const follow = function () { const cur = loadPrefs(); if (cur.theme === 'system') applyPrefs(cur); };
+            if (mq.addEventListener) mq.addEventListener('change', follow); else if (mq.addListener) mq.addListener(follow);
+        } catch (e) {}
         const themeBtn = document.getElementById('themeBtn');
         const themeLight = document.getElementById('themeLight');
         const boldBtn = document.getElementById('boldBtn');
@@ -2640,7 +2682,11 @@
             if (btnText) btnText.textContent = 'Accept & Enter The EM Pocket';
         }
 
+        /* Open at the top so the heading and notice are read first, not mid-text. */
+        const resetDisclaimerScroll=()=>{overlay.scrollTop=0;const m=overlay.querySelector('.disclaimer-modal');if(m)m.scrollTop=0;const b=overlay.querySelector('.disclaimer-body');if(b)b.scrollTop=0;};
+        resetDisclaimerScroll();
         requestAnimationFrame(() => {
+            resetDisclaimerScroll();
             const title=document.getElementById('disclaimerTitle');
             if(title){title.tabIndex=-1;title.focus({preventScroll:true});}
             const body=overlay.querySelector('.disclaimer-body');if(body)body.scrollTop=0;
@@ -2685,7 +2731,8 @@
             if (!check.checked) return;
             setDisclaimerAgreed();
             hideDisclaimer();
-            toast('Educational terms acknowledged. Welcome to The EM Pocket.');
+            /* Spoken, not shown: a toast here sat over the library filters on phones. */
+            announce('Educational terms acknowledged. Welcome to The EM Pocket.');
         });
 
         if (linkBtn) {
@@ -2876,6 +2923,7 @@
         syncSidebarAccessibility();
         bindFilters();
         bindPrefs();
+        bindBarAutoHide();
         bindReadingPanel();
         const skipLink = document.querySelector('.skip-link');
         if (skipLink) skipLink.addEventListener('click', (e) => {
@@ -2894,6 +2942,10 @@
                    new view would render behind them with the page still scroll-locked. */
                 closeSidebar();
                 if (document.getElementById('ecgLightbox') || document.getElementById('ecgWorkbench')) closeEcgLightbox();
+                /* A deliberate section change starts fresh: a stale query in the header
+                   reads as if it filtered the new section. History (Back) keeps it. */
+                const searchBox = document.getElementById('searchInput');
+                if (searchBox && searchBox.value) { searchBox.value = ''; runSearch(''); }
                 if (navKey === 'home') showHome();
                 else if (navKey === 'study') { location.hash = 'learn~home'; }
                 else if (navKey === 'shift') showShift(currentId);
@@ -3127,7 +3179,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261011-ecg-v45').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261014-mobile-v46').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Ready for offline use'));
                     const applyUpdate = () => {
                         if(window.POCKET_DESIGN && !window.POCKET_DESIGN.beforeRoute(() => window.location.reload()))return;
