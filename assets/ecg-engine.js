@@ -25,7 +25,7 @@
  *
  * Physiological model (normal only):
  *   - Limb leads are Einthoven projections of a frontal-plane dipole, so
- *     II = I + III holds approximately and axis behaviour is automatic.
+ *     II = I + III holds approximately and axis behavior is automatic.
  *     Each wave (P/Q/R/S/T) has its own vector angle + magnitude; shape
  *     differences between limb leads come from different Q/R/S ratios, not clones.
  *   - Precordial leads V1-V6 use an independent table with plausible R-wave
@@ -37,7 +37,7 @@
  * arrhythmia). Defaults are low so teaching morphology stays clear. All
  * variation is reproducible for the same seed; no Math.random() is used.
  *
- * Safety: output SVG is labelled "Synthetic educational ECG" and must never be
+ * Safety: output SVG is labeled "Synthetic educational ECG" and must never be
  * presented as a patient recording. No clinical teaching text is changed here.
  * Nothing here is diagnostically validated; tracings are teaching simulations.
  *
@@ -114,7 +114,7 @@ function gauss(t, mu, sigma) {
   var z = (t - mu) / sigma;
   return Math.exp(-0.5 * z * z);
 }
-/* Normalised envelopes (peak = 1) for a time dt ms from QRS onset. */
+/* Normalized envelopes (peak = 1) for a time dt ms from QRS onset. */
 function beatEnvelopes(dt) {
   var tEnv;
   if (dt < T_CENTER_MS) tEnv = gauss(dt, T_CENTER_MS, T_SIGMA_UP_MS);
@@ -271,7 +271,7 @@ function tEnvelopeForShape(dtT, tAmp, tShape, ov) {
         : gauss(dtT, T_CENTER_MS, T_SIGMA_DOWN_MS));
   }
 }
-/* Convex ST bump (dome) centred J+30ms, normalised so bump(J) = stMv.
+/* Convex ST bump (dome) centered J+30ms, normalized so bump(J) = stMv.
    Positive = STE, negative = STD. Tall T on top gives upsloping look. */
 function stBump(dt, J_MS, stMv, shape) {
   if (!stMv) return 0;
@@ -332,7 +332,7 @@ function leadVoltageAt(lead, tMs, caseData, sampleIdx) {
     var qOn = caseData.beatTimes[b];
     var dt = tMs - qOn;
     if (dt < -220 || dt > 560) continue;
-    var dtP = dt + caseData.prShiftMs; // honour requested PR without reshaping
+    var dtP = dt + caseData.prShiftMs; // honor requested PR without reshaping
     var dtQ = dt / qrsScale;           // stretch/shrink QRS to qrsMs
     // Map T timing around J so QT end lands on qtMs: scale offset from J.
     var dtT = NOMINAL_QRS_MS + (dt - J_MS) / tScale;

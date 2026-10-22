@@ -526,7 +526,7 @@
   const item=renderStrip(record),entry=lib[record.sharedLibrary];
   entry.svg=item.svg.replace(/ecgEngMinor|ecgEngMajor/g,id=>record.id+'-'+id);
   entry.findings.splice(0,entry.findings.length,...item.findings);
-  entry.caption=item.caption+' Grid and waveform share a calibrated scale; on-screen millimetres depend on zoom. Selected morphology, not a clinically validated patient ECG.';
+  entry.caption=item.caption+' Grid and waveform share a calibrated scale; on-screen millimeters depend on zoom. Selected morphology, not a clinically validated patient ECG.';
   entry.figureLabel='Calibrated synthetic ECG';entry.calibrated=true;entry.hasReference=false;
   // Focused lead views use the final calibrated drawing, after replacing older sketches.
   entry.previewPanels=item.data.lanes.map((lead,lane)=>({title:lead+' · focused segment',viewBox:'0 '+(70+lane*270)+' 340 260'}));

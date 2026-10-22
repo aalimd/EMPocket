@@ -187,7 +187,7 @@
           }
           col = ((spec.engineStSign && spec.engineStSign[leadName]) || (morphology.st > 0)) ? '#dc2626' : '#2563eb';
           if (typeof col !== 'string') col = '#dc2626';
-          // Determine colour from engine ST when available.
+          // Determine color from engine ST when available.
           try {
             var engCdH = window.ECG_ENGINE.createPatternCase(enginePattern, Object.assign({}, spec.engineOpts, { lane: leadName, noise: { disabled: true } }));
             var ovH = (engCdH.leadOverrides && engCdH.leadOverrides[leadName]) || {};
@@ -390,13 +390,13 @@
   add('posterior-omi', 'Posterior OMI mirror pattern', 'posterior injury mirror in V1–V3', 'V1–V3 horizontal ST depression with dominant R and upright T raises concern for posterior occlusion. Record V7–V9 and interpret clinically.', { cycle: 120 }, a, { r: 18, s: 3, st: -7, t: 12, broadT: true, cycle: 120 });
 
   a = {}; each('I II III aVL aVF V4 V5 V6', { st: -5, t: -2 }, a); a.aVR = options({ r: -8, s: 14, st: 6, t: 4 });
-  add('avr-lmca', 'aVR elevation with diffuse ST depression', 'global subendocardial ischaemia', 'aVR ST elevation with widespread horizontal ST depression: high-risk ACS or profound supply–demand mismatch.', {}, a, { st: -5, t: -2 });
+  add('avr-lmca', 'aVR elevation with diffuse ST depression', 'global subendocardial ischemia', 'aVR ST elevation with widespread horizontal ST depression: high-risk ACS or profound supply–demand mismatch.', {}, a, { st: -5, t: -2 });
 
   a = {}; each('I II III aVL aVF V2 V3 V4 V5 V6', { p: 1, r: 12, s: 8, qrs: 13, t: 17, tented: true, cycle: 70 }, a); a.aVR = options({ p: 1, r: -8, s: 13, qrs: 13, t: -14, tented: true, cycle: 70 });
-  add('hyperkalemia', 'Severe hyperkalaemia pattern', 'diffuse conduction toxicity', 'Diffuse narrow peaked T waves, flattened P waves and QRS widening. Treat the ECG first when unstable.', { p: 1, r: 12, s: 8, qrs: 13, t: 17, tented: true, cycle: 70 }, a, { p: 1, r: 12, s: 8, qrs: 13, t: 17, tented: true, cycle: 70 });
+  add('hyperkalemia', 'Severe hyperkalemia pattern', 'diffuse conduction toxicity', 'Diffuse narrow peaked T waves, flattened P waves and QRS widening. Treat the ECG first when unstable.', { p: 1, r: 12, s: 8, qrs: 13, t: 17, tented: true, cycle: 70 }, a, { p: 1, r: 12, s: 8, qrs: 13, t: 17, tented: true, cycle: 70 });
 
   a = {}; each('I II III aVL aVF V2 V3 V4 V5 V6', { st: -3, t: 2, u: 8 }, a);
-  add('hypokalemia', 'Hypokalaemia with U waves', 'diffuse repolarisation abnormality', 'Flattened T waves, ST depression and prominent U waves—best seen across the precordial leads.', {}, a, { st: -3, t: 2, u: 8 });
+  add('hypokalemia', 'Hypokalemia with U waves', 'diffuse repolarization abnormality', 'Flattened T waves, ST depression and prominent U waves—best seen across the precordial leads.', {}, a, { st: -3, t: 2, u: 8 });
 
   a = {}; each('II III aVF V3 V4 V5 V6', { cycle: 88, qrs: 11, jWave: 8, t: 4 }, a);
   add('hypothermia', 'Hypothermia with Osborn waves', 'bradycardic hypothermia pattern', 'Bradycardia with prominent J (Osborn) waves, particularly in inferior and lateral precordial leads.', { cycle: 88, qrs: 11, t: 4 }, a, { cycle: 88, qrs: 11, jWave: 8, t: 4 });
@@ -462,10 +462,10 @@
   cases['stemi-criteria'].bracket = { from: 'II', to: 'aVF', label: 'contiguous: II·III·aVF', wave: 'inf' };
   cases['stemi-criteria'].connector = { from: 'aVF', to: 'aVL', label: 'mirror', wave: 'mirror' };
   cases['stemi-criteria'].hotspots = [
-    { lead: 'II', wave: 'inf', title: 'II · STE +2 mm', label: 'Lead 2: convex ST elevation, plus 2 millimetres. Contiguous inferior injury.' },
-    { lead: 'III', wave: 'inf', title: 'III · STE +2 mm', label: 'Lead 3: convex ST elevation, plus 2 millimetres. Contiguous inferior injury.' },
-    { lead: 'aVF', wave: 'inf', title: 'aVF · STE +2 mm', label: 'Lead a V F: convex ST elevation, plus 2 millimetres. Contiguous inferior injury.' },
-    { lead: 'aVL', wave: 'mirror', title: 'aVL · mirror STD -1 mm', label: 'Lead a V L: mirror ST depression, minus 1 millimetre. Reciprocal of inferior OMI.' }
+    { lead: 'II', wave: 'inf', title: 'II · STE +2 mm', label: 'Lead 2: convex ST elevation, plus 2 millimeters. Contiguous inferior injury.' },
+    { lead: 'III', wave: 'inf', title: 'III · STE +2 mm', label: 'Lead 3: convex ST elevation, plus 2 millimeters. Contiguous inferior injury.' },
+    { lead: 'aVF', wave: 'inf', title: 'aVF · STE +2 mm', label: 'Lead a V F: convex ST elevation, plus 2 millimeters. Contiguous inferior injury.' },
+    { lead: 'aVL', wave: 'mirror', title: 'aVL · mirror STD -1 mm', label: 'Lead a V L: mirror ST depression, minus 1 millimeter. Reciprocal of inferior OMI.' }
   ];
   cases['stemi-criteria'].note2 = 'MIRROR mnemonic — inferior UP, aVL DOWN: territorial STE + mirror STD supports acute inferior occlusion.';
   /* Hyperacute 3-shape comparator — one viewpoint, three diagnoses to separate. */
@@ -484,7 +484,7 @@
   cases['hyperacute-t'].hotspots = [
     { lead: 'Normal', wave: 't', title: 'Normal T: R > T', label: 'Normal T wave: smooth, asymmetric, smaller than the QRS. The baseline every T is judged against.' },
     { lead: 'Hyperacute', wave: 'hyperacute', title: 'Hyperacute: bulky T > R', label: 'Hyperacute T: broad bulky wave dwarfing the QRS with a straightened takeoff. Territorial early occlusion.' },
-    { lead: 'HyperK?', wave: 'hyperk', title: 'HyperK?: narrow tent + flat P', label: 'Hyperkalaemia clue: narrow pointed tent with a narrow base and flattened P. Diffuse, not territorial.' }
+    { lead: 'HyperK?', wave: 'hyperk', title: 'HyperK?: narrow tent + flat P', label: 'Hyperkalemia clue: narrow pointed tent with a narrow base and flattened P. Diffuse, not territorial.' }
   ];
   cases['hyperacute-t'].note2 = 'Broad + bulky + territorial: OMI workup. Narrow + pointed + flat P: check potassium now.';
   /* Wellens 2-shape comparator — Type A biphasic vs Type B deep symmetric inversion. */
@@ -515,7 +515,7 @@
     { lead: 'V3', wave: 'dewinter', title: 'de Winter: J-point STD → tall T', label: 'de Winter pattern: 1–3 mm upsloping ST depression at the J-point continuing into tall, prominent, symmetric T waves in precordial leads. Acute proximal LAD occlusion.' },
     { lead: 'aVR', wave: 'dewinter', title: 'aVR: reciprocal STE', label: 'Lead aVR elevation can accompany the precordial de Winter pattern; it is supportive and not required.' }
   ];
-  cases['dewinter'].note2 = 'de Winter is an anterior OMI equivalent (~2% of LAD occlusions). Do NOT wait for millimetre STEMI — activate cath lab.';
+  cases['dewinter'].note2 = 'de Winter is an anterior OMI equivalent (~2% of LAD occlusions). Do NOT wait for millimeter STEMI — activate cath lab.';
   /* Smith-modified Sgarbossa in LBBB (paced uses same thresholds) — one lead
      per criterion so concordance vs discordance is actually visible, like a
      real ECG: V5 lateral positive QRS + concordant STE, V3 anterior negative

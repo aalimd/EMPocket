@@ -1,24 +1,14 @@
-Latest design and interaction review: [8 October UI/UX audit and visual evidence](docs/UI-UX-AUDIT-2026-10-08.md).
+# The EM Pocket — Deployment & Architecture
 
-Latest learning update: [complete experience, verification and rollback](docs/COMPLETE-LEARNING-EXPERIENCE-2026-09-10.md).
+This is a self-contained static PWA for emergency medicine cardinal presentations, ECG interpretation, and shift decision support. There is no build step, database, PHP runtime, or environment file.
 
-Latest code and hosting verification: [10 September release audit](docs/RELEASE-VERIFICATION-2026-09-10.md).
+## Documentation & Audit Index
 
-ECG controls: [single selection marker and consolidated viewer](docs/ECG-CONTROLS-2026-09-09.md).
-
-ECG waveform review: [9 September corrections and verification](docs/ECG-ACCURACY-2026-09-09.md).
-
-# The EM Pocket deployment — Hostinger and Cloudflare Pages
-
-Student learning improvements: [implementation and verification](docs/STUDENT-UX-IMPLEMENTATION-2026-09-07.md), including authored cases, mobile ECG detail, search, progress and reading controls.
-
-This is a self-contained static PWA: there is no build step, database, PHP runtime, or environment file.
-
-New main section: [ECG Explorer](docs/ECG-EXPLORER.md), with 47 teaching examples and 143 guided findings, grouped navigation, zoom and practice mode. All ECGs now use pink paper backgrounds.
-
-ECG interaction coverage: [27-figure interactive audit](docs/ECG-INTERACTIVITY-2026-09-07.md), including guided explanations, red circles and regression checks.
-
-ECG guide (route `#ecg`): the historical [September clinical, ECG and code audit](docs/CONTENT-AUDIT-2026-09-07.md) covers all 27 library figures, corrections and remaining limitations. The [5 September ECG audit](docs/ECG-AUDIT-2026-09-05.md) is historical. Technical background: programmer notes, SVG/image inventory, and clinical caveats are in [docs/ECG-SECTION.md](docs/ECG-SECTION.md). Read that before changing drawings or ACS wording.
+- **UI/UX & Design:** [8 October UI/UX audit and visual evidence](docs/UI-UX-AUDIT-2026-10-08.md) · [UI/UX completion & recorded-ECG attribution](docs/UI-UX-COMPLETION-2026-09-10.md)
+- **Clinical Content:** [8 October clinical audit](docs/CLINICAL-AUDIT-2026-10-08.md) · [Historical September content audit](docs/CONTENT-AUDIT-2026-09-07.md)
+- **Learning & Cases:** [Complete learning experience, verification and rollback](docs/COMPLETE-LEARNING-EXPERIENCE-2026-09-10.md) · [Student UX implementation and verification](docs/STUDENT-UX-IMPLEMENTATION-2026-09-07.md)
+- **ECG Curriculum & Explorer:** [ECG Explorer](docs/ECG-EXPLORER.md) (69 teaching examples and 187 guided findings on pink ECG paper) · [ECG section technical architecture & caveats](docs/ECG-SECTION.md) · [9 September waveform accuracy review](docs/ECG-ACCURACY-2026-09-09.md) · [Single selection marker and consolidated viewer](docs/ECG-CONTROLS-2026-09-09.md) · [27-figure interactive audit](docs/ECG-INTERACTIVITY-2026-09-07.md) · [Historical 5 September ECG audit](docs/ECG-AUDIT-2026-09-05.md)
+- **Release & Hosting Verification:** [10 September release audit](docs/RELEASE-VERIFICATION-2026-09-10.md) · [Deployment verification](docs/DEPLOYMENT-VERIFICATION-2026-09-10.md)
 
 ## Hostinger deployment
 
@@ -54,7 +44,7 @@ See Cloudflare's official [static HTML settings](https://developers.cloudflare.c
 
 ## Release and offline updates
 
-The current asset token is `20261016-discovery-v47`; `CACHE_VERSION` is `v245` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
+The current asset token is `20261022-content-v48`; `CACHE_VERSION` is `v246` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
 
 The worker precaches the canonical `./` shell because Pages redirects `/index.html` to `/`. Direct hash routes and offline `/index.html` requests fall back to that shell. Required asset failure or an HTML fallback returned instead of required JavaScript/CSS prevents a new worker from activating; optional icon failure does not prevent core offline use. A new worker claims the app and notifies users to refresh. The worker handles only this app's entry points and shipped asset paths, including at the domain root. New cache names encode the exact installation path, preserving case and punctuation. Cleanup touches only that exact namespace; it does not clear saved progress or other apps' caches. Ambiguous legacy cache names are intentionally retained during this one-time naming change.
 
@@ -74,14 +64,12 @@ Do not change the installation origin/path when replacing an existing Hostinger 
 
 Run `node --test tests/*.test.js`. Deployment tests check local references, PNG dimensions, release-token consistency, header parity and worker offline/install behavior. The rule matcher is a local model, not Cloudflare’s production parser. Serve `dev/explorer.html` locally for ECG interaction checks. The older `dev/audit.html` uses `new Function` and is blocked by the production CSP; do not weaken CSP to run it. See [deployment verification](docs/DEPLOYMENT-VERIFICATION-2026-09-10.md) for results and manual checks.
 
-`dev/style-snapshot.js` captures the computed style of **every** element in six views (phone and desktop, home / presentation / ECG / Explorer / shift) and can diff a refactor against a baseline, exiting non-zero on any change. Arrays are normalised, because `===` on two equal arrays is always false. It is how the module and deferral work below was proven inert, and it is the tool to use before touching `!important` in `app.css`.
+`dev/style-snapshot.js` captures the computed style of **every** element in six views (phone and desktop, home / presentation / ECG / Explorer / shift) and can diff a refactor against a baseline, exiting non-zero on any change. Arrays are normalized, because `===` on two equal arrays is always false. It is how the module and deferral work below was proven inert, and it is the tool to use before touching `!important` in `app.css`.
 
 The runtime scripts are ES modules, so they are fetched in parallel and no longer block first paint, and the 232KB recorded-ECG library is loaded on demand rather than at startup while staying in the worker precache for offline use.
 
 `tests/style-audit.test.js` renders the real app in a phone viewport and asserts computed styles, because source-level tests cannot see what the cascade resolves to — that is how the printable step rail and the collapsed severity popup were found. It drives Chrome over `--remote-debugging-pipe` so it needs no dependency, and skips itself when no Chrome build is present. `tests/style-hygiene.test.js` keeps the stylesheet's unused-class count from growing; the layer order and z-index scale are documented at the top of `assets/app.css`, which is append-only and therefore order-dependent.
 
-The latest seven-area learning and UI review, recorded-ECG attribution, verification scope and reversible source patch are documented in [UI/UX completion](docs/UI-UX-COMPLETION-2026-09-10.md).
+## Clinical content audit
 
-## Clinical content audit — 8 October 2026
-
-See [the clinical audit](docs/CLINICAL-AUDIT-2026-10-08.md) for the reviewed inventory, corrections, primary guidance and verification limits. Current asset release: `20261008-the-em-pocket-v35`; installation-scoped service-worker cache: `v230`. This is educational content with selected evidence checks, not independent clinical certification.
+See [the clinical audit](docs/CLINICAL-AUDIT-2026-10-08.md) for the reviewed inventory, corrections, primary guidance and verification limits. Current asset release: `20261022-content-v48`; installation-scoped service-worker cache: `v246`. This is educational content with selected evidence checks, not independent clinical certification.

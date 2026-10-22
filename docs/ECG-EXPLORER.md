@@ -1,4 +1,4 @@
-> Current waveform review: [9 September accuracy update](ECG-ACCURACY-2026-09-09.md) — 47 examples, 143 findings, nine calibrated replacements. Counts and limitations below describe the earlier snapshot.
+> Historical waveform review: [9 September accuracy update](ECG-ACCURACY-2026-09-09.md) — 47 examples, 143 findings, nine calibrated replacements. The current Explorer has 69 examples and 187 findings; counts and limitations below describe the earlier snapshot.
 
 # ECG Explorer — 7 September 2026
 

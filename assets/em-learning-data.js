@@ -156,8 +156,8 @@ window.EM_LEARNING_DATA = {
           "options": [
             {
               "id": "a",
-              "text": "Assess and treat immediate thoracic threats during resuscitation.",
-              "why": "This combination warrants urgent assessment for tension pneumothorax and other life threats.",
+              "text": "Assess for tension pneumothorax and treat immediate thoracic life threats.",
+              "why": "Hypotension, respiratory distress and unilateral reduced breath sounds after chest trauma require immediate assessment for tension pneumothorax.",
               "correct": true
             },
             {
@@ -180,8 +180,8 @@ window.EM_LEARNING_DATA = {
           "options": [
             {
               "id": "a",
-              "text": "Arrange immediate decompression by a trained clinician without waiting for CT.",
-              "why": "Severe compromise with suspected tension physiology requires treatment before imaging.",
+              "text": "Perform immediate chest decompression (needle or finger thoracostomy) without waiting for CT.",
+              "why": "Severe compromise with suspected tension physiology requires pleural decompression before imaging.",
               "correct": true
             },
             {
@@ -417,8 +417,8 @@ window.EM_LEARNING_DATA = {
           "options": [
             {
               "id": "a",
-              "text": "Support breathing and give an opioid antagonist according to the local pathway.",
-              "why": "Respiratory depression is the immediate concern; antidote treatment accompanies support.",
+              "text": "Support airway and ventilation (bag-mask if needed) and give titrated naloxone per local protocol.",
+              "why": "Respiratory depression is the immediate life threat; ventilatory support accompanies titrated opioid reversal.",
               "correct": true
             },
             {

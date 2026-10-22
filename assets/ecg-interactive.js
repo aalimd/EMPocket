@@ -135,7 +135,7 @@
   if (lib['rate-calibration']) {
     var calibration = lib['rate-calibration'];
     calibration.figureLabel = 'Calibrated teaching diagram';
-    calibration.caption = 'Synthetic lead II at 25 mm/s and 10 mm/mV. Grid and tracing share the same scale; screen millimetres vary with zoom.';
+    calibration.caption = 'Synthetic lead II at 25 mm/s and 10 mm/mV. Grid and tracing share the same scale; screen millimeters vary with zoom.';
     // Preserve the independently checked calibration path exactly.
     calibration.svg = calibration.svg.replace(/(<svg[^>]*>)/, '$1' + E.renderPaperGrid(640, 320).replace(/ecgEngMinor/g, 'calMinor').replace(/ecgEngMajor/g, 'calMajor'));
   }
@@ -403,7 +403,7 @@
   "tca-toxicity": [
     "Find the final positive R after the negative QRS in aVR.",
     "Can you count boxes on this drawing to determine TCA seizure risk?",
-    "No. It is an uncalibrated shape illustration. Measure QRS and terminal R on the actual ECG, then assess exposure, perfusion and the poison-centre protocol.",
+    "No. It is an uncalibrated shape illustration. Measure QRS and terminal R on the actual ECG, then assess exposure, perfusion and the poison-center protocol.",
     0
   ],
   "wpw": [
