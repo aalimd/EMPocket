@@ -70,6 +70,23 @@ test('one release token covers shell, precache, manifest and service-worker regi
  assert.ok(!fs.existsSync(path.join(root,'_worker.js')));assert.ok(!fs.existsSync(path.join(root,'functions')));
 });
 
+test('crawler policy is a real file and the custom 404 stays inside this installation',()=>{
+ const robots=read('robots.txt'),notFound=read('404.html');
+ /* robots.txt must be a valid, non-blocking policy: without it the SPA host
+    served the app shell as text/html for /robots.txt and crawlers bailed out. */
+ assert.match(robots,/^User-agent:\s*\*/m);
+ assert.match(robots,/^Allow:\s*\/\s*$/m);
+ assert.doesNotMatch(robots,/^Disallow:\s*\/\s*$/m);
+ assert.doesNotMatch(robots,/^\s*Sitemap:\s*\/\//im); // an absolute URL would be wrong on another host
+ assert.deepEqual(headers('/robots.txt')['Cache-Control'],['public, max-age=3600']);
+ assert.match(apache,/FilesMatch "\\\.txt\$"/);
+ /* The error page is self-contained and every link stays relative, so it also
+    works when the app is mounted under a subdirectory rather than at the root. */
+ for(const m of notFound.matchAll(/(?:src|href)="([^"]+)"/g))assert.ok(!/^(?:https?:|\/|mailto:)/.test(m[1]),m[1]);
+ assert.match(notFound,/href="\.\/"/);
+ assert.doesNotMatch(notFound,/<script/i);
+});
+
 test('every imported CSS module and font resolves locally with the same release and offline coverage',()=>{
  const {loader,modules}=require('./helpers/styles');
  const release=html.match(/assets\/app\.css\?v=([^" ]+)/)[1];

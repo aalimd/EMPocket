@@ -19,7 +19,7 @@ This is a self-contained static PWA for emergency medicine cardinal presentation
 
 ## Cloudflare Pages deployment
 
-Use the same static runtime files. `_headers` supplies Pages response headers; Apache uses `.htaccess`. Neither configuration file executes application code. No `_redirects`, Wrangler configuration, Pages Functions, Worker, database, dependencies or environment variables are needed. Hash fragments are handled by the app and are not sent to the server.
+Use the same static runtime files. `_headers` supplies Pages response headers; Apache uses `.htaccess`. Neither configuration file executes application code. No `_redirects`, Wrangler configuration, Pages Functions, Worker, database, dependencies or environment variables are needed. Hash fragments are handled by the app and are not sent to the server. `robots.txt` gives crawlers a real policy, and `404.html` is the custom not-found page: with it present an unknown path answers a genuine `404` instead of the app shell with `200`.
 
 Recommended Git integration settings (repository root contains `index.html`):
 
@@ -32,7 +32,7 @@ Recommended Git integration settings (repository root contains `index.html`):
 | Build output directory | `.` |
 | Environment variables / bindings | None |
 
-For a completely build-free upload, use **Pages Direct Upload** with a folder containing `index.html`, `sw.js`, `manifest.json`, `_headers`, `.htaccess` and the full `assets/` directory. Exclude `.git/`, `dev/`, `tests/`, `docs/` and local/editor files. Keep `index.html` at the upload root, not inside another containing directory. The same runtime folder can be uploaded to Hostinger. Do not upload the separate EM-P paid application.
+For a completely build-free upload, use **Pages Direct Upload** with a folder containing `index.html`, `sw.js`, `manifest.json`, `robots.txt`, `404.html`, `_headers`, `.htaccess` and the full `assets/` directory. Exclude `.git/`, `dev/`, `tests/`, `docs/` and local/editor files. Keep `index.html` at the upload root, not inside another containing directory. The same runtime folder can be uploaded to Hostinger. Do not upload the separate EM-P paid application.
 
 Git integration with output `.` can also publish tracked development/tests/documentation files; they are not runtime dependencies. Use the runtime-only Direct Upload folder when those files should stay unpublished. No build-time filtering system has been added.
 
@@ -44,7 +44,7 @@ See Cloudflare's official [static HTML settings](https://developers.cloudflare.c
 
 ## Release and offline updates
 
-The current asset token is `20261022-content-v48`; `CACHE_VERSION` is `v246` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
+The current asset token is `20261101-bedside-v61`; `CACHE_VERSION` is `v260` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
 
 The worker precaches the canonical `./` shell because Pages redirects `/index.html` to `/`. Direct hash routes and offline `/index.html` requests fall back to that shell. Required asset failure or an HTML fallback returned instead of required JavaScript/CSS prevents a new worker from activating; optional icon failure does not prevent core offline use. A new worker claims the app and notifies users to refresh. The worker handles only this app's entry points and shipped asset paths, including at the domain root. New cache names encode the exact installation path, preserving case and punctuation. Cleanup touches only that exact namespace; it does not clear saved progress or other apps' caches. Ambiguous legacy cache names are intentionally retained during this one-time naming change.
 

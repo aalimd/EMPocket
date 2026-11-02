@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#f6f8f7">
+<meta name="robots" content="noindex">
+<title>Page not found — The EM Pocket</title>
+<!-- Self-contained on purpose: no versioned assets, no inline script, and every
+     link relative, so this page works at the site root and under a subdirectory. -->
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 32px;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #f6f8f7; color: #101c17;
+  }
+  .card {
+    width: min(560px, 100%); background: #ffffff; border: 1px solid #d7e0db;
+    border-radius: 20px; padding: 32px 28px; box-shadow: 0 10px 30px rgba(15, 40, 30, .08);
+  }
+  .badge {
+    display: inline-block; font-size: .75rem; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: #0f5132; background: #d8f3e3; border-radius: 999px; padding: 4px 10px;
+  }
+  h1 { font-size: 1.5rem; margin: 14px 0 8px; }
+  p { margin: 0 0 20px; line-height: 1.55; color: #3b4a44; }
+  a.button {
+    display: inline-block; text-decoration: none; font-weight: 700; color: #ffffff;
+    background: #0f5132; border-radius: 12px; padding: 12px 18px;
+  }
+  a.button:focus-visible { outline: 3px solid #0f5132; outline-offset: 3px; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #0b1310; color: #e8f1ec; }
+    .card { background: #12201a; border-color: #24352d; box-shadow: none; }
+    .badge { color: #8fe3b8; background: #123024; }
+    p { color: #aec0b7; }
+    a.button { background: #1f8f5f; }
+  }
+</style>
+</head>
+<body>
+<main class="card">
+  <span class="badge">404</span>
+  <h1>That page doesn&rsquo;t exist</h1>
+  <p>The address you opened isn&rsquo;t part of The EM Pocket. Every presentation, learning module and tool lives inside the app, reached from the library.</p>
+  <p><a class="button" href="./">Open The EM Pocket</a></p>
+</main>
+</body>
+</html>

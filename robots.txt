@@ -1,0 +1,13 @@
+# The EM Pocket — free emergency medicine reference.
+#
+# A static single-page app: every view (library, quick actions, ECG, learning)
+# is a client-side hash route on one document, so there are no separate paths
+# to crawl. This file exists so crawlers get a real, parseable policy instead
+# of the app shell, and so nothing here blocks the reference.
+#
+# No Sitemap directive: the app serves from more than one host and can be
+# mounted under a subdirectory, so an absolute sitemap URL would be wrong
+# somewhere. The single canonical entry point is the site root.
+
+User-agent: *
+Allow: /

@@ -58,3 +58,8 @@
 
 /*.ico
   Cache-Control: public, max-age=604800
+
+# Crawler policy: a small, rarely changing file kept off the revalidate-every-
+# request path. The custom 404 page is covered by the /*.html rule above.
+/robots.txt
+  Cache-Control: public, max-age=3600
