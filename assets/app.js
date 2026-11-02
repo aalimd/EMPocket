@@ -47,8 +47,9 @@
         { title: 'Neurologic', ids: ['headache', 'dizziness', 'ams', 'coma', 'seizures', 'weakness', 'syncope', 'diplopia', 'focal-neurologic-deficit'] },
         { title: 'Abdomen, pelvis & GU', ids: ['abdominal-pain', 'gib', 'nausea-vomiting', 'diarrhea', 'constipation', 'jaundice', 'pelvic-pain', 'vaginal-bleeding', 'scrotal-pain', 'flank-pain', 'urinary-retention', 'back-pain'] },
         { title: 'Airway, allergy, skin & pediatrics', ids: ['airway-stridor', 'anaphylaxis', 'rash', 'fever', 'pediatric-fever', 'pediatric-respiratory-distress', 'sore-throat', 'red-eye', 'joint-pain'] },
-        { title: 'Toxic, metabolic & environmental', ids: ['overdose', 'suicidal', 'hyperglycemia', 'heat-cold'] },
-        { title: 'Trauma, pregnancy & older adults', ids: ['multiple-trauma', 'pregnancy-emergency', 'falls-geriatric-trauma'] }
+        { title: 'Toxic, metabolic & environmental', ids: ['overdose', 'suicidal', 'hyperglycemia', 'heat-cold', 'electrolytes', 'thyroid-storm', 'alcohol-withdrawal', 'burns'] },
+        { title: 'Trauma, pregnancy & older adults', ids: ['multiple-trauma', 'pregnancy-emergency', 'falls-geriatric-trauma', 'head-injury'] },
+        { title: 'Resuscitation & acute medicine', ids: ['cardiac-arrest', 'hypertensive-emergency'] }
     ];
     const RELATED = {
         'chest-pain': ['dyspnea', 'syncope', 'shock', 'nausea-vomiting', 'limb-ischemia'],
@@ -95,7 +96,14 @@
         'multiple-trauma': ['shock', 'coma', 'back-pain', 'limb-ischemia'],
         'falls-geriatric-trauma': ['syncope', 'weakness', 'coma', 'multiple-trauma'],
         'pregnancy-emergency': ['pelvic-pain', 'vaginal-bleeding', 'dyspnea', 'abdominal-pain'],
-        'pediatric-respiratory-distress': ['dyspnea', 'airway-stridor', 'pediatric-fever', 'anaphylaxis']
+        'pediatric-respiratory-distress': ['dyspnea', 'airway-stridor', 'pediatric-fever', 'anaphylaxis'],
+        'cardiac-arrest': ['chest-pain', 'shock', 'dyspnea', 'electrolytes', 'palpitations'],
+        'electrolytes': ['overdose', 'hyperglycemia', 'seizures', 'weakness', 'cardiac-arrest'],
+        'head-injury': ['multiple-trauma', 'coma', 'ams', 'seizures', 'weakness'],
+        'hypertensive-emergency': ['headache', 'chest-pain', 'focal-neurologic-deficit', 'dyspnea', 'pregnancy-emergency'],
+        'burns': ['multiple-trauma', 'airway-stridor', 'shock', 'overdose', 'pediatric-fever'],
+        'alcohol-withdrawal': ['seizures', 'ams', 'overdose', 'suicidal', 'head-injury'],
+        'thyroid-storm': ['palpitations', 'fever', 'ams', 'cardiac-arrest', 'heat-cold']
     };
 
     const stage = document.getElementById('stage');
@@ -147,6 +155,7 @@
         'derm': '<g transform="translate(0 24) scale(.025)" fill="currentColor" stroke="none"><path d="M120-120q-17 0-28.5-11.5T80-160v-320q0-33 23.5-56.5T160-560h160q8 0 15.5 3t13 8.5q5.5 5.5 8.5 13t3 15.5v40q0 50 35 85t85 35q50 0 85-35t35-85v-40q0-8 3-15.5t8.5-13q5.5-5.5 13-8.5t15.5-3h160q33 0 56.5 23.5T880-480v320q0 17-11.5 28.5T840-120H120Zm40-80h640v-280H680q0 83-58.5 141.5T480-280q-83 0-141.5-58.5T280-480H160v280Zm320-240q-17 0-28.5-11.5T440-480q0-109 25-215t109-175q13-11 29-9.5t27 14.5q11 13 9.5 29T625-809q-70 59-87.5 148T520-480q0 17-11.5 28.5T480-440ZM230-340q13 0 21.5-8.5T260-370q0-13-8.5-21.5T230-400q-13 0-21.5 8.5T200-370q0 13 8.5 21.5T230-340Zm40 100q13 0 21.5-8.5T300-270q0-13-8.5-21.5T270-300q-13 0-21.5 8.5T240-270q0 13 8.5 21.5T270-240Zm460-100q13 0 21.5-8.5T760-370q0-13-8.5-21.5T730-400q-13 0-21.5 8.5T700-370q0 13 8.5 21.5T730-340ZM160-200h640-640Z"/></g>',
         'peds': '<g transform="translate(0 24) scale(.025)" fill="currentColor" stroke="none"><path d="M580-490q-21 0-35.5-14.5T530-540q0-21 14.5-35.5T580-590q21 0 35.5 14.5T630-540q0 21-14.5 35.5T580-490Zm-200 0q-21 0-35.5-14.5T330-540q0-21 14.5-35.5T380-590q21 0 35.5 14.5T430-540q0 21-14.5 35.5T380-490Zm100 210q-60 0-108.5-33T300-400h360q-23 54-71.5 87T480-280Zm0 160q-75 0-140.5-28.5t-114-77q-48.5-48.5-77-114T120-480q0-75 28.5-140.5t77-114q48.5-48.5 114-77T480-840q75 0 140.5 28.5t114 77q48.5 48.5 77 114T840-480q0 75-28.5 140.5t-77 114q-48.5 48.5-114 77T480-120Zm0-80q116 0 198-82t82-198q0-116-82-198t-198-82h-12q-6 0-12 2-6 6-8 13t-2 15q0 21 14.5 35.5T496-680q9 0 16.5-3t15.5-3q12 0 20 9t8 21q0 23-21.5 29.5T496-620q-45 0-77.5-32.5T386-730v-6q0-3 1-8-83 30-135 101t-52 163q0 116 82 198t198 82Zm0-280Z"/></g>',
         'toxic': '<g transform="translate(0 24) scale(.025)" fill="currentColor" stroke="none"><path d="M345-120q-94 0-159.5-65.5T120-345q0-45 17-86t49-73l270-270q32-32 73-49t86-17q94 0 159.5 65.5T840-615q0 45-17 86t-49 73L504-186q-32 32-73 49t-86 17Zm266-286 107-106q20-20 31-47t11-56q0-60-42.5-102.5T615-760q-29 0-56 11t-47 31L406-611l205 205ZM345-200q29 0 56-11t47-31l106-107-205-205-107 106q-20 20-31 47t-11 56q0 60 42.5 102.5T345-200Z"/></g>',
+        'doses': '<g transform="translate(0 24) scale(.025)" fill="currentColor" stroke="none"><path d="M736-622 622-736q-11-11-11-28t11-28q11-11 28-11t28 11l114 114q11 11 11 28t-11 28q-11 11-28 11t-28-11Zm-56 226L510-566 394-450l170 170 116-116ZM288-176 176-288q-11-11-11-28t11-28q11-11 28-11t28 11l112 112 56-56-56-56q-11-11-11-28t11-28q11-11 28-11t28 11l56 56 56-56-56-56q-11-11-11-28t11-28q11-11 28-11t28 11l56 56 56-56-56-56q-11-11-11-28t11-28q11-11 28-11t28 11l56 56 116-116q23-23 28.5-55t-9.5-59q-15-27-42-42t-59-9.5T736-794l-116 116 170 170q11 11 11 28t-11 28q-11 11-28 11t-28-11L564-622 448-506 278-676q-30-30-77.5-30T123-676q-30 30-30 77.5t30 77.5l170 170-124 124q-39 39-39 94t39 94q39 39 94 39t94-39l124-124-170-170q-11-11-11-28t11-28q11-11 28-11t28 11l170 170 116-116Z"/></g>',
         'psych': '<g transform="translate(0 24) scale(.025)" fill="currentColor" stroke="none"><path d="m434-410 4 32q1 8 6.5 13t13.5 5h44q8 0 13.5-5t6.5-13l4-32q8-3 14.5-7t11.5-9l30 13q7 3 14 1t11-9l22-38q4-7 2.5-14t-7.5-12l-26-19q2-8 2-16t-2-16l26-19q6-5 7.5-12t-2.5-14l-22-38q-4-7-11-9t-14 1l-30 13q-5-5-11.5-9t-14.5-7l-4-32q-1-8-6.5-13t-13.5-5h-44q-8 0-13.5 5t-6.5 13l-4 32q-8 3-14.5 7t-11.5 9l-30-13q-7-3-14-1t-11 9l-22 38q-4 7-2.5 14t7.5 12l26 19q-2 8-2 16t2 16l-26 19q-6 5-7.5 12t2.5 14l22 38q4 7 11 9t14-1l30-13q5 5 11.5 9t14.5 7Zm46-50q-25 0-42.5-17.5T420-520q0-25 17.5-42.5T480-580q25 0 42.5 17.5T540-520q0 25-17.5 42.5T480-460ZM240-252q-57-52-88.5-121.5T120-520q0-150 105-255t255-105q125 0 221.5 73.5T827-615l52 205q5 19-7 34.5T840-360h-80v120q0 33-23.5 56.5T680-160h-80v40q0 17-11.5 28.5T560-80q-17 0-28.5-11.5T520-120v-80q0-17 11.5-28.5T560-240h120v-160q0-17 11.5-28.5T720-440h68l-38-155q-23-91-98-148t-172-57q-116 0-198 81t-82 197q0 60 24.5 114t69.5 96l26 24v168q0 17-11.5 28.5T280-80q-17 0-28.5-11.5T240-120v-132Zm254-188Z"/></g>',
         'endocrine': '<g transform="translate(0 24) scale(.025)" fill="currentColor" stroke="none"><path d="M400-280q17 0 28.5-11.5T440-320q0-45-21.5-82.5T360-462v142q0 17 11.5 28.5T400-280Zm160 0q17 0 28.5-11.5T600-320v-142q-37 22-58.5 59.5T520-320q0 17 11.5 28.5T560-280Zm-400-46v-418q-18-20-33.5-42T98-833q-7-14 0-27.5t22-19.5q15-6 30-1t23 19q47 84 128.5 133T480-680q95 0 174.5-47T782-854q10-16 25.5-24.5T840-880q16 7 21 23t-3 31q-12 23-26.5 43T800-744v418q0 35 16.5 64.5T862-213q13 8 18 23t0 30q-5 16-18.5 23.5t-27.5.5q-53-28-83.5-78.5T720-326v-348q-53 35-113.5 54.5T480-600q-66 0-127-19.5T240-674v348q0 61-31 111.5T125-136q-14 7-27-.5T80-160q-5-15 0-30t18-23q29-18 45.5-48t16.5-65Zm240 126q-50 0-85-35t-35-85v-213q0-15 11.5-24t25.5-5l17 4q46 11 83.5 38.5T480-454q25-38 62.5-65.5T626-558l17-4q14-4 25.5 5t11.5 24v213q0 50-35 85t-85 35q-23 0-43.5-8.5T480-231q-16 14-36.5 22.5T400-200Zm160-120Zm-160 0Z"/></g>',
         'environ': '<g transform="translate(0 24) scale(.025)" fill="currentColor" stroke="none"><path d="M480-80q-83 0-141.5-58.5T280-280q0-48 21-89.5t59-70.5v-320q0-50 35-85t85-35q50 0 85 35t35 85v320q38 29 59 70.5t21 89.5q0 83-58.5 141.5T480-80Zm-40-440h80v-40h-40v-40h40v-80h-40v-40h40v-40q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v240Z"/></g>',
@@ -256,6 +265,8 @@
         'pediatric-fever': 'peds', 'pediatric-respiratory-distress': 'peds',
         'overdose': 'toxic', 'suicidal': 'psych', 'hyperglycemia': 'endocrine', 'heat-cold': 'environ',
         'multiple-trauma': 'trauma', 'falls-geriatric-trauma': 'trauma', 'pregnancy-emergency': 'obgyn',
+        'cardiac-arrest': 'critical', 'electrolytes': 'endocrine', 'head-injury': 'neuro',
+        'hypertensive-emergency': 'cardio', 'burns': 'trauma', 'alcohol-withdrawal': 'toxic', 'thyroid-storm': 'endocrine',
         'ecg': 'ecg', 'ecg-explorer': 'ecg', 'learn': 'learn', 'study': 'learn'
     };
     function catFor(id) {
@@ -316,6 +327,7 @@
         if (safeKey === 'dont-miss' || safeKey === 'red-flags' || safeKey === 'first-minutes' || safeKey === 'ecg-red-flags') return 'sec-badge-critical';
         if (safeKey.startsWith('ecg-step-') || safeKey === 'ecg-patterns') return 'sec-badge-ecg';
         if (safeKey === 'how-to-think' || safeKey === 'pearls-pitfalls') return 'sec-badge-pearl';
+        if (safeKey === 'doses') return 'sec-badge-critical';
         if (safeKey === 'references') return 'sec-badge-ref';
         return 'sec-badge-' + safeKey;
     }
@@ -865,6 +877,55 @@
         return DATA.filter(cp => cpMatchesFilter(cp) && patientMatches(cp) && (!group || group.ids.includes(cp.id)));
     }
 
+    /* ── Bedside action cards ─────────────────────────────────────────────
+
+       The few high-alert interventions a clinician reaches for before any
+       scrolling. Every dose string is authored content the app already ships:
+       the Quick reference medication summaries in this file, or a Doses
+       section written in data.js. `src` names the screen that carries the
+       quoted text and `href` opens that screen, so a row can never state a
+       dose the app does not already carry — the drift test compares the two.
+       Most of these doses sit inside one of this screen collapsed reference
+       blocks, so `owner` names that block and the row reveals it in place
+       instead of only changing the route. Route colour is a safety cue, so
+       `cls` is explicit rather than inferred. */
+    const BEDSIDE_CARDS = [
+        { name: 'Epinephrine — anaphylaxis', route: 'IM thigh', cls: 'im', dose: '0.3–0.5 mg IM',
+          href: '#shift', src: 'shift', owner: 'med-anaphylaxis-criteria' },
+        { name: 'Norepinephrine — shock', route: 'Titrated infusion', cls: 'infusion', dose: '0.05–0.5 mcg/kg/min IV',
+          href: '#shift', src: 'shift', owner: 'med-shock' },
+        { name: 'Rapid sequence intubation', route: 'IV push', cls: 'push', dose: 'Ketamine 1–2 mg/kg IV',
+          href: '#shift', src: 'shift', owner: 'med-rsi' },
+        { name: 'Severe hyperkalaemia', route: 'IV push', cls: 'push', dose: 'IV calcium gluconate 10% 10–30 mL',
+          href: '#shift', src: 'shift', owner: 'med-antidote' },
+        { name: 'Aortic dissection — impulse control', route: 'HR first, then BP', cls: 'infusion', dose: 'IV labetalol 10–20 mg bolus',
+          href: '#chest-pain', src: 'chest-pain' },
+        { name: 'Status epilepticus — benzodiazepine', route: 'IV push', cls: 'push', dose: 'IV lorazepam 0.1 mg/kg (max 4 mg/dose, may repeat once)',
+          href: '#shift', src: 'shift', owner: 'med-status-epilepticus' }
+    ];
+
+    const BEDSIDE_CHIPS = [
+        ['Weight-based doses', '#calc'],
+        ['Cardiac arrest cycle', '#cardiac-arrest'],
+        ['ECG guide', '#ecg'],
+        ['Quick reference', '#shift']
+    ];
+
+    function bedsideCardsHtml() {
+        return '<section class="settings-section bedside-section" aria-labelledby="bedsideCardsTitle">' +
+            '<h2 id="bedsideCardsTitle">Critical action cards</h2>' +
+            '<p>High-alert interventions, each showing a dose this app already documents. Open a row to reveal the reference that carries it.</p>' +
+            '<div class="chip-row bedside-chips">' +
+            BEDSIDE_CHIPS.map(c => '<a class="chip" href="' + c[1] + '">' + esc(c[0]) + '</a>').join('') +
+            '</div>' +
+            '<div class="bedside-list">' + BEDSIDE_CARDS.map(c =>
+                '<a class="bedside-row ' + c.cls + '" href="' + c.href + '" data-src="' + c.src + '"' + (c.owner ? ' data-owner="' + c.owner + '"' : '') + '>' +
+                '<span class="bedside-row-main"><span class="bedside-row-name">' + esc(c.name) + '</span>' +
+                '<span class="bedside-dose">' + esc(c.dose) + '</span></span>' +
+                '<span class="route-badge ' + c.cls + '">' + esc(c.route) + '</span></a>').join('') +
+            '</div></section>';
+    }
+
     function renderHome(preservePosition) {
         const position = window.scrollY;
         recordBackContext('library');
@@ -1033,6 +1094,7 @@
             '<div class="shift-head-actions">' +
             '<button type="button" class="handover-btn" id="copyHandoverBtn" title="Copy educational reference"><span class="btn-icon btn-emoji" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['references'], 'btn-svg') + '</span><span>Copy reference</span></button>' +
             '<button type="button" class="review-btn" data-full-id="' + cp.id + '"><span class="btn-icon btn-emoji" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['generic'], 'btn-svg') + '</span><span>Open full pathway</span></button>' +
+            '<a class="review-btn" href="#calc"><span>Calculators</span></a>' +
             '<a class="review-btn" href="' + esc(practice.href) + '"><span>' + esc(practice.label) + '</span></a>' +
             '</div></div>' +
             '<div class="shift-warning"><span class="ios-icon-badge ios-emoji-badge warning-badge" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['red-flags'], 'warning-svg') + '</span><span>Educational reference. All approach, red-flag, workup, differential and disposition items from this presentation are shown. Use the full pathway for history, examination and sources.</span></div>' +
@@ -1128,16 +1190,33 @@
                 '<details><summary>PERC Rule &amp; PE Pretest Assessment (Dyspnea / Chest Pain)</summary><ul><li><strong>Low pretest probability (&lt;15%) — PERC (all 8 required to rule out PE without D-dimer):</strong> Age &lt;50 yr, HR &lt;100/min, room-air SpO₂ ≥95%, no unilateral leg swelling, no hemoptysis, no surgery/trauma within 4 weeks, no prior DVT/PE, and no exogenous estrogen.</li><li><strong>PERC-positive or moderate pretest:</strong> Use age-adjusted D-dimer (age × 10 ng/mL FEU if &gt;50 yr) or YEARS criteria before CTPA.</li><li><strong>High pretest probability:</strong> Proceed directly to CTPA; do not use D-dimer to exclude PE.</li></ul><p><a href="#shift~dyspnea">Open Acute Dyspnea quick sheet →</a></p></details>' +
                 '<details><summary>NEXUS &amp; Canadian C-Spine Clearance (Blunt Trauma)</summary><ul><li><strong>NEXUS low-risk criteria (all 5 required):</strong> No posterior midline cervical tenderness, no intoxication, normal alertness (GCS 15), no focal neurologic deficit, and no painful distracting injury.</li><li><strong>Canadian C-Spine Rule (alert, stable patients):</strong> Any high-risk factor (age ≥65 yr, dangerous mechanism, paresthesias) mandates imaging; if absent and a low-risk factor allows, test active 45° left/right neck rotation.</li></ul><p><a href="#shift~multiple-trauma">Open Multiple Trauma quick sheet →</a></p></details>' +
                 '<details><summary>PECARN Pediatric Head Trauma Rule (Head Injury)</summary><ul><li><strong>Age &lt;2 years:</strong> GCS &lt;15, altered mental status, or palpable skull fracture → CT head; non-frontal scalp hematoma, LOC ≥5 s, severe mechanism, or not acting normally per parent → observation vs. CT.</li><li><strong>Age ≥2 years:</strong> GCS &lt;15, altered mental status, or basilar skull fracture signs → CT head; any LOC, vomiting, severe mechanism, or severe headache → observation vs. CT.</li></ul><p><a href="#shift~headache">Open Headache quick sheet →</a></p></details>' +
-                '<details><summary>Anaphylaxis Criteria &amp; First-Line IM Epinephrine</summary><ul><li><strong>Recognize:</strong> Acute skin/mucosal involvement plus respiratory compromise or hypotension/end-organ hypoperfusion, or rapid multi-system involvement after a likely allergen.</li><li><strong>First-line IM epinephrine (1 mg/mL, mid-anterolateral thigh):</strong> Adults ≥50 kg: 0.3–0.5 mg IM (max 0.5 mg); children: 0.01 mg/kg IM (0.15 mg for 7.5–25 kg; 0.3 mg for ≥25–30 kg), repeated every 5–15 min as needed.</li><li><strong>Resuscitation:</strong> Supine position with leg elevation, oxygen, and IV crystalloid bolus (20 mL/kg). Antihistamines and steroids never replace epinephrine.</li></ul><p><a href="#shift~anaphylaxis">Open Anaphylaxis quick sheet →</a></p></details>' +
-                '<details><summary>Status Epilepticus Timed Escalation (0–40 min)</summary><ul><li><strong>0–5 min (Stabilize):</strong> Airway protection, oxygen, immediate capillary glucose, IV/IO access.</li><li><strong>5–20 min (First-line benzodiazepine):</strong> IM midazolam 10 mg (&gt;40 kg) or 5 mg (13–40 kg; 0.2 mg/kg, max 10 mg) if no IV; or IV lorazepam 0.1 mg/kg (max 4 mg/dose, may repeat once).</li><li><strong>20–40 min (Second-line ESETT — equal efficacy):</strong> IV levetiracetam 60 mg/kg (max 4500 mg), fosphenytoin 20 mg PE/kg (max 1500 mg PE), or valproate 40 mg/kg (max 3000 mg; avoid in pregnancy/hepatic disease).</li></ul><p><a href="#shift~seizures">Open Seizures quick sheet →</a></p></details>' +
+                '<details id="med-anaphylaxis-criteria"><summary>Anaphylaxis Criteria &amp; First-Line IM Epinephrine</summary><ul><li><strong>Recognize:</strong> Acute skin/mucosal involvement plus respiratory compromise or hypotension/end-organ hypoperfusion, or rapid multi-system involvement after a likely allergen.</li><li><strong>First-line IM epinephrine (1 mg/mL, mid-anterolateral thigh):</strong> Adults: 0.3–0.5 mg IM. Children — US (JTFPP): 0.01 mg/kg, max 0.3 mg (0.15 mg device for 7.5–25 kg; 0.3 mg device for ≥25 kg); UK (RCUK) age bands: 6 months–6 years 0.15 mg, 6–12 years 0.3 mg, >12 years 0.5 mg. Repeat every 5–15 min as needed.</li><li><strong>Resuscitation:</strong> Supine position with leg elevation, oxygen, and IV crystalloid bolus (20 mL/kg). Antihistamines and steroids never replace epinephrine.</li></ul><p><a href="#shift~anaphylaxis">Open Anaphylaxis quick sheet →</a></p></details>' +
+                '<details id="med-status-epilepticus"><summary>Status Epilepticus Timed Escalation (0–40 min)</summary><ul><li><strong>0–5 min (Stabilize):</strong> Airway protection, oxygen, immediate capillary glucose, IV/IO access.</li><li><strong>5–20 min (First-line benzodiazepine):</strong> IM midazolam 10 mg (&gt;40 kg) or 5 mg (13–40 kg; 0.2 mg/kg, max 10 mg) if no IV; or IV lorazepam 0.1 mg/kg (max 4 mg/dose, may repeat once).</li><li><strong>20–40 min (Second-line ESETT — equal efficacy):</strong> IV levetiracetam 60 mg/kg (max 4500 mg), fosphenytoin 20 mg PE/kg (max 1500 mg PE), or valproate 40 mg/kg (max 3000 mg; avoid in pregnancy/hepatic disease).</li></ul><p><a href="#shift~seizures">Open Seizures quick sheet →</a></p></details>' +
                 '</section>';
             const medsHtml='<section class="settings-section"><h2>Critical airway, vasoactive &amp; antidote reference</h2><p>Educational summary of high-acuity emergency medications. Verify patient weight, contraindications and local institutional protocols.</p>' +
-                '<details><summary>Rapid Sequence Intubation (RSI) Induction &amp; Paralytics</summary><ul><li><strong>Induction:</strong> Ketamine 1–2 mg/kg IV (bronchodilatory, preserves hemodynamics) or Etomidate 0.3 mg/kg IV (hemodynamically neutral; reduce to 0.15–0.2 mg/kg in shock).</li><li><strong>Paralysis:</strong> Rocuronium 1.2 mg/kg IV (no hyperkalemia risk) or Succinylcholine 1.5 mg/kg IV (avoid in hyperkalemia, burns/crush/denervation/stroke &gt;48–72 h, malignant hyperthermia, or neuromuscular disease).</li><li><strong>Before paralysis:</strong> Have push-dose/infusion vasopressor and post-intubation analgesia/sedation ready.</li></ul><p><a href="#shift~airway-stridor">Open Airway &amp; Stridor quick sheet →</a></p></details>' +
-                '<details><summary>Shock First-Line Vasopressors &amp; Inotropes</summary><ul><li><strong>Norepinephrine (0.05–0.5 mcg/kg/min IV):</strong> First-line vasopressor in septic, vasodilatory, and hypotensive cardiogenic shock (target MAP ≥65 mmHg).</li><li><strong>Epinephrine (0.05–0.5 mcg/kg/min IV):</strong> First-line for refractory anaphylactic shock, post-arrest shock, or second-line in septic/bradycardic shock.</li><li><strong>Dobutamine (2–20 mcg/kg/min IV):</strong> Inotrope for low-output cardiogenic shock or septic myocardial dysfunction once MAP is supported.</li></ul><p><a href="#shift~shock">Open Shock quick sheet →</a></p></details>' +
-                '<details><summary>High-Yield Antidotes &amp; Hyperkalemia Stabilization</summary><ul><li><strong>Acetaminophen:</strong> N-acetylcysteine (NAC) per Rumack-Matthew nomogram (acute ingestion &lt;24 h) or empirically for repeated/&gt;24 h/unknown-time ingestions with detectable APAP or elevated AST/ALT.</li><li><strong>Opioids:</strong> Naloxone 0.04–0.4 mg IV titrated to restore respiratory drive, not full agitation.</li><li><strong>TCA / Na-channel blockade:</strong> Sodium bicarbonate 1–2 mEq/kg IV bolus for QRS &gt;100 ms, ventricular arrhythmia, or hypotension (keep pH ≤7.55 and Na ≤155 mEq/L).</li><li><strong>Severe hyperkalemia with ECG changes:</strong> IV calcium gluconate 10% 10–30 mL (or calcium chloride 10% 5–10 mL via central/secure line) first, then regular insulin 10 U IV + dextrose 25–50 g, nebulized albuterol 10–20 mg, and potassium removal.</li></ul><p><a href="#shift~overdose">Open Poisoning &amp; Overdose quick sheet →</a></p></details>' +
+                '<details id="med-rsi"><summary>Rapid Sequence Intubation (RSI) Induction &amp; Paralytics</summary><ul><li><strong>Induction:</strong> Ketamine 1–2 mg/kg IV (bronchodilatory, preserves hemodynamics) or Etomidate 0.3 mg/kg IV (hemodynamically neutral; reduce to 0.15–0.2 mg/kg in shock).</li><li><strong>Paralysis:</strong> Rocuronium 1.2 mg/kg IV (no hyperkalemia risk) or Succinylcholine 1.5 mg/kg IV (avoid in hyperkalemia, burns/crush/denervation/stroke &gt;48–72 h, malignant hyperthermia, or neuromuscular disease).</li><li><strong>Before paralysis:</strong> Have push-dose/infusion vasopressor and post-intubation analgesia/sedation ready.</li></ul><p><a href="#shift~airway-stridor">Open Airway &amp; Stridor quick sheet →</a></p></details>' +
+                '<details id="med-shock"><summary>Shock First-Line Vasopressors &amp; Inotropes</summary><ul><li><strong>Norepinephrine (0.05–0.5 mcg/kg/min IV):</strong> First-line vasopressor in septic, vasodilatory, and hypotensive cardiogenic shock (target MAP ≥65 mmHg).</li><li><strong>Epinephrine (0.05–0.5 mcg/kg/min IV):</strong> First-line for refractory anaphylactic shock, post-arrest shock, or second-line in septic/bradycardic shock.</li><li><strong>Dobutamine (2–20 mcg/kg/min IV):</strong> Inotrope for low-output cardiogenic shock or septic myocardial dysfunction once MAP is supported.</li></ul><p><a href="#shift~shock">Open Shock quick sheet →</a></p></details>' +
+                '<details id="med-antidote"><summary>High-Yield Antidotes &amp; Hyperkalemia Stabilization</summary><ul><li><strong>Acetaminophen:</strong> N-acetylcysteine (NAC) per Rumack-Matthew nomogram (acute ingestion &lt;24 h) or empirically for repeated/&gt;24 h/unknown-time ingestions with detectable APAP or elevated AST/ALT.</li><li><strong>Opioids:</strong> Naloxone 0.04–0.4 mg IV titrated to restore respiratory drive, not full agitation.</li><li><strong>TCA / Na-channel blockade:</strong> Sodium bicarbonate 1–2 mEq/kg IV bolus for QRS &gt;100 ms, ventricular arrhythmia, or hypotension (keep pH ≤7.55 and Na ≤155 mEq/L).</li><li><strong>Severe hyperkalemia with ECG changes:</strong> IV calcium gluconate 10% 10–30 mL (or calcium chloride 10% 5–10 mL via central/secure line) first, then regular insulin 10 U IV + dextrose 25–50 g, nebulized albuterol 10–20 mg, and potassium removal.</li></ul><p><a href="#shift~overdose">Open Poisoning &amp; Overdose quick sheet →</a></p></details>' +
                 '</section>';
-            stage.innerHTML='<header class="design-header"><span class="study-kicker">THE EM POCKET · FOCUSED REFERENCE</span><h1>Quick</h1><p>Choose a presentation to see its approach, red flags, workup, important diagnoses and disposition together.</p></header><section class="settings-section"><label for="quickPresentation">Presentation</label><select id="quickPresentation"><option value="">Choose a presentation…</option>'+DATA.map(cp=>'<option value="'+cp.id+'">'+esc(cp.name)+'</option>').join('')+'</select><p class="clinical-safety-note">Educational reference. Read the full pathway for history, examination, supporting sources and context.</p><h2>Critical first-minutes pathways</h2><div class="design-links">'+highAcuity.map(k=>'<a class="design-action" href="#shift~'+esc(k)+'">'+esc(BY_ID[k].name)+' <span aria-hidden="true">→</span></a>').join('')+'</div></section>'+personalHtml+decisionRulesHtml+medsHtml;
-            stage.querySelector('#quickPresentation').onchange=function(){if(this.value)showShift(this.value);};window.scrollTo({top:0});return;
+            stage.innerHTML='<header class="design-header"><span class="study-kicker">THE EM POCKET · FOCUSED REFERENCE</span><h1>Quick</h1><p>Choose a presentation to see its approach, red flags, workup, important diagnoses and disposition together.</p></header>'+bedsideCardsHtml()+'<section class="settings-section"><label for="quickPresentation">Presentation</label><select id="quickPresentation"><option value="">Choose a presentation…</option>'+DATA.map(cp=>'<option value="'+cp.id+'">'+esc(cp.name)+'</option>').join('')+'</select><p class="clinical-safety-note">Educational reference. Read the full pathway for history, examination, supporting sources and context.</p><h2>Critical first-minutes pathways</h2><div class="design-links">'+highAcuity.map(k=>'<a class="design-action" href="#shift~'+esc(k)+'">'+esc(BY_ID[k].name)+' <span aria-hidden="true">→</span></a>').join('')+'</div></section>'+calculatorsHubHtml()+personalHtml+decisionRulesHtml+medsHtml;
+            stage.querySelector('#quickPresentation').onchange=function(){if(this.value)showShift(this.value);};
+            /* A bedside row whose dose lives in a collapsed reference block on
+               this same screen reveals that block instead of only re-routing to
+               the screen top. Rows that own their text elsewhere keep the plain
+               link, so keyboard and no-JS use still land on a real page. */
+            stage.querySelectorAll('.bedside-row[data-owner]').forEach(function(row){
+                row.addEventListener('click',function(event){
+                    const block=document.getElementById(row.dataset.owner);
+                    if(!block)return;
+                    if(block.tagName==='DETAILS')block.open=true;
+                    if(block.classList.contains('closed')&&block.querySelector('.sec-head'))block.querySelector('.sec-head').click();
+                    block.setAttribute('tabindex','-1');
+                    block.scrollIntoView({block:'center'});
+                    block.focus({preventScroll:true});
+                    event.preventDefault();
+                });
+            });
+            window.scrollTo({top:0});return;
         }
         const cp = BY_ID[id];
         currentId = cp.id; markActive(cp.id); syncNav('shift'); setTitle('Quick · ' + cp.name);
@@ -1167,6 +1246,72 @@
         const route = 'shift' + (fallbackId ? '~' + fallbackId : '');
         if ((location.hash || '').replace('#', '') === route) renderShift((route.split('~')[1]));
         else location.hash = route;
+    }
+
+    /* ---------- bedside calculators (shift tools) ---------- */
+    function calculatorsHubHtml() {
+        if (!window.SHIFT_TOOLS || !Array.isArray(window.SHIFT_TOOLS.scores)) return '';
+        return '<section class="settings-section"><h2>Bedside calculators</h2>' +
+            '<p>Interactive scores for the shift. Answers update as you change inputs and are never saved or sent.</p>' +
+            '<div class="design-links"><a class="design-action primary" href="#calc">Open all calculators' +
+            ' <span aria-hidden="true">→</span></a>' +
+            window.SHIFT_TOOLS.scores.map(function (s) {
+                return '<a class="design-action" href="#calc">' + esc(s.name) + '</a>';
+            }).join('') + '</div></section>';
+    }
+
+    function renderCalculators(filter) {
+        recordBackContext('calc');
+        currentId = null;
+        markActive('calc'); syncNav('shift'); setTitle('Calculators');
+        setStageContext('Bedside clinical calculators');
+        if (!window.SHIFT_TOOLS) {
+            stage.innerHTML = '<section class="study-page"><div class="study-page-head">' + backButtonHtml('data-home="1"') +
+                '<h1>Calculators unavailable</h1><p>Confirm <code>assets/shift-tools.js</code> is available, then refresh.</p></div></section>';
+            stage.querySelector('[data-home]').addEventListener('click', goBack);
+            return;
+        }
+        stage.innerHTML = '<div class="st-topline">' + backButtonHtml('data-home="1"') +
+            '<a class="st-crosslink" href="#shift">Open the quick sheets →</a></div>' +
+            '<div class="st-calc-host" data-shift-tools="calculators"></div>';
+        stage.querySelector('[data-home]').addEventListener('click', goBack);
+        window.SHIFT_TOOLS.mountCalculators(stage.querySelector('.st-calc-host'), filter || '');
+        window.scrollTo({ top: 0 });
+        stage.focus({ preventScroll: true });
+        announce('Bedside clinical calculators');
+    }
+
+    function showCalculators(filter) {
+        const route = 'calc' + (filter ? '~' + filter : '');
+        if ((location.hash || '').replace('#', '') === route) renderCalculators(filter);
+        else location.hash = route;
+    }
+
+    /* The header crisis pill mirrors the arrest timer module. It is absent from
+       the layout until the timer has been used (data-state=idle). Its visible
+       label is the fixed word "CPR" and its accessible name contains it, so the
+       control satisfies Label in Name; the ticking elapsed time deliberately
+       stays on the card, where it is a role="timer" output rather than a name
+       that would change every second. */
+    function bindCprPill() {
+        const pill = document.getElementById('cprPill');
+        const timer = window.SHIFT_TOOLS && window.SHIFT_TOOLS.timer;
+        if (!pill || !timer) return;
+        pill.addEventListener('click', function () {
+            if ((location.hash || '').replace('#', '').split('~')[0] === 'calc') {
+                const card = document.querySelector('[data-st-cpr]');
+                const go = card && card.querySelector('[data-st-cpr-toggle]');
+                if (go) { go.focus({ preventScroll: true }); card.scrollIntoView({ block: 'center' }); }
+            } else location.hash = 'calc';
+        });
+        timer.subscribe(function (snap) {
+            const state = snap.running ? 'running' : (snap.elapsedMs > 0 ? 'paused' : 'idle');
+            if (pill.dataset.state !== state) pill.dataset.state = state;
+            const label = state === 'idle'
+                ? 'CPR cycle timer — open bedside tools'
+                : 'CPR cycle timer ' + (snap.running ? 'running' : 'paused at ' + snap.elapsed) + ', cycle ' + snap.cycle + ' — open bedside tools';
+            if (pill.getAttribute('aria-label') !== label) pill.setAttribute('aria-label', label);
+        });
     }
 
     /* Marks the rail entry for whichever section currently owns the viewport.
@@ -1236,6 +1381,32 @@
     }
 
     /* ---------- presentation view ---------- */
+    /* Dose & target cards. Only rendered when a presentation ships a `doses`
+       field. Each card is a titled group of dose lines, so a resident can read
+       the number, the route and the ceiling without hunting through prose.
+       Educational reference — always confirm against the local formulary. */
+    function dosesHtml(cp) {
+        if (!Array.isArray(cp.doses) || !cp.doses.length) return '';
+        const groups = cp.doses.map(function (group) {
+            const title = group[0], lines = Array.isArray(group[1]) ? group[1] : [];
+            /* A leading "Drug: detail" split puts the drug name first so the eye
+               lands on it before the numbers; lines with no colon stay intact
+               rather than being guessed at. */
+            const items = lines.map(function (line) {
+                const s = String(line);
+                const cut = s.indexOf(': ');
+                if (cut > 0 && cut < 48) {
+                    return '<li><span class="dose-key">' + esc(s.slice(0, cut)) + '</span>: ' + esc(s.slice(cut + 2)) + '</li>';
+                }
+                return '<li>' + esc(s) + '</li>';
+            }).join('');
+            return '<div class="dose-card dose-col"><div class="dose-card-top">' +
+                '<h3 class="dose-card-title">' + esc(title) + '</h3></div><ul>' + items + '</ul></div>';
+        }).join('');
+        return '<div class="dose-grid" data-dose-grid>' + groups + '</div>' +
+            '<p class="clinical-safety-note">Doses shown as published in the cited sources; every dose is an adult reference unless stated. Verify indication, concentration, renal/hepatic function, allergies and local protocol before giving any drug.</p>';
+    }
+
     function sectionCard(icon, title, bodyHtml, closed, key) {
         const sectionId = 'section-' + (key || title.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
         const safeKey = key || '';
@@ -1269,6 +1440,7 @@
         ['history', 'Focused history', ''],
         ['exam', 'Examination', ''],
         ['workup', 'Workup', ''],
+        ['doses', 'Doses & targets', ''],
         ['disposition', 'Disposition', ''],
         ['pearls-pitfalls', 'Pearls & pitfalls', ''],
         ['study', 'Recall & notes', ''],
@@ -1322,19 +1494,24 @@
         rail.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
     }
 
-    function presentationTocHtml() {
-        const sections = RAIL_SECTIONS.filter(function (s) { return s[0] !== 'exam' && s[0] !== 'pearls-pitfalls' && s[0] !== 'see-also' && s[0] !== 'references'; })
-            .map(function (s) { return [s[0], s[1]]; });
+    function presentationTocHtml(cp) {
+        const hasDoses = !!(cp && Array.isArray(cp.doses) && cp.doses.length);
+        const sections = RAIL_SECTIONS.filter(function (s) {
+            if (s[0] === 'exam' || s[0] === 'pearls-pitfalls' || s[0] === 'see-also' || s[0] === 'references') return false;
+            if (s[0] === 'doses') return hasDoses;
+            return true;
+        }).map(function (s) { return [s[0], s[1]]; });
         return '<nav class="presentation-toc" aria-label="Presentation sections">' + sections.map(item =>
             '<button type="button" class="section-jump" data-jump="' + item[0] + '">' + esc(item[1]) + '</button>').join('') + '</nav>';
     }
     /* Persistent map for wide screens. Markup only — the click behavior is the
        same jumpToSection() the horizontal chips already use, and the current
        position is marked by an observer rather than by polling. */
-    function presentationRailHtml() {
+    function presentationRailHtml(cp) {
+        const hasDoses = !!(cp && Array.isArray(cp.doses) && cp.doses.length);
         return '<nav class="pres-rail" aria-label="Sections">' +
             '<span class="pres-rail-label">On this page</span>' +
-            RAIL_SECTIONS.map(function (s) {
+            RAIL_SECTIONS.filter(function (s) { return s[0] !== 'doses' || hasDoses; }).map(function (s) {
                 return '<button type="button" class="rail-jump' + (s[2] ? ' rail-' + s[2] : '') + '" data-jump="' + s[0] + '">' +
                     '<span class="rail-dot" aria-hidden="true"></span>' + esc(s[1]) + '</button>';
             }).join('') + '</nav>';
@@ -1389,14 +1566,64 @@
     }
 
     function dxCards(cp) {
-        const items = cp.dontMiss.filter(d => severityFilter === 'all' || d[1] === severityFilter);
-        if (!items.length) return '<p style="font-size:.84rem;color:var(--ink-soft);padding:6px 0">No diagnoses in this severity tier.</p>';
-        return '<div class="dx-grid">' + items.map(d => {
-            const name = d[0], sev = d[1], key = d[2];
-            return '<div class="dx-card sev-' + sev + '"><h3>' + sevDot(sev) + esc(name) +
+        /* The authored index is kept on the card so the hero bar can point at the
+           exact diagnosis it names even when a severity filter hides others. */
+        const rows = cp.dontMiss.map((d, i) => ({ d: d, i: i })).filter(r => severityFilter === 'all' || r.d[1] === severityFilter);
+        if (!rows.length) return '<p style="font-size:.84rem;color:var(--ink-soft);padding:6px 0">No diagnoses in this severity tier.</p>';
+        return '<div class="dx-grid">' + rows.map(r => {
+            const name = r.d[0], sev = r.d[1], key = r.d[2];
+            return '<div class="dx-card sev-' + sev + '" data-dx="' + r.i + '"><h3>' + sevDot(sev) + esc(name) +
                 ' <span class="sev-tag">' + (SEV_LABEL[sev] || sev) + '</span></h3>' +
                 '<div class="dx-key"><strong>Key:</strong> ' + esc(key) + '</div></div>';
         }).join('') + '</div>';
+    }
+
+    /* The few cannot-miss diagnoses, surfaced in the hero so they are visible
+       before any scrolling. The list is the topic's own authored "critical"
+       severity tier in its authored order — no diagnosis is added, promoted or
+       reordered here — and each chip is a shortcut into the authored card, so
+       the bar cannot drift from the Don't-Miss section below it. */
+    const CRISIS_BAR_CAP = 4;
+    function crisisBarHtml(cp) {
+        const critical = (cp.dontMiss || []).map((d, i) => ({ name: d[0], sev: d[1], i: i }))
+            .filter(d => d.sev === 'critical');
+        if (!critical.length) return '';
+        const shown = critical.slice(0, CRISIS_BAR_CAP);
+        const rest = critical.length - shown.length;
+        return '<aside class="crisis-bar" aria-labelledby="crisisBarTitle">' +
+            '<p class="crisis-bar-head"><span class="crisis-bar-dot" aria-hidden="true"></span>' +
+            '<strong id="crisisBarTitle">Don’t miss</strong>' +
+            '<span class="crisis-bar-count">' + critical.length + ' critical</span></p>' +
+            '<ul class="crisis-bar-list">' +
+            shown.map(d => '<li><button type="button" class="crisis-chip" data-crisis="' + d.i + '">' + esc(d.name) + '</button></li>').join('') +
+            (rest ? '<li><button type="button" class="crisis-chip crisis-more" data-jump="dont-miss">+' + rest + ' more</button></li>' : '') +
+            '</ul></aside>';
+    }
+
+    /* Open the Don't-Miss section if it is collapsed and put the named card in
+       view with the same temporary outline jumpToSection uses. A severity filter
+       can hide that card, in which case the section itself is still opened, so a
+       chip tap is never a no-op. */
+    function revealDontMiss(index) {
+        const section = document.getElementById('section-dont-miss');
+        if (!section) return false;
+        if (section.classList.contains('closed')) {
+            section.classList.remove('closed');
+            const head = section.querySelector('.sec-head');
+            if (head) head.setAttribute('aria-expanded', 'true');
+            if (currentId) reviewFor(currentId).sections['dont-miss'] = false;
+        }
+        const card = section.querySelector('[data-dx="' + index + '"]');
+        if (!card) return jumpToSection('dont-miss', false);
+        card.setAttribute('tabindex', '-1');
+        card.classList.add('section-focus');
+        clearTimeout(card._focusTimer);
+        card._focusTimer = setTimeout(() => card.classList.remove('section-focus'), 1800);
+        card.focus({ preventScroll: true });
+        const topbar = document.querySelector('.topbar');
+        const offset = (topbar ? topbar.offsetHeight : 0) + 12;
+        window.scrollTo({ top: Math.max(0, card.getBoundingClientRect().top + window.scrollY - offset), behavior: 'smooth' });
+        return true;
     }
 
     function relatedHtml(id, closed) {
@@ -1451,7 +1678,7 @@
 
         stage.innerHTML =
             '<div class="pres-layout" data-cat="' + catFor(cp.id) + '">' +
-            '<div class="pres-rail-wrap">' + presentationRailHtml() + '</div>' +
+            '<div class="pres-rail-wrap">' + presentationRailHtml(cp) + '</div>' +
             '<div class="pres-main">' +
             breadcrumbHtml +
             '<div class="cp-hero-nav">' +
@@ -1466,7 +1693,9 @@
             '</div></div>' +
             '<p class="tag">' + esc(cp.tag) + '</p></div>' +
 
-            presentationTocHtml() +
+            crisisBarHtml(cp) +
+
+            presentationTocHtml(cp) +
             sectionCard('', 'How to think', overviewHtml(cp), isClosed('how-to-think', false), 'how-to-think') +
             firstMinutesHtml(cp) +
 
@@ -1487,6 +1716,10 @@
                     '<div class="wu-col"><h3>' + esc(w[0]) + '</h3><ul>' +
                     w[1].map(i => '<li>' + esc(i) + '</li>').join('') + '</ul></div>').join('') + '</div>' +
                 '<details class="medication-safety"><summary>Medication safety reminder</summary><p>Use this as a first-pass prompt; verify all medications, doses, concentrations, contraindications, weight, pregnancy status, and local protocols before administration.</p><p>Check indication, allergy, route, renal/hepatic risk, interactions, monitoring, and local formulary.</p></details>', isClosed('workup'), 'workup') +
+
+            (Array.isArray(cp.doses) && cp.doses.length
+                ? sectionCard('', 'Doses & targets', dosesHtml(cp), isClosed('doses', false), 'doses')
+                : '') +
 
             sectionCard('', 'Disposition Pathway',
                 '<div class="disp-grid">' + cp.disposition.map(d => {
@@ -1532,6 +1765,8 @@
             }));
         stage.querySelectorAll('.case-action, .section-jump, .rail-jump').forEach(btn =>
             btn.addEventListener('click', () => jumpToSection(btn.dataset.jump, true)));
+        stage.querySelectorAll('[data-crisis]').forEach(btn =>
+            btn.addEventListener('click', () => revealDontMiss(btn.dataset.crisis)));
         stage.querySelectorAll('.reveal-btn').forEach(btn => btn.addEventListener('click', () => {
             const answer = document.getElementById('recall-' + btn.dataset.reveal);
             const hidden = answer.hidden;
@@ -2083,6 +2318,10 @@
         if (design) design.park();
         const route = (location.hash || '').replace('#', '').split('~');
         const id = route[0], target = route[1];
+        /* The audit found the header search kept the previous query after
+           navigating to another page. Clear it on every route change except
+           the search-results page itself, where the query is the state. */
+        if (id !== 'search') resetSearchField();
         if (id === 'search' && design) {recordBackContext('search', location.hash);currentId=null;syncNav('home');setTitle('Search');setStageContext('Search results');let query='';try{query=decodeURIComponent(route.slice(1).join('~')||'');}catch(_){}design.search(query);}
         else if (id === 'settings' && design) { currentId=null; syncNav('settings'); setTitle('Settings'); setStageContext('Settings and offline'); design.settings(); }
         else if (id === 'learn' && window.EM_LEARNING) {
@@ -2096,6 +2335,7 @@
         else if (id === 'ecg-hub' && design) { recordBackContext('ecg'); currentId=null; syncNav('ecg'); setTitle('ECG'); setStageContext('ECG learning'); design.ecg(); }
         else if (id === 'study') renderStudy(target || 'due');
         else if (id === 'shift') renderShift(target);
+        else if (id === 'calc') renderCalculators(target);
         else if (id === 'ecg-explorer') renderExplorer(target);
         else if (id === ECG_TOPIC_ID) { captureBackSource(); renderEcg(target); }
         else if (id && BY_ID[id]) { captureBackSource(); renderPresentation(id, target, preservePosition); }
@@ -2193,6 +2433,31 @@
     }
 
     /* ---------- search ---------- */
+    /* Searchable mirror of the Quick drug and decision-rule cards. The cards
+       themselves are rendered as HTML below; this table exists so their
+       clinical content (doses, antidotes, scores) is indexed and findable.
+       Keep in sync with the rendered cards; a test guards the key terms. */
+    const QUICK_SEARCH_CARDS = [
+        { route: 'shift', term: 'Rapid Sequence Intubation (RSI)', target: 'airway-stridor', kind: 'Quick · airway dose',
+          text: 'Rapid Sequence Intubation RSI induction paralytics ketamine 1-2 mg/kg IV etomidate 0.3 mg/kg reduce shock rocuronium 1.2 mg/kg roc succinylcholine suxamethonium 1.5 mg/kg post-intubation sedation push-dose vasopressor' },
+        { route: 'shift', term: 'Shock Vasopressors & Inotropes', target: 'shock', kind: 'Quick · vasopressor dose',
+          text: 'Shock first-line vasopressors inotropes norepinephrine noradrenaline 0.05-0.5 mcg/kg/min target MAP 65 epinephrine adrenaline 0.05-0.5 mcg/kg/min dobutamine 2-20 mcg/kg/min' },
+        { route: 'shift', term: 'High-Yield Antidotes & Hyperkalemia', target: 'overdose', kind: 'Quick · antidote dose',
+          text: 'Antidotes hyperkalemia acetaminophen paracetamol N-acetylcysteine NAC acetylcysteine Rumack-Matthew opioid naloxone narcan 0.04-0.4 mg IV TCA tricyclic sodium bicarbonate 1-2 mEq/kg QRS calcium gluconate 10% 10-30 mL calcium chloride insulin dextrose albuterol salbutamol nebulized potassium removal' },
+        { route: 'shift', term: 'Anaphylaxis IM Epinephrine', target: 'anaphylaxis', kind: 'Quick · dose',
+          text: 'Anaphylaxis first-line IM epinephrine adrenaline 0.3-0.5 mg adult child 0.01 mg/kg max 0.3 mg autoinjector 0.15 mg 0.3 mg RCUK age bands 0.15 0.3 0.5 mg crystalloid 20 mL/kg' },
+        { route: 'shift', term: 'Status Epilepticus Timed Escalation', target: 'seizures', kind: 'Quick · dose',
+          text: 'Status epilepticus benzodiazepine midazolam 10 mg 5 mg 0.2 mg/kg lorazepam 0.1 mg/kg max 4 mg levetiracetam 60 mg/kg fosphenytoin 20 mg PE/kg valproate 40 mg/kg ESETT' },
+        { route: 'shift', term: 'HEART Pathway & hs-Troponin', target: 'chest-pain', kind: 'Quick · decision rule',
+          text: 'HEART pathway high-sensitivity troponin chest pain history ECG age risk factors rule-out 0-3 score-based pathway' },
+        { route: 'shift', term: 'PERC Rule & PE Pretest', target: 'dyspnea', kind: 'Quick · decision rule',
+          text: 'PERC rule pulmonary embolism pretest probability D-dimer age-adjusted YEARS CTPA Wells' },
+        { route: 'shift', term: 'NEXUS & Canadian C-Spine', target: 'multiple-trauma', kind: 'Quick · decision rule',
+          text: 'NEXUS Canadian C-Spine rule cervical spine clearance blunt trauma imaging rotation' },
+        { route: 'shift', term: 'PECARN Pediatric Head Trauma', target: 'headache', kind: 'Quick · decision rule',
+          text: 'PECARN pediatric head trauma rule CT head GCS altered mental status skull fracture scalp hematoma LOC mechanism' }
+    ];
+
     function buildSearchIndex() {
         const idx = [];
         DATA.forEach(cp => {
@@ -2238,9 +2503,40 @@
         if(window.ECG_EXPLORER)window.ECG_EXPLORER.cases.forEach(c=>idx.unshift({cpId:'ecg-explorer',target:c.id,title:c.name,sub:c.category+' · '+c.id.replace(/-/g,' ')+' · '+c.summary,kind:'Interactive ECG'}));
         if(window.STUDENT_LEARNING&&Array.isArray(window.STUDENT_LEARNING.cases))window.STUDENT_LEARNING.cases.forEach(c=>idx.unshift({cpId:'study',target:'case-'+c.id,title:c.title,sub:'Short case · '+c.stem,kind:'Short case'}));
         if(window.EM_LEARNING) idx.unshift(...window.EM_LEARNING.searchItems());
+        /* Symptom-first entry: index lay-named symptoms so a learner who does not
+           yet know the diagnosis can search "blue lips" or "cannot breathe".
+           Each term resolves to the presentation pathway that answers it. */
+        if(window.SHIFT_TOOLS && Array.isArray(window.SHIFT_TOOLS.symptomTerms)){
+            window.SHIFT_TOOLS.symptomTerms.forEach(function(entry){
+                const cp=BY_ID[entry.cpId]; if(!cp) return;
+                entry.terms.forEach(function(term){
+                    idx.unshift({cpId:entry.cpId,target:'',title:term,sub:'Symptom · answers in '+cp.name,kind:'Symptom',symptom:true});
+                });
+            });
+        }
+        /* Quick drug and decision-rule cards: index their clinical content so
+           "rocuronium", "calcium gluconate" or "adrenaline" reach the dose card. */
+        QUICK_SEARCH_CARDS.forEach(function(card){
+            idx.unshift({cpId:card.route,target:card.target,title:card.term,sub:card.text,kind:card.kind,quick:true});
+        });
         return idx;
     }
     const SEARCH_INDEX = buildSearchIndex();
+
+    /* Clear the header search field and its results popup. Called on route
+       changes so a stale query never lingers across pages. */
+    function resetSearchField() {
+        const input = document.getElementById('searchInput');
+        if (!input || !input.value) return;
+        input.value = '';
+        const clearBtn = document.getElementById('searchClearBtn');
+        if (clearBtn) clearBtn.hidden = true;
+        const pop = document.querySelector('.results-pop');
+        if (pop) {
+            pop.style.display = 'none';
+            pop.innerHTML = '';
+        }
+    }
 
     function ensureResultsPop() {
         let pop = document.querySelector('.results-pop');
@@ -2299,24 +2595,21 @@
         if(!q)return [];
         const ql = String(q).trim().toLowerCase();
         if(ql.length<2)return [];
-        const tokens = ql.split(/\s+/).filter(Boolean);
-        return SEARCH_INDEX.filter(x => {
-            const title = x.title.toLowerCase();
-            const sub = x.sub ? x.sub.toLowerCase() : '';
-            if (title.indexOf(ql) !== -1 || sub.indexOf(ql) !== -1) return true;
-            return tokens.length > 1 && tokens.every(t => title.indexOf(t) !== -1 || sub.indexOf(t) !== -1);
-        }).sort((a,b)=>{
-            const score=x=>{
-                const title=x.title.toLowerCase();
-                if(title===ql)return 100;
-                if(title.startsWith(ql)&&(!title[ql.length]||/[^a-z0-9]/.test(title[ql.length])))return 80;
-                if(title.includes(ql))return 60;
-                if(tokens.length>1&&tokens.every(t=>title.includes(t)))return 45;
-                if(x.sub&&x.sub.toLowerCase().includes(ql))return 30;
-                return 20;
-            };
-            return score(b)-score(a);
-        });
+        const core = window.SEARCH_CORE;
+        /* Fallback to plain matching if the search core failed to load, so a
+           missing module degrades gracefully instead of breaking search. */
+        if (!core) {
+            return SEARCH_INDEX.filter(x => {
+                const title = x.title.toLowerCase();
+                const sub = x.sub ? x.sub.toLowerCase() : '';
+                return title.indexOf(ql) !== -1 || sub.indexOf(ql) !== -1;
+            });
+        }
+        return SEARCH_INDEX
+            .filter(x => core.matches((x.title || '') + ' ' + (x.sub || ''), ql))
+            .map(x => ({ hit: x, rank: core.score(x.title, x.sub, ql, x.kind) + (x.quick ? 6 : 0) }))
+            .sort((a, b) => b.rank - a.rank)
+            .map(entry => entry.hit);
     }
 
     function runSearch(q) {
@@ -2329,6 +2622,18 @@
         if (!q || q.length < 2) { hideSearchResults(pop); return; }
         const allHits=findSearchHits(q);
         const hits=allHits.slice(0,12);
+        /* A query that carries a body weight ("12 kg") offers the weight-based
+           dose card first, preloaded with that weight. The row reuses the hit
+           shape, so arrow keys, Enter and click already do the right thing. */
+        const weightHit = window.SHIFT_TOOLS && window.SHIFT_TOOLS.parseWeightFilter
+            ? window.SHIFT_TOOLS.parseWeightFilter(q) : null;
+        if (weightHit) hits.unshift({
+            cpId: 'calc',
+            target: weightHit.weight + 'kg',
+            title: 'Pediatric weight-based doses',
+            sub: 'Preloaded with ' + weightHit.weight + ' kg — calculated doses, fluids and airway sizes',
+            kind: 'Bedside calculator'
+        });
         pop.innerHTML = hits.length
             ? hits.map((h, i) =>
                 '<button type="button" class="res-item" id="search-result-' + i + '" data-id="' + h.cpId + '" data-target="' + h.target + '" role="option" aria-selected="false">' +
@@ -2921,6 +3226,7 @@
         bindFilters();
         bindPrefs();
         bindReadingPanel();
+        bindCprPill();
         const skipLink = document.querySelector('.skip-link');
         if (skipLink) skipLink.addEventListener('click', (e) => {
             e.preventDefault();
@@ -3171,7 +3477,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261022-content-v48').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261101-bedside-v61').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Ready for offline use'));
                     const applyUpdate = () => {
                         if(window.POCKET_DESIGN && !window.POCKET_DESIGN.beforeRoute(() => window.location.reload()))return;

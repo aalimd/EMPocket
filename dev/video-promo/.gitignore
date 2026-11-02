@@ -1,0 +1,6 @@
+# generated — rebuild with `python3 build.py`
+build/
+out/
+
+# local music bed (licensing)
+music.m4a

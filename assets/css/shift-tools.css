@@ -1,0 +1,83 @@
+/* Bedside calculators & shift tools (experiment/ux-v2).
+   Uses the shared design tokens only, so dark mode and accent themes apply
+   automatically. One-handed targets: 44px minimum, prominent result panel. */
+
+.st-topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.st-crosslink{font-size:.875em;font-weight:var(--weight-action);color:var(--accent);min-height:44px;display:inline-flex;align-items:center}
+.st-crosslink:hover{text-decoration:underline}
+
+.st-header{margin-bottom:20px}
+.st-header h1{font-size:1.75em;letter-spacing:-.02em;margin:8px 0 10px}
+.st-header p{color:var(--ink-soft);line-height:1.6;max-width:62ch}
+
+.st-search{display:block;margin-top:16px;max-width:420px}
+.st-search input{width:100%;min-height:48px;padding:12px 16px;border:1px solid var(--control-line);border-radius:14px;background:var(--card);color:var(--ink);font-size:1em;box-shadow:var(--shadow-sm)}
+.st-search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+
+.st-scores{display:grid;gap:20px}
+@media(min-width:900px){.st-scores{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}}
+
+.st-score{border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--card);padding:20px;box-shadow:var(--shadow-sm)}
+.st-score-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.st-score-head h2{font-size:1.125em;line-height:1.4;letter-spacing:-.01em;margin:0}
+.st-score-topic{color:var(--accent);font-size:.6875em;font-weight:var(--weight-heading);letter-spacing:.08em;text-transform:uppercase;margin:4px 0 0}
+.st-reset{min-height:40px;padding:8px 14px;border:1px solid var(--line);border-radius:var(--radius-full);background:var(--bg);color:var(--ink-soft);font-size:.8125em;font-weight:var(--weight-action)}
+.st-reset:hover{border-color:var(--accent);color:var(--accent)}
+.st-score-summary{margin:12px 0 16px;color:var(--ink-soft);font-size:.875em;line-height:1.6}
+
+.st-inputs{display:grid;gap:12px;margin-bottom:16px}
+.st-check{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-size:.9375em;line-height:1.5;cursor:pointer}
+.st-check:hover{border-color:var(--accent)}
+.st-check input{flex:0 0 auto;width:22px;height:22px;margin:0;accent-color:var(--accent)}
+.st-field{display:grid;gap:6px;font-size:.875em}
+.st-field>span{font-weight:var(--weight-label);color:var(--ink-soft)}
+.st-field select{min-height:48px;padding:10px 14px;border:1px solid var(--control-line);border-radius:12px;background:var(--card);color:var(--ink);font-size:.9375em;width:100%}
+.st-field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+
+.st-result{display:block;margin-top:4px}
+.st-result:empty{display:none}
+.st-advice{margin:10px 0 0;line-height:1.6;font-size:.9375em}
+
+.st-risk{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--radius-full);font-size:.8125em;font-weight:var(--weight-strong);border:1px solid}
+.st-risk-common{color:var(--common);background:var(--common-bg);border-color:var(--common-line)}
+.st-risk-emergent{color:var(--emergent);background:var(--emergent-bg);border-color:var(--emergent-line)}
+.st-risk-critical{color:var(--critical);background:var(--critical-bg);border-color:var(--critical-line)}
+
+.st-caveat{margin:14px 0 0;padding:12px 14px;border-radius:12px;background:var(--bg);color:var(--ink-soft);font-size:.8125em;line-height:1.6;border-inline-start:3px solid var(--control-line)}
+.st-caveat strong{color:var(--ink)}
+.st-score-link{margin:12px 0 0;font-size:.875em;font-weight:var(--weight-action)}
+.st-score-link a{color:var(--accent)}
+.st-score-link a:hover{text-decoration:underline}
+
+/* Numeric inputs use the same control geometry as selects. */
+.st-field input[type=number]{min-height:48px;padding:10px 14px;border:1px solid var(--control-line);border-radius:12px;background:var(--card);color:var(--ink);font-size:.9375em;width:100%}
+.st-field input[type=number]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+
+/* Paediatric weight-based dose card. */
+.st-peds-inputs{display:grid;gap:12px}
+@media(min-width:520px){.st-peds-inputs{grid-template-columns:1fr 1fr}}
+.st-peds-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9375em}
+.st-peds-table th,.st-peds-table td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.st-peds-table th{font-weight:var(--weight-label);color:var(--ink)}
+.st-peds-table td{font-variant-numeric:tabular-nums;font-weight:var(--weight-strong);white-space:nowrap}
+.st-peds-table th .route-badge{margin-inline-start:8px}
+.st-peds-max{color:var(--emergent);font-size:.8125em;font-weight:var(--weight-label)}
+.st-peds-sub{font-size:1em;margin:16px 0 0}
+.st-peds-notes{margin-top:14px;font-size:.875em;color:var(--ink-soft)}
+.st-peds-notes summary{cursor:pointer;font-weight:var(--weight-action);color:var(--accent);min-height:44px;display:flex;align-items:center}
+.st-peds-notes ul{margin:8px 0;padding-inline-start:20px;line-height:1.6}
+.st-peds-notes li{margin-bottom:6px}
+
+/* Arrest cycle timer: a 2-minute timekeeping aid, never a decision tool. The
+   digits are a role="timer" output (announced on demand, not every second);
+   cycle boundaries are announced through a separate polite live region. */
+.cpr-clockwrap{display:grid;gap:10px;justify-items:center;padding:18px 16px;margin:0 0 16px;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--bg)}
+.cpr-clock{font-family:var(--font-mono);font-size:2.5em;line-height:1;font-weight:var(--weight-heading);font-variant-numeric:tabular-nums;color:var(--ink)}
+.cpr-meta{margin:0;font-size:.875em;color:var(--ink-soft);text-align:center}
+.cpr-track{width:100%;height:8px;border-radius:var(--radius-full);background:var(--line-subtle);overflow:hidden}
+.cpr-fill{display:block;width:0;height:100%;border-radius:inherit;background:var(--accent);transition:width .25s linear}
+.cpr-actions{display:flex;gap:10px;flex-wrap:wrap}
+.cpr-toggle{flex:1;min-height:52px;padding:12px 24px;border:1px solid transparent;border-radius:var(--radius-full);background:var(--accent);color:var(--on-fill);font-size:1em;font-weight:var(--weight-action)}
+.cpr-toggle:hover{background:var(--primary-hover)}
+.cpr-toggle[aria-pressed=true]{background:var(--critical-bg);border-color:var(--critical-line);color:var(--critical)}
+@media(prefers-reduced-motion:reduce){.cpr-fill{transition:none}}

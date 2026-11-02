@@ -57,13 +57,21 @@
         ssti: ["IDSA skin and soft-tissue infections guideline (2014)", "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/"],
         methb: ["EHA/EuroBloodNet methemoglobinemia recommendations (2021)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9291883/"],
         lung: ["ACEP Sonoguide: lung ultrasound and diagnostic limitations", "https://www.acep.org/sonoguide/basic/lung/"],
-        neonate: ["CPS detection of critical congenital heart disease", "https://cps.ca/en/documents/position/pulse-oximetry-screening"]
+        neonate: ["CPS detection of critical congenital heart disease", "https://cps.ca/en/documents/position/pulse-oximetry-screening"],
+        acls: ["AHA 2025 adult advanced cardiovascular life support algorithm", "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support"],
+        hyperkalemia: ["UK Kidney Association hyperkalaemia guideline (2023)", "https://ukkidney.org/health-professionals/guidelines/treatment-acute-hyperkalaemia-adults"],
+        hyponatremia: ["European hyponatraemia clinical practice guideline", "https://academic.oup.com/ejendo/article/170/3/G1/6656231"],
+        tbi: ["NICE NG232 head injury: assessment and early management", "https://www.nice.org.uk/guidance/NG232/chapter/recommendations"],
+        hypertension: ["ESH 2023 arterial hypertension guideline", "https://journals.lww.com/jhypertension/fulltext/2023/06000/2023_esh_guidelines_for_the_management_of.2.aspx"],
+        burns: ["American Burn Association burn-shock resuscitation guidelines", "https://ameriburn.org/quality-care/clinical-guidelines/"],
+        withdrawal: ["ASAM clinical practice guideline on alcohol withdrawal management (2020)", "https://www.asam.org/quality-care/clinical-guidelines/alcohol-withdrawal"],
+        thyroid: ["ATA/AACE thyroid storm and myxoedema emergency guidance", "https://www.thyroid.org/thyroid-storm/"]
     };
     const topics = {
         'chest-pain': ['chest', 'acs', 'mi', 'pe'], dyspnea: ['asthma', 'pe'],
         headache: ['headache', 'stroke'], ams: ['stroke', 'special', 'meningitis'], coma: ['stroke', 'special'],
         weakness: ['stroke'], dizziness: ['dizziness', 'stroke'], diplopia: ['cn3', 'stroke'],
-        'focal-neurologic-deficit': ['stroke'], fever: ['sepsis'], shock: ['sepsis', 'lung', 'special'],
+        'focal-neurologic-deficit': ['stroke'], fever: ['sepsis', 'meningitis'], shock: ['sepsis', 'lung', 'special'],
         'joint-pain': ['joint'], 'pelvic-pain': ['ectopic', 'pid'], 'abdominal-pain': ['appendicitis', 'ectopic'],
         'vaginal-bleeding': ['pph', 'rh', 'ectopic'], 'pregnancy-emergency': ['special', 'pe', 'rh', 'hyperemesis', 'pph'],
         'scrotal-pain': ['epididymitis'], seizures: ['seizures', 'esett'], hemoptysis: ['hemoptysis', 'pe'],
@@ -75,6 +83,9 @@
         'falls-geriatric-trauma': ['headinjury'], 'pediatric-respiratory-distress': ['bronchiolitis', 'asthma'],
         gib: ['ugib', 'lgib'], 'red-eye': ['keratitis'], 'sore-throat': ['gas', 'gasTesting'],
         suicidal: ['selfharm'], constipation: ['constipation'], 'limb-ischemia': ['pad'], rash: ['ssti'],
+        'cardiac-arrest': ['acls', 'als', 'special'], electrolytes: ['hyperkalemia', 'hyponatremia'],
+        'head-injury': ['tbi', 'headinjury'], 'hypertensive-emergency': ['hypertension', 'stroke'],
+        burns: ['burns', 'special'], 'alcohol-withdrawal': ['withdrawal'], 'thyroid-storm': ['thyroid'],
         ecg: ['mi', 'af', 'als', 'special', 'pericarditis']
     };
     window.CLINICAL_EVIDENCE = Object.freeze({ checked: '2026-10-08', sources: sources, topics: topics });

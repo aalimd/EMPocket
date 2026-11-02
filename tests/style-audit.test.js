@@ -645,7 +645,7 @@ test('Quick preserves all authored approach, red-flag, workup, differential and 
 
 test('light and dark accents meet text contrast and retain independent clinical urgency colours',async t=>{
     if(!await ready(t))return;await load('#library');
-    const r=await evaluate(`(()=>{function lum(v){return v.match(/[\\d.]+/g).slice(0,3).map(Number).map(x=>{x/=255;return x<=.04045?x/12.92:((x+.055)/1.055)**2.4}).reduce((a,x,i)=>a+x*[.2126,.7152,.0722][i],0);}function ratio(a,b){const x=lum(a),y=lum(b);return(Math.max(x,y)+.05)/(Math.min(x,y)+.05);}const root=document.documentElement,errors=[],p=document.createElement('span');document.body.append(p);function color(t){p.style.color='var('+t+')';return getComputedStyle(p).color;}for(const theme of ['light','dark'])for(const accent of ['emerald','ocean','violet','rose','amber','teal']){root.dataset.theme=theme;root.dataset.accent=accent;for(const [a,b] of [['--ink','--card'],['--ink-soft','--bg'],['--accent','--card'],['--accent','--accent-light'],['--on-fill','--accent'],['--critical','--critical-bg'],['--emergent','--emergent-bg'],['--common','--common-bg']]){const n=ratio(color(a),color(b));if(n<4.5)errors.push(theme+'/'+accent+' '+a+' '+n);}}p.remove();root.dataset.theme='light';root.dataset.accent='emerald';return errors;})()`);assert.deepEqual(r,[]);
+    const r=await evaluate(`(()=>{function lum(v){return v.match(/[\\d.]+/g).slice(0,3).map(Number).map(x=>{x/=255;return x<=.04045?x/12.92:((x+.055)/1.055)**2.4}).reduce((a,x,i)=>a+x*[.2126,.7152,.0722][i],0);}function ratio(a,b){const x=lum(a),y=lum(b);return(Math.max(x,y)+.05)/(Math.min(x,y)+.05);}const root=document.documentElement,errors=[],p=document.createElement('span');document.body.append(p);function color(t){p.style.color='var('+t+')';return getComputedStyle(p).color;}for(const theme of ['light','dark'])for(const accent of ['emerald','ocean','violet','rose','amber','teal']){root.dataset.theme=theme;root.dataset.accent=accent;for(const [a,b] of [['--ink','--card'],['--ink','--bg'],['--ink-soft','--bg'],['--accent','--card'],['--accent','--accent-light'],['--on-fill','--accent'],['--critical','--critical-bg'],['--critical','--card'],['--ink-soft','--critical-bg'],['--emergent','--emergent-bg'],['--common','--common-bg']]){const n=ratio(color(a),color(b));if(n<4.5)errors.push(theme+'/'+accent+' '+a+' '+n);}}p.remove();root.dataset.theme='light';root.dataset.accent='emerald';return errors;})()`);assert.deepEqual(r,[]);
 });
 
 test('opaque mobile navigation and print rules prevent ECG paper from interfering with controls',async t=>{
@@ -692,6 +692,114 @@ test('an unknown section inside a real topic keeps the topic and explains the li
     assert.equal(await evaluate(`document.activeElement === document.querySelector('#presentationTitle')`),true);
 });
 
+test('a body weight in the header search opens the dose card preloaded with that weight',async t=>{
+    if(!await ready(t))return;await load('#library');
+    /* The row is offered first, so Enter and a click both land on the doses. */
+    const offered=await evaluate(`(async()=>{const i=document.getElementById('searchInput');i.value='12 kg';i.dispatchEvent(new Event('input',{bubbles:true}));await new Promise(r=>setTimeout(r,260));const first=document.querySelector('.results-pop .res-item[data-id]');return {title:first&&first.querySelector('.r-title').textContent,sub:first&&first.querySelector('.r-sub').textContent,id:first&&first.dataset.id,target:first&&first.dataset.target,kind:first&&first.querySelector('.r-tag').textContent};})()`);
+    assert.deepEqual(offered,{title:'Pediatric weight-based doses',sub:'Preloaded with 12 kg — calculated doses, fluids and airway sizes',id:'calc',target:'12kg',kind:'Bedside calculator'});
+    await evaluate(`document.querySelector('.results-pop .res-item[data-id]').click()`);await wait(300);
+    assert.equal(await evaluate(`location.hash`),'#calc~12kg');
+    const card=await evaluate(`(()=>{const w=document.querySelector('[data-st-peds-weight]');const out=document.querySelector('[data-st-peds-result]');return {weight:w&&w.value,filter:document.getElementById('stCalcFilter').value,rows:out?out.querySelectorAll('.st-peds-table tbody tr').length:0,first:out?out.querySelector('.st-peds-table tbody tr .dose-amount').textContent:null,firstCard:document.querySelector('.st-scores').firstElementChild.className};})()`);
+    assert.equal(card.weight,'12','the weight is carried into the dose card');
+    assert.equal(card.filter,'12kg','the filter box keeps what was searched');
+    assert.ok(card.rows>0,'the dose table is rendered for that weight');
+    assert.equal(card.first,'0.12 mg','the adrenaline dose shown is the one for 12 kg');
+    assert.ok(card.firstCard.indexOf('st-peds')>=0,'the card that answers the query is first in the grid');
+});
+
+test('a weight is understood in the filter box too, and score digits are not weights',async t=>{
+    if(!await ready(t))return;await load('#calc');
+    await evaluate(`(()=>{const i=document.getElementById('stCalcFilter');i.value='12kg';i.dispatchEvent(new Event('input',{bubbles:true}));return true;})()`);await wait(120);
+    assert.equal(await evaluate(`document.querySelector('[data-st-peds-weight]').value`),'12');
+    /* Text still filters scores, and "curb-65" stays a score name. */
+    await evaluate(`(()=>{const i=document.getElementById('stCalcFilter');i.value='curb-65';i.dispatchEvent(new Event('input',{bubbles:true}));return true;})()`);await wait(120);
+    const text=await evaluate(`({box:!!document.querySelector('[data-st-peds-weight]'),scores:[...document.querySelectorAll('.st-score-head h2')].map(h=>h.textContent)})`);
+    assert.equal(text.box,false,'the dose card is hidden again for a text filter');
+    assert.deepEqual(text.scores,['CURB-65'],'the score the text names is still shown');
+    /* Digits inside a phrase are ordinary text, so nothing is dosed as 65 kg. */
+    await evaluate(`(()=>{const i=document.getElementById('stCalcFilter');i.value='curb 65';i.dispatchEvent(new Event('input',{bubbles:true}));return true;})()`);await wait(120);
+    const digits=await evaluate(`({box:!!document.querySelector('[data-st-peds-weight]'),status:(document.querySelector('.empty-filter')||{}).textContent||''})`);
+    assert.equal(digits.box,false,'"curb 65" must not be read as a 65 kg patient');
+    assert.ok(digits.status.indexOf('No calculator matches "curb 65"')>=0,digits.status);
+});
+
+test('the hero crisis bar names only authored critical diagnoses and each chip opens its own card',async t=>{
+    if(!await ready(t))return;await load('#chest-pain');
+    const authored=await evaluate(`(()=>{const cp=window.CP_DATA.find(c=>c.id==='chest-pain');return cp.dontMiss.map((d,i)=>({i,name:d[0],sev:d[1]})).filter(d=>d.sev==='critical');})()`);
+    assert.ok(authored.length>0);
+    const bar=await evaluate(`(()=>{const b=document.querySelector('.crisis-bar');if(!b)return null;const hero=document.querySelector('.cp-hero'),sec=document.getElementById('section-how-to-think'),toc=document.querySelector('.presentation-toc');return {chips:[...b.querySelectorAll('.crisis-chip[data-crisis]')].map(c=>({i:+c.dataset.crisis,name:c.textContent})),count:b.querySelector('.crisis-bar-count').textContent,label:b.querySelector('#crisisBarTitle').textContent,more:b.querySelector('.crisis-more')?b.querySelector('.crisis-more').textContent:null,aboveSec:b.getBoundingClientRect().top<sec.getBoundingClientRect().top,aboveToc:b.getBoundingClientRect().top<toc.getBoundingClientRect().top,onScreen:b.getBoundingClientRect().top<innerHeight,afterHero:b.getBoundingClientRect().top>hero.getBoundingClientRect().top};})()`);
+    assert.ok(bar,'the bar renders for a topic that has critical diagnoses');
+    /* Labels and their order come from the data, so the bar cannot drift. */
+    assert.deepEqual(bar.chips.map(c=>c.name),authored.slice(0,4).map(d=>d.name));
+    assert.deepEqual(bar.chips.map(c=>c.i),authored.slice(0,4).map(d=>d.i));
+    assert.equal(bar.count,authored.length+' critical');
+    assert.equal(bar.label,'Don’t miss');
+    assert.equal(bar.more,'+'+(authored.length-4)+' more','chest-pain has six killers, so two stay behind the counter chip');
+    assert.deepEqual([bar.afterHero,bar.aboveToc,bar.aboveSec,bar.onScreen],[true,true,true,true],'the bar sits under the title and above the fold');
+    /* Tapping a chip opens the Don't-Miss section and lifts that exact card. */
+    const targetIndex=authored[1].i;
+    await evaluate(`document.querySelectorAll('.crisis-chip[data-crisis]')[1].click()`);await wait(600);
+    assert.ok(await evaluate(`!document.getElementById('section-dont-miss').classList.contains('closed')`),'the section is open');
+    assert.equal(await evaluate(`document.querySelector('.crisis-more')&&true`),true);
+    const lifted=await evaluate(`(async()=>{const card=document.querySelector('[data-dx="${targetIndex}"]');const want=document.querySelector('.topbar').offsetHeight+12;let delta=999;for(let i=0;i<30;i++){delta=Math.abs(card.getBoundingClientRect().top-want);if(delta<100)break;await new Promise(r=>setTimeout(r,40));}return {focused:document.activeElement===card,ring:card.classList.contains('section-focus'),delta:Math.round(delta),text:card.querySelector('h3').textContent};})()`);
+    assert.equal(lifted.focused,true,'the named card takes focus');
+    assert.equal(lifted.ring,true,'and keeps the jump outline');
+    assert.ok(lifted.delta<100,'and is scrolled into view (delta '+lifted.delta+'px)');
+    assert.ok(lifted.text.indexOf(authored[1].name)>=0);
+    /* A severity filter can hide the named card. The chip must still take the
+       clinician to the Don't-Miss section instead of doing nothing. */
+    await evaluate(`document.querySelector('#filterChips .chip[data-sev="common"]').click()`);await wait(400);
+    assert.equal(await evaluate(`!!document.querySelector('.dx-card[data-dx="${targetIndex}"]')`),false,'the filter hides that card');
+    assert.equal(await evaluate(`!!document.querySelector('.crisis-chip[data-crisis]')`),true,'the bar still names the critical tier');
+    await evaluate(`document.querySelectorAll('.crisis-chip[data-crisis]')[1].click()`);await wait(500);
+    const fallback=await evaluate(`(()=>{const sec=document.getElementById('section-dont-miss');return {hash:location.hash,ring:sec.classList.contains('section-focus'),open:!sec.classList.contains('closed')};})()`);
+    assert.equal(fallback.hash,'#chest-pain','the chip does not navigate away');
+    assert.equal(fallback.open,true);
+    assert.equal(fallback.ring,true,'the section takes the jump outline when the card itself is filtered out');
+    await evaluate(`document.querySelector('#filterChips .chip[data-sev="all"]').click()`);await wait(200);
+});
+
+test('every topic builds its crisis bar from its own data and invents nothing',async t=>{
+    if(!await ready(t))return;await load('#library');
+    const problems=await evaluate(`(async()=>{const out=[];for(const cp of window.CP_DATA){location.hash=cp.id;await new Promise(r=>setTimeout(r,25));const critical=cp.dontMiss.map((d,i)=>({i,name:d[0],sev:d[1]})).filter(d=>d.sev==='critical');const bar=document.querySelector('.crisis-bar');if(!critical.length){if(bar)out.push(cp.id+': bar with no critical items');continue;}if(!bar){out.push(cp.id+': no bar');continue;}const chips=[...bar.querySelectorAll('.crisis-chip[data-crisis]')].map(c=>({i:+c.dataset.crisis,name:c.textContent}));const names=critical.slice(0,4).map(d=>d.name),idx=critical.slice(0,4).map(d=>d.i);if(JSON.stringify(chips.map(c=>c.name))!==JSON.stringify(names))out.push(cp.id+': chip labels');if(JSON.stringify(chips.map(c=>c.i))!==JSON.stringify(idx))out.push(cp.id+': chip targets');if(bar.querySelector('.crisis-bar-count').textContent!==critical.length+' critical')out.push(cp.id+': count');if(!!bar.querySelector('.crisis-more')!==(critical.length>4))out.push(cp.id+': counter chip');for(const c of chips)if(!cp.dontMiss[c.i]||cp.dontMiss[c.i][0]!==c.name)out.push(cp.id+': chip '+c.name+' names no authored card');}return out;})()`);
+    assert.deepEqual(problems,[]);
+});
+
+test('the Quick screen lists the bedside action rows with a route colour, above its other sections',async t=>{
+    if(!await ready(t))return;await load('#shift');
+    const shape=await evaluate(`(()=>{const sec=document.querySelector('.bedside-section');if(!sec)return null;const rows=[...sec.querySelectorAll('.bedside-row')];const chooser=document.getElementById('quickPresentation');return {firstSection:document.querySelectorAll('#stage > section.settings-section')[0]===sec,aboveChooser:!chooser||sec.getBoundingClientRect().top<chooser.getBoundingClientRect().top,chips:[...sec.querySelectorAll('.bedside-chips .chip')].map(a=>a.getAttribute('href')),tag:rows[0].tagName,count:rows.length,doses:rows.map(r=>({cls:[...r.classList].filter(x=>['push','im','infusion'].includes(x))[0],border:getComputedStyle(r).borderInlineStartColor,size:parseFloat(getComputedStyle(r.querySelector('.bedside-dose')).fontSize),mono:/mono/i.test(getComputedStyle(r.querySelector('.bedside-dose')).fontFamily),h:Math.round(r.getBoundingClientRect().height),href:r.getAttribute('href'),badge:r.querySelector('.route-badge').className}))};})()`);
+    assert.ok(shape,'the bedside section renders on the Quick screen');
+    assert.deepEqual([shape.firstSection,shape.aboveChooser],[true,true],'it opens the Quick screen, before the presentation chooser');
+    assert.deepEqual(shape.chips,['#calc','#cardiac-arrest','#ecg','#shift'],'the chip row opens real screens');
+    assert.equal(shape.tag,'A','each row is a real link, not a div');
+    assert.equal(shape.count,6);
+    assert.ok(shape.doses.every(d=>d.mono&&d.size>=16),'the dose is mono and larger than body text');
+    assert.ok(shape.doses.every(d=>d.h>=44),'each row is a real touch target');
+    /* Three distinct route colours, and the badge carries the same class. */
+    assert.equal(new Set(shape.doses.map(d=>d.cls)).size,3);
+    assert.equal(new Set(shape.doses.map(d=>d.border)).size,3);
+    assert.ok(shape.doses.every(d=>d.badge.indexOf(d.cls)>=0));
+    assert.ok(shape.doses.every(d=>/^#(shift|chest-pain|calc|cardiac-arrest|ecg)/.test(d.href)));
+    /* A row that points at a collapsed reference block on this same screen
+       must reveal it in place, so the dose it advertises actually becomes
+       visible to the clinician who taps it. */
+    const reveal=await evaluate(`(()=>{const opens=[];const rows=[...document.querySelectorAll('.bedside-row[data-owner]')];for(const r of rows){const el=document.getElementById(r.dataset.owner);if(!el)return {error:'missing '+r.dataset.owner};if(el.tagName==='DETAILS')el.open=false;r.click();opens.push({id:r.dataset.owner,open:el.tagName==='DETAILS'?el.open:!el.classList.contains('closed'),hash:location.hash,focused:document.activeElement===el});}return {count:rows.length,opens};})()`);
+    assert.equal(reveal.error,undefined,reveal.error||'');
+    assert.equal(reveal.count,5,'five rows reveal an on-screen reference block');
+    assert.ok(reveal.opens.every(o=>o.open),'a tapped row expands the block that carries its dose');
+    assert.ok(reveal.opens.every(o=>o.hash==='#shift'),'revealing keeps the clinician on the Quick screen');
+    assert.ok(reveal.opens.every(o=>o.focused),'focus moves to the revealed block for keyboard users');
+    /* The library home no longer carries the cards. */
+    await load('#library');await wait(300);
+    assert.equal(await evaluate(`!!document.querySelector('.home-bedside, .bedside-section')`),false,'the home is back to the library alone');
+});
+
+test('every bedside action row quotes a dose the app already documents, and links to where it lives',async t=>{
+    if(!await ready(t))return;await load('#shift');
+    const problems=await evaluate(`(async()=>{const norm=s=>s.replace(/\\s+/g,' ').trim();const rows=[...document.querySelectorAll('.bedside-row')].map(c=>({dose:norm(c.querySelector('.bedside-dose').textContent),src:c.dataset.src,owner:c.dataset.owner||'',href:c.getAttribute('href')}));const text={};for(const h of ['#shift','#chest-pain']){location.hash=h.slice(1);await new Promise(r=>setTimeout(r,150));text[h]=norm(document.body.textContent);}const out=[];for(const c of rows){const route='#'+c.src;if(!text[route])out.push('unknown source screen '+c.src);else if(!text[route].includes(c.dose))out.push('dose not present on '+route+': '+c.dose);if(c.href!==route)out.push('row links to '+c.href+' but its dose lives on '+route);}location.hash='shift';await new Promise(r=>setTimeout(r,200));for(const c of rows){if(!c.owner)continue;const el=document.getElementById(c.owner);if(!el)out.push('missing reference block '+c.owner);else if(!norm(el.textContent).includes(c.dose))out.push('reference block '+c.owner+' does not carry '+c.dose);}return out;})()`);
+    assert.deepEqual(problems,[],'a row may not state a dose the screen it opens does not already carry');
+});
+
 test('Back on the saved topics screen returns to the library home',async t=>{
     if(!await ready(t))return;await load('#library~saved');
     assert.equal(await evaluate(`document.querySelector('.ios-tabbar [aria-current="page"]')?.dataset.nav`),'home');
@@ -733,7 +841,7 @@ test('the teaching viewer shows and hides normal-reference paths without alterin
 });
 
 test('Quick starts with an explicit choice when no topic is selected',async t=>{
-    if(!await ready(t))return;await load('#shift');assert.equal(await evaluate(`document.querySelector('h1').textContent`),'Quick');assert.equal(await evaluate(`document.getElementById('quickPresentation').value`),'');assert.equal(await evaluate(`document.getElementById('quickPresentation').options.length`),46);
+    if(!await ready(t))return;await load('#shift');assert.equal(await evaluate(`document.querySelector('h1').textContent`),'Quick');assert.equal(await evaluate(`document.getElementById('quickPresentation').value`),'');assert.equal(await evaluate(`document.getElementById('quickPresentation').options.length`),53);
 });
 
 test('saved topics are reachable directly from the phone library',async t=>{

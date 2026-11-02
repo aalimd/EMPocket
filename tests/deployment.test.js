@@ -73,7 +73,7 @@ test('one release token covers shell, precache, manifest and service-worker regi
 test('every imported CSS module and font resolves locally with the same release and offline coverage',()=>{
  const {loader,modules}=require('./helpers/styles');
  const release=html.match(/assets\/app\.css\?v=([^" ]+)/)[1];
- assert.equal(modules.length,8);
+ assert.equal(modules.length,9);
  for(const m of loader.matchAll(/@import url\('([^']+)'\)/g)) {
   const url=new URL(m[1],'https://example.test/nested/assets/app.css');
   assert.ok(url.pathname.startsWith('/nested/assets/css/'));

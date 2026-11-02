@@ -7,7 +7,7 @@ for(const name of ['data','evidence','ecg-svg'])vm.runInContext(fs.readFileSync(
 const topics=ctx.window.CP_DATA,ecg=ctx.window.ECG_DATA,ev=ctx.window.CLINICAL_EVIDENCE;
 const prose=id=>JSON.stringify(topics.find(c=>c.id===id));
 test('all presentations and the ECG course expose explicit supporting sources',()=>{
- assert.equal(topics.length,45);
+ assert.equal(topics.length,52);
  for(const id of [...topics.map(c=>c.id),'ecg']){
   assert.ok(ev.topics[id]?.length,id);
   for(const key of ev.topics[id]){assert.equal(ev.sources[key]?.length,2,key);assert.equal(new URL(ev.sources[key][1]).protocol,'https:');}
@@ -57,4 +57,43 @@ test('ECG accessibility text uses the same ischemic T-wave threshold as the cour
  assert.match(JSON.stringify(ecg),/T-wave inversion ≥1 mm/);
  assert.match(JSON.stringify(ctx.window.ECG_SVG),/dynamic TWI ≥1 mm/);
  assert.doesNotMatch(JSON.stringify(ecg),/repeat toward QRS &lt; 100 ms/);
+});
+test('anaphylaxis IM epinephrine never states a 0.5 mg paediatric maximum and names both standards',()=>{
+ /* Audit finding: the topic text said "0.5 mg pediatric max" while Quick said
+    otherwise. Both now state the US and UK standards explicitly. */
+ const anaph=prose('anaphylaxis');
+ assert.doesNotMatch(anaph,/pediatric, max 0\.5 mg/);
+ assert.match(anaph,/US practice parameter \(JTFPP\)/);
+ assert.match(anaph,/max 0\.3 mg/);
+ assert.match(anaph,/RCUK/);
+ const app=fs.readFileSync(path.join(__dirname,'../assets/app.js'),'utf8');
+ assert.match(app,/max 0\.3 mg/);
+ assert.match(app,/RCUK/);
+});
+test('meningitis dexamethasone is offered for suspected bacterial meningitis, not only confirmed pneumococcus',()=>{
+ for(const id of ['headache','fever']){
+  const text=prose(id);
+  assert.doesNotMatch(text,/dexamethasone if pneumococcal likely/);
+  assert.match(text,/dexamethasone with or before/i);
+ }
+ assert.match(prose('headache'),/NICE NG240/);
+});
+test('newly added resuscitation and emergency topics carry verified doses and sources',()=>{
+ /* Seven high-yield presentations added for on-shift use. Each must ship a
+    structured dose block and name at least one primary source, so a future
+    refactor cannot quietly drop the numbers or the citations. */
+ const added=['cardiac-arrest','electrolytes','head-injury','hypertensive-emergency','burns','alcohol-withdrawal','thyroid-storm'];
+ for(const id of added){
+  const cp=topics.find(c=>c.id===id);
+  assert.ok(cp,'missing topic '+id);
+  assert.ok(Array.isArray(cp.doses)&&cp.doses.length>=2,id+' needs dose groups');
+  for(const g of cp.doses){assert.equal(g.length,2,id+' dose group shape');}
+  assert.ok(cp.refs.length>=1,id+' needs references');
+ }
+ assert.match(prose('cardiac-arrest'),/Epinephrine 1 mg IV\/IO every 3–5 min/);
+ assert.match(prose('electrolytes'),/Insulin 10 units with 25 g dextrose/);
+ assert.match(prose('hypertensive-emergency'),/heart rate ≤60 bpm then SBP 100–120 mmHg/);
+ assert.match(prose('burns'),/4 mL\/kg per %TBSA/);
+ assert.match(prose('alcohol-withdrawal'),/Lorazepam 1–2 mg IV/);
+ assert.match(prose('thyroid-storm'),/never before/);
 });
