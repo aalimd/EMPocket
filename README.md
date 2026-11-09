@@ -44,7 +44,7 @@ See Cloudflare's official [static HTML settings](https://developers.cloudflare.c
 
 ## Release and offline updates
 
-The current asset token is `20261108-coordination-v67`; `CACHE_VERSION` is `v260` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
+The current asset token is `20261108-coordination-v67`; `CACHE_VERSION` is `v266` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
 
 The worker precaches the canonical `./` shell because Pages redirects `/index.html` to `/`. Direct hash routes and offline `/index.html` requests fall back to that shell. Required asset failure or an HTML fallback returned instead of required JavaScript/CSS prevents a new worker from activating; optional icon failure does not prevent core offline use. A new worker claims the app and notifies users to refresh. The worker handles only this app's entry points and shipped asset paths, including at the domain root. New cache names encode the exact installation path, preserving case and punctuation. Cleanup touches only that exact namespace; it does not clear saved progress or other apps' caches. Ambiguous legacy cache names are intentionally retained during this one-time naming change.
 
@@ -66,10 +66,10 @@ Run `node --test tests/*.test.js`. Deployment tests check local references, PNG 
 
 `dev/style-snapshot.js` captures the computed style of **every** element in six views (phone and desktop, home / presentation / ECG / Explorer / shift) and can diff a refactor against a baseline, exiting non-zero on any change. Arrays are normalized, because `===` on two equal arrays is always false. It is how the module and deferral work below was proven inert, and it is the tool to use before touching `!important` in `app.css`.
 
-The runtime scripts are ES modules, so they are fetched in parallel and no longer block first paint, and the 232KB recorded-ECG library is loaded on demand rather than at startup while staying in the worker precache for offline use.
+The runtime scripts are ES modules, so they are fetched in parallel and no longer block first paint, and the 2.6MB recorded-ECG library is loaded on demand rather than at startup while staying in the worker precache for offline use. See [docs/PERF.md](docs/PERF.md) for the first-load budget and the eager/lazy split.
 
 `tests/style-audit.test.js` renders the real app in a phone viewport and asserts computed styles, because source-level tests cannot see what the cascade resolves to — that is how the printable step rail and the collapsed severity popup were found. It drives Chrome over `--remote-debugging-pipe` so it needs no dependency, and skips itself when no Chrome build is present. `tests/style-hygiene.test.js` keeps the stylesheet's unused-class count from growing; the layer order and z-index scale are documented at the top of `assets/app.css`, which is append-only and therefore order-dependent.
 
 ## Clinical content audit
 
-See [the clinical audit](docs/CLINICAL-AUDIT-2026-10-08.md) for the reviewed inventory, corrections, primary guidance and verification limits. Current asset release: `20261022-content-v48`; installation-scoped service-worker cache: `v246`. This is educational content with selected evidence checks, not independent clinical certification.
+See [the clinical audit](docs/CLINICAL-AUDIT-2026-10-08.md) for the reviewed inventory, corrections, primary guidance and verification limits. This is educational content with selected evidence checks, not independent clinical certification. See [content governance](docs/CONTENT-GOVERNANCE.md) for review cadence and change control, and [authoring](docs/AUTHORING.md) for how to add clinical content safely.
