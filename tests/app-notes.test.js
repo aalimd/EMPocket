@@ -4,17 +4,20 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
-const source = fs.readFileSync(path.join(__dirname, '../assets/app.js'), 'utf8');
-const noteCode = source.slice(source.indexOf('    function isRecord('), source.indexOf('    function dueIds('));
+/* Phase 2: the learning store lives in assets/learning-store.js now
+   (extracted from app.js); app.js only delegates to it. Load the real
+   module so these tests keep exercising the shipped implementation. */
+const storeSource = fs.readFileSync(path.join(__dirname, '../assets/learning-store.js'), 'utf8');
 
 function fixture() {
     const original = { reviewed: { shock: 5 }, reviewPlan: { shock: { stage: 1, dueAt: 12345 } }, saved: { ecg: 9 }, notes: { 'chest-pain': 'Earlier note', ecg: 'Other note' } };
     let raw = JSON.stringify(original), failWrite = false, failRead = false, writes = 0;
-    const context = vm.createContext({ localStorage: {
+    const context = vm.createContext({ window: {}, localStorage: {
         getItem(key) { assert.equal(key, 'em-cps-learning'); if (failRead) throw Error('blocked'); return raw; },
         setItem(key, value) { assert.equal(key, 'em-cps-learning'); writes++; if (failWrite) throw Error('full'); raw = value; }
     } });
-    vm.runInContext(noteCode + '\nthis.notesApi = {setNote, noteFor};', context);
+    vm.runInContext(storeSource +
+        '\nthis.notesApi = { setNote: window.EM_LEARNING_STORE.setNote, noteFor: window.EM_LEARNING_STORE.noteFor };', context);
     return { api: context.notesApi, original, read: () => JSON.parse(raw), writes: () => writes, blockWrites: value => { failWrite = value; }, blockReads: () => { failRead = true; } };
 }
 

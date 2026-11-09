@@ -14,11 +14,18 @@ const scriptTags = [...html.matchAll(/<script([^>]*)>/g)].map(m => m[1]);
 
 test('every runtime script is a deferred ES module', () => {
     const srcTags = scriptTags.filter(a => /\ssrc=/.test(a));
-    /* 15 startup modules: the 232KB recorded-ECG library is loaded on demand
+    /* 20 startup modules: the 232KB recorded-ECG library is loaded on demand
        instead (see the deferral test below). shift-tools.js publishes
-       window.SHIFT_TOOLS (bedside calculators + symptom terms) and
-       search-core.js publishes window.SEARCH_CORE (pure search helpers). */
-    assert.equal(srcTags.length, 15, 'expected 15 startup modules');
+       window.SHIFT_TOOLS (bedside calculators + symptom terms),
+       search-core.js publishes window.SEARCH_CORE (pure search helpers),
+       learning-store.js publishes window.EM_LEARNING_STORE (reviewed/saved/
+       notes state), prefs-store.js publishes window.EM_PREFS (display
+       prefs), search-index.js publishes window.EM_SEARCH_INDEX (the
+       searchable index builder), agreement-store.js publishes
+       window.EM_AGREEMENT (notice agreement) and navigation-store.js
+       publishes window.EM_NAVIGATION (back-context state) — extracted
+       from app.js in Phase 2. */
+    assert.equal(srcTags.length, 20, 'expected 20 startup modules');
     for (const attrs of srcTags) {
         assert.match(attrs, /type="module"/,
             'script is still render-blocking: ' + attrs.trim().slice(0, 70));
@@ -67,7 +74,12 @@ test('each module still publishes the global its consumers read', () => {
         'assets/em-learning-data.js': ['EM_LEARNING_DATA'],
         'assets/em-learning.js': ['EM_LEARNING'],
         'assets/shift-tools.js': ['SHIFT_TOOLS'],
-        'assets/search-core.js': ['SEARCH_CORE']
+        'assets/search-core.js': ['SEARCH_CORE'],
+        'assets/learning-store.js': ['EM_LEARNING_STORE'],
+        'assets/prefs-store.js': ['EM_PREFS'],
+        'assets/search-index.js': ['EM_SEARCH_INDEX'],
+        'assets/agreement-store.js': ['EM_AGREEMENT'],
+        'assets/navigation-store.js': ['EM_NAVIGATION']
     };
     for (const [file, globals] of Object.entries(expected)) {
         const src = fs.readFileSync(path.join(root, file), 'utf8');
@@ -80,7 +92,8 @@ test('each module still publishes the global its consumers read', () => {
 test('no module reads another module through a bare global', () => {
     const published = ['CP_DATA', 'ECG_DATA', 'ECG_CURRICULUM', 'ECG_ENGINE', 'ECG_EXPLORER',
         'ECG_INTERACTIVE', 'ECG_SVG', 'ECG_PNG_DIR', 'EM_LEARNING_DATA', 'EM_LEARNING',
-        'CLINICAL_EVIDENCE', 'STUDENT_LEARNING', 'EM_ECG_RECORDINGS', 'SHIFT_TOOLS', 'SEARCH_CORE'];
+        'CLINICAL_EVIDENCE', 'STUDENT_LEARNING', 'EM_ECG_RECORDINGS', 'SHIFT_TOOLS', 'SEARCH_CORE',
+        'EM_LEARNING_STORE', 'EM_PREFS', 'EM_SEARCH_INDEX', 'EM_AGREEMENT', 'EM_NAVIGATION'];
     for (const file of fs.readdirSync(path.join(root, 'assets')).filter(f => f.endsWith('.js'))) {
         const src = fs.readFileSync(path.join(root, 'assets', file), 'utf8');
         for (const g of published) {

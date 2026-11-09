@@ -5,6 +5,9 @@ const path = require('node:path');
 
 const root = path.join(__dirname, '..');
 const appJs = fs.readFileSync(path.join(root, 'assets/app.js'), 'utf8');
+/* Phase 2: the back-context state machine lives in navigation-store.js;
+   app.js keeps goBack() and delegating wrappers. */
+const navJs = fs.readFileSync(path.join(root, 'assets/navigation-store.js'), 'utf8');
 const applyRoute = appJs.slice(appJs.indexOf('function applyRoute('), appJs.indexOf('function renderUnavailablePage('));
 const renderStudy = appJs.slice(appJs.indexOf('function renderStudy('), appJs.indexOf('function showStudy('));
 
@@ -47,23 +50,23 @@ test('destinations record their context and topics only record what opened them'
     assert.match(topics, /captureBackSource\(\); renderPresentation\(id, target, preservePosition\);/);
     assert.doesNotMatch(topics, /recordBackContext\(/,
         'opening a topic must never overwrite the destination Back returns to');
-    assert.match(appJs, /if \(!lastClick \|\| lastClick\.hash !== backContext\.originHash\) return;/,
+    assert.match(navJs, /if \(!lastClick \|\| lastClick\.hash !== backContext\.originHash\) return;/,
         'only a card clicked inside the recorded destination becomes the Back target');
 });
 
 test('back labels follow the destination and fall back to the library', () => {
     assert.match(appJs, /label \|\| \('Back to ' \+ backDestination\(\)\.label\)/);
-    assert.match(appJs, /if \(\(location\.hash \|\| '#library'\) === backContext\.hash\) return \{ hash: '#library', label: 'Library' \};/,
+    assert.match(navJs, /if \(\(location\.hash \|\| '#library'\) === backContext\.hash\) return \{ hash: '#library', label: 'Library' \};/,
         'returning to the view already on screen falls back to the library');
-    assert.match(appJs, /const BACK_DESTINATIONS = \{[\s\S]*?library: \{ hash: '#library', label: 'Library' \}[\s\S]*?shift: \{ hash: '#shift', label: 'Quick' \}/);
+    assert.match(navJs, /const BACK_DESTINATIONS = \{[\s\S]*?library: \{ hash: '#library', label: 'Library' \}[\s\S]*?shift: \{ hash: '#shift', label: 'Quick' \}/);
 });
 
 test('back refocuses the card that opened the screen when it survives the render', () => {
-    assert.match(appJs, /backSource = \{ selector: '\[data-id="' \+ card\.dataset\.id \+ '"\]', y: lastClick\.scrollY \}/);
-    assert.match(appJs, /backSource = \{ selector: 'a\[href="#' \+ raw \+ '"\]', y: lastClick\.scrollY \}/);
-    assert.match(appJs, /document\.getElementById\('presentationLibraryTitle'\) \|\| stage\.querySelector\('h1'\) \|\| stage/,
+    assert.match(navJs, /backSource = \{ selector: '\[data-id="' \+ card\.dataset\.id \+ '"\]', y: lastClick\.scrollY \}/);
+    assert.match(navJs, /backSource = \{ selector: 'a\[href="#' \+ raw \+ '"\]', y: lastClick\.scrollY \}/);
+    assert.match(navJs, /document\.getElementById\('presentationLibraryTitle'\) \|\| \(stage && stage\.querySelector\('h1'\)\) \|\| stage/,
         'a destination that lost the card still lands on a heading, never on the body');
-    assert.match(appJs, /if \(source && source\.y\) window\.scrollTo\(\{ top: source\.y \}\);/,
+    assert.match(navJs, /if \(source && source\.y\) window\.scrollTo\(\{ top: source\.y \}\);/,
         'the destination keeps the scroll position it had when the topic was opened');
 });
 

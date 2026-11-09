@@ -28,6 +28,93 @@
     const BY_ID = {};
     DATA.forEach(function (cp) { BY_ID[cp.id] = cp; });
 
+    /* ══════════ Phase 1 — coordination contracts ══════════
+       The runtime stays classic-script modules that publish window.*
+       globals (see tests/module-loading.test.js), so load order and the
+       published names are the coordination contract. This registry makes
+       that contract explicit and verifiable instead of implicit:
+       validateModuleContracts() reports which published globals arrived
+       before app.js runs, and reportBootContracts() publishes the result
+       as window.EM_BOOT. Modules that load after app.js (design.js) are
+       consumers, not boot dependencies, and are therefore not listed.
+       Missing optional modules degrade gracefully — every consumer in
+       app.js guards its window.* reads — while missing critical data is
+       reported loudly in the console and the boot snapshot. */
+    const MODULE_CONTRACTS = [
+        { name: 'data', global: 'CP_DATA', required: true, consumers: ['app', 'design', 'student-learning'] },
+        { name: 'search-core', global: 'SEARCH_CORE', required: true, consumers: ['app'] },
+        { name: 'learning-store', global: 'EM_LEARNING_STORE', required: false, consumers: ['app'] },
+        { name: 'prefs-store', global: 'EM_PREFS', required: false, consumers: ['app', 'em-learning (backup validation)'] },
+        { name: 'search-index', global: 'EM_SEARCH_INDEX', required: false, consumers: ['app'] },
+        { name: 'agreement-store', global: 'EM_AGREEMENT', required: false, consumers: ['app'] },
+        { name: 'navigation-store', global: 'EM_NAVIGATION', required: false, consumers: ['app'] },
+        { name: 'evidence', global: 'CLINICAL_EVIDENCE', required: false, consumers: ['app'] },
+        { name: 'em-learning-data', global: 'EM_LEARNING_DATA', required: false, consumers: ['em-learning', 'design', 'student-learning'] },
+        { name: 'em-learning', global: 'EM_LEARNING', required: false, consumers: ['app'] },
+        { name: 'student-learning', global: 'STUDENT_LEARNING', required: false, consumers: ['app', 'design', 'ecg-explorer', 'em-learning'] },
+        { name: 'shift-tools', global: 'SHIFT_TOOLS', required: false, consumers: ['app'] },
+        { name: 'ecg-svg', global: 'ECG_SVG', required: false, consumers: ['app', 'ecg-case-tracings', 'ecg-curriculum', 'ecg-explorer', 'ecg-interactive'] },
+        { name: 'ecg-data', global: 'ECG_DATA', required: false, consumers: ['app'] },
+        { name: 'ecg-engine', global: 'ECG_ENGINE', required: false, consumers: ['ecg-case-tracings', 'ecg-curriculum', 'ecg-explorer', 'ecg-interactive'] },
+        { name: 'ecg-curriculum', global: 'ECG_CURRICULUM', required: false, consumers: ['app', 'ecg-explorer'] },
+        { name: 'ecg-interactive', global: 'ECG_INTERACTIVE', required: false, consumers: ['app', 'ecg-explorer'] },
+        { name: 'ecg-explorer', global: 'ECG_EXPLORER', required: false, consumers: ['app', 'em-learning'] }
+    ];
+
+    function validateModuleContracts(root) {
+        var scope = root || (typeof window !== 'undefined' ? window : {});
+        var missingCritical = [], missingOptional = [];
+        MODULE_CONTRACTS.forEach(function (contract) {
+            if (scope[contract.global] === undefined || scope[contract.global] === null) {
+                (contract.required ? missingCritical : missingOptional).push(contract.global);
+            }
+        });
+        return {
+            ok: missingCritical.length === 0,
+            missingCritical: missingCritical,
+            missingOptional: missingOptional,
+            checked: MODULE_CONTRACTS.map(function (c) { return c.global; })
+        };
+    }
+
+    function reportBootContracts() {
+        var report = validateModuleContracts();
+        if (typeof window !== 'undefined') {
+            window.EM_BOOT = Object.freeze({
+                ok: report.ok,
+                missingCritical: report.missingCritical.slice(),
+                missingOptional: report.missingOptional.slice()
+            });
+        }
+        if (!report.ok) {
+            console.error('EM Pocket boot: critical module data missing: ' + report.missingCritical.join(', ') +
+                '. The library will render without it; check that every startup script in index.html loaded.');
+        } else if (report.missingOptional.length) {
+            console.warn('EM Pocket boot: optional modules unavailable (features degraded): ' + report.missingOptional.join(', '));
+        }
+        return report;
+    }
+
+    /* Declarative route table for the hash router in applyRoute().
+       applyRoute() keeps its branch chain (back-context recording lives
+       there), but every route name it handles is listed here so a new
+       route cannot be added in one place and forgotten in the other.
+       'ecg' mirrors ECG_TOPIC_ID (defined below); 'presentation' resolves
+       against BY_ID at runtime. */
+    const ROUTE_REGISTRY = [
+        { id: 'search', handler: 'design.search' },
+        { id: 'settings', handler: 'design.settings' },
+        { id: 'learn', handler: 'em-learning / design.learn' },
+        { id: 'library', handler: 'renderHome / renderStudy(saved)' },
+        { id: 'ecg-hub', handler: 'design.ecg' },
+        { id: 'study', handler: 'renderStudy' },
+        { id: 'shift', handler: 'renderShift' },
+        { id: 'calc', handler: 'renderCalculators' },
+        { id: 'ecg-explorer', handler: 'renderExplorer' },
+        { id: 'ecg', handler: 'renderEcg' },
+        { id: 'presentation', handler: 'renderPresentation' }
+    ];
+
     function announce(msg) {
         var el = document.getElementById('ariaLive');
         if (!el) {
@@ -342,52 +429,21 @@
        Learn or Quick), never always to the first page, and re-focuses the card that
        opened it when that card survives the re-render. Topics and the ECG guide never
        overwrite this context — they only record which card opened them. */
-    const BACK_DESTINATIONS = {
-        library: { hash: '#library', label: 'Library' },
-        search: { hash: '#search', label: 'Search' },
-        learn: { hash: '#learn~home', label: 'Learn' },
-        study: { hash: '#learn~home', label: 'Learn' },
-        shift: { hash: '#shift', label: 'Quick' },
-        ecg: { hash: '#ecg-hub', label: 'ECG' },
-        explorer: { hash: '#ecg-explorer', label: 'Explorer' }
-    };
-    let backContext = { hash: '#library', originHash: '#library', label: 'Library' };
-    let backSource = null;
-    let lastClick = null;
-    function recordBackContext(key, hash) {
-        const dest = BACK_DESTINATIONS[key] || BACK_DESTINATIONS.library;
-        backContext = { hash: hash || dest.hash, originHash: location.hash || '#library', label: dest.label };
-    }
-    function captureBackSource() {
-        if (!lastClick || lastClick.hash !== backContext.originHash) return;
-        const el = lastClick.el;
-        if (!el || !el.closest) return;
-        const card = el.closest('[data-id]');
-        if (card && /^[a-z0-9-]+$/.test(card.dataset.id || '')) {
-            backSource = { selector: '[data-id="' + card.dataset.id + '"]', y: lastClick.scrollY };
-            return;
-        }
-        const link = el.closest('a[href^="#"]');
-        if (!link) return;
-        const raw = (link.getAttribute('href') || '').slice(1);
-        if (/^[a-z0-9-]+(?:~[a-z0-9-]+)?$/.test(raw)) backSource = { selector: 'a[href="#' + raw + '"]', y: lastClick.scrollY };
-    }
-    function restoreBackFocus() {
-        const source = backSource;
-        backSource = null;
-        let el = null;
-        if (source && source.selector) {
-            try { el = stage.querySelector(source.selector); } catch (e) { el = null; }
-        }
-        if (source && source.y) window.scrollTo({ top: source.y });
-        if (el && el.focus) { el.focus({ preventScroll: true }); return; }
-        const fallback = document.getElementById('presentationLibraryTitle') || stage.querySelector('h1') || stage;
-        if (fallback && fallback.focus) { try { fallback.focus({ preventScroll: true }); } catch (e) {} }
-    }
-    function backDestination() {
-        if ((location.hash || '#library') === backContext.hash) return { hash: '#library', label: 'Library' };
-        return { hash: backContext.hash, label: backContext.label };
-    }
+    /* Back returns to the destination that opened the current screen (Library, Search,
+       Learn or Quick), never always to the first page, and re-focuses the card that
+       opened it when that card survives the re-render. Topics and the ECG guide never
+       overwrite this context — they only record which card opened them.
+       Phase 2 extraction: the state machine lives in
+       assets/navigation-store.js (window.EM_NAVIGATION); goBack below stays
+       here because it drives applyRoute. If the store failed to load, Back
+       degrades to always returning to the Library. */
+    const navigationStore = (typeof window !== 'undefined' && window.EM_NAVIGATION) || null;
+    const BACK_DESTINATIONS = navigationStore ? navigationStore.BACK_DESTINATIONS : { library: { hash: '#library', label: 'Library' } };
+    function recordBackContext(key, hash) { if (navigationStore) navigationStore.recordBackContext(key, hash); }
+    function captureBackSource() { if (navigationStore) navigationStore.captureBackSource(); }
+    function rememberLastClick(el, hash, scrollY) { if (navigationStore) navigationStore.rememberClick(el, hash, scrollY); }
+    function restoreBackFocus() { if (navigationStore) navigationStore.restoreBackFocus(stage); }
+    function backDestination() { return navigationStore ? navigationStore.backDestination() : { hash: '#library', label: 'Library' }; }
     function goBack() {
         const dest = backDestination().hash;
         const open = () => {
@@ -397,14 +453,12 @@
         };
         if (!window.POCKET_DESIGN || window.POCKET_DESIGN.beforeRoute(open)) open();
     }
-    const reviewState = {};
     let patientFilter = 'all';
     let libraryFiltersOpen = false;
     let librarySystem = 'all';
     let caseCursor = 0;
     let offlineStatus = ('serviceWorker' in navigator && navigator.serviceWorker.controller) ? 'Ready for offline use' :
         ('serviceWorker' in navigator ? 'Offline setup pending' : 'Online access');
-    const REVIEW_INTERVALS = [1, 3, 7, 14];
     const PATIENT_CONTEXTS = {
         pediatric: ['pediatric-fever', 'pediatric-respiratory-distress', 'airway-stridor', 'fever', 'rash', 'seizures', 'abdominal-pain', 'headache'],
         pregnancy: ['pregnancy-emergency', 'pelvic-pain', 'vaginal-bleeding', 'abdominal-pain', 'dyspnea', 'chest-pain', 'headache', 'overdose'],
@@ -568,61 +622,25 @@
     function severityCount(cp) {
         return cp.dontMiss.filter(d => severityFilter === 'all' ? d[1] === 'critical' : d[1] === severityFilter).length;
     }
+    /* ---------- learning store (delegates to assets/learning-store.js) ----------
+       Phase 2 extraction: the reviewed/saved/notes/review-plan logic now
+       lives in learning-store.js (window.EM_LEARNING_STORE). These thin
+       wrappers keep every renderer call site and the EM_POCKET_UI exports
+       unchanged, and degrade to safe no-ops if the store script failed. */
+    const learningStore = (typeof window !== 'undefined' && window.EM_LEARNING_STORE) || null;
+    const REVIEW_INTERVALS = learningStore ? learningStore.REVIEW_INTERVALS : [1, 3, 7, 14];
+    const fallbackReviewState = {};
+    if (learningStore && learningStore.setTopicExists) learningStore.setTopicExists(topicRecord);
+    /* Reading-prefs normalization still needs this shape check locally. */
+    function isRecord(value) { return !!value && typeof value === 'object' && !Array.isArray(value); }
     function reviewFor(id) {
-        if (!reviewState[id]) reviewState[id] = { redFlags: {}, sections: {} };
-        return reviewState[id];
+        if (learningStore) return learningStore.reviewFor(id);
+        if (!fallbackReviewState[id]) fallbackReviewState[id] = { redFlags: {}, sections: {} };
+        return fallbackReviewState[id];
     }
-    function isRecord(value) {
-        return !!value && typeof value === 'object' && !Array.isArray(value);
-    }
-    function normalizeLearning(value) {
-        const data = isRecord(value) ? value : {};
-        return {
-            reviewed: isRecord(data.reviewed) ? data.reviewed : {},
-            reviewPlan: isRecord(data.reviewPlan) ? data.reviewPlan : {},
-            saved: isRecord(data.saved) ? data.saved : {},
-            notes: isRecord(data.notes) ? data.notes : {}
-        };
-    }
-    let learningMemory = normalizeLearning({});
-    let learningStorageAvailable = true;
-    let learningStorageReadable = false;
-    function loadLearning() {
-        if (!learningStorageAvailable) return learningMemory;
-        let raw;
-        try {
-            raw = localStorage.getItem('em-cps-learning');
-        } catch (e) {
-            learningStorageAvailable = false;
-            learningStorageReadable = false;
-            return learningMemory;
-        }
-        learningStorageReadable = true;
-        try { learningMemory = normalizeLearning(JSON.parse(raw || '{}')); }
-        catch (e) { learningMemory = normalizeLearning({}); }
-        return learningMemory;
-    }
-    function saveLearning(data, retry) {
-        learningMemory = normalizeLearning(data);
-        if (!learningStorageAvailable && !(retry && learningStorageReadable)) return false;
-        try {
-            localStorage.setItem('em-cps-learning', JSON.stringify(learningMemory));
-            learningStorageAvailable = true;
-            return true;
-        } catch (e) {
-            learningStorageAvailable = false;
-            return false;
-        }
-    }
-    function reviewedIds() {
-        const ids = loadLearning().reviewed || {};
-        return Object.keys(ids).filter(id => ids[id]);
-    }
-    function isReviewed(id) { return reviewedIds().indexOf(id) !== -1; }
-    function isReviewDue(id) {
-        const item = loadLearning().reviewPlan[id];
-        return !!item && Number(item.dueAt) <= Date.now();
-    }
+    function reviewedIds() { return learningStore ? learningStore.reviewedIds() : []; }
+    function isReviewed(id) { return learningStore ? learningStore.isReviewed(id) : false; }
+    function isReviewDue(id) { return learningStore ? learningStore.isReviewDue(id) : false; }
     /* The scheduled state is a state, not a different action, so it reuses the
        same button and the `completed` icon rather than a text tick. */
     function reviewActionLabel(id) {
@@ -631,42 +649,13 @@
         return semanticSvg(SEMANTIC_ICONS['completed']) + '<span>Review scheduled</span>';
     }
     function setReviewed(id, value) {
-        const learning = loadLearning();
-        if (value) {
-            const previous = learning.reviewPlan[id] || {};
-            const stage = Math.min((Number(previous.stage) || 0) + 1, REVIEW_INTERVALS.length);
-            learning.reviewed[id] = Date.now();
-            learning.reviewPlan[id] = { stage: stage, dueAt: Date.now() + REVIEW_INTERVALS[stage - 1] * 86400000 };
-        } else {
-            delete learning.reviewed[id];
-            delete learning.reviewPlan[id];
-        }
-        const persisted = saveLearning(learning);
-        return { plan: learning.reviewPlan[id] || null, persisted: persisted };
+        return learningStore ? learningStore.setReviewed(id, value) : { plan: null, persisted: false };
     }
-    function savedIds() {
-        const saved = loadLearning().saved || {};
-        return Object.keys(saved).filter(id => saved[id]);
-    }
-    function isSaved(id) { return savedIds().indexOf(id) !== -1; }
-    function setSaved(id, value) {
-        const learning = loadLearning();
-        if (value) learning.saved[id] = Date.now(); else delete learning.saved[id];
-        return saveLearning(learning);
-    }
-    function noteFor(id) {
-        const notes = loadLearning().notes || {};
-        return String(notes[id] || '');
-    }
-    function setNote(id, note) {
-        const learning = loadLearning();
-        const updated = Object.assign({}, learning, { notes: Object.assign({}, learning.notes) });
-        if (note.trim()) updated.notes[id] = note.trim(); else delete updated.notes[id];
-        const persisted = saveLearning(updated, true);
-        // A failed note write remains a draft, so Discard can still restore the saved note.
-        if (!persisted) learningMemory = learning;
-        return persisted;
-    }
+    function savedIds() { return learningStore ? learningStore.savedIds() : []; }
+    function isSaved(id) { return learningStore ? learningStore.isSaved(id) : false; }
+    function setSaved(id, value) { return learningStore ? learningStore.setSaved(id, value) : false; }
+    function noteFor(id) { return learningStore ? learningStore.noteFor(id) : ''; }
+    function setNote(id, note) { return learningStore ? learningStore.setNote(id, note) : false; }
     function saveCurrentNote() {
         const note = stage.querySelector('#studyNote');
         if (!note || !note.dataset.noteTopic) return false;
@@ -677,18 +666,8 @@
         toast(persisted ? 'Learning note saved.' : 'Could not save your note. Keep this page open or copy your draft.');
         return persisted;
     }
-    function dueIds() {
-        const plan = loadLearning().reviewPlan || {};
-        const now = Date.now();
-        return Object.keys(plan).filter(id => topicRecord(id) && Number(plan[id].dueAt) <= now);
-    }
-    function reviewLabel(id) {
-        const item = (loadLearning().reviewPlan || {})[id];
-        if (!item) return 'Not scheduled';
-        if (Number(item.dueAt) <= Date.now()) return 'Due now';
-        const days = Math.max(1, Math.ceil((Number(item.dueAt) - Date.now()) / 86400000));
-        return 'Review in ' + days + 'd';
-    }
+    function dueIds() { return learningStore ? learningStore.dueIds() : []; }
+    function reviewLabel(id) { return learningStore ? learningStore.reviewLabel(id) : 'Not scheduled'; }
     function patientMatches(cp) {
         return patientFilter === 'all' || (PATIENT_CONTEXTS[patientFilter] || []).indexOf(cp.id) !== -1;
     }
@@ -2344,6 +2323,20 @@
         if(design)design.afterRoute();
     }
 
+    /* Error boundary for the router: a throwing renderer must never
+       leave a blank stage. Fall back to the explanatory unavailable
+       page (which offers the library and search) and keep progress. */
+    function safeApplyRoute(preservePosition, approved) {
+        try {
+            applyRoute(preservePosition, approved);
+        } catch (error) {
+            console.error('EM Pocket route failed', error);
+            try { renderUnavailablePage(); } catch (fallbackError) {
+                console.error('EM Pocket fallback also failed', fallbackError);
+            }
+        }
+    }
+
     function renderUnavailablePage() {
         currentId = null;
         syncNav('home');
@@ -2437,89 +2430,20 @@
        themselves are rendered as HTML below; this table exists so their
        clinical content (doses, antidotes, scores) is indexed and findable.
        Keep in sync with the rendered cards; a test guards the key terms. */
-    const QUICK_SEARCH_CARDS = [
-        { route: 'shift', term: 'Rapid Sequence Intubation (RSI)', target: 'airway-stridor', kind: 'Quick · airway dose',
-          text: 'Rapid Sequence Intubation RSI induction paralytics ketamine 1-2 mg/kg IV etomidate 0.3 mg/kg reduce shock rocuronium 1.2 mg/kg roc succinylcholine suxamethonium 1.5 mg/kg post-intubation sedation push-dose vasopressor' },
-        { route: 'shift', term: 'Shock Vasopressors & Inotropes', target: 'shock', kind: 'Quick · vasopressor dose',
-          text: 'Shock first-line vasopressors inotropes norepinephrine noradrenaline 0.05-0.5 mcg/kg/min target MAP 65 epinephrine adrenaline 0.05-0.5 mcg/kg/min dobutamine 2-20 mcg/kg/min' },
-        { route: 'shift', term: 'High-Yield Antidotes & Hyperkalemia', target: 'overdose', kind: 'Quick · antidote dose',
-          text: 'Antidotes hyperkalemia acetaminophen paracetamol N-acetylcysteine NAC acetylcysteine Rumack-Matthew opioid naloxone narcan 0.04-0.4 mg IV TCA tricyclic sodium bicarbonate 1-2 mEq/kg QRS calcium gluconate 10% 10-30 mL calcium chloride insulin dextrose albuterol salbutamol nebulized potassium removal' },
-        { route: 'shift', term: 'Anaphylaxis IM Epinephrine', target: 'anaphylaxis', kind: 'Quick · dose',
-          text: 'Anaphylaxis first-line IM epinephrine adrenaline 0.3-0.5 mg adult child 0.01 mg/kg max 0.3 mg autoinjector 0.15 mg 0.3 mg RCUK age bands 0.15 0.3 0.5 mg crystalloid 20 mL/kg' },
-        { route: 'shift', term: 'Status Epilepticus Timed Escalation', target: 'seizures', kind: 'Quick · dose',
-          text: 'Status epilepticus benzodiazepine midazolam 10 mg 5 mg 0.2 mg/kg lorazepam 0.1 mg/kg max 4 mg levetiracetam 60 mg/kg fosphenytoin 20 mg PE/kg valproate 40 mg/kg ESETT' },
-        { route: 'shift', term: 'HEART Pathway & hs-Troponin', target: 'chest-pain', kind: 'Quick · decision rule',
-          text: 'HEART pathway high-sensitivity troponin chest pain history ECG age risk factors rule-out 0-3 score-based pathway' },
-        { route: 'shift', term: 'PERC Rule & PE Pretest', target: 'dyspnea', kind: 'Quick · decision rule',
-          text: 'PERC rule pulmonary embolism pretest probability D-dimer age-adjusted YEARS CTPA Wells' },
-        { route: 'shift', term: 'NEXUS & Canadian C-Spine', target: 'multiple-trauma', kind: 'Quick · decision rule',
-          text: 'NEXUS Canadian C-Spine rule cervical spine clearance blunt trauma imaging rotation' },
-        { route: 'shift', term: 'PECARN Pediatric Head Trauma', target: 'headache', kind: 'Quick · decision rule',
-          text: 'PECARN pediatric head trauma rule CT head GCS altered mental status skull fracture scalp hematoma LOC mechanism' }
-    ];
-
+    /* ---------- search index (delegates to assets/search-index.js) ----------
+       Phase 2 extraction: the index data (Quick cards + builder) lives in
+       search-index.js as a pure function of its inputs. app.js supplies
+       the clinical data, ECG record and optional module singletons, and
+       keeps the search UI (popup, keyboard, highlighting, routing) below. */
+    const searchIndexModule = (typeof window !== 'undefined' && window.EM_SEARCH_INDEX) || null;
+    const QUICK_SEARCH_CARDS = searchIndexModule ? searchIndexModule.QUICK_SEARCH_CARDS : [];
     function buildSearchIndex() {
-        const idx = [];
-        DATA.forEach(cp => {
-            idx.push({ cpId: cp.id, target: 'how-to-think', title: cp.name, sub: cp.tag, kind: 'Presentation' });
-            (cp.approach || []).forEach(function (s) {
-                idx.push({ cpId: cp.id, target: 'how-to-think', title: s, sub: 'Approach — ' + cp.name, kind: 'Approach' });
-            });
-            cp.dontMiss.forEach(d => idx.push({ cpId: cp.id, target: 'dont-miss', title: d[0], sub: d[2], kind: cp.name + ' · ' + d[1] }));
-            cp.redFlags.forEach(r => idx.push({ cpId: cp.id, target: 'red-flags', title: r, sub: 'Red flag — ' + cp.name, kind: 'Red flag' }));
-            cp.history.forEach(item => idx.push({ cpId: cp.id, target: 'history', title: item, sub: 'Focused history — ' + cp.name, kind: 'History' }));
-            cp.exam.forEach(item => idx.push({ cpId: cp.id, target: 'exam', title: item, sub: 'Examination — ' + cp.name, kind: 'Exam' }));
-            cp.workup.forEach(group => group[1].forEach(item => idx.push({ cpId: cp.id, target: 'workup', title: item, sub: group[0] + ' — ' + cp.name, kind: 'Workup' })));
-            cp.disposition.forEach(item => idx.push({ cpId: cp.id, target: 'disposition', title: item[0], sub: item[1] + ' — ' + cp.name, kind: 'Disposition' }));
-            cp.pitfalls.forEach(p => idx.push({ cpId: cp.id, target: 'pearls-pitfalls', title: p, sub: 'Pitfall — ' + cp.name, kind: 'Pitfall' }));
-            (cp.pearls || []).forEach(p => idx.push({ cpId: cp.id, target: 'pearls-pitfalls', title: p, sub: 'Pearl — ' + cp.name, kind: 'Pearl' }));
+        if (!searchIndexModule) return [];
+        return searchIndexModule.buildSearchIndex(DATA, getEcg(), {
+            byId: BY_ID, ecgTopicId: ECG_TOPIC_ID, stripTags: stripTags,
+            ecgExplorer: window.ECG_EXPLORER, studentLearning: window.STUDENT_LEARNING,
+            emLearning: window.EM_LEARNING, shiftTools: window.SHIFT_TOOLS
         });
-        const ecg = getEcg();
-        if (ecg) {
-            idx.push({ cpId: ECG_TOPIC_ID, target: '', title: 'ECG Guide', sub: ecg.tag, kind: 'ECG' });
-            idx.push({ cpId: ECG_TOPIC_ID, target: '', title: ecg.title, sub: ecg.subtitle || ecg.tag, kind: 'ECG' });
-            ecg.firstPass.forEach(function (s) {
-                idx.push({ cpId: ECG_TOPIC_ID, target: 'ecg-how', title: s, sub: 'ECG first-pass', kind: 'ECG' });
-            });
-            ecg.steps.forEach(function (s) {
-                idx.push({ cpId: ECG_TOPIC_ID, target: 'step-' + s.id, title: 'Step ' + s.num + ': ' + s.name, sub: s.summary, kind: 'ECG step' });
-                if (s.pearl) idx.push({ cpId: ECG_TOPIC_ID, target: 'step-' + s.id, title: s.pearl, sub: s.name + ' · pearl', kind: 'ECG step' });
-                if (s.pitfall) idx.push({ cpId: ECG_TOPIC_ID, target: 'step-' + s.id, title: s.pitfall, sub: s.name + ' · pitfall', kind: 'ECG step' });
-            });
-            ecg.patterns.forEach(function (p) {
-                idx.push({ cpId: ECG_TOPIC_ID, target: p.id, title: p.name, sub: stripTags(p.criteria), kind: 'ECG pattern' });
-                if (p.tag) idx.push({ cpId: ECG_TOPIC_ID, target: p.id, title: p.tag, sub: p.name, kind: 'ECG pattern' });
-            });
-            ecg.redFlags.forEach(function (r) {
-                idx.push({ cpId: ECG_TOPIC_ID, target: 'ecg-red-flags', title: r, sub: 'ECG red flag', kind: 'ECG' });
-            });
-            ecg.pearls.forEach(function (p) {
-                idx.push({ cpId: ECG_TOPIC_ID, target: 'pearls-pitfalls', title: p, sub: 'ECG pearl', kind: 'ECG' });
-            });
-            ecg.pitfalls.forEach(function (p) {
-                idx.push({ cpId: ECG_TOPIC_ID, target: 'pearls-pitfalls', title: p, sub: 'ECG pitfall', kind: 'ECG' });
-            });
-        }
-        if(window.ECG_EXPLORER)window.ECG_EXPLORER.cases.forEach(c=>idx.unshift({cpId:'ecg-explorer',target:c.id,title:c.name,sub:c.category+' · '+c.id.replace(/-/g,' ')+' · '+c.summary,kind:'Interactive ECG'}));
-        if(window.STUDENT_LEARNING&&Array.isArray(window.STUDENT_LEARNING.cases))window.STUDENT_LEARNING.cases.forEach(c=>idx.unshift({cpId:'study',target:'case-'+c.id,title:c.title,sub:'Short case · '+c.stem,kind:'Short case'}));
-        if(window.EM_LEARNING) idx.unshift(...window.EM_LEARNING.searchItems());
-        /* Symptom-first entry: index lay-named symptoms so a learner who does not
-           yet know the diagnosis can search "blue lips" or "cannot breathe".
-           Each term resolves to the presentation pathway that answers it. */
-        if(window.SHIFT_TOOLS && Array.isArray(window.SHIFT_TOOLS.symptomTerms)){
-            window.SHIFT_TOOLS.symptomTerms.forEach(function(entry){
-                const cp=BY_ID[entry.cpId]; if(!cp) return;
-                entry.terms.forEach(function(term){
-                    idx.unshift({cpId:entry.cpId,target:'',title:term,sub:'Symptom · answers in '+cp.name,kind:'Symptom',symptom:true});
-                });
-            });
-        }
-        /* Quick drug and decision-rule cards: index their clinical content so
-           "rocuronium", "calcium gluconate" or "adrenaline" reach the dose card. */
-        QUICK_SEARCH_CARDS.forEach(function(card){
-            idx.unshift({cpId:card.route,target:card.target,title:card.term,sub:card.text,kind:card.kind,quick:true});
-        });
-        return idx;
     }
     const SEARCH_INDEX = buildSearchIndex();
 
@@ -2686,56 +2610,42 @@
     }
 
     /* ---------- reading prefs: theme, accent, size, bold ---------- */
-    const SCALE_STEPS = [0.85, 1, 1.12, 1.25, 1.4];
-    const ACCENTS = ['emerald', 'ocean', 'violet', 'rose', 'amber', 'teal'];
-    const ACCENT_LABELS = { emerald: 'Emerald green', ocean: 'Ocean blue', violet: 'Violet purple', rose: 'Rose red', amber: 'Amber orange', teal: 'Teal cyan' };
-    function normalizeAccent(v) {
-        return ACCENTS.indexOf(v) !== -1 ? v : 'emerald';
-    }
+    /* ---------- reading prefs: theme, accent, size, bold ----------
+       Phase 2 extraction: state + normalization live in
+       assets/prefs-store.js (window.EM_PREFS), the single source of
+       truth for the accent list and scale steps. These wrappers keep
+       the reading-panel UI below untouched and degrade to in-memory
+       defaults if the store script failed to load. */
+    const prefsStore = (typeof window !== 'undefined' && window.EM_PREFS) || null;
+    const SCALE_STEPS = prefsStore ? prefsStore.SCALE_STEPS : [0.85, 1, 1.12, 1.25, 1.4];
+    const ACCENTS = prefsStore ? prefsStore.ACCENTS : ['emerald', 'ocean', 'violet', 'rose', 'amber', 'teal'];
+    const ACCENT_LABELS = prefsStore ? prefsStore.ACCENT_LABELS : { emerald: 'Emerald green', ocean: 'Ocean blue', violet: 'Violet purple', rose: 'Rose red', amber: 'Amber orange', teal: 'Teal cyan' };
+    function normalizeAccent(v) { return prefsStore ? prefsStore.normalizeAccent(v) : (ACCENTS.indexOf(v) !== -1 ? v : 'emerald'); }
     function nearestScale(v) {
+        if (prefsStore) return prefsStore.nearestScale(v);
         const n = Number(v) || 1;
         let best = 1, distance = Infinity;
-        SCALE_STEPS.forEach(function (s) {
-            const difference = Math.abs(s - n);
-            if (difference < distance) { distance = difference; best = s; }
-        });
+        SCALE_STEPS.forEach(function (s) { const d = Math.abs(s - n); if (d < distance) { distance = d; best = s; } });
         return best;
     }
     function normalizePrefs(value) {
+        if (prefsStore) return prefsStore.normalizePrefs(value);
         const prefs = isRecord(value) ? value : {};
-        return {
-            theme: prefs.theme === 'dark' ? 'dark' : 'light',
-            accent: normalizeAccent(prefs.accent),
-            scale: nearestScale(prefs.scale),
-            bold: typeof prefs.bold === 'boolean' ? prefs.bold : false,
-            sidebar: prefs.sidebar === true
-        };
+        return { theme: prefs.theme === 'dark' ? 'dark' : 'light', accent: normalizeAccent(prefs.accent), scale: nearestScale(prefs.scale), bold: typeof prefs.bold === 'boolean' ? prefs.bold : false, sidebar: prefs.sidebar === true };
     }
-    let prefsMemory = normalizePrefs({});
     let prefsStorageAvailable = true;
+    function syncPrefsAvailability() { if (prefsStore) prefsStorageAvailable = prefsStore.storageAvailable(); }
     function loadPrefs() {
-        if (!prefsStorageAvailable) return prefsMemory;
-        let raw;
-        try {
-            raw = localStorage.getItem('em-cps-prefs');
-        } catch (e) {
-            prefsStorageAvailable = false;
-            return prefsMemory;
-        }
-        try { prefsMemory = normalizePrefs(JSON.parse(raw || '{}')); }
-        catch (e) { prefsMemory = normalizePrefs({}); }
-        return prefsMemory;
+        if (!prefsStore) return normalizePrefs({});
+        const prefs = prefsStore.loadPrefs();
+        syncPrefsAvailability();
+        return prefs;
     }
     function savePrefs(prefs) {
-        prefsMemory = normalizePrefs(prefs);
-        if (!prefsStorageAvailable) return false;
-        try {
-            localStorage.setItem('em-cps-prefs', JSON.stringify(prefsMemory));
-            return true;
-        } catch (e) {
-            prefsStorageAvailable = false;
-            return false;
-        }
+        if (!prefsStore) return false;
+        const saved = prefsStore.savePrefs(prefs);
+        syncPrefsAvailability();
+        return saved;
     }
     // Keep the first visible character in place when text reflows behind the panel.
     function readingAnchor() {
@@ -2946,19 +2856,17 @@
     }
 
     /* ---------- educational disclaimer modal ---------- */
-    const DISCLAIMER_STORAGE_KEY = 'em-cps-disclaimer-agreed';
-    let disclaimerAgreedInMemory = false;
-    function isDisclaimerAgreed() {
-        if (disclaimerAgreedInMemory) return true;
-        try { disclaimerAgreedInMemory = !!localStorage.getItem(DISCLAIMER_STORAGE_KEY); }
-        catch (e) {}
-        return disclaimerAgreedInMemory;
-    }
-    function setDisclaimerAgreed() {
-        disclaimerAgreedInMemory = true;
-        try { localStorage.setItem(DISCLAIMER_STORAGE_KEY, String(Date.now())); }
-        catch (e) {}
-    }
+    /* ---------- educational disclaimer modal ----------
+       Phase 2 extraction: agreement state lives in
+       assets/agreement-store.js (window.EM_AGREEMENT) with the same
+       never-clear in-memory cache. Wrappers keep the dialog UI below
+       and EM_POCKET_UI.showDisclaimer (used by design.js) unchanged;
+       a missing store counts as not-yet-agreed so the notice still
+       gates entry on first launch. */
+    const agreementStore = (typeof window !== 'undefined' && window.EM_AGREEMENT) || null;
+    const DISCLAIMER_STORAGE_KEY = agreementStore ? agreementStore.STORAGE_KEY : 'em-cps-disclaimer-agreed';
+    function isDisclaimerAgreed() { return agreementStore ? agreementStore.isAgreed() : false; }
+    function setDisclaimerAgreed() { if (agreementStore) agreementStore.setAgreed(); }
     function showDisclaimer(isReviewOnly) {
         const overlay = document.getElementById('disclaimerOverlay');
         const check = document.getElementById('disclaimerCheck');
@@ -3214,12 +3122,13 @@
         });
     } catch (e) {}
     function init() {
+        reportBootContracts();
         setupDisclaimer();
         /* Remember which element the clinician used to leave a destination, so Back can
            focus that same card or result again after the destination re-renders. */
         document.addEventListener('click', function (e) {
             const el = e.target && e.target.closest ? e.target : null;
-            if (el) lastClick = { el: el, hash: location.hash || '#library', scrollY: window.scrollY };
+            if (el) rememberLastClick(el, location.hash || '#library', window.scrollY);
         }, true);
         buildSidebar();
         syncSidebarAccessibility();
@@ -3471,13 +3380,13 @@
             }
         });
 
-        window.addEventListener('hashchange', () => applyRoute());
-        applyRoute();
+        window.addEventListener('hashchange', () => safeApplyRoute());
+        safeApplyRoute();
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261101-bedside-v61').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261108-coordination-v67').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Ready for offline use'));
                     const applyUpdate = () => {
                         if(window.POCKET_DESIGN && !window.POCKET_DESIGN.beforeRoute(() => window.location.reload()))return;
@@ -3512,7 +3421,7 @@
         }
     }
 
-    window.EM_POCKET_UI = { stage, esc, highlightMatch, dueIds, savedIds, reviewedIds, noteFor, saveCurrentNote, toast, findSearchHits, setStageContext, syncNav, showDisclaimer, openReadingPanel, closeReadingPanel, get offlineStatus(){return offlineStatus;} };
+    window.EM_POCKET_UI = { stage, esc, highlightMatch, dueIds, savedIds, reviewedIds, noteFor, saveCurrentNote, toast, findSearchHits, setStageContext, syncNav, showDisclaimer, openReadingPanel, closeReadingPanel, validateModuleContracts, reportBootContracts, MODULE_CONTRACTS, ROUTE_REGISTRY, safeApplyRoute, get offlineStatus(){return offlineStatus;} };
     if (document.readyState !== 'complete') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

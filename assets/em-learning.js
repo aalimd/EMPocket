@@ -263,7 +263,7 @@
     let recordingsPromise = null;
     function loadRecordings() {
         if (!recordingsPromise) {
-            recordingsPromise = import('./ecg-recordings.js?v=20261101-bedside-v61')
+            recordingsPromise = import('./ecg-recordings.js?v=20261108-coordination-v67')
                 .catch(function () { recordingsPromise = null; });
         }
         return recordingsPromise || Promise.resolve();
@@ -350,7 +350,10 @@
                 for(const k of ['reviewed','saved'])if(value[k]&&!Object.values(value[k]).every(v=>typeof v==='boolean'||timestamp(v)))throw Error('Invalid topic activity.');
                 if(value.reviewPlan&&!Object.values(value.reviewPlan).every(v=>object(v)&&fields(v,['stage','dueAt'])&&Number.isInteger(v.stage)&&v.stage>=0&&v.stage<=4&&timestamp(v.dueAt)))throw Error('Invalid review schedule.');
             }
-            if(key==='em-cps-prefs' && (!fields(value,['theme','accent','scale','bold','sidebar'])||(value.theme!==undefined&&!['light','dark'].includes(value.theme))||(value.accent!==undefined&&!['emerald','ocean','violet','rose','amber','teal'].includes(value.accent))||(value.scale!==undefined&&![.85,1,1.12,1.25,1.4].includes(value.scale))||['bold','sidebar'].some(k=>value[k]!==undefined&&typeof value[k]!=='boolean')))throw Error('Invalid reading preferences.');
+            /* Reading prefs are owned by assets/prefs-store.js (window.EM_PREFS);
+               read its accent/scale lists at runtime so backup validation can
+               never drift from the UI. Literals remain as the offline fallback. */
+            if(key==='em-cps-prefs'){const P=window.EM_PREFS;const accents=P&&P.ACCENTS?P.ACCENTS:['emerald','ocean','violet','rose','amber','teal'];const scales=P&&P.SCALE_STEPS?P.SCALE_STEPS:[.85,1,1.12,1.25,1.4];if(!fields(value,['theme','accent','scale','bold','sidebar'])||(value.theme!==undefined&&!['light','dark'].includes(value.theme))||(value.accent!==undefined&&!accents.includes(value.accent))||(value.scale!==undefined&&!scales.includes(value.scale))||['bold','sidebar'].some(k=>value[k]!==undefined&&typeof value[k]!=='boolean'))throw Error('Invalid reading preferences.');}
             if(key==='em-student-progress' && (!fields(value,['ratings','last'])||(value.ratings&&(!object(value.ratings)||!Object.values(value.ratings).every(v=>object(v)&&fields(v,['value','at'])&&['got','partly','again'].includes(v.value)&&timestamp(v.at))))||(value.last!==undefined&&typeof value.last!=='string')))throw Error('Invalid self-assessment record.');
             if(key==='em-ecg-learning-v1' && (!fields(value,['last','finding','completed','review'])||(value.last!==undefined&&typeof value.last!=='string')||(value.finding!==undefined&&(!Number.isInteger(value.finding)||value.finding<0))))throw Error('Invalid ECG location.');
             if(key==='em-ecg-learning-v1' && ['completed','review'].some(k=>value[k]!==undefined&&(!Array.isArray(value[k])||!value[k].every(x=>typeof x==='string'))))throw Error('Invalid ECG learning record.');
