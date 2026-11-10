@@ -567,7 +567,9 @@
             if (!source || !/^https:\/\//.test(source[1])) return '';
             return '<li><a href="' + esc(source[1]) + '" target="_blank" rel="noopener noreferrer">' + esc(source[0]) + '</a></li>';
         }).join('');
-        return '<p class="evidence-note">Selected guidance · source check ' + esc(evidence.checked) + '. These '+keys.length+' source links support selected teaching points, not a complete review of this topic. Check population, setting and local protocol before applying a recommendation.</p><ul class="refs">' + links + '</ul>';
+        const review = evidence.topicReviews && evidence.topicReviews[id];
+        const update = review ? '<p class="evidence-note">Selected additions checked ' + esc(review.checked) + ': ' + esc(review.scope) + '. This date applies only to these additions.</p>' : '';
+        return '<p class="evidence-note">Selected guidance · source check ' + esc(evidence.checked) + '. These '+keys.length+' source links support selected teaching points, not a complete review of this topic. Check population, setting and local protocol before applying a recommendation.</p>' + update + '<ul class="refs">' + links + '</ul>';
     }
     function toast(msg) {
         const t = document.getElementById('toast');
@@ -3414,7 +3416,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = isAppWorker(navigator.serviceWorker.controller);
-                navigator.serviceWorker.register('./sw.js?v=20261110-coverage-v74').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261110-content-v75').then((registration) => {
                     navigator.serviceWorker.ready.then((ready) => {
                         if (ready.scope === new URL('./', location.href).href) setOfflineStatus('Ready for offline use');
                     });

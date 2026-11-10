@@ -1365,3 +1365,32 @@ test('weight calculator suggestions and View all search results have unique opti
  const r=await evaluate(`(()=>{const options=[...document.querySelectorAll('.results-pop [role="option"]')];return {ids:options.map(o=>o.id),calculator:options[0].dataset.id};})()`);
  assert.equal(r.calculator,'calc');assert.equal(new Set(r.ids).size,r.ids.length);
 });
+
+test('expanded presentations render their teaching and scoped source dates on a phone viewport',async t=>{
+ if(!await ready(t))return;
+ await load('#library');
+ const result=await evaluate(`(async()=>{
+  const problems=[];
+  for(const [id,review] of Object.entries(window.CLINICAL_EVIDENCE.topicReviews)){
+   location.hash=id+'~references';
+   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+   const stage=document.getElementById('stage'),refs=document.getElementById('section-references');
+   if(!stage.textContent.includes('Selected additions checked '+review.checked))problems.push(id+': review date');
+   if(!stage.textContent.includes(review.scope))problems.push(id+': review scope');
+   for(const key of review.sources){const url=window.CLINICAL_EVIDENCE.sources[key][1];if(![...refs.querySelectorAll('a')].some(a=>a.href===url))problems.push(id+': missing source '+key);}
+   if(refs.classList.contains('closed'))problems.push(id+': closed reference destination');
+   if(document.documentElement.scrollWidth>innerWidth+1)problems.push(id+': horizontal overflow');
+   const cp=window.CP_DATA.find(c=>c.id===id);
+   // History/exam split an authored label at the colon into a heading and paragraph.
+   for(const field of ['history','exam']){
+    const rows=[...stage.querySelectorAll('#section-'+field+' .cluster')].map(el=>{
+     const h=el.querySelector('h3'),p=el.querySelector('p');return (h?h.textContent+': ':'')+(p?.textContent||'');
+    });
+    for(const line of cp[field])if(!rows.includes(line))problems.push(id+': missing '+field+': '+line);
+   }
+   if(!stage.textContent.includes(cp.pearls[0]))problems.push(id+': missing pearl');
+  }
+  return problems;
+ })()`);
+ assert.deepEqual(result,[]);
+});

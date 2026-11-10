@@ -1,6 +1,7 @@
 /* ══════════ EM-CPs clinical data ══════════
    Framework: informed by Rosen's Emergency Medicine 10th ed. (2023) — approach to cardinal presentations; not affiliated with or endorsed by Elsevier.
    Educational synthesis; content and selected evidence reviewed 8 Oct 2026. See docs/CLINICAL-AUDIT-2026-10-08.md for scope and limits.
+   Targeted expansion: 10 Nov 2026, eight adult presentations — assessment, investigation and reassessment; see docs/PRESENTATION-EXPANSION-2026-11-10.md.
    Severity: critical = life/limb/sight threat now · emergent = time-sensitive morbidity · common = high-frequency.
    Educational reference only — never replaces clinical judgment or local protocols.
 */
@@ -26,7 +27,10 @@ dontMiss: [
 ['Myocarditis / Takotsubo / cocaine ischemia', 'emergent', 'Young patients with atypical pain, HF features, or sympathomimetic use.'],
 ['GERD / musculoskeletal / anxiety', 'common', 'Real diagnoses — only after life-threats and validated ACS/PE pathways are negative.']
 ],
-history: ['OPQRST + radiation to jaw, arm, or back', 'High-risk ACS features: exertional, rest pain, diaphoresis, syncope', 'Tearing/inter-scapular migration → dissection; pleuritic → PE/pleural; post-emesis → Boerhaave', 'Risk enhancers: age, diabetes, smoking, family history, cocaine, CKD', 'VTE risks: immobility, malignancy, surgery, estrogen, pregnancy'],
+history: [
+    "Ask about dyspnea, diaphoresis, nausea and unexplained fatigue even when chest discomfort is absent; ischemia may present through these accompanying symptoms.",
+    "Review prior ECGs, coronary imaging and stress-test results, including when they were performed; previous testing informs risk but does not replace assessment of new symptoms.",
+    'OPQRST + radiation to jaw, arm, or back', 'High-risk ACS features: exertional, rest pain, diaphoresis, syncope', 'Tearing/inter-scapular migration → dissection; pleuritic → PE/pleural; post-emesis → Boerhaave', 'Risk enhancers: age, diabetes, smoking, family history, cocaine, CKD', 'VTE risks: immobility, malignancy, surgery, estrogen, pregnancy'],
 exam: ['Vitals with bilateral BP; pulse oximetry', 'Cardiac: new murmur (AS/dissection), rub (pericarditis/tamponade)', 'Lungs: symmetry, crackles (HF), unilateral absent sounds (PTX)', 'Vascular: pulse deficits; pulsatile abdominal mass (AAA)', 'Chest-wall reproducibility lowers — but does not exclude — ACS'],
 workup: [
 ['Bedside', ['12-lead ECG within 10 minutes; repeat at 15–30 min if symptoms evolve or the first tracing is nondiagnostic', 'Posterior (V7–V9) and right-sided leads when inferior or isolated anterior ST depression', 'POCUS: pericardial effusion, lung sliding, RV strain']],
@@ -39,8 +43,12 @@ disposition: [
 ['Admit (observation / telemetry)', 'Observe-zone troponin kinetics, HEART 4–6, new AF, ongoing atypical symptoms, or incomplete rule-out.'],
 ['ICU / cath lab activation', 'STEMI or occlusion-MI pattern, hemodynamic instability, suspected dissection/tamponade, refractory ischemic symptoms, arrhythmia.']
 ],
-pitfalls: ['ST depression maximal in V1–V3 raises concern for posterior occlusion: record V7–V9, repeat ECGs and escalate when clinically indicated. Negative posterior leads do not exclude occlusion.', 'Wellens and de Winter patterns need urgent ACS assessment even when pain-free; the ECG does not establish exact culprit anatomy or current artery patency.', 'New or presumed-new LBBB alone is not a STEMI equivalent (2025 ACC/AHA ACS) — use Sgarbossa/Smith criteria and clinical context.', 'Dissection mislabeled as NSTEMI and anticoagulated — check pulses/BP in both arms.', 'Do not default to a 6-hour troponin wait when an hs-cTn 0/1h or 0/2h protocol is available.', 'PE in the young and pregnant — non-tachycardic PE is common.', '\u201CMusculoskeletal\u201D + risk factors = the classic anchoring error.', 'A cold, pulseless limb with chest or back pain is dissection until the aorta is seen.'],
-pearls: ['The six killers first — ACS, dissection, PE, tension PTX, Boerhaave, tamponade — then the hs-cTn 0/1h or 0/2h algorithm.', 'ST depression maximal in V1–V3 may reflect posterior occlusion; negative V7–V9 do not exclude it.', 'New LBBB alone is not a STEMI equivalent (2025 ACC/AHA); use Sgarbossa/Smith and the patient.', 'Single very-low hs-cTn rule-out requires symptom onset ≥3 h earlier; early presenters or ongoing concern need serial troponins.'],
+pitfalls: [
+    "An MI rule-out pathway answers the MI question. Reassess for other dangerous causes when the history or examination remains concerning.",
+    'ST depression maximal in V1–V3 raises concern for posterior occlusion: record V7–V9, repeat ECGs and escalate when clinically indicated. Negative posterior leads do not exclude occlusion.', 'Wellens and de Winter patterns need urgent ACS assessment even when pain-free; the ECG does not establish exact culprit anatomy or current artery patency.', 'New or presumed-new LBBB alone is not a STEMI equivalent (2025 ACC/AHA ACS) — use Sgarbossa/Smith criteria and clinical context.', 'Dissection mislabeled as NSTEMI and anticoagulated — check pulses/BP in both arms.', 'Do not default to a 6-hour troponin wait when an hs-cTn 0/1h or 0/2h protocol is available.', 'PE in the young and pregnant — non-tachycardic PE is common.', '\u201CMusculoskeletal\u201D + risk factors = the classic anchoring error.', 'A cold, pulseless limb with chest or back pain is dissection until the aorta is seen.'],
+pearls: [
+    "Before discharge, explain the working diagnosis and remaining uncertainty, arrange accessible follow-up, and give explicit instructions to return for recurrent or worsening symptoms.",
+    'The six killers first — ACS, dissection, PE, tension PTX, Boerhaave, tamponade — then the hs-cTn 0/1h or 0/2h algorithm.', 'ST depression maximal in V1–V3 may reflect posterior occlusion; negative V7–V9 do not exclude it.', 'New LBBB alone is not a STEMI equivalent (2025 ACC/AHA); use Sgarbossa/Smith and the patient.', 'Single very-low hs-cTn rule-out requires symptom onset ≥3 h earlier; early presenters or ongoing concern need serial troponins.'],
 doseScope: 'Acute aortic syndrome / aortic dissection only — these are not general chest-pain treatment instructions. Use monitored specialist-led care.',
 doses: [
     ['Heart-rate and BP control (first-line)', ['IV labetalol 10–20 mg bolus, then infusion 0.5–2 mg/min', 'IV esmolol 500 mcg/kg bolus, then 50–200 mcg/kg/min infusion (titratable, short-acting)', 'Target heart rate 60–80 bpm and SBP <120 mmHg, or the lowest pressure that maintains adequate end-organ perfusion']],
@@ -58,7 +66,8 @@ approach: [
     'Separate hypoxemic vs hypercapnic vs non-pulmonary drivers.',
     'POCUS: B-lines, lung sliding, RV size — plus a focused history.',
     'Gate PE (PERC if very-low gestalt; otherwise a validated Wells/age-adjusted or YEARS D-dimer pathway).',
-    'Work of breathing decides urgency: silent chest or a “normalizing” CO₂ is pre-arrest.'
+    'Work of breathing decides urgency: silent chest or a “normalizing” CO₂ is pre-arrest.',
+    "If respiratory distress prevents a history, obtain collateral information from EMS or family while stabilization continues."
 ],
 dontMiss: [
 ['Pulmonary embolism', 'critical', 'Sudden dyspnea with clear lungs; PERC if very-low gestalt, otherwise a validated Wells/age-adjusted or YEARS D-dimer pathway. Echo may show RV strain.'],
@@ -72,7 +81,9 @@ dontMiss: [
 ['Pneumonia / COPD exacerbation / anemia', 'common', 'High-frequency drivers; treat and reassess objectively.']
 ],
 history: ['Tempo: seconds (PE/PTX), minutes (asthma/edema), hours–days (pneumonia/HF), weeks (anemia/effusion)', 'Positional: orthopnea & PND → LV failure; platypnea → shunt', 'Exposures: smoke, allergens, occupational, CO source, diving', 'Background: asthma/COPD, HF, VTE risks, immunosuppression', 'Associated chest pain, fever, leg swelling, hemoptysis'],
-exam: ['Work of breathing: accessory muscles, tripod posture, speech in words vs sentences', 'Stridor (upper airway), wheeze (airway), crackles (alveolar), absent sounds (PTX/effusion)', 'JVP, edema, S3 → congestion', 'Cyanosis, agitation, drowsiness = objective severity', 'POCUS: anterior B-lines, sliding, effusions, RV/LV ratio'],
+exam: [
+    "Listen for voice change, stridor and drooling; inspect for upper-airway swelling before attributing respiratory distress to lower-airway disease.",
+    'Work of breathing: accessory muscles, tripod posture, speech in words vs sentences', 'Stridor (upper airway), wheeze (airway), crackles (alveolar), absent sounds (PTX/effusion)', 'JVP, edema, S3 → congestion', 'Cyanosis, agitation, drowsiness = objective severity', 'POCUS: anterior B-lines, sliding, effusions, RV/LV ratio'],
 workup: [
 ['Bedside', ['SpO₂ + observation; peak flow in asthma if the patient can perform it', 'POCUS + ECG (RV strain, ischemia)', 'VBG/ABG when hypercapnia or deterioration is suspected']],
 ['Labs', ['BNP/NT-proBNP, troponin, gated D-dimer (age-adjusted or YEARS), CBC, BMP, lactate', 'CO-oximetry if exposure suspected']],
@@ -84,8 +95,13 @@ disposition: [
 ['Admit (ward / HDU)', 'Persistent hypoxia, moderate exacerbation, or PE/pneumonia needing inpatient care (selected low-risk PE may qualify for outpatient therapy via Hestia/PESI + bleeding/follow-up checks; use PSI + clinical judgment in pneumonia).'],
 ['ICU / NIV-ventilation', 'NIV failure or exhaustion; COPD with pH <7.25 or falling despite NIV; tension physiology; high-risk PE (shock/hypotension) — PERT/reperfusion, not RV strain alone.']
 ],
-pitfalls: ['Normal SpO₂ excludes neither PE nor early CO poisoning (cherry-red skin is uncommon and unreliable).', 'Wheeze in the elderly is not always asthma — think HF (\u201Ccardiac asthma\u201D).', 'A fatiguing asthmatic with a \u201Cnormal\u201D CO₂ is deteriorating, not improving.', 'Diffuse B-lines are not always edema — integrate context (ARDS, pneumonia, fibrosis).', 'Discharging asthma on SABA (albuterol) alone increases severe exacerbations and mortality (GINA 2026).'],
-pearls: ['POCUS (B-lines, sliding, RV) plus a focused history resolves most dyspnea faster than any single lab.', 'Normal SpO₂ excludes neither PE nor early CO — use the pathway and co-oximetry.', 'A fatiguing asthmatic with a \u201Cnormal\u201D CO₂ is pre-arrest, not improving.', 'Never discharge asthma on SABA alone: pair with ICS-containing therapy (≥6 y) or the preschool pathway (<6 y).'],
+pitfalls: [
+    "Supplemental oxygen does not correct inadequate ventilation. Assess respiratory effort, mental status and blood gas when indicated rather than following SpO₂ alone.",
+    'Normal SpO₂ excludes neither PE nor early CO poisoning (cherry-red skin is uncommon and unreliable).', 'Wheeze in the elderly is not always asthma — think HF (\u201Ccardiac asthma\u201D).', 'A fatiguing asthmatic with a \u201Cnormal\u201D CO₂ is deteriorating, not improving.', 'Diffuse B-lines are not always edema — integrate context (ARDS, pneumonia, fibrosis).', 'Discharging asthma on SABA (albuterol) alone increases severe exacerbations and mortality (GINA 2026).'],
+pearls: [
+    "NIV requires a suitable patient and close monitoring: respiratory arrest, inability to protect the airway, significant aspiration risk or hemodynamic instability demand urgent airway assessment.",
+    "After initial treatment, reassess respiratory rate, work of breathing, mentation, oxygen requirement and gas exchange when indicated; deterioration requires escalation even if saturation improves.",
+    'POCUS (B-lines, sliding, RV) plus a focused history resolves most dyspnea faster than any single lab.', 'Normal SpO₂ excludes neither PE nor early CO — use the pathway and co-oximetry.', 'A fatiguing asthmatic with a \u201Cnormal\u201D CO₂ is pre-arrest, not improving.', 'Never discharge asthma on SABA alone: pair with ICS-containing therapy (≥6 y) or the preschool pathway (<6 y).'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — dyspnea & respiratory distress', 'GINA 2026 (ICS-formoterol Track 1; no SABA-only therapy)', 'GOLD 2026', '2019 ESC/ERS PE Guidelines; 2026 AHA/ACC Acute PE Guideline']
 },
 {
@@ -96,7 +112,7 @@ approach: [
     'hCG in every patient of childbearing potential.',
     'Killers first: AAA, mesenteric ischemia, ectopic, perforation, torsion.',
     'Localize by embryology and migration; then image (US for biliary/GYN, CT as the workhorse).',
-    'Medical mimics last: DKA, inferior MI, basal pneumonia.'
+    'Consider extra-abdominal and metabolic causes alongside abdominal disease: inferior MI, basal pneumonia and DKA.'
 ],
 dontMiss: [
 ['Ruptured AAA', 'critical', 'Age >60 + pain/hypotension/pulsatile mass — bedside US, straight to OR/vascular; do not wait for a perfect CT.'],
@@ -108,12 +124,16 @@ dontMiss: [
 ['DKA, inferior MI, basal pneumonia', 'emergent', 'Medical mimics — check glucose, ECG, and lungs in every atypical story.'],
 ['Appendicitis / cholecystitis / diverticulitis / obstruction', 'common', 'Time-sensitive; score and image. Selected imaging-confirmed uncomplicated appendicitis may receive antibiotics after shared decision-making (WSES 2025 / CODA).']
 ],
-history: ['Onset & migration: periumbilical → RLQ (appendicitis); sudden maximal (perforation, torsion, AAA)', 'Relationship to meals (biliary), defecation (colonic), vomiting first vs pain first (surgical vs medical)', 'Blood: hematemesis, melena, hematochezia; last menstrual period & pregnancy possibility', 'Vascular history: AFib, known AAA, atherosclerosis → ischemia', 'Immunosuppression and steroids blunt peritoneal signs'],
+history: [
+    "Ask about the last bowel movement and passage of flatus, prior abdominal operations and hernias when obstruction is possible.",
+    'Onset & migration: periumbilical → RLQ (appendicitis); sudden maximal (perforation, torsion, AAA)', 'Relationship to meals (biliary), defecation (colonic), vomiting first vs pain first (surgical vs medical)', 'Blood: hematemesis, melena, hematochezia; last menstrual period & pregnancy possibility', 'Vascular history: AFib, known AAA, atherosclerosis → ischemia', 'Immunosuppression and steroids blunt peritoneal signs'],
 exam: ['Peritoneal signs: rigidity, rebound, guarding', 'Murphy sign (cholecystitis), McBurney (appendicitis), Rovsing/psoas/obturator', 'Pulsatile mass + bruits; Cullen/Grey-Turner are late and uncommon (retroperitoneal blood)', 'Hernial orifices and genital exam in every male with scrotal/inguinal pain', 'Volume status: tachycardia, dry mucosa, capillary refill'],
 workup: [
 ['Bedside', ['Urine hCG in all patients of childbearing potential', 'POCUS: AAA size, free fluid, gallbladder wall/stone, intrauterine pregnancy']],
-['Labs', ['CBC, CRP, electrolytes, glucose, lactate, lipase, LFTs, urinalysis', 'Type & screen when surgery is likely; quantitative β-hCG']],
-['Imaging', ['CT abdomen/pelvis with IV contrast = workhorse (appendicitis, diverticulitis, ischemia, AAA)', 'US first for biliary and gynecologic; MRI in pregnancy when US is inconclusive']]
+['Labs', [
+    "Tailor laboratory tests to the differential; a standard abdominal panel cannot independently exclude surgical disease.",
+    'CBC, CRP, electrolytes, glucose, lactate, lipase, LFTs, urinalysis', 'Type & screen when surgery is likely; quantitative β-hCG']],
+['Imaging', ['CT abdomen/pelvis with IV contrast for appropriate abdominal differentials; suspected mesenteric ischemia requires urgent CTA with an arterial-phase protocol', 'US first for biliary and gynecologic; MRI in pregnancy when US is inconclusive']]
 ],
 redFlags: ['Hypotension or syncope with abdominal pain', 'Pain out of proportion to exam findings', 'Rigid abdomen or positive peritoneal signs', 'GI bleeding with known AAA repair (aortoenteric fistula)', 'Acute scrotal pain — treat as torsion until proven otherwise', 'Immunosuppressed with mild findings (can decompensate fast)'],
 disposition: [
@@ -122,7 +142,10 @@ disposition: [
 ['Emergency surgery / IR / ICU', 'Ruptured AAA, perforation, mesenteric ischemia, strangulated obstruction, torsion.']
 ],
 pitfalls: ['Analgesia does not mask the diagnosis — treat the pain and re-examine (ACEP).', 'Normal lactate & WBC do not exclude early mesenteric ischemia.', 'Ectopic pregnancy happens with \u201Cno risk factors\u201D and a negative exam — and with a history of tubal ligation.', 'Elderly with soft findings can have catastrophes — lower the threshold for CT.', 'Diaphragmatic irritation (basal pneumonia, inferior MI) presents as upper abdominal pain.'],
-pearls: ['hCG in every patient of childbearing potential — no exceptions for \u201Cno risk factors.\u201D', 'Pain out of proportion with a quiet belly is mesenteric ischemia until CTA says otherwise.', 'Analgesia does not mask the surgical abdomen — treat pain and re-examine.', 'The elderly with a soft abdomen still perforate, infarct, and rupture AAAs — lower the CT threshold.'],
+pearls: [
+    "Reassess vital signs, pain and abdominal findings after treatment. If important uncertainty persists, use observation, repeat examination or senior review before discharge.",
+    "Explain that undifferentiated abdominal pain can evolve: return promptly for worsening pain, persistent vomiting, bleeding, syncope or fever rather than waiting for the planned follow-up.",
+    'hCG in every patient of childbearing potential — no exceptions for \u201Cno risk factors.\u201D', 'Pain out of proportion with a quiet belly is mesenteric ischemia until CTA says otherwise.', 'Analgesia does not mask the surgical abdomen — treat pain and re-examine.', 'The elderly with a soft abdomen still perforate, infarct, and rupture AAAs — lower the CT threshold.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — abdominal pain & surgical abdomen', 'Tintinalli\u2019s Emergency Medicine, 9th ed.', 'WSES 2025 edition appendicitis guideline (published 2026); WSES 2020 diverticulitis guideline; CODA trial (NEJM 2020)']
 },
 {
@@ -131,7 +154,7 @@ tag: 'Thunderclap, worst-ever, or any red flag = imaging.',
 overview: 'Primary headaches (migraine, tension, cluster) dominate ED volumes, but the task is to filter the ~1–5% with secondary catastrophes. Thunderclap onset, fever with meningismus, papilledema, and new neuro deficits change everything.',
 approach: [
     'Thunderclap, worst-ever, or any red flag → image.',
-    'Noncontrast head CT within 6 h excludes SAH in neurologically intact adults (ACEP); if >6 h or clinical concern persists, follow with LP or CTA.',
+    'For suspected SAH, a high-quality noncontrast CT within 6 h with expert interpretation can exclude SAH in neurologically intact adults. AHA/ASA 2023 recommends CT then LP if negative when presentation is >6 h or there is a new neurological deficit; ACEP permits LP or CTA for residual risk after negative CT through shared decision-making.',
     'Do not delay antibiotics for CT when meningitis is possible. Give IV dexamethasone with or before the first antibiotic dose in adults with suspected bacterial meningitis (NICE NG240) — continue only if pneumococcus or Hib is confirmed.',
     'Age ≥50 with visual symptoms: treat GCA on suspicion — do not wait for ESR.'
 ],
@@ -145,11 +168,13 @@ dontMiss: [
 ['Giant cell arteritis (temporal arteritis)', 'emergent', 'Age ≥50, jaw claudication, new headache, visual symptoms — start glucocorticoids immediately if cranial GCA/visual threat is suspected; do not wait for biopsy. ESR/CRP can be normal.'],
 ['Migraine / tension / cluster', 'common', 'Recurrent pattern without red flags; treat (prefer non-opioids) and arrange follow-up.']
 ],
-history: ['Onset speed: thunderclap (<1 min to peak) = SAH until excluded', 'Worst-ever, first-ever, or atypical-for-this-patient headache', 'Fever, immunosuppression, malignancy, anticoagulation, pregnancy/postpartum', 'Positional (post-LP, intracranial hypotension), transient (RCVS), exertional or wake-up pattern', 'Associated: neck pain, photophobia, visual change, jaw claudication'],
+history: [
+    "Document the exact onset and time to peak intensity separately from total headache duration; record onset time when applying the early-CT SAH pathway.",
+    'Onset speed: thunderclap (<1 min to peak) = SAH until excluded', 'Worst-ever, first-ever, or atypical-for-this-patient headache', 'Fever, immunosuppression, malignancy, anticoagulation, pregnancy/postpartum', 'Positional (post-LP, intracranial hypotension), transient (RCVS), exertional or wake-up pattern', 'Associated: neck pain, photophobia, visual change, jaw claudication'],
 exam: ['Full neuro: focal deficits, gait, fundoscopy for papilledema', 'Meningismus: nuchal rigidity, Kernig/Brudzinski (insensitive — do not rely on them alone)', 'Temporal artery tenderness; scalp allodynia', 'Eye: acuity, pupils, red eye, corneal clouding', 'Skin: zoster, neurocutaneous stigmata'],
 workup: [
 ['Bedside', ['Glucose, vitals including temperature, fundoscopy']],
-['Labs', ['ESR and CRP if GCA is possible (normal values do not exclude it)', 'Coagulation before LP', 'LP: opening pressure, cell count, xanthochromia (most reliable ≥12 h; still perform LP after a late negative CT — tube 4 RBCs also matter), microbiology']],
+['Labs', ['ESR and CRP if GCA is possible (normal values do not exclude it)', 'Coagulation before LP', 'LP when selected after imaging and safety assessment: opening pressure, RBC and WBC counts, xanthochromia and microbiology as indicated; interpret timing and traumatic taps through the local SAH pathway']],
 ['Imaging', ['Non-contrast CT for thunderclap/red flags (rules out SAH if <6 h, neurologically intact, expert read)', 'CTV/MRV for CVT; CTA/MRA for dissection and aneurysm', 'MRI for posterior fossa or progressive headaches']]
 ],
 redFlags: ['Thunderclap or \u201Cworst headache of my life\u201D', 'Fever with meningismus or altered mentation', 'New focal deficit, seizure, or papilledema', 'First headache ≥50 y, in pregnancy/postpartum, cancer, or immunocompromise', 'Progressive or sleep-waking pattern over days', 'Painful red eye with visual loss', 'Trauma or anticoagulation with new headache'],
@@ -158,8 +183,13 @@ disposition: [
 ['Admit', 'Meningitis on therapy, CVT anticoagulation, GCA on glucocorticoids, refractory migraine/cluster infusions.'],
 ['Neurosurgery / stroke unit / ICU', 'SAH (aneurysm securing), ICH per protocol, deteriorating meningitis, elevated ICP.']
 ],
-pitfalls: ['Normal 3rd-generation CT <6 h (expert read) rules out SAH in neurologically intact adults; >6 h requires LP or CTA.', 'Sentinel \u201Cwarning\u201D headaches precede 10–40% of aneurysm ruptures.', 'Ottawa SAH Rule is highly sensitive but poorly specific — any positive criterion requires testing.', 'GCA can present without a tender temporal artery and with a normal ESR.', 'Do not relabel a first \u201Cmigraine\u201D after age 50 without considering imaging.', 'Opioids are not first-line for primary headache in the ED (ACEP).'],
-pearls: ['Negative high-quality CT within 6 h in a neurologically intact adult excludes SAH; >6 h or persistent concern needs LP or CTA.', 'An all-negative Ottawa SAH rule avoids SAH testing only in eligible alert patients (peaking <1 h) without other red flags.', 'Start glucocorticoids immediately if cranial GCA with visual threat is suspected — do not wait for ESR or biopsy.', 'A first \u201Cmigraine\u201D after age 50 is a red flag, not a diagnosis.'],
+pitfalls: [
+    "Improvement after analgesia does not establish a benign cause or exclude SAH.",
+    "A negative SAH evaluation does not exclude meningitis, cerebral venous thrombosis or other secondary causes; pursue the remaining differential.",
+    'Do not extend the early-CT rule-out to late presentation or new neurological deficits. AHA/ASA recommends LP after a negative CT in these settings; CTA is an alternative under the ACEP shared-decision pathway, with different limitations.', 'Sentinel \u201Cwarning\u201D headaches precede 10–40% of aneurysm ruptures.', 'Ottawa SAH Rule is highly sensitive but poorly specific — any positive criterion requires testing.', 'GCA can present without a tender temporal artery and with a normal ESR.', 'Do not relabel a first \u201Cmigraine\u201D after age 50 without considering imaging.', 'Opioids are not first-line for primary headache in the ED (ACEP).'],
+pearls: [
+    "Explain the LP/CTA tradeoffs when considering the ACEP alternative pathway: LP may identify other CSF disease but can produce traumatic taps; CTA can reveal incidental aneurysms, adds contrast/radiation and does not directly test for subarachnoid blood. Follow local specialist pathways.",
+    'Negative high-quality CT within 6 h in a neurologically intact adult excludes SAH; >6 h or persistent concern needs LP or CTA.', 'An all-negative Ottawa SAH rule avoids SAH testing only in eligible alert patients (peaking <1 h) without other red flags.', 'Start glucocorticoids immediately if cranial GCA with visual threat is suspected — do not wait for ESR or biopsy.', 'A first \u201Cmigraine\u201D after age 50 is a red flag, not a diagnosis.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — headache', 'ACEP 2019 Clinical Policy: Acute Headache (Ottawa SAH Rule; 6-hour CT rule; LP or CTA after negative CT)', 'AHA/ASA 2023 Guideline for Aneurysmal SAH', 'ACR/EULAR 2022 GCA classification (research criteria, not a diagnostic exclusion rule); EULAR GCA management recommendations']
 },
 {
@@ -183,8 +213,13 @@ dontMiss: [
 ['Severe hyponatremia / hyperammonemia / uremia', 'emergent', 'Metabolic catastrophes — labs before labels.'],
 ['Delirium from infection / retention / medications', 'common', 'Find the driver; \u201CUTI\u201D alone is an overused explanation in the elderly (asymptomatic bacteriuria does not establish symptomatic UTI).']
 ],
-history: ['Baseline cognition and tempo of change (family, care home, EMS)', 'Medications: sedatives, anticholinergics, insulin, anticoagulants', 'Substance use, alcohol, psychiatric history, toxin access', 'Trauma/falls — subdural in the elderly, especially if anticoagulated', 'Fever, headache, seizure activity, end-organ disease'],
-exam: ['GCS + focused neuro: pupils, focal signs, meningismus', 'Glucose and SpO₂ at the bedside — mandatory first steps', 'Skin: needle tracks, rash, pallor; do not rely on cherry-red color for CO', 'Breath odor: hepatic, ketotic, alcohol, uremic', 'Trauma stigmata: hemotympanum, raccoon eyes, scalp hematoma'],
+history: [
+    "Ask family or carers about recent changes in attention, interaction, sleep and function, including fluctuation over hours; establish what is normal for this patient.",
+    'Baseline cognition and tempo of change (family, care home, EMS)', 'Medications: sedatives, anticholinergics, insulin, anticoagulants', 'Substance use, alcohol, psychiatric history, toxin access', 'Trauma/falls — subdural in the elderly, especially if anticoagulated', 'Fever, headache, seizure activity, end-organ disease'],
+exam: [
+    "Look for hypoactive delirium: withdrawal, slowed responses, reduced movement and poor concentration can be easier to miss than agitation.",
+    "When delirium indicators are present outside critical care, use the 4AT to support assessment; in critical care use CAM-ICU or ICDSC. A competent clinician confirms the diagnosis and investigates causes.",
+    'GCS + focused neuro: pupils, focal signs, meningismus', 'Glucose and SpO₂ at the bedside — mandatory first steps', 'Skin: needle tracks, rash, pallor; do not rely on cherry-red color for CO', 'Breath odor: hepatic, ketotic, alcohol, uremic', 'Trauma stigmata: hemotympanum, raccoon eyes, scalp hematoma'],
 workup: [
 ['Bedside', ['Glucose, SpO₂, temperature, VBG', 'ECG (TCA patterns, ischemia, dysrhythmia)', 'POCUS for systemic causes of shock as trained; it cannot exclude intracranial pathology']],
 ['Labs', ['Electrolytes (Na, Ca), renal and hepatic panels; ammonia if liver disease', 'Lactate, CBC, coagulation, targeted toxicology, TSH', 'CO-oximetry if CO is possible']],
@@ -197,7 +232,9 @@ disposition: [
 ['ICU / stroke pathway', 'Coma, airway compromise, status epilepticus, severe intoxication, massive ICH, fulminant sepsis, large-vessel occlusion within the EVT window.']
 ],
 pitfalls: ['\u201CUTI causing AMS\u201D is overcalled — keep looking for the true driver (IDSA: do not treat asymptomatic bacteriuria).', 'A single glucose bolus does not precipitate Wernicke encephalopathy; prolonged carbohydrate loads without thiamine can.', 'Subdurals in the elderly can be progressive confusion \u201Cwithout trauma\u201D.', 'Hypothermia masks toxidromes and infection signs.', 'Post-ictal states normalize — image when they don\u2019t.'],
-pearls: ['Glucose and oxygen before the mnemonic.', 'Never delay dextrose for thiamine — give them together.', '\u201CUTI causing AMS\u201D is overcalled; asymptomatic bacteriuria does not establish symptomatic UTI (IDSA).', 'A changing elderly patient without a clear fall still has a subdural until you look.'],
+pearls: [
+    "Support recovery with calm reorientation, reassurance, familiar carers when possible, and working hearing/visual aids; assess pain, hydration, constipation and medication contributors.",
+    'Glucose and oxygen before the mnemonic.', 'Never delay dextrose for thiamine — give them together.', '\u201CUTI causing AMS\u201D is overcalled; asymptomatic bacteriuria does not establish symptomatic UTI (IDSA).', 'A changing elderly patient without a clear fall still has a subdural until you look.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — altered mental status & delirium', 'Han JH, Wilber ST. Altered mental status in older patients in the emergency department. Clin Geriatr Med.', '2026 AHA/ASA acute ischemic stroke guideline; IDSA asymptomatic bacteriuria', 'Donnino et al., Ann Emerg Med 2007; Schabelman & Kuo, J Emerg Med 2012 — thiamine/glucose sequence']
 },
 {
@@ -219,12 +256,16 @@ dontMiss: [
 ['Carotid / subclavian steal', 'emergent', 'Arm-exercise syncope with pulse/BP asymmetry.'],
 ['Vasovagal / orthostatic / situational', 'common', 'Prodrome (warmth, pallor, nausea) + trigger + upright posture — the reassuring triad.']
 ],
-history: ['Circumstances: posture, triggers (blood, standing, micturition), exertion?', 'Prodrome vs no warning — cardiac causes often strike without prodrome', 'Palpitations, chest pain, dyspnea before the event', 'Family history of sudden death <40 y; known cardiomyopathy/channelopathy', 'QT-prolonging or hypotensive medications; alcohol'],
+history: [
+    "Obtain a witness account of posture, triggers, duration, movements and recovery; prolonged confusion or focal deficits should reopen the differential beyond uncomplicated syncope.",
+    'Circumstances: posture, triggers (blood, standing, micturition), exertion?', 'Prodrome vs no warning — cardiac causes often strike without prodrome', 'Palpitations, chest pain, dyspnea before the event', 'Family history of sudden death <40 y; known cardiomyopathy/channelopathy', 'QT-prolonging or hypotensive medications; alcohol'],
 exam: ['Orthostatic vitals; BP in both arms', 'Cardiac: murmurs (AS, HCM), rhythm, gallops', 'Volume status; rectal exam / visible melena if bleeding is suspected', 'Post-event neuro: seizure vs syncope (tongue biting, confusion, orientation)', 'Injury pattern consistent with abrupt collapse'],
 workup: [
 ['Bedside', ['12-lead ECG for everyone — QTc, blocks, delta waves, Brugada, ischemia, QRS axis/duration', 'Glucose; POCUS: RV strain, effusion, AAA, IVC']],
 ['Labs', ['hCG in childbearing potential; heme screen if bleeding is suspected', 'Troponin when cardiac suspicion (a CSRS component if measured)', 'Electrolytes, CBC as indicated']],
-['Imaging / monitoring', ['CT head if injury or seizure is suspected; CTPA per PE pathway', 'ED rhythm monitoring; outpatient cardiac monitoring for selected intermediate-risk patients']]
+['Imaging / monitoring', [
+    "Do not routinely request head CT/MRI, carotid imaging or EEG for uncomplicated syncope without relevant focal neurological findings, head injury or seizure features.",
+    'Head imaging for relevant trauma, focal findings or another specific intracranial concern; CTPA per PE pathway', 'ED rhythm monitoring; outpatient cardiac monitoring for selected intermediate-risk patients']]
 ],
 redFlags: ['Exertional syncope or syncope while supine', 'No prodrome / sudden collapse with facial injury', 'Abnormal ECG (QTc >480 ms per CSRS; blocks, pre-excitation, Brugada, ischemia)', 'Structural heart disease or family history of sudden death', 'Chest pain, dyspnea, or palpitations preceding the event', 'Ongoing blood loss or positive hCG', 'CSRS ≥4 (high / very high)'],
 disposition: [
@@ -232,8 +273,12 @@ disposition: [
 ['Admit (telemetry) or shared decision', 'CSRS +1 to +3 (medium, ~8% 30-day serious outcomes): shared decision / brief observation. Abnormal ECG not clearly chronic; frail elderly living alone.'],
 ['Monitored admission / expedited cardiac workup; ICU if unstable', 'CSRS ≥4, documented arrhythmia, exertional syncope with murmur, PE with shock or strain plus biomarkers, positive troponin with ischemic features.']
 ],
-pitfalls: ['Facial injury can follow either cardiac or reflex syncope — assess both the trauma and the syncope mechanism.', 'Convulsive syncope mimics seizure — weigh the whole story.', 'A normal ED ECG does not exclude intermittent arrhythmia — history drives follow-up.', 'GI bleeding may be occult — look for melena in unexplained syncope.', 'Exertional syncope is cardiac until proven otherwise (rarely a post-exertional reflex faint — do not label it vasovagal in the ED).', 'CSRS ≥1 is medium, not high — do not automatically admit every +1.'],
-pearls: ['ECG for every syncope, no exceptions.', 'CSRS −3 to 0 (very low/low) can go home; +1 to +3 is shared decision; ≥4 is high-risk.', 'Abrupt collapse without prodrome raises arrhythmic risk; integrate history, ECG, and exam.', 'Exertional or supine syncope is cardiac until the opposite is proven.'],
+pitfalls: [
+    "Orthostatic hypotension may coexist with other disease; a positive standing BP result must fit the event and does not cancel cardiac or bleeding red flags.",
+    'Facial injury can follow either cardiac or reflex syncope — assess both the trauma and the syncope mechanism.', 'Convulsive syncope mimics seizure — weigh the whole story.', 'A normal ED ECG does not exclude intermittent arrhythmia — history drives follow-up.', 'GI bleeding may be occult — look for melena in unexplained syncope.', 'Exertional syncope is cardiac until proven otherwise (rarely a post-exertional reflex faint — do not label it vasovagal in the ED).', 'CSRS ≥1 is medium, not high — do not automatically admit every +1.'],
+pearls: [
+    "When arrhythmic syncope remains possible, choose rhythm monitoring according to event frequency and risk, and arrange ownership of results and follow-up before outpatient discharge.",
+    'ECG for every syncope, no exceptions.', 'CSRS −3 to 0 (very low/low) can go home; +1 to +3 is shared decision; ≥4 is high-risk.', 'Abrupt collapse without prodrome raises arrhythmic risk; integrate history, ECG, and exam.', 'Exertional or supine syncope is cardiac until the opposite is proven.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — syncope', 'Canadian Syncope Risk Score: Thiruganasambandamoorthy et al., CMAJ 2016; multicenter validation JAMA Intern Med 2020', '2017 ACC/AHA/HRS and 2018 ESC Syncope Guidelines']
 },
 {
@@ -317,7 +362,8 @@ approach: [
     'Screen with NEWS2, MEWS, or SIRS — not qSOFA alone.',
     'Host first: age, neutropenia, devices, pregnancy, travel.',
     'Shock or probable sepsis: antibiotics within 1 hour. Possible sepsis without shock: rapid look, then within 3 hours if infection remains likely.',
-    'Start crystalloid resuscitation, then use dynamic reassessment to individualize further fluid; start norepinephrine if MAP remains low during resuscitation (SSC).'
+    'Start crystalloid resuscitation, then use dynamic reassessment to individualize further fluid; start norepinephrine if MAP remains low during resuscitation (SSC).',
+    "Identify early whether infection needs drainage, relief of obstruction, debridement or removal of an infected device; antibiotics alone may not achieve source control."
 ],
 dontMiss: [
 ['Sepsis / septic shock', 'critical', 'Hypotension, tachypnea, altered mentation, lactate >2. Antibiotics within 1 h for shock or probable sepsis; within 3 h for possible sepsis without shock after a rapid look. Use balanced crystalloid for initial resuscitation and dynamic measures to guide further fluid. Begin norepinephrine if MAP remains low during resuscitation (SSC 2026).'],
@@ -329,8 +375,12 @@ dontMiss: [
 ['Ectopic pregnancy / puerperal sepsis', 'critical', 'Fever in pregnancy or within 6 weeks postpartum — obstetric pathway.'],
 ['URIs, gastroenteritis, pharyngitis, UTI', 'common', 'Self-limited or outpatient-managed; keep criteria strict.']
 ],
-history: ['Temperature course and home antipyretics', 'Host factors: age >65, chemotherapy, steroids/biologics, HIV, asplenia, devices (lines, valves, shunts), pregnancy', 'Travel, exposures, TB contacts', 'Localizing symptoms: cough, dysuria, rash, diarrhea, headache, joints', 'Recent procedures, wounds, dental work'],
-exam: ['Full vitals including RR and mentation; use NEWS2/MEWS/SIRS — qSOFA is specific but too insensitive to screen alone (SSC 2021 and 2026)', 'Rash: petechial/purpuric (meningococcemia), target (Lyme), drug eruptions', 'Line and wound sites; murmurs; costovertebral and joint exam', 'Meningeal signs; fundoscopy; abdominal/pelvic exam as indicated'],
+history: [
+    "Review previous cultures, recent antibiotics and healthcare exposure to guide resistance risk and initial antimicrobial selection.",
+    'Temperature course and home antipyretics', 'Host factors: age >65, chemotherapy, steroids/biologics, HIV, asplenia, devices (lines, valves, shunts), pregnancy', 'Travel, exposures, TB contacts', 'Localizing symptoms: cough, dysuria, rash, diarrhea, headache, joints', 'Recent procedures, wounds, dental work'],
+exam: [
+    "Repeat perfusion assessment: mental status, capillary refill, urine output and hemodynamic trends complement lactate; no single finding establishes adequate resuscitation.",
+    'Full vitals including RR and mentation; use NEWS2/MEWS/SIRS — qSOFA is specific but too insensitive to screen alone (SSC 2021 and 2026)', 'Rash: petechial/purpuric (meningococcemia), target (Lyme), drug eruptions', 'Line and wound sites; murmurs; costovertebral and joint exam', 'Meningeal signs; fundoscopy; abdominal/pelvic exam as indicated'],
 workup: [
 ['Bedside', ['Glucose, lactate, pregnancy test when appropriate', 'POCUS: effusions, hydronephrosis, cardiac function']],
 ['Labs', ['CBC with differential, cultures before antibiotics when it will not delay them', 'Urine studies and CXR per focus; malaria smear if travel; LP if CNS suspicion', 'Inflammatory markers (CRP/procalcitonin) as institutional adjuncts — they do not rule out sepsis']],
@@ -343,7 +393,9 @@ disposition: [
 ['ICU', 'Septic shock, unstable neutropenic sepsis, deteriorating meningitis, multi-organ dysfunction.']
 ],
 pitfalls: ['Afebrile ≠ not septic — elderly, immunosuppressed, and antipyretic-treated patients may never spike.', 'Do not use qSOFA as the sole screening tool (SSC strong recommendation). NEWS2/MEWS/SIRS are more sensitive.', 'Antibiotics within 1 h for septic shock and for probable sepsis; possible sepsis without shock allows a rapid evaluation and antibiotics within 3 h if infection remains likely.', 'Do not continue giving fluid without reassessment — use dynamic measures, perfusion, and the patient’s current condition to guide further resuscitation.', 'Neutropenic patients lack pus and peritoneal signs.', 'Asplenic + fever = an emergency (encapsulated organisms).', 'Line infections hide inside \u201Cno obvious source\u201D sepsis.', 'Necrotizing infection looks like \u201Ccellulitis\u201D until the patient is in shock — pain out of proportion is the tell.'],
-pearls: ['Do not screen with qSOFA alone — NEWS2, MEWS, or SIRS are more sensitive (SSC).', 'Antibiotics within 1 h for shock or probable sepsis; within 3 h for possible sepsis without shock after a rapid look.', 'Use balanced crystalloid initially, then dynamic reassessment and norepinephrine when MAP remains low.', 'Afebrile does not mean not septic — especially the elderly and immunosuppressed.'],
+pearls: [
+    "Reassess the infection diagnosis as results and response evolve. If another cause becomes more likely, stop unnecessary empiric antimicrobials; otherwise narrow treatment when susceptibility results allow.",
+    'Do not screen with qSOFA alone — NEWS2, MEWS, or SIRS are more sensitive (SSC).', 'Antibiotics within 1 h for shock or probable sepsis; within 3 h for possible sepsis without shock after a rapid look.', 'Use balanced crystalloid initially, then dynamic reassessment and norepinephrine when MAP remains low.', 'Afebrile does not mean not septic — especially the elderly and immunosuppressed.'],
 doses: [
     ['Fluids (first 3 h, septic shock / sepsis-induced hypoperfusion)', ['Balanced crystalloid 30 mL/kg IV within the first 3 h (individualise for heart failure, renal failure or frailty)', 'Reassess after each bolus with dynamic measures (passive leg raise, stroke-volume variation, echo) rather than static CVP', 'Start norepinephrine if MAP <65 mmHg during or after fluids — do not delay vasopressors for more fluid']],
     ['Antibiotics (timing matters more than the drug)', ['Septic shock / probable sepsis: empiric broad-spectrum antibiotics within 1 h', 'Possible sepsis without shock: rapid assessment, then antibiotics within 3 h if infection remains likely', 'Dose at the high end of normal; consider a loading dose for vancomycin and beta-lactams in shock']],
@@ -371,12 +423,18 @@ dontMiss: [
 ['Ménière disease', 'common', 'Episodes with tinnitus, fluctuating hearing loss, ear fullness.'],
 ['Presyncope / arrhythmia / orthostatic', 'common', 'Light-headed, not rotational — evaluate like syncope.']
 ],
-history: ['Character: spinning (vertigo) vs light-headed vs imbalance', 'Duration: seconds (BPPV), hours (Ménière, TIA), days (neuritis, stroke)', 'Triggers: position changes (BPPV), head motion, standing (orthostatic)', 'Vascular risks: age, hypertension, diabetes, smoking, atrial fibrillation', 'Hearing change, tinnitus, diplopia, dysarthria, dysphagia, headache/neck pain'],
-exam: ['HINTS in ongoing AVS with nystagmus, by a trained examiner: a corrective saccade supports peripheral dysfunction but can occur in stroke; a normal HIT is a central warning in this setting. Interpret the complete examination, including hearing. Direction-changing or vertical nystagmus = central. Test-of-skew (vertical refixation) = central', 'Gait — unable to walk at all suggests central', 'Neuro: cranial nerves, cerebellar tests, dysmetria', 'Dix-Hallpike if positional symptoms; otoscopy', 'Orthostatic vitals if presyncopal'],
+history: [
+    "Distinguish brief episodes triggered from an asymptomatic baseline from continuous dizziness merely worsened by head movement; the latter is not automatically BPPV.",
+    'Character: spinning (vertigo) vs light-headed vs imbalance', 'Duration: seconds (BPPV), hours (Ménière, TIA), days (neuritis, stroke)', 'Triggers: position changes (BPPV), head motion, standing (orthostatic)', 'Vascular risks: age, hypertension, diabetes, smoking, atrial fibrillation', 'Hearing change, tinnitus, diplopia, dysarthria, dysphagia, headache/neck pain'],
+exam: [
+    "In spontaneous episodic dizziness, assess cranial nerves, visual fields, eye movements, limb coordination and gait, and ask about symptoms during the attack.",
+    'HINTS in ongoing AVS with nystagmus, by a trained examiner: a corrective saccade supports peripheral dysfunction but can occur in stroke; a normal HIT is a central warning in this setting. Interpret the complete examination, including hearing. Direction-changing or vertical nystagmus = central. Test-of-skew (vertical refixation) = central', 'Gait — unable to walk at all suggests central', 'Neuro: cranial nerves, cerebellar tests, dysmetria', 'Dix-Hallpike if positional symptoms; otoscopy', 'Orthostatic vitals if presyncopal'],
 workup: [
 ['Bedside', ['Trained HINTS plus hearing assessment for ongoing AVS with nystagmus; assess gait severity when nystagmus is absent', 'Glucose; orthostatics; ECG if presyncopal']],
 ['Labs', ['As directed by the picture: CBC, glucose, electrolytes']],
-['Imaging', ['MRI-DWI for suspected central cause (CT is poor for the posterior fossa)', 'CT first if hemorrhage is suspected; CTA/MRA for vascular assessment']]
+['Imaging', [
+    "Central or equivocal HINTS findings require MRI/MRA assessment; if TIA is suspected in spontaneous episodic dizziness, use CTA/MRA for large-vessel assessment.",
+    'MRI-DWI for suspected central cause (CT is poor for the posterior fossa)', 'CT first if hemorrhage is suspected; CTA/MRA for vascular assessment']]
 ],
 redFlags: ['Any new focal/cranial-nerve deficit or severe imbalance', 'Sudden headache with vertigo (hemorrhage)', 'Normal head-impulse test, direction-changing or vertical nystagmus, or skew deviation', 'Vascular risk factors with sustained (not positional) vertigo', 'New hearing loss with neuro signs', 'Inability to stand or walk even with support'],
 disposition: [
@@ -385,7 +443,9 @@ disposition: [
 ['Stroke pathway / neurosurgery', 'Posterior circulation stroke (thrombolysis/thrombectomy if eligible), cerebellar hemorrhage with mass effect.']
 ],
 pitfalls: ['HINTS is invalid in episodic/positional vertigo — that is a Dix-Hallpike question, not a HINTS question.', 'CT is insensitive for posterior ischemia. Early MRI-DWI can also be falsely negative; persistent central concern needs specialist assessment and sometimes repeat imaging.', 'A \u201Cdizzy\u201D elderly patient with falls may have presyncope, not vertigo — re-interview.', 'Nystagmus that changes direction with gaze = central until proven otherwise.', 'Do not treat undifferentiated vertigo with meclizine and discharge — the exam decides.', 'BPPV can coexist with serious causes; re-test if atypical.'],
-pearls: ['HINTS requires ongoing AVS with nystagmus and a trained examiner; use gait/neurologic assessment without nystagmus.', 'An abnormal HIT supports peripheral dysfunction but does not exclude stroke; interpret all HINTS findings and hearing together.', 'CT misses most posterior strokes — MRI-DWI when suspicion persists.', 'BPPV is diagnosed with Dix-Hallpike and treated with Epley in the ED.'],
+pearls: [
+    "For characteristic posterior-canal BPPV confirmed by Dix-Hallpike, perform an Epley maneuver; routine brain imaging is unnecessary when the presentation and examination are typical.",
+    'HINTS requires ongoing AVS with nystagmus and a trained examiner; use gait/neurologic assessment without nystagmus.', 'An abnormal HIT supports peripheral dysfunction but does not exclude stroke; interpret all HINTS findings and hearing together.', 'CT misses most posterior strokes — MRI-DWI when suspicion persists.', 'BPPV is diagnosed with Dix-Hallpike and treated with Epley in the ED.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — dizziness & vertigo', 'HINTS exam: Kattah et al., Stroke 2009; subsequent AVS imaging studies', '2026 AHA/ASA stroke guidance; SAEM GRACE-3 (2023) acute dizziness guideline']
 },
 {

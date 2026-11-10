@@ -1,10 +1,17 @@
 /* Selected primary guidance for the teaching points reviewed 8 October 2026.
+ * Targeted presentation additions checked 10 November 2026; topicReviews records scope.
  * Links support specific topics, not certification of every statement on a page.
  * Keep titles/URLs explicit: no guessed links generated from citation text.
  */
 (function () {
     'use strict';
     const sources = {
+        sah: ['AHA/ASA aneurysmal subarachnoid hemorrhage guideline (2023)', 'https://www.ahajournals.org/doi/10.1161/STR.0000000000000436'],
+        delirium: ['NICE CG103 delirium: recognition, assessment and supportive care (updated 2023)', 'https://www.nice.org.uk/guidance/cg103/chapter/Recommendations'],
+        syncopeGuideline: ['ACC/AHA/HRS syncope guideline (2017)', 'https://www.ahajournals.org/doi/10.1161/CIR.0000000000000499'],
+        dyspneaAssessment: ['SAEM CDEM: shortness of breath — initial assessment and respiratory support', 'https://www.saem.org/about-saem/academies-interest-groups-affiliates2/cdem/for-students/online-education/m4-curriculum/group-m4-approach-to/shortness-of-breath'],
+        abdominalAssessment: ['SAEM CDEM: approach to abdominal pain — assessment and investigation', 'https://www.saem.org/about-saem/academies-interest-groups-affiliates2/cdem/for-students/online-education/m4-curriculum/group-m4-approach-to/approach-to-abdominal-pain'],
+        mesenteric: ['WSES acute mesenteric ischemia guideline (2022)', 'https://wjes.biomedcentral.com/articles/10.1186/s13017-022-00443-x'],
         acetaminophen: ['US/Canada acetaminophen poisoning consensus (2023, corrected)', 'https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2808062'],
         mscc: ['NICE NG234 spinal metastases and cord compression', 'https://www.nice.org.uk/guidance/ng234/chapter/recommendations'],
         aorta: ['ACC/AHA aortic disease guideline (2022), acute aortic syndrome', 'https://www.jacc.org/doi/10.1016/j.jacc.2022.08.004'],
@@ -69,16 +76,16 @@
         thyroid: ["ATA/AACE thyroid storm and myxoedema emergency guidance", "https://www.thyroid.org/thyroid-storm/"]
     };
     const topics = {
-        'chest-pain': ['aorta', 'chest', 'acs', 'mi', 'pe'], dyspnea: ['asthma', 'pe'],
-        headache: ['headache', 'stroke'], ams: ['stroke', 'special', 'meningitis'], coma: ['stroke', 'special'],
+        'chest-pain': ['aorta', 'chest', 'acs', 'mi', 'pe'], dyspnea: ['asthma', 'pe', 'dyspneaAssessment'],
+        headache: ['headache', 'sah', 'stroke'], ams: ['stroke', 'special', 'meningitis', 'delirium'], coma: ['stroke', 'special'],
         weakness: ['stroke'], dizziness: ['dizziness', 'stroke'], diplopia: ['cn3', 'stroke'],
         'focal-neurologic-deficit': ['stroke'], fever: ['sepsis', 'meningitis'], shock: ['sepsis', 'lung', 'special'],
-        'joint-pain': ['joint'], 'pelvic-pain': ['ectopic', 'pid'], 'abdominal-pain': ['appendicitis', 'ectopic'],
+        'joint-pain': ['joint'], 'pelvic-pain': ['ectopic', 'pid'], 'abdominal-pain': ['appendicitis', 'ectopic', 'abdominalAssessment', 'mesenteric'],
         'vaginal-bleeding': ['pph', 'rh', 'ectopic'], 'pregnancy-emergency': ['special', 'pe', 'rh', 'hyperemesis', 'pph'],
         'scrotal-pain': ['epididymitis'], seizures: ['seizures', 'esett'], hemoptysis: ['hemoptysis', 'pe'],
         'nausea-vomiting': ['hyperemesis', 'dka', 'adrenal', 'chest'], diarrhea: ['cdi'], cyanosis: ['methb', 'neonate', 'special'],
         overdose: ['special', 'acetaminophen'], jaundice: ['acetaminophen'], 'back-pain': ['mscc', 'back'], 'pediatric-fever': ['infant', 'infant90', 'childFever', 'kawasaki'], hyperglycemia: ['dka', 'adrenal'],
-        'heat-cold': ['special'], palpitations: ['af', 'als'], syncope: ['syncope', 'als'],
+        'heat-cold': ['special'], palpitations: ['af', 'als'], syncope: ['syncope', 'syncopeGuideline', 'als'],
         'airway-stridor': ['special'], anaphylaxis: ['special'], 'flank-pain': ['stones'],
         'urinary-retention': ['stones'], edema: ['pe'], 'multiple-trauma': ['headinjury'],
         'falls-geriatric-trauma': ['headinjury'], 'pediatric-respiratory-distress': ['bronchiolitis', 'asthma'],
@@ -89,5 +96,69 @@
         burns: ['burns', 'special'], 'alcohol-withdrawal': ['withdrawal'], 'thyroid-storm': ['thyroid'],
         ecg: ['mi', 'af', 'als', 'special', 'pericarditis']
     };
-    window.CLINICAL_EVIDENCE = Object.freeze({ checked: '2026-10-08', sources: sources, topics: topics });
+    const topicReviews = {
+    "chest-pain": {
+        "checked": "2026-11-10",
+        "scope": "symptom assessment, previous testing and discharge follow-up",
+        "sources": [
+            "chest"
+        ]
+    },
+    "dyspnea": {
+        "checked": "2026-11-10",
+        "scope": "initial assessment, ventilation and reassessment",
+        "sources": [
+            "dyspneaAssessment"
+        ]
+    },
+    "abdominal-pain": {
+        "checked": "2026-11-10",
+        "scope": "targeted testing, serial assessment and mesenteric CTA",
+        "sources": [
+            "abdominalAssessment",
+            "mesenteric"
+        ]
+    },
+    "headache": {
+        "checked": "2026-11-10",
+        "scope": "onset history, test limitations and LP versus CTA",
+        "sources": [
+            "headache",
+            "sah"
+        ]
+    },
+    "ams": {
+        "checked": "2026-11-10",
+        "scope": "delirium recognition, assessment and supportive care",
+        "sources": [
+            "delirium"
+        ]
+    },
+    "syncope": {
+        "checked": "2026-11-10",
+        "scope": "witness history, selective testing and rhythm monitoring",
+        "sources": [
+            "syncopeGuideline"
+        ]
+    },
+    "fever": {
+        "checked": "2026-11-10",
+        "scope": "perfusion reassessment, source control and antimicrobial review",
+        "sources": [
+            "sepsis"
+        ]
+    },
+    "dizziness": {
+        "checked": "2026-11-10",
+        "scope": "timing and triggers, focused examination and selective imaging",
+        "sources": [
+            "dizziness"
+        ]
+    }
+};
+    Object.keys(topicReviews).forEach(function (id) {
+        Object.freeze(topicReviews[id].sources);
+        Object.freeze(topicReviews[id]);
+    });
+    window.CLINICAL_EVIDENCE = Object.freeze({ checked: '2026-10-08', sources: sources, topics: topics, topicReviews: Object.freeze(topicReviews) });
 }());
