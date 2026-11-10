@@ -6,6 +6,13 @@
 (function () {
     'use strict';
     const sources = {
+        gbs: ['EAN/PNS Guillain–Barré syndrome guideline (2023)', 'https://doi.org/10.1111/ene.16073'],
+        comaAssessment: ['NCS ENLS coma protocol: foundational bedside assessment (v4, 2019)', 'https://higherlogicdownload.s3.amazonaws.com/NEUROCRITICALCARE/fdc4bb32-6722-417b-8839-f68ac1ef3794/UploadedImages/ENLS_Documents/ENLS_V4.0_protocol%20files/ENLS_V_4_0_Protocol_Coma_FINAL.pdf'],
+        ambulatoryECG: ['ISHNE/HRS ambulatory ECG consensus (2017): symptom–rhythm correlation', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC6931745/'],
+        acuteBP: ['AHA elevated blood pressure in acute care scientific statement (2024)', 'https://www.ahajournals.org/doi/10.1161/HYP.0000000000000238'],
+        ich: ['AHA/ASA spontaneous intracerebral hemorrhage guideline (2022)', 'https://www.ahajournals.org/doi/10.1161/STR.0000000000000407'],
+        sodiumUS: ['US hyponatremia expert-panel recommendations (2013)', 'https://doi.org/10.1016/j.amjmed.2013.07.006'],
+        potassiumKDIGO: ['KDIGO conference: acute hyperkalemia in the ED (2020)', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC7448835/'],
         burnResuscitation: ['ABA burn-shock resuscitation guideline (2024): adults with ≥20% TBSA burns', 'https://doi.org/10.1093/jbcr/irad125'],
         burnReferral: ['ABA guidelines for burn patient referral', 'https://www.ameriburn.org/burn-care-team/resources/guidelines-for-burn-patient-referral'],
         burnCooling: ['ANZCOR 9.1.3: first aid for burns', 'https://www.anzcor.org/home/first-aid/guideline-9-1-3-first-aid-for-burns'],
@@ -81,7 +88,7 @@
         lung: ["ACEP Sonoguide: lung ultrasound and diagnostic limitations", "https://www.acep.org/sonoguide/basic/lung/"],
         neonate: ["CPS detection of critical congenital heart disease", "https://cps.ca/en/documents/position/pulse-oximetry-screening"],
         acls: ["AHA 2025 adult advanced cardiovascular life support algorithm", "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support"],
-        hyperkalemia: ["UK Kidney Association hyperkalaemia guideline (2023)", "https://ukkidney.org/health-professionals/guidelines/treatment-acute-hyperkalaemia-adults"],
+        hyperkalemia: ['UK Kidney Association adult hyperkalemia guideline (updated July 2026)', 'https://guidelines.ukkidney.org/hyperkalaemia/6-summary-of-clinical-practice-guideline-for-hyperkalaemia/6-2-section-ii-hospital/'],
         hyponatremia: ["European hyponatraemia clinical practice guideline", "https://academic.oup.com/ejendo/article/170/3/G1/6656231"],
         tbi: ["NICE NG232 head injury: assessment and early management", "https://www.nice.org.uk/guidance/NG232/chapter/recommendations"],
         hypertension: ["ESH 2023 arterial hypertension guideline", "https://journals.lww.com/jhypertension/fulltext/2023/06000/2023_esh_guidelines_for_the_management_of.2.aspx"],
@@ -91,22 +98,22 @@
     };
     const topics = {
         'chest-pain': ['aorta', 'chest', 'acs', 'mi', 'pe'], dyspnea: ['asthma', 'pe', 'dyspneaAssessment'],
-        headache: ['headache', 'sah', 'stroke'], ams: ['stroke', 'special', 'meningitis', 'delirium'], coma: ['stroke', 'special'],
-        weakness: ['stroke'], dizziness: ['dizziness', 'stroke'], diplopia: ['cn3', 'stroke'],
-        'focal-neurologic-deficit': ['stroke'], fever: ['sepsis', 'meningitis'], shock: ['sepsis', 'lung', 'special'],
+        headache: ['headache', 'sah', 'stroke'], ams: ['stroke', 'special', 'meningitis', 'delirium'], coma: ['stroke', 'special', 'comaAssessment'],
+        weakness: ['stroke', 'gbs'], dizziness: ['dizziness', 'stroke'], diplopia: ['cn3', 'stroke'],
+        'focal-neurologic-deficit': ['stroke', 'ich'], fever: ['sepsis', 'meningitis'], shock: ['sepsis', 'lung', 'special'],
         'joint-pain': ['joint'], 'pelvic-pain': ['ectopic', 'ectopicDiagnosis', 'pid'], 'abdominal-pain': ['appendicitis', 'ectopic', 'abdominalAssessment', 'mesenteric'],
         'vaginal-bleeding': ['pph', 'rh', 'ectopic'], 'pregnancy-emergency': ['special', 'pe', 'rh', 'hyperemesis', 'pph'],
         'scrotal-pain': ['epididymitis'], seizures: ['seizures', 'esett', 'firstSeizure'], hemoptysis: ['hemoptysis', 'pe'],
         'nausea-vomiting': ['hyperemesis', 'dka', 'adrenal', 'chest'], diarrhea: ['cdi', 'infectiousDiarrhea'], cyanosis: ['methb', 'neonate', 'special'],
         overdose: ['special', 'acetaminophen', 'selfharm'], jaundice: ['acetaminophen'], 'back-pain': ['mscc', 'back'], 'pediatric-fever': ['infant', 'infant90', 'childFever', 'kawasaki', 'meningitis'], hyperglycemia: ['dka', 'adrenal'],
-        'heat-cold': ['special'], palpitations: ['af', 'als'], syncope: ['syncope', 'syncopeGuideline', 'als'],
+        'heat-cold': ['special'], palpitations: ['af', 'als', 'ambulatoryECG'], syncope: ['syncope', 'syncopeGuideline', 'als'],
         'airway-stridor': ['special'], anaphylaxis: ['special', 'rcukAnaphylaxis'], 'flank-pain': ['stones'],
         'urinary-retention': ['stones', 'urethralTrauma', 'catheterCare'], edema: ['pe'], 'multiple-trauma': ['headinjury'],
         'falls-geriatric-trauma': ['headinjury'], 'pediatric-respiratory-distress': ['bronchiolitis', 'asthma'],
         gib: ['ugib', 'lgib', 'lgibASGE'], 'red-eye': ['keratitis', 'chemicalEye'], 'sore-throat': ['gas', 'gasTesting'],
         suicidal: ['selfharm'], constipation: ['constipation'], 'limb-ischemia': ['pad'], rash: ['ssti'],
-        'cardiac-arrest': ['acls', 'als', 'special'], electrolytes: ['hyperkalemia', 'hyponatremia'],
-        'head-injury': ['tbi', 'headinjury', 'mtbi', 'csfLeak'], 'hypertensive-emergency': ['hypertension', 'stroke'],
+        'cardiac-arrest': ['acls', 'als', 'special'], electrolytes: ['hyperkalemia', 'hyponatremia', 'sodiumUS', 'potassiumKDIGO'],
+        'head-injury': ['tbi', 'headinjury', 'mtbi', 'csfLeak'], 'hypertensive-emergency': ['hypertension', 'stroke', 'acuteBP', 'aorta', 'ich'],
         burns: ['burns', 'burnResuscitation', 'burnReferral', 'burnCooling', 'special'], 'alcohol-withdrawal': ['withdrawal', 'wernickeUK'], 'thyroid-storm': ['thyroid'],
         ecg: ['mi', 'af', 'als', 'special', 'pericarditis']
     };
@@ -348,6 +355,69 @@
         "scope": "outlet symptoms, selective colonoscopy and ongoing care",
         "sources": [
             "constipation"
+        ]
+    },
+    "weakness": {
+        "checked": "2026-11-10",
+        "scope": "selected GBS respiratory/autonomic assessment and early test limitations",
+        "sources": [
+            "gbs"
+        ]
+    },
+    "coma": {
+        "checked": "2026-11-10",
+        "scope": "foundational reassessment, diagnostic uncertainty and directed investigations",
+        "sources": [
+            "comaAssessment",
+            "stroke"
+        ]
+    },
+    "hemoptysis": {
+        "checked": "2026-11-10",
+        "scope": "bleeding-specific imaging, airway priorities and follow-up",
+        "sources": [
+            "hemoptysis"
+        ]
+    },
+    "shock": {
+        "checked": "2026-11-10",
+        "scope": "selected septic-shock reassessment, fluids and vasopressor access",
+        "sources": [
+            "sepsis"
+        ]
+    },
+    "palpitations": {
+        "checked": "2026-11-10",
+        "scope": "symptom-linked monitoring and selective rhythm assessment",
+        "sources": [
+            "ambulatoryECG",
+            "als"
+        ]
+    },
+    "focal-neurologic-deficit": {
+        "checked": "2026-11-10",
+        "scope": "selected stroke escalation, post-EVT BP and ICH target scope",
+        "sources": [
+            "stroke",
+            "ich"
+        ]
+    },
+    "electrolytes": {
+        "checked": "2026-11-10",
+        "scope": "selected potassium treatment/monitoring and hyponatremia safety limits",
+        "sources": [
+            "hyperkalemia",
+            "potassiumKDIGO",
+            "sodiumUS"
+        ]
+    },
+    "hypertensive-emergency": {
+        "checked": "2026-11-10",
+        "scope": "acute organ injury, cause-specific targets and aortic/ICH scope",
+        "sources": [
+            "acuteBP",
+            "aorta",
+            "ich"
         ]
     }
 };

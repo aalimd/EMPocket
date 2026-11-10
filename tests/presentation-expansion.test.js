@@ -8,7 +8,7 @@ const topics=c.window.CP_DATA,evidence=c.window.CLINICAL_EVIDENCE;
 const text=id=>JSON.stringify(topics.find(t=>t.id===id));
 test('selected review records distinguish the new scope from the historical audit',()=>{
  assert.equal(evidence.checked,'2026-10-08');
- const ids=['chest-pain','dyspnea','abdominal-pain','headache','ams','syncope','fever','dizziness','gib','back-pain','joint-pain','pelvic-pain','seizures','overdose','hyperglycemia','flank-pain','red-eye','sore-throat','scrotal-pain','diarrhea','rash','limb-ischemia','urinary-retention','head-injury','pediatric-fever','pediatric-respiratory-distress','anaphylaxis','burns','heat-cold','alcohol-withdrawal','suicidal','constipation'];
+ const ids=['chest-pain','dyspnea','abdominal-pain','headache','ams','syncope','fever','dizziness','gib','back-pain','joint-pain','pelvic-pain','seizures','overdose','hyperglycemia','flank-pain','red-eye','sore-throat','scrotal-pain','diarrhea','rash','limb-ischemia','urinary-retention','head-injury','pediatric-fever','pediatric-respiratory-distress','anaphylaxis','burns','heat-cold','alcohol-withdrawal','suicidal','constipation','weakness','coma','hemoptysis','shock','palpitations','focal-neurologic-deficit','electrolytes','hypertensive-emergency'];
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(),ids.sort());
  for(const id of ids){
   const r=evidence.topicReviews[id];assert.equal(r.checked,'2026-11-10');assert.ok(r.scope.length>15);
@@ -41,7 +41,7 @@ test('references display a scoped addition date without relabelling unreviewed t
  for(const name of ['esc','evidenceHtml']){const start=source.indexOf('    function '+name+'('),end=source.indexOf('\n    function ',start+1);vm.runInContext(source.slice(start,end),c);}
  assert.match(c.evidenceHtml('headache'),/Selected additions checked 2026-11-10/);
  assert.match(c.evidenceHtml('headache'),/This date applies only to these additions/);
- assert.doesNotMatch(c.evidenceHtml('weakness'),/Selected additions checked/);
+ assert.doesNotMatch(c.evidenceHtml('jaundice'),/Selected additions checked/);
 });
 
 test('pregnancy follow-up cannot substitute an hCG trend for clinical reassessment',()=>{
@@ -145,4 +145,38 @@ test('fourth-batch teaching is searchable and preserves individualized assessmen
  assert.match(text('anaphylaxis'),/only without cardiovascular instability/);
  assert.doesNotMatch(JSON.stringify(topics.find(t=>t.id==='suicidal').disposition),/Low acute risk:/);
  assert.match(text('constipation'),/biofeedback/);
+});
+
+test('selected potassium treatment includes named calcium regimens and early hypoglycemia precautions',()=>{
+ const t=text('electrolytes');
+ assert.match(t,/calcium gluconate 10% 30 mL IV over 10 min/);
+ assert.match(t,/calcium chloride 10% 10 mL over 5 min/);
+ assert.match(t,/every 30 min through 2 h, then hourly through 6 h/);
+ assert.match(t,/pretreatment glucose <7 mmol\/L/);
+ assert.match(t,/50 mL\/h for 5 h/);
+ assert.match(t,/IV bicarbonate is not routine hyperkalemia therapy/);
+ assert.match(t,/normal ECG cannot exclude severe hyperkalemia/);
+ assert.doesNotMatch(t,/then check glucose hourly|repeat sample before acting/);
+ assert.ok(evidence.sources.hyperkalemia[1].startsWith('https://guidelines.ukkidney.org/'));
+});
+test('sodium and cerebral/aortic targets keep their population and indication attached',()=>{
+ const t=text('electrolytes');assert.match(t,/up to 3 boluses total/);assert.match(t,/high ODS risk: do not exceed 8 mmol\/L in any 24 h/);
+ assert.ok(evidence.topicReviews.electrolytes.sources.includes('sodiumUS'));
+ for(const id of ['chest-pain','hypertensive-emergency']){
+  assert.match(text(id),/heart rate 60–80 bpm/);assert.match(text(id),/SBP <120 mmHg/);assert.ok(evidence.topics[id].includes('aorta'));
+ }
+ for(const id of ['hypertensive-emergency','focal-neurologic-deficit'])assert.match(text(id),/Selected mild-to-moderate ICH/);
+ assert.match(text('focal-neurologic-deficit'),/routine intensive SBP lowering below 140 mmHg is harmful/);
+});
+test('neurological, rhythm and shock additions preserve diagnostic uncertainty',()=>{
+ assert.match(text('weakness'),/Normal nerve-conduction studies in the first week do not exclude GBS/);
+ assert.match(text('coma'),/Preserved pupillary responses do not exclude a structural cause/);
+ assert.doesNotMatch(text('coma'),/without glucose, a CT, and a level/);
+ assert.match(text('shock'),/Do not give fluids solely to normalize lactate/);
+ assert.match(text('palpitations'),/Adenosine is reserved for appropriate regular rhythms/);
+ assert.match(text('hemoptysis'),/CTPA targets pulmonary arteries/);
+});
+test('fifth-batch additions are indexed at their real clinical destinations',()=>{
+ const idx=c.window.EM_SEARCH_INDEX.buildSearchIndex(topics,c.window.ECG_DATA);
+ for(const [id,target,phrase] of [['weakness','exam','bulbar function'],['coma','workup','Sudden unexplained coma'],['hemoptysis','workup','hemoptysis-specific'],['shock','pearls-pitfalls','monitored peripheral IV'],['palpitations','workup','symptom frequency'],['focal-neurologic-deficit','pearls-pitfalls','do not delay EVT'],['electrolytes','doses','every 30 min'],['hypertensive-emergency','pearls-pitfalls','medication access']])assert.ok(idx.some(h=>h.cpId===id&&h.target===target&&h.title.includes(phrase)),id);
 });

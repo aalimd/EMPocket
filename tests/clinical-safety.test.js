@@ -91,8 +91,8 @@ test('newly added resuscitation and emergency topics carry verified doses and so
   assert.ok(cp.refs.length>=1,id+' needs references');
  }
  assert.match(prose('cardiac-arrest'),/Epinephrine 1 mg IV\/IO every 3–5 min/);
- assert.match(prose('electrolytes'),/Insulin 10 units with 25 g dextrose/);
- assert.match(prose('hypertensive-emergency'),/heart rate ≤60 bpm then SBP 100–120 mmHg/);
+ assert.match(prose('electrolytes'),/insulin 10 units with 25 g glucose/i);
+ assert.match(prose('hypertensive-emergency'),/heart rate 60–80 bpm and SBP <120 mmHg/);
  assert.match(prose('burns'),/2 mL\/kg per %TBSA/);
  assert.match(prose('burns'),/Adult burns ≥20% TBSA/);
  assert.match(prose('alcohol-withdrawal'),/Lorazepam 1–2 mg IV/);

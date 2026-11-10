@@ -6,6 +6,7 @@
    Second targeted expansion: 10 Nov 2026, eight additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-10-BATCH-2.md.
    Third targeted expansion: 10 Nov 2026, eight additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-10-BATCH-3.md.
    Fourth targeted expansion: 10 Nov 2026, eight additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-10-BATCH-4.md.
+   Fifth targeted expansion: 10 Nov 2026, eight additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-10-BATCH-5.md.
    Educational reference only — never replaces clinical judgment or local protocols.
 */
 const CP_DATA = [
@@ -305,9 +306,13 @@ dontMiss: [
 ['Anemia, hypothyroid, depression, OSA, deconditioning', 'common', 'The chronic-fatigue cohort — screen systematically.']
 ],
 history: ['Tempo and pattern: sudden focal (vascular), ascending over days (GBS), fatigability through the day (MG)', 'Sensory level, back pain, bowel/bladder function, cancer history (MSCC)', 'Tick exposure, recent infections (Campylobacter), medications', 'Family history (periodic paralysis, dystrophy)', 'Fatigue screen: sleep, mood, weight change, bleeding, fevers'],
-exam: ['Map the pattern: proximal vs distal, symmetric vs focal, UMN (brisk reflexes, spasticity) vs LMN (flaccid, areflexia)', 'Reflexes — the single best discriminator (absent in GBS, brisk in cord/brain)', 'Perianal sensation and rectal tone when cauda equina is possible', 'Fatigability: sustained upgaze for ptosis (MG)', 'Respiratory: single-breath count, cough strength'],
+exam: [
+    "Check bulbar function, neck strength and cough, not just limb power; rapid progression or impaired airway clearance needs early critical-care assessment.",
+    'Map the pattern: proximal vs distal, symmetric vs focal, UMN (brisk reflexes, spasticity) vs LMN (flaccid, areflexia)', 'Interpret reflexes with the full pattern; GBS variants can retain reflexes', 'Perianal sensation and rectal tone when cauda equina is possible', 'Fatigability: sustained upgaze for ptosis (MG)', 'Respiratory: single-breath count, cough strength'],
 workup: [
-['Bedside', ['Glucose; NIHSS if focal', 'NIF / vital capacity in suspected GBS or MG', 'Urine color for myoglobin; tick search', 'Post-void residual if CES is possible']],
+['Bedside', [
+    "Follow serial vital capacity and respiratory examination in suspected GBS; worsening trends matter even before obvious respiratory distress.",
+    'Glucose; NIHSS if focal', 'NIF / vital capacity in suspected GBS or MG', 'Urine color for myoglobin; tick search', 'Post-void residual if CES is possible']],
 ['Labs', ['K⁺, phosphate, magnesium, CK, TFTs, CBC, B12, glucose/HbA1c', 'CSF (albuminocytologic dissociation) for GBS — may be normal early; AChR/MuSK antibodies for MG']],
 ['Imaging', ['Urgent MRI spine for cord/cauda/MSCC suspicion — do not delay for plain films', 'CT/MRI brain for focal weakness']]
 ],
@@ -317,8 +322,12 @@ disposition: [
 ['Admit', 'GBS/MG under monitoring (even if ambulating), electrolyte derangements, moderate rhabdo on IV fluids, progressive unclear cases.'],
 ['ICU / emergency intervention', 'Impending respiratory failure (NIF weaker than −30 cmH₂O, e.g. −20; VC <15–20 mL/kg; or 20/30/40 rule), cord compression, severe hyperkalemia, stroke needing intervention.']
 ],
-pitfalls: ['GBS presenting as back pain or with preserved reflexes early — serial exams and NIFs. CSF protein often rises only after the first week.', 'Myasthenia worsens with macrolides, fluoroquinolones, and aminoglycosides.', 'Do not wait for a \u201Ccomplete\u201D CES picture (full saddle anesthesia) before MRI.', 'Dexamethasone is indicated for suspected MSCC, not as routine therapy for discogenic cauda equina.', 'Periodic paralysis after a heavy carbohydrate meal or exercise — check K⁺ and family history.', 'Elderly \u201Cweakness\u201D may hide a hip fracture, pneumonia, or sepsis.'],
-pearls: ['First decide true weakness vs fatigue, then map the pattern with reflexes.', 'Watch NIF/VC in GBS and myasthenia — intubate before the crash.', 'Dexamethasone is for metastatic cord compression, not routine discogenic cauda equina.', 'Do not wait for a \u201Ccomplete\u201D CES picture before MRI.'],
+pitfalls: [
+    "Normal nerve-conduction studies in the first week do not exclude GBS; specialist-directed repeat testing may be needed.",
+    'GBS presenting as back pain or with preserved reflexes early — serial exams and NIFs. CSF protein often rises only after the first week.', 'Myasthenia worsens with macrolides, fluoroquinolones, and aminoglycosides.', 'Do not wait for a \u201Ccomplete\u201D CES picture (full saddle anesthesia) before MRI.', 'Dexamethasone is indicated for suspected MSCC, not as routine therapy for discogenic cauda equina.', 'Periodic paralysis after a heavy carbohydrate meal or exercise — check K⁺ and family history.', 'Elderly \u201Cweakness\u201D may hide a hip fracture, pneumonia, or sepsis.'],
+pearls: [
+    "Monitor suspected GBS for autonomic instability, including fluctuating blood pressure and heart rate, as well as weakness.",
+    'First decide true weakness vs fatigue, then map the pattern with reflexes.', 'Watch NIF/VC in GBS and myasthenia — intubate before the crash.', 'Dexamethasone is for metastatic cord compression, not routine discogenic cauda equina.', 'Do not wait for a \u201Ccomplete\u201D CES picture before MRI.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — weakness & neuromuscular disease', 'EAN/PNS 2023 Guillain-Barré syndrome guideline', 'NICE NG234 (2023) metastatic spinal cord compression — dexamethasone 16 mg for MSCC with neurology', 'AAN guidance on myasthenic crisis']
 },
 {
@@ -601,7 +610,7 @@ approach: [
     'Airway, glucose, oxygen — naloxone and thiamine as indicated (never delay dextrose).',
     'Pupils, breathing pattern, and brainstem reflexes localize structure vs toxin.',
     'Non-contrast CT for structural causes; EEG if non-convulsive status is possible.',
-    'Do not label it “alcohol” without glucose, a CT, and a level.'
+    'Do not attribute unexplained coma to alcohol alone; check glucose and investigate structural, toxic and metabolic causes.'
 ],
 dontMiss: [
 ['Hypoglycemia', 'critical', 'Glucose every time — the most treatable cause of coma.'],
@@ -611,14 +620,18 @@ dontMiss: [
 ['Non-convulsive status epilepticus', 'critical', 'Coma with subtle myoclonus — EEG; treat without waiting.'],
 ['Meningoencephalitis', 'critical', 'Fever or no focus — empiric therapy when suspected.'],
 ['Wernicke encephalopathy', 'critical', 'Alcohol use/malnutrition — give thiamine with (or immediately after) glucose; never delay dextrose.'],
-['Toxic-metabolic (CO, TCA, hypothermia)', 'critical', 'ECG, temperature, anion/osmolar gaps; deep coma with intact pupillary reflexes suggests toxin.']
+['Toxic-metabolic (CO, TCA, hypothermia)', 'critical', 'ECG, temperature, anion/osmolar gaps; consider toxins, but preserved pupillary responses do not exclude structural disease.']
 ],
 history: ['EMS/family: speed of onset, preceding symptoms (headache, seizure, fever, chest pain)', 'Access to medications/toxins; alcohol; psychiatric history', 'Trauma — especially falls in the anticoagulated', 'End-organ disease: liver, renal, diabetes, thyroid'],
-exam: ['ABCDE; GCS with attention to airway reflexes', 'Pupils: asymmetry or fixed dilation raises structural concern, but toxic/metabolic causes can also alter pupils; preserved reactivity does not exclude a structural lesion', 'Breathing pattern: Cheyne-Stokes, central hyperventilation, apneustic', 'Brainstem reflexes: pupils, corneal and cough; do not perform oculocephalic maneuvers until cervical injury is excluded', 'Motor: tone, symmetry, posturing to noxious stimulus', 'Trauma stigmata; skin for cyanosis, tracks, rash'],
+exam: [
+    "Document the examination before and after resuscitation, including sedative/paralytic exposure and any change in pupils or motor asymmetry.",
+    'ABCDE; GCS with attention to airway reflexes', 'Pupils: asymmetry or fixed dilation raises structural concern, but toxic/metabolic causes can also alter pupils; preserved reactivity does not exclude a structural lesion', 'Breathing pattern: Cheyne-Stokes, central hyperventilation, apneustic', 'Brainstem reflexes: pupils, corneal and cough; do not perform oculocephalic maneuvers until cervical injury is excluded', 'Motor: tone, symmetry, posturing to noxious stimulus', 'Trauma stigmata; skin for cyanosis, tracks, rash'],
 workup: [
 ['Bedside', ['Glucose immediately; naloxone/thiamine as indicated', 'ECG; VBG/ABG; core temperature']],
 ['Labs', ['Electrolytes (Na, Ca), renal/hepatic panels, ammonia, lactate, CBC, coagulation', 'Targeted toxicology; TSH; cortisol if endocrine suspicion']],
-['Imaging / monitoring', ['Non-contrast head CT first among structural tests', 'EEG for non-convulsive status; LP after imaging when indicated']]
+['Imaging / monitoring', [
+    "Sudden unexplained coma or brainstem findings warrants consideration of CTA for basilar occlusion even when noncontrast CT is unrevealing.",
+    'Non-contrast head CT first among structural tests', 'EEG for non-convulsive status; LP after imaging when indicated']]
 ],
 redFlags: ['Unequal or fixed-dilated pupils', 'Motor posturing or irregular breathing', 'Falling GCS, seizures, or hyperthermia', 'Hypoglycemia unresponsive to therapy; hypothermia', 'Meningeal signs with rapid progression', 'Anticoagulation with any trauma history'],
 disposition: [
@@ -626,8 +639,12 @@ disposition: [
 ['Admit (monitored)', 'Post-ictal or toxic with improving exam and a secured airway plan; correcting metabolic derangements.'],
 ['ICU / neurosurgery', 'Undifferentiated coma, herniation signs, ICH/SAH, status epilepticus, need for airway protection.']
 ],
-pitfalls: ['Locked-in syndrome mimics coma — check for vertical eye movements.', 'Small reactive pupils + deep coma = toxin more often than structure.', 'Never attribute coma to \u201Calcohol\u201D without glucose, a CT, and a level.', 'Hypothermia halts almost everything — rewarm before declaring brainstem reflexes lost.', 'Non-convulsive status hides inside \u201Cpost-ictal\u201D labels.', 'Never delay dextrose for thiamine — give them together.'],
-pearls: ['Support airway and ventilation, check glucose, and use oxygen, naloxone and thiamine according to the clinical indication.', 'Basilar artery occlusion can present as coma without lateralizing signs — think CTA/CTP or MRI if CT is unrevealing.', 'The FOUR score captures brainstem findings that GCS misses.', 'Intact pupillary reflexes in deep coma point toward toxin/metabolic more than structure.'],
+pitfalls: [
+    "Failure to awaken after correcting glucose or treating suspected opioid toxicity requires continued investigation; a treatment response does not exclude coexisting disease.",
+    'Locked-in syndrome mimics coma — check for vertical eye movements.', 'Small pupils can accompany opioid toxicity or brainstem pathology; pupil size alone cannot determine the cause.', 'An ethanol level does not establish the cause of coma; persistent or unexplained impairment needs further investigation.', 'Hypothermia halts almost everything — rewarm before declaring brainstem reflexes lost.', 'Non-convulsive status hides inside \u201Cpost-ictal\u201D labels.', 'Never delay dextrose for thiamine — give them together.'],
+pearls: [
+    "Persistent uncertainty after initial CT and metabolic assessment needs a directed plan for MRI, EEG or safe LP, rather than observation under an unconfirmed post-ictal label.",
+    'Support airway and ventilation, check glucose, and use oxygen, naloxone and thiamine according to the clinical indication.', 'Basilar artery occlusion can present as coma without lateralizing signs — think CTA/CTP or MRI if CT is unrevealing.', 'The FOUR score captures brainstem findings that GCS misses.', 'Preserved pupillary responses do not exclude a structural cause of coma.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — coma & depressed level of consciousness', 'FOUR score (Wijdicks et al., Ann Neurol 2005)', 'Neurocritical Care Society guidance']
 },
 {
@@ -867,7 +884,9 @@ exam: ['Airway and work of breathing; which side sounds worse', 'Hemodynamic sta
 workup: [
 ['Bedside', ['Upright posture; bleeding lung dependent if the side is known', 'SpO₂, CXR, POCUS lungs; type & crossmatch if more than streaks']],
 ['Labs', ['CBC (the hemoglobin lags), coagulation, type & screen', 'Sputum AFB/GeneXpert when TB is possible; BNP if cardiac suspicion; D-dimer/PE pathway if indicated']],
-['Imaging / procedures', ['CXR first; CT chest (CTPA if PE is on the list) is the localizing study in stable patients', 'Bronchoscopy for ongoing airway bleeding; bronchial-artery embolization for massive bleeding']]
+['Imaging / procedures', [
+    "For significant active bleeding in a stable patient, discuss a hemoptysis-specific contrast CTA protocol with radiology; bronchial/nonbronchial systemic vessels may need mapping for embolization.",
+    'CXR first; CT chest (CTPA if PE is on the list) is the localizing study in stable patients', 'Bronchoscopy for ongoing airway bleeding; bronchial-artery embolization for massive bleeding']]
 ],
 redFlags: ['Any volume with hypoxia, shock, or inability to protect the airway', 'Rapidly falling hemoglobin or bilateral infiltrates (DAH)', 'TB risks with hemoptysis', 'Anticoagulation with more than streaks', 'Known aspergilloma, cavity, or cancer', 'Hemoptysis plus VTE risks'],
 disposition: [
@@ -875,18 +894,23 @@ disposition: [
 ['Admit', 'Recurrent or moderate-volume bleeding, need for further imaging, infection on IV therapy, anticoagulation management.'],
 ['ICU / IR / bronchoscopy', 'Airway-threatening or massive hemoptysis, DAH, unstable PE, need for embolization or intubation.']
 ],
-pitfalls: ['Intubating and laying the bleeding lung up drowns the good lung — bleeding side down.', 'A normal CXR does not exclude a significant source — CT is the localizer in the stable patient.', 'Do not use nebulized TXA as the only plan for massive bleeding — it is an adjunct, not a substitute for IR/airway.', 'Hematemesis and posterior epistaxis are repeatedly mislabeled as hemoptysis — look in the mouth and the nose.', 'Cancer until proven otherwise in a smoker with new hemoptysis, even if the volume is small.'],
-pearls: ['Massive is about gas exchange and airway, not a milliliter cutoff.', 'Bleeding lung down, good lung up.', 'Bronchial-artery embolization is the intervention of choice for most massive non-traumatic hemoptysis.', 'Always ask: is this actually hematemesis or a nosebleed?'],
+pitfalls: [
+    "CTPA targets pulmonary arteries; it is not automatically interchangeable with a protocol designed to map the systemic bleeding supply.",
+    'Intubating and laying the bleeding lung up drowns the good lung — bleeding side down.', 'A normal CXR does not exclude a significant source — CT is the localizer in the stable patient.', 'Do not use nebulized TXA as the only plan for massive bleeding — it is an adjunct, not a substitute for IR/airway.', 'Hematemesis and posterior epistaxis are repeatedly mislabeled as hemoptysis — look in the mouth and the nose.', 'Cancer until proven otherwise in a smoker with new hemoptysis, even if the volume is small.'],
+pearls: [
+    "If airway control or clot extraction is urgent, bedside bronchoscopy may take priority over transport for CT; coordinate airway, respiratory and IR teams.",
+    "Embolization controls bleeding but does not treat every underlying cause; arrange investigation and treatment of infection, bronchiectasis or malignancy and a plan for recurrence.",
+    'Massive is about gas exchange and airway, not a milliliter cutoff.', 'Bleeding lung down, good lung up.', 'Bronchial-artery embolization is the intervention of choice for most massive non-traumatic hemoptysis.', 'Always ask: is this actually hematemesis or a nosebleed?'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — hemoptysis', 'BTS / ACCP hemoptysis statements; bronchial artery embolization series', 'Tintinalli\u2019s 9th ed. — pulmonary hemorrhage']
 },
 {
 id: 'shock', name: 'Shock', icon: '💔',
 tag: 'Name the pump, the tank, the pipes, or the obstruction.',
-overview: 'Shock is tissue hypoperfusion, not a blood-pressure number. Classify early with history, exam, and a RUSH/POCUS exam: hypovolemic, distributive, cardiogenic, obstructive — mixed pictures are the rule in the ED. Lactate and serial exams beat a single MAP. Fluids help hypovolemic and distributive shock; they harm the wet cardiogenic and the obstructed RV.',
+overview: 'Shock is tissue hypoperfusion, not a blood-pressure number. Classify early with history, exam, and a RUSH/POCUS exam: hypovolemic, distributive, cardiogenic, obstructive — mixed pictures are the rule in the ED. Integrate pressure, serial perfusion and lactate with the cause; individualize fluids and watch for congestion.',
 approach: [
     'Shock is hypoperfusion, not a blood-pressure number.',
     'Assign the box with RUSH/POCUS: empty tank, broken pump, leaky pipes, obstruction.',
-    'Fluids help hypovolemic and distributive shock; they harm wet cardiogenic and the obstructed RV. In septic shock, use balanced crystalloid then dynamic reassessment; start norepinephrine if MAP remains low during resuscitation.',
+    'Individualize fluids by cause, perfusion and congestion; avoid repeated unassessed boluses. In septic shock, use balanced crystalloid with dynamic reassessment and norepinephrine if hypotension persists.',
     'The drug follows the box: blood, epinephrine, norepinephrine, needle, or OR.'
 ],
 dontMiss: [
@@ -902,7 +926,9 @@ dontMiss: [
 history: ['Tempo: sudden (PE, tamponade, anaphylaxis, arrhythmia) vs hours (sepsis, bleed)', 'Chest pain, dyspnea, fever, allergen, trauma, GI bleeding, pregnancy', 'Heart failure, anticoagulation, adrenal replacement, immunocompromise', 'Drugs: beta-blockers, calcium-channel blockers, antihypertensives'],
 exam: ['Skin: warm vs cool; mottling; urticaria', 'JVP, heart sounds (muffled, new murmur), lung sliding and B-lines', 'Pulse pressure, cap refill, mental status, urine output', 'Abdomen and pelvis: AAA, pregnancy, peritonism, occult blood', 'Anaphylaxis: stridor, wheeze, swelling — or none of these'],
 workup: [
-['Bedside', ['RUSH/POCUS: pump, tank, pipes, sliding, DVT', 'ECG, SpO₂, glucose, lactate', 'Immediate decompression for clinically suspected tension PTX in extremis; ultrasound-guided tamponade drainage by a trained operator when indicated']],
+['Bedside', [
+    "For septic shock, assess dynamic fluid response when feasible; a static IVC image alone is insufficient.",
+    'RUSH/POCUS: pump, tank, pipes, sliding, DVT', 'ECG, SpO₂, glucose, lactate', 'Immediate decompression for clinically suspected tension PTX in extremis; ultrasound-guided tamponade drainage by a trained operator when indicated']],
 ['Labs', ['Lactate, VBG, CBC, coagulation, troponin, cultures before antibiotics when they will not delay them', 'Type & crossmatch; cortisol/TSH if endocrine shock is possible', 'Pregnancy test in patients of childbearing potential']],
 ['Imaging', ['CXR; CT only in the stabilized patient', 'CTPA, CTA aorta, or FAST as the leading diagnosis dictates']]
 ],
@@ -912,8 +938,13 @@ disposition: [
 ['Admit (HDU)', 'Resolved occult hypoperfusion under monitoring, treated infection with improving lactate, compensated cardiogenic states pending further testing.'],
 ['ICU / OR / cath lab / IR', 'Any shock needing vasopressors, airway, massive transfusion, reperfusion, or source-control surgery.']
 ],
-pitfalls: ['A \u201Cnormal\u201D blood pressure does not exclude shock — use lactate, mentation, and skin.', 'Fluids are not interchangeable across shock phenotypes: cardiogenic and obstructive shock need immediate cause-directed care.', 'Epinephrine in anaphylaxis is IM first, not an IV drip you wait to mix.', 'Pressors without a diagnosis: look at the RV and the pericardium before the third liter.', 'Beta-blocked and the elderly decompensate without tachycardia.'],
-pearls: ['Four boxes: empty tank, broken pump, leaky pipes, obstruction. POCUS can support the working diagnosis; mixed shock and nonspecific findings require reassessment.', 'Norepinephrine is the first-line vasopressor for septic shock (SSC).', 'Blood for blood loss; epinephrine for anaphylaxis; needle for tension; OR for the ruptured AAA — the drug follows the box.', 'Serial lactate and cap refill outperform a single MAP target.'],
+pitfalls: [
+    "Do not give fluids solely to normalize lactate; reassess perfusion, congestion and other causes of elevation.",
+    'A \u201Cnormal\u201D blood pressure does not exclude shock — use lactate, mentation, and skin.', 'Fluids are not interchangeable across shock phenotypes: cardiogenic and obstructive shock need immediate cause-directed care.', 'Epinephrine in anaphylaxis is IM first, not an IV drip you wait to mix.', 'Pressors without a diagnosis: look at the RV and the pericardium before the third liter.', 'Beta-blocked and the elderly decompensate without tachycardia.'],
+pearls: [
+    "Start needed septic-shock vasopressors through a suitable monitored peripheral IV rather than waiting for central access; follow local safeguards.",
+    "After each intervention, reassess mentation, capillary refill, urine output, pressure and respiratory status; reconsider mixed shock if the response is unexpected.",
+    'Four boxes: empty tank, broken pump, leaky pipes, obstruction. POCUS can support the working diagnosis; mixed shock and nonspecific findings require reassessment.', 'Norepinephrine is the first-line vasopressor for septic shock (SSC).', 'Blood for blood loss; epinephrine for anaphylaxis; needle for tension; OR for the ruptured AAA — the drug follows the box.', 'Use serial lactate and capillary refill alongside pressure and other perfusion measures, not as replacements for the overall assessment.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — shock', 'Surviving Sepsis Campaign 2021 and 2026 update', '2025 ACC/AHA ACS Guideline (cardiogenic shock); RUSH protocol literature']
 },
 {
@@ -1420,18 +1451,26 @@ approach: ['ABCs, monitor, IV access, and 12-lead ECG; treat hemodynamic instabi
 dontMiss: [['Unstable tachyarrhythmia or bradyarrhythmia', 'critical', 'Hypotension, shock, ischemic pain, pulmonary edema, or altered mentation means immediate resuscitation per local ACLS protocol.'], ['Ventricular tachycardia', 'critical', 'Assume wide-complex tachycardia is VT until expert review proves otherwise.'], ['Pre-excited atrial fibrillation', 'critical', 'Irregular wide-complex rhythm may deteriorate rapidly; avoid AV-nodal blockers and IV amiodarone; unstable patients need cardioversion, stable patients need expert procainamide/ibutilide or cardioversion assessment.'], ['ACS, PE, dissection, or toxicologic cause', 'emergent', 'Palpitations may be the presenting symptom of another time-critical illness.'], ['Sinus tachycardia / ectopy', 'common', 'A diagnosis of exclusion; explain and treat the driver rather than only the rate.']],
 history: ['Onset/offset (abrupt vs gradual), regularity, duration, exertional or supine symptoms', 'Syncope, chest pain, dyspnea, neurologic symptoms, family history of sudden death <40 y', 'Stimulants, alcohol, supplements, QT-prolonging medications, thyroid disease, prior ECG/device'],
 exam: ['Perfusion, blood pressure, mental status, heart-failure signs (JVP, crackles)', 'Pulse regularity and rate; pathologic murmurs (AS, HCM); volume status', 'Look for toxidrome, fever, anemia, or thyrotoxicosis clues'],
-workup: [['Bedside', ['12-lead ECG and continuous rhythm strip during symptoms; compare with prior ECGs and device interrogation', 'Bedside glucose and POCUS/echo when structural disease, heart failure, or pericardial effusion is suspected']], ['Labs', ['Electrolytes (K⁺, Mg²⁺, Ca²⁺), CBC, renal function, pregnancy test when relevant', 'hs-cTn when ischemia is possible; TSH when clinically indicated']], ['Imaging', ['CXR if heart failure or pulmonary driver suspected; formal echo or ambulatory monitor after dangerous rhythms are excluded']]],
+workup: [['Bedside', ['12-lead ECG and continuous rhythm strip during symptoms; compare with prior ECGs and device interrogation', 'Bedside glucose and POCUS/echo when structural disease, heart failure, or pericardial effusion is suspected']], ['Labs', ['Electrolytes (K⁺, Mg²⁺, Ca²⁺), CBC, renal function, pregnancy test when relevant', 'hs-cTn when ischemia is possible; TSH when clinically indicated']], ['Imaging', [
+    "Choose ambulatory monitoring by symptom frequency: a short Holter suits frequent episodes; infrequent unpredictable symptoms usually need longer event/loop monitoring.",
+    'CXR if heart failure or pulmonary driver suspected; formal echo or ambulatory monitor after dangerous rhythms are excluded']]],
 redFlags: ['Syncope, presyncope, or persistent hypotension', 'Wide-complex or very rapid irregular rhythm', 'Chest pain, ischemic ECG changes, or acute heart failure', 'Known structural heart disease, QTc ≥500 ms, Brugada, WPW, or family sudden death', 'Palpitations during exertion or with stimulant/toxin exposure'],
 disposition: [['Discharge', 'Resolved low-risk symptoms, normal ECG/QTc, no syncope or structural risk features, and arranged ambulatory follow-up.'], ['Observation / telemetry', 'Uncaptured recurrent symptoms, abnormal baseline ECG, electrolyte correction, new AF, or uncertain cause.'], ['Resuscitation / ICU / cardiology', 'Unstable rhythm, VT, pre-excitation concern, high-grade AV block, ischemia, or decompensated heart failure.']],
 pitfalls: ['Calling every fast rhythm anxiety before obtaining an ECG.', 'Treating a wide rhythm as SVT with calcium-channel or beta blockers without excluding VT or pre-excitation.', 'Slowing compensatory sinus tachycardia with nodal blockers instead of treating sepsis, bleeding, or PE.'],
-pearls: ['The patient\u2019s perfusion determines urgency; the ECG defines the next branch.', 'A rhythm strip captured during symptoms or adenosine challenge is often the single diagnostic test.', 'Irregular + wide + fast is pre-excited AF until proven otherwise — avoid AV-nodal blockers and IV amiodarone.'],
+pearls: [
+    "Ask the patient to record symptom times and activity so captured rhythms can be correlated with the actual episodes.",
+    "Preserve available ECG recordings from symptomatic episodes; a normal tracing between episodes does not exclude an intermittent arrhythmia.",
+    "Outpatient monitoring is a diagnostic plan, not a substitute for urgent assessment of syncope, instability or significant structural/inherited cardiac risk.",
+    'The patient\u2019s perfusion determines urgency; the ECG defines the next branch.', 'Capture an ECG during symptoms. Adenosine is reserved for appropriate regular rhythms through the ALS pathway; it is not a general diagnostic trial for palpitations.', 'Irregular + wide + fast is pre-excited AF until proven otherwise — avoid AV-nodal blockers and IV amiodarone.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — dysrhythmias', 'AHA ACLS and ACC/AHA/HRS arrhythmia guidance; apply local protocols']
 },
 {
 id: 'focal-neurologic-deficit', name: 'Focal Neurologic Deficit / Suspected Stroke', icon: '🧠',
 tag: 'Time last known well, glucose, disability, imaging, reperfusion team.',
 overview: 'A new focal deficit is stroke until proven otherwise, but hemorrhage, seizure, hypoglycemia, migraine, dissection, and toxic-metabolic causes may mimic it. The clock starts at last known well, not arrival.',
-approach: ['Record exact last-known-well time, baseline function, anticoagulant use, bedside glucose, and deficit severity.', 'Activate the local stroke pathway immediately; get noncontrast head CT to exclude hemorrhage and CTA head/neck to identify large-vessel occlusion.', 'Assess both NIHSS and functional disability (aphasia, hemianopia, gait inability); low NIHSS does not exclude a disabling stroke.', 'Screen for posterior-circulation strokes and cervical dissection when vertigo, diplopia, ataxia, or neck pain accompany focal signs.'],
+approach: [
+    "After correcting hypoglycemia, immediately reassess residual deficits; persistent focal findings still need the stroke pathway.",
+    'Record exact last-known-well time, baseline function, anticoagulant use, bedside glucose, and deficit severity.', 'Activate the local stroke pathway immediately; get noncontrast head CT to exclude hemorrhage and CTA head/neck to identify large-vessel occlusion.', 'Assess both NIHSS and functional disability (aphasia, hemianopia, gait inability); low NIHSS does not exclude a disabling stroke.', 'Screen for posterior-circulation strokes and cervical dissection when vertigo, diplopia, ataxia, or neck pain accompany focal signs.'],
 dontMiss: [['Acute ischemic stroke with disabling deficit', 'critical', 'Rapid stroke-team assessment; IV thrombolysis and/or thrombectomy eligibility follows local protocol and imaging.'], ['Intracranial hemorrhage', 'critical', 'CT first; control physiology and reverse anticoagulation per local pathway.'], ['Basilar artery occlusion', 'critical', 'Vertigo, diplopia, dysarthria, weakness, coma, or fluctuating signs demand posterior-circulation vigilance.'], ['Cervical artery dissection', 'emergent', 'Neck pain/headache with partial Horner syndrome or focal deficit; CTA/MRA.'], ['Hypoglycemia, seizure/Todd paralysis, migraine', 'common', 'Treat mimics promptly, but do not delay stroke imaging when uncertainty remains.']],
 history: ['Last known well vs wake-up symptoms, exact deficit onset and progression', 'Anticoagulants (last dose), recent surgery/bleeding, prior stroke, seizure, headache/neck trauma', 'Baseline disability, pregnancy/postpartum status, vascular risk factors (AF, hypertension)'],
 exam: ['Bedside glucose, NIHSS, gaze deviation, visual fields, language, and neglect', 'Posterior signs: truncal ataxia/gait, dysarthria, diplopia, crossed cranial-nerve/motor findings', 'Blood pressure, cardiac rhythm, airway protection, and dysphagia screen before oral intake'],
@@ -1439,10 +1478,14 @@ workup: [['Bedside', ['Capillary glucose immediately; 12-lead ECG and continuous
 redFlags: ['Disabling aphasia, neglect, hemiparesis, or visual field loss', 'Reduced consciousness or brainstem/posterior-circulation signs (diplopia, dysarthria, ataxia)', 'Thunderclap headache, vomiting, meningismus, or seizure at onset', 'Neck pain after minor trauma or new Horner syndrome', 'Anticoagulation or severe hypertension with acute neurologic change'],
 disposition: [['Discharge', 'Only after a confirmed low-risk mimic or specialist-directed TIA pathway with completed neurovascular imaging and rapid follow-up.'], ['Stroke unit', 'Confirmed stroke or high-risk TIA, persistent deficit, or incomplete etiologic/cardiac assessment.'], ['Resuscitation / neuro-ICU / thrombectomy center', 'Thrombolysis or EVT candidate, intracranial hemorrhage, large-vessel occlusion, declining GCS, or airway risk.']],
 pitfalls: ['Using ED arrival time rather than last-known-well time to judge the reperfusion window.', 'Calling a low NIHSS \u201Cminor\u201D when isolated aphasia, hemianopia, or hand/gait loss is disabling for the patient.', 'Missing posterior-circulation stroke because standard NIHSS underweights truncal ataxia and cranial-nerve signs.'],
-pearls: ['Check glucose immediately, then go straight to the CT scanner.', 'A disabling deficit with a low NIHSS is still a reperfusion candidate.', 'Neck pain or Horner syndrome with focal deficits is cervical dissection until CTA/MRA excludes it.'],
+pearls: [
+    "Keep the patient nil by mouth, including oral medicines, until an appropriate swallowing screen has been completed.",
+    "When eligible for both IV thrombolysis and thrombectomy, do not delay EVT to wait for a response to the IV treatment.",
+    "After successful anterior-circulation EVT, routine intensive SBP lowering below 140 mmHg is harmful; use the specialist post-reperfusion target and account for other indications.",
+    'Check glucose immediately, then go straight to the CT scanner.', 'A disabling deficit with a low NIHSS is still a reperfusion candidate.', 'Neck pain or Horner syndrome with focal deficits is cervical dissection until CTA/MRA excludes it.'],
 doses: [
     ['IV thrombolysis (alteplase / tenecteplase)', ['Alteplase 0.9 mg/kg IV (10% as a bolus over 1 min, remainder over 60 min), max 90 mg — within 4.5 h of onset', 'Tenecteplase 0.25 mg/kg IV bolus (max 25 mg) is an accepted alternative in eligible patients', 'Do not give if BP >185/110 mmHg — lower first and keep <180/105 for 24 h; no antiplatelet/anticoagulant for 24 h']],
-    ['BP targets', ['Ischaemic stroke, no thrombolysis: permissive hypertension — treat only if >220/120 mmHg (lower by ≤15% in the first 24 h)', 'Before/after thrombolysis: <185/110 to start, then <180/105 for 24 h', 'Intracerebral haemorrhage: if SBP 150–220 mmHg, target a smooth SBP ~140 mmHg (INTERACT2/ATACH-II); avoid <130 mmHg']],
+    ['BP targets', ['Ischemic stroke without reperfusion: permissive hypertension unless >220/120 mmHg or another condition requires treatment; if lowering, use the specialist protocol (usually ~15% in 24 h)', 'Before/after thrombolysis: <185/110 to start, then <180/105 for 24 h', 'Selected mild-to-moderate ICH with initial SBP 150–220 mmHg: target ~140, maintaining 130–150 mmHg; avoid <130. Severe/large ICH requires individualized specialist targets']],
     ['Reversal (haemorrhage / anticoagulated)', ['Warfarin: 4-factor PCC + vitamin K 10 mg IV', 'Dabigatran: idarucizumab 5 g IV; anti-Xa DOACs: andexanet alfa or 4F-PCC per protocol', 'Heparin (last 4 h): protamine 1 mg per 100 units (max 50 mg)']],
     ['Glucose & seizure', ['Treat hypoglycaemia (<60 mg/dL) immediately; target 140–180 mg/dL', 'Status epilepticus: benzodiazepine first — see the Status Epilepticus quick sheet', 'Do not treat mild permissive hyperglycaemia with insulin infusions in the acute phase']]
 ],
@@ -1669,7 +1712,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — cardiopulmonary arr
 {
 id: 'electrolytes', name: 'Electrolyte Emergencies', icon: '⚗️',
 tag: 'Sodium, potassium, calcium — the numbers that stop the heart and the brain.',
-overview: 'Electrolyte emergencies are common, lethal and treatable. Hyperkalaemia threatens the myocardium and is treated with membrane stabilisation first. Dysnatraemia causes neurological injury and must be corrected at a measured rate to avoid osmotic demyelination or cerebral oedema. Hypercalcaemia, hypocalcaemia and severe derangements of magnesium all produce arrhythmia, weakness and altered consciousness. Check the potassium and glucose in any sick patient, and confirm with a repeat sample before acting on an unexpected critical result.',
+overview: 'Electrolyte emergencies are common, lethal and treatable. Hyperkalaemia threatens the myocardium and is treated with membrane stabilisation first. Dysnatraemia causes neurological injury and must be corrected at a measured rate to avoid osmotic demyelination or cerebral oedema. Hypercalcaemia, hypocalcaemia and severe derangements of magnesium all produce arrhythmia, weakness and altered consciousness. Check the potassium and glucose in any sick patient, and repeat an unexpected result promptly without delaying treatment of a clinically unstable patient.',
 approach: [
     'Hyperkalaemia with ECG changes is a cardiac emergency: stabilise the membrane while you remove the potassium.',
     'Dysnatraemia: correct slowly and predictably — rapid shifts cause osmotic demyelination (hyponatraemia) or cerebral injury (hypernatraemia).',
@@ -1692,11 +1735,17 @@ redFlags: ['Peaked T waves, wide QRS, or sine wave on the ECG', 'Seizure or coma
 disposition: [['Home with follow-up', 'Mild, asymptomatic, stable derangement with a corrected cause and reliable review.'],
 ['Admit (medical)', 'Symptomatic or marked derangement that needs serial electrolytes and cardiac monitoring, or an uncorrected cause.'],
 ['ICU / emergency dialysis', 'Severe hyperkalaemia refractory to medical therapy, symptomatic severe dysnatraemia, or a patient needing urgent renal replacement.']],
-pitfalls: ['Giving calcium and bicarbonate through the same line (calcium carbonate precipitate).', 'Correcting sodium too quickly — osmotic demyelination is irreversible.', 'Treating hypocalcaemia without checking and replacing magnesium.', 'Using insulin-dextrose alone for severe hyperkalaemia without first stabilising the membrane in a patient with ECG changes.', 'Assuming a spuriously high or low potassium is real (haemolysed or delayed sample) — repeat when the patient looks well.'],
-pearls: ['In hyperkalaemia: calcium stabilises, insulin-dextrose and salbutamol shift, dialysis removes. None of the shifts is definitive treatment.', 'A short QT with confusion is hypercalcaemia until proven otherwise.', 'The safest dysnatraemia correction is measured and documented — set a rate and recheck.', 'Potassium, glucose and an ECG in every sick patient — the sequence rarely misleads.'],
+pitfalls: [
+    "A normal ECG cannot exclude severe hyperkalemia.",
+    "If pseudohyperkalemia is suspected, repeat promptly; do not delay emergency treatment of a clinically unstable patient.",
+    'Giving calcium and bicarbonate through the same line (calcium carbonate precipitate).', 'Correcting sodium too quickly — osmotic demyelination is irreversible.', 'Treating hypocalcaemia without checking and replacing magnesium.', 'Using insulin-dextrose alone for severe hyperkalaemia without first stabilising the membrane in a patient with ECG changes.', 'Assuming a spuriously high or low potassium is real (haemolysed or delayed sample) — repeat when the patient looks well.'],
+pearls: [
+    "Potassium may rebound after shifting therapy; repeat levels and establish a removal/cause-control plan.",
+    "Identify sodium overcorrection risk early, especially with malnutrition, alcohol-use disorder, liver disease or hypokalemia; monitor sodium and urine output closely.",
+    'In hyperkalaemia: calcium stabilises, insulin-dextrose and salbutamol shift, dialysis removes. None of the shifts is definitive treatment.', 'A short QT with confusion is hypercalcaemia until proven otherwise.', 'The safest dysnatraemia correction is measured and documented — set a rate and recheck.', 'Potassium, glucose and an ECG in every sick patient — the sequence rarely misleads.'],
 doses: [
-    ['Hyperkalaemia', ['Calcium chloride 10% 5–10 mL IV (or calcium gluconate 10% 15–30 mL) — membrane stabilisation when the ECG is abnormal; repeat as needed', 'Insulin 10 units with 25 g dextrose (50 mL of 50%) IV, then check glucose hourly', 'Salbutamol 10–20 mg nebulised (a shift, not a removal)', 'Sodium bicarbonate 1–2 mEq/kg IV if acidotic or if sodium-channel blockade', 'Definitive removal: dialysis; add a potassium binder when available']],
-    ['Dysnatraemia', ['Symptomatic hyponatraemia: 100 mL bolus of 3% saline over 10 min, repeat up to 3 times to control seizures, then correct ≤8–10 mmol/L in 24 h', 'Severe hypernatraemia: correct ≤0.5 mmol/L/h, using enteral or IV free water based on the calculated deficit', 'Check sodium every 2–4 h during active correction']],
+    ['Hyperkalaemia', ['UKKA adult ECG-change regimen: calcium gluconate 10% 30 mL IV over 10 min; calcium chloride 10% 10 mL over 5 min is preferred in arrest/peri-arrest. Reassess ECG; follow local protocol', 'UKKA: soluble insulin 10 units with 25 g glucose IV; check glucose at baseline, every 30 min through 2 h, then hourly through 6 h. Follow hypoglycemia-prevention protocol', 'If pretreatment glucose <7 mmol/L: UKKA adds 10% glucose at 50 mL/h for 5 h after insulin-glucose', 'Salbutamol 10–20 mg nebulised (a shift, not a removal)', 'IV bicarbonate is not routine hyperkalemia therapy; selected severe metabolic acidosis needs specialist-directed treatment. Sodium-channel poisoning is a separate indication', 'Definitive removal: dialysis; add a potassium binder when available']],
+    ['Dysnatraemia', ['Severe symptomatic hyponatremia (seizures/coma): US expert-panel approach, 3% saline 100 mL IV over 10 min, up to 3 boluses total as needed; reassess symptoms and sodium', 'Set a patient-specific sodium correction limit; high ODS risk: do not exceed 8 mmol/L in any 24 h. Seek specialist rescue advice if overcorrecting', 'Severe hypernatraemia: correct ≤0.5 mmol/L/h, using enteral or IV free water based on the calculated deficit', 'Check sodium every 2–4 h during active correction']],
     ['Calcium and magnesium', ['Symptomatic hypocalcaemia: calcium gluconate 10% 10–20 mL IV over 10 min, then infusion', 'Hypomagnesaemia: magnesium sulfate 1–2 g IV over 15–60 min, then infusion if severe', 'Severe hypercalcaemia: isotonic saline 1–2 L, then calcitonin ± bisphosphonate; furosemide only after rehydration']]
 ],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — fluid, electrolyte and acid-base disorders', 'KDIGO electrolyte guidance; UK Kidney Association hyperkalaemia guideline (2023)', 'European hyponatraemia guideline (2014) and its clinical practice updates']
@@ -1771,11 +1820,17 @@ redFlags: ['Neurological signs: encephalopathy, seizure, focal deficit, papilloe
 disposition: [['Discharge with follow-up', 'Hypertensive urgency without organ damage: restart or optimise oral therapy, arrange review within days, and give clear return advice.'],
 ['Admit with monitoring', 'Any acute target-organ damage needing titrated IV therapy and serial reassessment.'],
 ['ICU / specialist', 'Aortic dissection, hypertensive encephalopathy, eclampsia, or refractory hypertension needing invasive monitoring.']],
-pitfalls: ['Treating the number instead of the patient and overshooting into cerebral or coronary ischaemia.', 'Giving sublingual nifedipine or a rapid-release agent, producing uncontrolled reductions.', 'Using a pure vasodilator before beta-blockade in dissection (reflex tachycardia worsens the wall stress).', 'Missing pregnancy, stimulant use, or a missed ACE-inhibitor dose as the real cause.', 'Discharging an urgency patient without a plan for missed medication and follow-up.'],
-pearls: ['The presence of organ damage, not the height of the number, defines the emergency.', 'In dissection the first target is heart rate; in encephalopathy it is a measured 20–25% MAP reduction.', 'A pressure that will not budge should make you reconsider the cause and the cuff.', 'Confirm with a manual repeat before you commit the patient to an IV infusion.'],
+pitfalls: [
+    "Chronic LVH or stable chronic kidney disease alone does not establish acute pressure-related organ injury; assess what is new or worsening.",
+    'Treating the number instead of the patient and overshooting into cerebral or coronary ischaemia.', 'Giving sublingual nifedipine or a rapid-release agent, producing uncontrolled reductions.', 'Using a pure vasodilator before beta-blockade in dissection (reflex tachycardia worsens the wall stress).', 'Missing pregnancy, stimulant use, or a missed ACE-inhibitor dose as the real cause.', 'Discharging an urgency patient without a plan for missed medication and follow-up.'],
+pearls: [
+    "Document the affected organ and its treatment target; ischemic stroke, aortic dissection and pregnancy-related emergencies do not share one universal reduction strategy.",
+    "Explore medication access, adverse effects and other barriers before adjusting treatment; make the follow-up plan achievable.",
+    "During titration, record neurological symptoms, chest discomfort, perfusion and renal trends alongside BP to detect harm from excessive reduction.",
+    'The presence of organ damage, not the height of the number, defines the emergency.', 'In dissection the first target is heart rate; in encephalopathy it is a measured 20–25% MAP reduction.', 'A pressure that will not budge should make you reconsider the cause and the cuff.', 'Confirm with a manual repeat before you commit the patient to an IV infusion.'],
 doses: [
     ['Titratable IV agents', ['Nicardipine infusion 5 mg/h, titrate by 2.5 mg/h every 5 min to max 15 mg/h', 'Labetalol 10–20 mg IV bolus then 0.5–2 mg/min infusion (avoid in acute heart failure/asthma)', 'Esmolol 500 mcg/kg bolus then 50–200 mcg/kg/min (dissection, titratable)', 'Nitroglycerin 5–200 mcg/min for pulmonary oedema and ACS', 'Hydralazine 5–10 mg IV every 20–30 min in pregnancy (watch for reflex tachycardia)']],
-    ['Rate and target by organ', ['Encephalopathy: reduce MAP 20–25% in the first hour, then to ~160/100 mmHg over 2–6 h', 'Dissection: heart rate ≤60 bpm then SBP 100–120 mmHg', 'Intracerebral haemorrhage: SBP ~140 mmHg when presenting 150–220 mmHg', 'Ischaemic stroke/thrombolysis: <185/110 to treat, then <180/105 for 24 h']],
+    ['Rate and target by organ', ['Encephalopathy: reduce MAP 20–25% in the first hour, then to ~160/100 mmHg over 2–6 h', 'Acute aortic syndrome (ACC/AHA): heart rate 60–80 bpm and SBP <120 mmHg, or the lowest pressure maintaining adequate organ perfusion', 'Selected mild-to-moderate ICH with initial SBP 150–220 mmHg: target ~140, maintaining 130–150 mmHg; severe/large ICH needs individualized specialist targets', 'Ischaemic stroke/thrombolysis: <185/110 to treat, then <180/105 for 24 h']],
     ['Eclampsia', ['Magnesium sulfate 4 g IV over 5–10 min, then 1 g/h infusion for 24 h', 'Recurrent seizure: further 2 g IV bolus; monitor reflexes, respiratory rate and urine output']]
 ],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — hypertension', '2023 ESH hypertension guideline; 2017 ACC/AHA hypertension guideline', 'AHA/ASA 2026 acute ischaemic stroke guideline; NICE NG133 hypertension in pregnancy']
