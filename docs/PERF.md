@@ -1,6 +1,6 @@
 # First-load performance budget (Phase 3)
 
-Measured 9 Nov 2026 against the release token `20261108-coordination-v67`.
+Historical size estimate: 9 Nov 2026. Rechecked 10 Nov 2026 for `20261110-ux-v70`: 20 startup scripts, 1,298,474 raw bytes and 391,799 bytes summed per-file gzip; recordings 2,748,789 raw bytes. These are payload sizes, not render-time measurements. Gzip on the host may differ.
 
 ## The two tiers
 
@@ -10,21 +10,35 @@ Measured 9 Nov 2026 against the release token `20261108-coordination-v67`.
 | Lazy — recorded-ECG library | `ecg-recordings.js` | 2.6 MB | ~712 KB |
 | Candidate for lazy — ECG stack (6 modules) | `ecg-svg`, `ecg-engine`, `ecg-case-tracings`, `ecg-interactive`, `ecg-curriculum`, `ecg-explorer` | ~380 KB | ~90 KB |
 
-**First paint pays only the eager tier.** The recordings library imports when
+**The startup execution tier excludes recording evaluation.** Module scripts do not block HTML parsing, but execution can affect interactivity; payload size alone does not measure first paint. The recordings library imports when
 the recordings visual lesson mounts (`loadRecordings` in
 `assets/em-learning.js`). It stays in the service-worker precache, so after
 the first install it resolves from cache and costs no extra network time.
 
 ## Future: lazy ECG stack (not yet done)
 
-The six ECG modules (~90 KB gzipped) are only used inside ECG views, so
-they are the natural next lazy candidate. A trial implementation introduced a
+The six ECG modules (~90 KB gzipped) are a candidate for deferred evaluation.
+Audit their search-index, learning-comparison and route consumers before changing
+startup order; an ECG screen is not necessarily their only consumer. A trial implementation introduced a
 regression: an async `ensureEcgStack().then(render)` let a late ECG render
 fire after the user had navigated elsewhere, overwriting the current page
-and failing the browser audit. Any retry must (a) guard the late render with
-the requested hash (`if (location.hash !== requested) return;`), and (b)
-allow the browser audit's 450 ms settle window to absorb the import. Until
-both are proven, the ECG stack stays eager.
+and failing the browser audit. The ECG stack stays eager until a separate
+experiment proves all of the following:
+
+- A monotonic navigation/request generation rejects stale completion, including
+  A → B → A navigation; matching the hash alone is insufficient.
+- Loading, failure, retry and offline states preserve the current route and
+  unsaved-note decisions. Related views must share a single loading promise.
+- Tests wait for explicit ready/error states instead of extending fixed sleeps.
+- A comparison on a documented slow network and CPU profile demonstrates a
+  useful improvement in startup responsiveness without making first ECG use worse.
+- Precaching and update-from-previous-release checks still pass. Lazy evaluation
+  does not reduce the full offline-install download while the files remain precached.
+
+The browser audit now reports an unthrottled local startup baseline and checks
+that the library renders and recordings remain unevaluated. This is a smoke
+measurement, not evidence of physical-device performance or a reason to change
+loading architecture.
 
 ## Eager modules (first load)
 
@@ -50,7 +64,7 @@ both are proven, the ECG stack stays eager.
   visit and would multiply cache entries. Revisit only if it grows beyond
   ~500 KB raw.
 - If the ECG stack goes lazy safely, first load would drop by ~90 KB
-  gzipped (~24% of the JS budget) — the cheapest remaining win.
+  gzipped (~24% of the JS budget) — a candidate saving, not a proven user-facing improvement.
 
 ## Rules for future modules
 

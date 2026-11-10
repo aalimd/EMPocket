@@ -599,6 +599,12 @@
         if (labelledBy) stage.setAttribute('aria-labelledby', labelledBy);
         else if (label) stage.setAttribute('aria-label', label);
     }
+    function connectionStatus() {
+        return navigator.onLine === false ? 'Offline · external links unavailable' : 'Online · external links need internet access';
+    }
+    function updateConnectionStatus() {
+        document.querySelectorAll('[data-connection-status]').forEach(el => { el.textContent = connectionStatus(); });
+    }
     function setOfflineStatus(status) {
         offlineStatus = status;
         const badge = document.getElementById('offlineStatus');
@@ -937,7 +943,7 @@
             '<span class="study-kicker">' + semanticSvg(SEMANTIC_ICONS['generic'], 'kicker-svg') + ' THE EM POCKET · REFERENCE</span>' +
             '<h1>Library</h1>' +
             '<p>Find an emergency presentation and explore its approach, warning signs, workup and disposition.</p>' +
-            '<div class="home-meta"><span><span class="meta-dot"></span> ' + DATA.length + ' presentations</span><span id="offlineStatus">' + esc(offlineStatus) + '</span></div>' +
+            '<div class="home-meta"><span><span class="meta-dot"></span> ' + DATA.length + ' presentations</span><span id="offlineStatus">' + esc(offlineStatus) + '</span><span data-connection-status role="status">' + esc(connectionStatus()) + '</span></div>' +
             '</div></div></section>' +
             '<section class="presentation-library" id="presentationLibrary" aria-labelledby="presentationLibraryTitle" tabindex="-1">' +
             '<div class="library-head"><div><h2 id="presentationLibraryTitle"><span class="sec-inline-ico" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['generic'], 'badge-svg') + '</span> Presentation library</h2><p>' + visibleCount + ' of ' + DATA.length + ' presentations · grouped by clinical system</p></div>' +
@@ -3245,10 +3251,10 @@
         window.addEventListener('appinstalled', () => {
             deferredInstallPrompt = null;
             if (installBtn) installBtn.hidden = true;
-            toast('The EM Pocket is installed and ready for offline use.');
+            toast('The EM Pocket is installed. Check offline readiness in Settings.');
         });
-        window.addEventListener('offline', () => toast('You’re offline — saved The EM Pocket content remains available.'));
-        window.addEventListener('online', () => toast('You’re back online.'));
+        window.addEventListener('offline', () => { updateConnectionStatus(); toast('You’re offline. Previously downloaded content may remain available; external links need internet access.'); });
+        window.addEventListener('online', () => { updateConnectionStatus(); toast('You’re back online.'); });
 
         const input = document.getElementById('searchInput');
         const clearBtn = document.getElementById('searchClearBtn');
@@ -3386,7 +3392,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261108-coordination-v67').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261110-ux-v70').then((registration) => {
                     navigator.serviceWorker.ready.then(() => setOfflineStatus('Ready for offline use'));
                     const applyUpdate = () => {
                         if(window.POCKET_DESIGN && !window.POCKET_DESIGN.beforeRoute(() => window.location.reload()))return;
@@ -3421,7 +3427,7 @@
         }
     }
 
-    window.EM_POCKET_UI = { stage, esc, highlightMatch, dueIds, savedIds, reviewedIds, noteFor, saveCurrentNote, toast, findSearchHits, setStageContext, syncNav, showDisclaimer, openReadingPanel, closeReadingPanel, validateModuleContracts, reportBootContracts, MODULE_CONTRACTS, ROUTE_REGISTRY, safeApplyRoute, get offlineStatus(){return offlineStatus;} };
+    window.EM_POCKET_UI = { stage, esc, highlightMatch, dueIds, savedIds, reviewedIds, noteFor, saveCurrentNote, toast, findSearchHits, setStageContext, syncNav, showDisclaimer, openReadingPanel, closeReadingPanel, validateModuleContracts, reportBootContracts, MODULE_CONTRACTS, ROUTE_REGISTRY, safeApplyRoute, connectionStatus, get offlineStatus(){return offlineStatus;} };
     if (document.readyState !== 'complete') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

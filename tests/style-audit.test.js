@@ -1096,3 +1096,89 @@ test('primary hover reads the tested token in both themes and every accent',asyn
         assert.equal(r.rule,'yes',mode+'/'+accent+' active rule resolves to its token');
     }
 });
+
+test('Show more search results moves keyboard focus into the newly revealed results', async t => {
+    if (!await ready(t)) return;
+    await load('#search~pain');
+    const result = await evaluate(`(()=>{const button=document.querySelector('[data-search-more]');const before=document.querySelectorAll('.search-result-card').length;if(button.hidden)return {before,available:false};button.focus();button.click();const cards=[...document.querySelectorAll('.search-result-card')];return {before,available:true,after:cards.length,focused:cards.indexOf(document.activeElement)};})()`);
+    assert.ok(result.available, 'pain must produce enough real results for pagination');
+    assert.ok(result.after > result.before);
+    assert.equal(result.focused, result.before);
+});
+
+test('opening a case can be resumed before answering and while session storage is blocked', async t => {
+    if (!await ready(t)) return;
+    await load('#learn~home');
+    const result=await evaluate(`(()=>{
+        const original=Storage.prototype.setItem;
+        Storage.prototype.setItem=function(key,value){if(key==='em-workspace-session-v1')throw Error('blocked');return original.call(this,key,value);};
+        try{
+            const c=window.EM_LEARNING_DATA.cases[0],stage=document.getElementById('stage');
+            window.EM_LEARNING.mount(stage,'case-'+c.id);
+            const session=window.EM_LEARNING.activeCase();
+            window.POCKET_DESIGN.learn('home');
+            const card=stage.querySelector('.design-continue');
+            return {session,expected:c.id,text:card?.textContent,href:card?.querySelector('a').getAttribute('href')};
+        }finally{Storage.prototype.setItem=original;}
+    })()`);
+    assert.equal(result.session.id,result.expected);
+    assert.equal(result.session.index,0);
+    assert.match(result.text,/Continue at decision 1 of/);
+    assert.equal(result.href,'#learn~case-'+result.expected);
+});
+
+test('opening an unanswered case persists a valid resume session for reload', async t => {
+    if (!await ready(t)) return;
+    await load('#learn~home');
+    await cdp('Page.reload');await wait(650);
+    const result=await evaluate(`(()=>{const c=window.EM_LEARNING_DATA.cases[0];window.EM_LEARNING.mount(document.getElementById('stage'),'case-'+c.id);return {id:c.id,stored:JSON.parse(sessionStorage.getItem('em-workspace-session-v1'))};})()`);
+    assert.equal(result.stored[result.id].index,0);
+    assert.deepEqual(result.stored[result.id].answers,[]);
+    await cdp('Page.reload');await wait(650);
+    const resumed=await evaluate(`window.EM_LEARNING.activeCase()`);
+    assert.equal(resumed.id,result.id);
+    assert.equal(resumed.index,0);
+});
+
+test('connection changes update Library and Settings without changing offline readiness', async t => {
+    if (!await ready(t)) return;
+    await load('#library');
+    const result=await evaluate(`(()=>{
+        const readiness=document.getElementById('offlineStatus').textContent;
+        const original=Object.getOwnPropertyDescriptor(navigator,'onLine');
+        try{
+            Object.defineProperty(navigator,'onLine',{configurable:true,get:()=>false});
+            window.dispatchEvent(new Event('offline'));
+            const library=document.querySelector('[data-connection-status]').textContent;
+            window.POCKET_DESIGN.settings();
+            const settings=document.querySelector('[data-connection-status]').textContent;
+            const offlineReadiness=document.getElementById('offlineStatus').textContent;
+            Object.defineProperty(navigator,'onLine',{configurable:true,get:()=>true});
+            window.dispatchEvent(new Event('online'));
+            return {readiness,library,settings,offlineReadiness,online:document.querySelector('[data-connection-status]').textContent};
+        }finally{if(original)Object.defineProperty(navigator,'onLine',original);else delete navigator.onLine;}
+    })()`);
+    assert.match(result.library,/^Offline/);
+    assert.match(result.settings,/^Offline/);
+    assert.match(result.online,/^Online/);
+    assert.equal(result.offlineReadiness,result.readiness);
+});
+
+test('startup performance exposes a usable library and defers recorded ECG evaluation', async t => {
+    if (!await ready(t)) return;
+    await load('#library');
+    await cdp('Page.reload');
+    const deadline=Date.now()+5000;
+    while(!await evaluate(`!!document.querySelector('#presentationLibrary') && document.readyState==='complete'`)){
+        assert.ok(Date.now()<deadline,'library becomes ready within five seconds');await wait(25);
+    }
+    const metrics=await evaluate(`(()=>{
+        const nav=performance.getEntriesByType('navigation')[0];
+        return {topics:document.querySelectorAll('#presentationLibrary button[data-id]').length,recordingsEvaluated:!!window.EM_ECG_RECORDINGS,
+        domContentLoadedMs:Math.round(nav.domContentLoadedEventEnd),loadMs:Math.round(nav.loadEventEnd),
+        scripts:performance.getEntriesByType('resource').filter(e=>e.initiatorType==='script').length};
+    })()`);
+    assert.equal(metrics.topics,52);
+    assert.equal(metrics.recordingsEvaluated,false);
+    t.diagnostic('Local unthrottled Chrome baseline (not physical-device timing): '+JSON.stringify(metrics));
+});

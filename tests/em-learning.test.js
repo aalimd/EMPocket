@@ -51,3 +51,17 @@ test('all twelve recordings retain the independently checked source hashes and e
   assert.deepEqual(codes,original.sourceCodes,r.id+' all source codes and likelihoods');
  }
 });
+
+test('resume summaries use only validated sessions and return detached snapshots',()=>{
+ for(const raw of ['null','[]','false','{broken',JSON.stringify({resus:{index:-1,answers:[],seed:12}}),JSON.stringify({resus:{index:0,answers:['unknown-choice'],seed:12}})]){
+  const ctx={window:{},sessionStorage:{getItem:()=>raw}};vm.createContext(ctx);
+  for(const file of ['em-learning-data.js','em-learning.js'])vm.runInContext(fs.readFileSync('assets/'+file,'utf8'),ctx);
+  assert.equal(ctx.window.EM_LEARNING.activeCase(),null,raw);
+ }
+ const ctx={window:{},sessionStorage:{getItem:()=>JSON.stringify({resus:{index:0,answers:[],seed:12}})}};vm.createContext(ctx);
+ for(const file of ['em-learning-data.js','em-learning.js'])vm.runInContext(fs.readFileSync('assets/'+file,'utf8'),ctx);
+ const api=ctx.window.EM_LEARNING;
+ assert.equal(api.activeCase().id,'resus');
+ api.activeCase().index=99;
+ assert.equal(api.activeCase().index,0);
+});

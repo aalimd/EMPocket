@@ -66,7 +66,7 @@ test('back refocuses the card that opened the screen when it survives the render
     assert.match(navJs, /backSource = \{ selector: 'a\[href="#' \+ raw \+ '"\]', y: lastClick\.scrollY \}/);
     assert.match(navJs, /document\.getElementById\('presentationLibraryTitle'\) \|\| \(stage && stage\.querySelector\('h1'\)\) \|\| stage/,
         'a destination that lost the card still lands on a heading, never on the body');
-    assert.match(navJs, /if \(source && source\.y\) window\.scrollTo\(\{ top: source\.y \}\);/,
+    assert.match(navJs, /if \(source && Number\.isFinite\(source\.y\)\) window\.scrollTo\(\{ top: source\.y \}\);/,
         'the destination keeps the scroll position it had when the topic was opened');
 });
 

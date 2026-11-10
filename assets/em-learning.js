@@ -12,6 +12,14 @@
     const sessionKey='em-workspace-session-v1';
     const sessions = new Map();
     try { const stored=JSON.parse(sessionStorage.getItem(sessionKey)||'{}'); for(const c of D.cases){const x=stored[c.id];if(x&&Number.isInteger(x.index)&&x.index>=0&&x.index<c.steps.length&&Array.isArray(x.answers)&&x.answers.length>=x.index&&x.answers.length<=x.index+1&&x.answers.every((a,i)=>c.steps[i].options.some(o=>o.id===a))&&Number.isInteger(x.seed)&&!x.done)sessions.set(c.id,{index:x.index,answers:x.answers,seed:x.seed,done:false});} } catch (_) {}
+    // All consumers resume the same validated, in-memory session, even when storage fails.
+    function activeCase() {
+        for (const c of D.cases) {
+            const session = sessions.get(c.id);
+            if (session && !session.done) return { id: c.id, index: session.index };
+        }
+        return null;
+    }
     function persistSessions(){try{sessionStorage.setItem(sessionKey,JSON.stringify(Object.fromEntries([...sessions].filter(([,s])=>!s.done))));return true;}catch(_){return false;}}
     let caseFilter='all';
     function progress() {
@@ -189,7 +197,7 @@
     function mountCase(body,id) {
         const c=D.cases.find(c=>c.id===id);
         if(!c){body.innerHTML='<p>Case not found. <a href="#learn~practice">Choose a case</a>.</p>';return;}
-        let s=sessions.get(id);if(!s){s=newSession();sessions.set(id,s);}
+        let s=sessions.get(id);if(!s){s=newSession();sessions.set(id,s);persistSessions();}
         function draw(focus=false) {
             const q=c.steps[s.index], selected=s.answers[s.index], complete=s.done;const depth=window.STUDENT_LEARNING.getFocus();const objective=depth==='core'?'Identify the immediate threat and explain your first action.':depth==='applied'?'Connect each change to reassessment, escalation and disposition.':'Explain the failed alternatives and lead a debrief using this case’s three discussion questions.';
             const letters = ['A', 'B', 'C', 'D'];
@@ -263,14 +271,17 @@
     let recordingsPromise = null;
     function loadRecordings() {
         if (!recordingsPromise) {
-            recordingsPromise = import('./ecg-recordings.js?v=20261108-coordination-v67')
+            recordingsPromise = import('./ecg-recordings.js?v=20261110-ux-v70')
                 .catch(function () { recordingsPromise = null; });
         }
         return recordingsPromise || Promise.resolve();
     }
 
     function mountVisual(body,id) {
-        if(id==='recordings'){loadRecordings().then(function(){mountRecordings(body);});return;}const v=visuals.find(v=>v[0]===id);if(!v){body.innerHTML='<p>Visual lesson not found.</p>';return;}
+        if(id==='recordings'){
+            body.innerHTML='<p role="status">Loading recorded ECGs…</p>';
+            loadRecordings().then(function(){if(body.isConnected)mountRecordings(body);});return;
+        }const v=visuals.find(v=>v[0]===id);if(!v){body.innerHTML='<p>Visual lesson not found.</p>';return;}
         let source='lung',content='';
         if(id==='abg') {
             source='abg';content='<p>Both fictional arterial samples have bicarbonate 12 mmol/L. Decide whether the respiratory response fits before revealing the interpretation.</p><div class="workspace-grid">'+[['A','7.29','26'],['B','7.10','40']].map(([label,ph,co2])=>'<section class="workspace-card"><h3>Sample '+label+'</h3><dl class="gas-values"><div><dt>pH</dt><dd>'+ph+'</dd></div><div><dt>PaCO₂</dt><dd>'+co2+' mmHg</dd></div><div><dt>HCO₃⁻</dt><dd>12 mmol/L</dd></div></dl></section>').join('')+'</div><details class="workspace-callout"><summary>Reveal the interpretation</summary><p>Both show acidemia with a metabolic acidosis. Expected PaCO₂ ≈ 1.5 × 12 + 8 ± 2 = 24–28 mmHg.</p><p>A fits the expected respiratory compensation. B has a higher PaCO₂ than expected, suggesting an additional respiratory acidosis.</p><p>This comparison does not establish the cause. Assess the clinical context, electrolytes, albumin-adjusted anion gap and relevant investigations. Approximate values are rounded for teaching; this is not a patient calculator.</p></details>';
@@ -452,5 +463,5 @@
         return '<div class="workspace-callout evidence-context"><h3>'+esc(item[0])+'</h3><p>'+esc(item[1])+'</p>'+sourceHtml(item[2])+'</div>';
     }
     function searchItems(){return [...D.cases.map(c=>({cpId:'learn',target:'case-'+c.id,title:c.title,sub:c.domain+' evolving case',kind:'Practice'})),...D.modules.map(m=>({cpId:'learn',target:'module-'+m.id,title:m.title,sub:m.kind,kind:'Skills'})),...visuals.map(([id,title,text])=>({cpId:'learn',target:'visual-'+id,title,sub:text,kind:'Visual learning'})),{cpId:'learn',target:'progress',title:'Export or import learning backup',sub:'Progress, saved notes and preferences',kind:'My progress'}];}
-    window.EM_LEARNING={recordingFigure,mount,homeHtml,reassessmentHtml,evidenceContext,searchItems,progress,saveProgress,normalizeProgress,validateBackup,exportBackup,importBackup,mergeExisting,backupKeys,visuals};
+    window.EM_LEARNING={recordingFigure,activeCase,mount,homeHtml,reassessmentHtml,evidenceContext,searchItems,progress,saveProgress,normalizeProgress,validateBackup,exportBackup,importBackup,mergeExisting,backupKeys,visuals};
 }());

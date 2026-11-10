@@ -30,6 +30,7 @@
         backContext = { hash: hash || dest.hash, originHash: location.hash || '#library', label: dest.label };
     }
     function captureBackSource() {
+        backSource = null; // A direct or unrelated navigation must not reuse an earlier card.
         if (!lastClick || lastClick.hash !== backContext.originHash) return;
         const el = lastClick.el;
         if (!el || !el.closest) return;
@@ -50,7 +51,7 @@
         if (source && source.selector) {
             try { el = stage.querySelector(source.selector); } catch (e) { el = null; }
         }
-        if (source && source.y) window.scrollTo({ top: source.y });
+        if (source && Number.isFinite(source.y)) window.scrollTo({ top: source.y });
         if (el && el.focus) { el.focus({ preventScroll: true }); return; }
         const fallback = document.getElementById('presentationLibraryTitle') || (stage && stage.querySelector('h1')) || stage;
         if (fallback && fallback.focus) { try { fallback.focus({ preventScroll: true }); } catch (e) {} }
