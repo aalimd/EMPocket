@@ -162,11 +162,33 @@ async function evaluate(expression) {
     return r.result && r.result.result ? r.result.result.value : undefined;
 }
 
+// Wait for the actual reader boot, not only an elapsed navigation delay.
+async function appReady() {
+    const deadline=Date.now()+5000;
+    while(!await evaluate(`document.readyState==='complete' && !!window.EM_POCKET_UI && !!window.POCKET_DESIGN && !!document.querySelector('#stage h1')`)) {
+        assert.ok(Date.now()<deadline,'app did not finish booting');
+        await wait(25);
+    }
+}
+async function acceptTestNotice() {
+    await appReady();
+    return evaluate(`(function () {
+        const d=document.getElementById('disclaimerOverlay');
+        if(d && !d.hidden) {
+            const check=document.getElementById('disclaimerCheck');
+            check.checked=true;check.dispatchEvent(new Event('change',{bubbles:true}));
+            document.getElementById('disclaimerAcceptBtn').click();
+        }
+        return d ? (d.hidden ? 'accepted' : 'open') : 'absent';
+    })()`);
+}
+
 /* Loads the app with a clean storage state: a worker left over from a previous
    release would serve stale assets and invalidate every measurement. */
 async function load(hash, settle = 450) {
     await cdp('Page.navigate', { url: baseUrl + (hash || '') });
     await wait(settle);
+    await appReady();
     await evaluate(`(function () {
         if (!navigator.serviceWorker) return 'no sw';
         return Promise.all([
@@ -181,16 +203,7 @@ async function load(hash, settle = 450) {
     await evaluate(`localStorage.clear(); sessionStorage.clear();`);
     await cdp('Page.navigate', { url: baseUrl + (hash || '') });
     await wait(settle);
-    return evaluate(`(function () {
-        var d = document.getElementById('disclaimerOverlay');
-        if (d && !d.hidden) {
-            var c = document.getElementById('disclaimerCheck');
-            c.checked = true;
-            c.dispatchEvent(new Event('change', { bubbles: true }));
-            document.getElementById('disclaimerAcceptBtn').click();
-        }
-        return d ? (d.hidden ? 'accepted' : 'open') : 'absent';
-    })()`);
+    return acceptTestNotice();
 }
 
 function alphaOf(rgb) {
@@ -209,6 +222,11 @@ async function ready(t) {
     if (state.skip) { t.skip(state.skip); return false; }
     return true;
 }
+
+test.afterEach(async()=>{
+    if(!cdp)return;
+    await evaluate(`(()=>{window.restoreNoteStorage?.();if(window.POCKET_DESIGN?.dirty())window.EM_POCKET_UI?.saveCurrentNote();})()`);
+});
 
 test.after(() => {
     try { if (chrome) chrome.kill(); } catch (e) { /* already gone */ }
@@ -564,7 +582,7 @@ test('failed note saves keep the draft guarded and cannot continue or replace th
     for(const route of ['#chest-pain','#ecg']){
         await load(route);
         await cdp('Page.reload');await wait(450);
-        await evaluate(`(()=>{const d=document.getElementById('disclaimerOverlay');if(d&&!d.hidden){const c=document.getElementById('disclaimerCheck');c.checked=true;c.dispatchEvent(new Event('change',{bubbles:true}));document.getElementById('disclaimerAcceptBtn').click();}})()`);
+        await acceptTestNotice();
         await evaluate(`(()=>{const n=document.getElementById('studyNote');n.value='Previously saved note';n.dispatchEvent(new Event('input',{bubbles:true}));document.getElementById('saveNote').click();})()`);
         assert.equal(await evaluate(`JSON.parse(localStorage.getItem('em-cps-learning')).notes[${JSON.stringify(route.slice(1))}]`),'Previously saved note',route+' baseline is persisted');
         await evaluate(`(()=>{const n=document.getElementById('studyNote');
@@ -577,12 +595,15 @@ test('failed note saves keep the draft guarded and cannot continue or replace th
         await evaluate(`document.querySelector('[data-note-save]').click()`);await wait(100);
         const r=await evaluate(`({hash:location.hash,modal:document.getElementById('unsavedNoteDialog').matches(':modal'),draft:document.getElementById('studyNote')?.value,dirty:window.POCKET_DESIGN.dirty(),error:document.querySelector('#unsavedNoteDialog [role="alert"]')?.textContent})`);
         assert.equal(r.hash,route);assert.equal(r.modal,true);assert.equal(r.draft,'Draft that must survive a failed save');assert.equal(r.dirty,true);assert.match(r.error,/could not|couldn.t|unable/i);
-        await evaluate(`document.querySelector('[data-note-stay]').click()`);assert.equal(await evaluate(`document.activeElement.id`),'studyNote');
+        await evaluate(`document.querySelector('[data-note-stay]').click()`);
+        const focusState=await evaluate(`({focus:document.activeElement.id,noticeHidden:document.getElementById('disclaimerOverlay').hidden,noticeOpen:document.getElementById('disclaimerOverlay').open,inert:document.querySelector('.main').inert,agreed:localStorage.getItem('em-cps-disclaimer-agreed'),hash:location.hash,note:!!document.getElementById('studyNote')})`);
+        assert.equal(focusState.focus,'studyNote',route+' '+JSON.stringify(focusState));
         await evaluate(`location.hash='settings'`);await wait(100);await evaluate(`document.querySelector('[data-note-discard]').click()`);await wait(100);
         assert.equal(await evaluate(`location.hash`),'#settings');
         await evaluate(`window.restoreNoteStorage();location.hash=${JSON.stringify(route.slice(1))}`);await wait(100);
         assert.equal(await evaluate(`document.getElementById('studyNote').value`),'Previously saved note',route+' discard must restore the previous note in this session too');
         await cdp('Page.reload');await wait(450);
+        await acceptTestNotice();
         assert.equal(await evaluate(`document.getElementById('studyNote').value`),'Previously saved note','failed save must not change persistent data');
         await evaluate(`(()=>{const original=Storage.prototype.setItem;window.restoreNoteStorage=()=>{Storage.prototype.setItem=original;};Storage.prototype.setItem=function(key,value){if(key==='em-cps-learning')throw new DOMException('Storage full','QuotaExceededError');return original.call(this,key,value);};const n=document.getElementById('studyNote');n.value='Saved after storage recovered';n.dispatchEvent(new Event('input',{bubbles:true}));location.hash='settings';})()`);await wait(100);
         await evaluate(`document.querySelector('[data-note-save]').click()`);

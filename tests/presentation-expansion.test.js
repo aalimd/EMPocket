@@ -8,7 +8,7 @@ const topics=c.window.CP_DATA,evidence=c.window.CLINICAL_EVIDENCE;
 const text=id=>JSON.stringify(topics.find(t=>t.id===id));
 test('selected review records distinguish the new scope from the historical audit',()=>{
  assert.equal(evidence.checked,'2026-10-08');
- const ids=['chest-pain','dyspnea','abdominal-pain','headache','ams','syncope','fever','dizziness','gib','back-pain','joint-pain','pelvic-pain','seizures','overdose','hyperglycemia','flank-pain','red-eye','sore-throat','scrotal-pain','diarrhea','rash','limb-ischemia','urinary-retention','head-injury'];
+ const ids=['chest-pain','dyspnea','abdominal-pain','headache','ams','syncope','fever','dizziness','gib','back-pain','joint-pain','pelvic-pain','seizures','overdose','hyperglycemia','flank-pain','red-eye','sore-throat','scrotal-pain','diarrhea','rash','limb-ischemia','urinary-retention','head-injury','pediatric-fever','pediatric-respiratory-distress','anaphylaxis','burns','heat-cold','alcohol-withdrawal','suicidal','constipation'];
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(),ids.sort());
  for(const id of ids){
   const r=evidence.topicReviews[id];assert.equal(r.checked,'2026-11-10');assert.ok(r.scope.length>15);
@@ -113,4 +113,36 @@ test('third-batch additions remain searchable in their authored sections',()=>{
  }
  assert.match(text('urinary-retention'),/avoid blind instrumentation/);
  assert.match(text('limb-ischemia'),/compartment syndrome even after blood flow has returned/);
+});
+
+test('withdrawal does not delay emergency glucose and separates thiamine prevention from treatment',()=>{
+ const t=text('alcohol-withdrawal');
+ assert.doesNotMatch(t,/after thiamine|only after the first dose|never glucose alone|before or alongside glucose|Give thiamine before or with glucose/);
+ assert.match(t,/never delay emergency glucose/);assert.match(t,/CIWA-Ar is unsuitable in delirium/);
+ assert.match(t,/100 mg IV\/IM daily for 3–5 days/);
+ assert.match(t,/300–500 mg IV three times daily for 3–5 days/);
+ assert.ok(evidence.topicReviews['alcohol-withdrawal'].sources.includes('wernickeUK'));
+});
+test('burn starting calculation is adult-scoped and does not mandate intubation for singed hair',()=>{
+ const t=text('burns');assert.doesNotMatch(t,/4 mL\/kg per %TBSA/);
+ assert.match(t,/Adult burns ≥20% TBSA/);assert.match(t,/2 mL\/kg per %TBSA/);
+ assert.match(t,/Pediatric fluid calculations require a separate protocol/);
+ assert.match(t,/Soot or singed hair alone does not mandate intubation/);
+ assert.ok(evidence.topicReviews.burns.sources.includes('burnResuscitation'));
+});
+test('pediatric criteria remain condition-specific and LP cannot delay resuscitation',()=>{
+ const r=text('pediatric-respiratory-distress');
+ assert.match(r,/4 hours including sleep/);assert.match(r,/over 90% at ≥6 weeks/);
+ assert.match(r,/over 92% under 6 weeks\/with underlying conditions/);
+ assert.match(r,/avoid routine suction/);
+ assert.doesNotMatch(r,/Alert child with mild or resolved work of breathing, SpO₂ ≥92%/);
+ assert.match(text('pediatric-fever'),/do not delay stabilization or antibiotics for LP/);
+ assert.match(text('pediatric-fever'),/do not prevent febrile seizures/);
+});
+test('fourth-batch teaching is searchable and preserves individualized assessment',()=>{
+ const idx=c.window.EM_SEARCH_INDEX.buildSearchIndex(topics,c.window.ECG_DATA);
+ for(const [id,target,phrase] of [['pediatric-fever','history','fever at home'],['pediatric-respiratory-distress','pearls-pitfalls','4 hours including sleep'],['anaphylaxis','pearls-pitfalls','autoinjector technique'],['burns','pearls-pitfalls','20 minutes'],['heat-cold','workup','overcooling'],['alcohol-withdrawal','pearls-pitfalls','CIWA-Ar is unsuitable'],['suicidal','pearls-pitfalls','48 hours'],['constipation','workup','Constipation alone']])assert.ok(idx.some(h=>h.cpId===id&&h.target===target&&h.title.includes(phrase)),id);
+ assert.match(text('anaphylaxis'),/only without cardiovascular instability/);
+ assert.doesNotMatch(JSON.stringify(topics.find(t=>t.id==='suicidal').disposition),/Low acute risk:/);
+ assert.match(text('constipation'),/biofeedback/);
 });

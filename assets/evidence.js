@@ -6,6 +6,11 @@
 (function () {
     'use strict';
     const sources = {
+        burnResuscitation: ['ABA burn-shock resuscitation guideline (2024): adults with ≥20% TBSA burns', 'https://doi.org/10.1093/jbcr/irad125'],
+        burnReferral: ['ABA guidelines for burn patient referral', 'https://www.ameriburn.org/burn-care-team/resources/guidelines-for-burn-patient-referral'],
+        burnCooling: ['ANZCOR 9.1.3: first aid for burns', 'https://www.anzcor.org/home/first-aid/guideline-9-1-3-first-aid-for-burns'],
+        rcukAnaphylaxis: ['RCUK emergency treatment of anaphylaxis guideline (2021; referenced in 2025 guidance)', 'https://www.resus.org.uk/sites/default/files/2021-05/Emergency%20Treatment%20of%20Anaphylaxis%20May%202021_0.pdf'],
+        wernickeUK: ['UK alcohol treatment guidance: acute hospitals and Wernicke treatment (updated 2026)', 'https://www.gov.uk/guidance/clinical-guidelines-for-alcohol-treatment/16-alcohol-care-in-acute-hospitals'],
         chemicalEye: ['AAO EyeWiki: chemical eye injury — initial assessment and irrigation', 'https://eyewiki.aao.org/Chemical_(Alkali_and_Acid)_Injury_of_the_Conjunctiva_and_Cornea'],
         infectiousDiarrhea: ['IDSA infectious diarrhea guideline (2017)', 'https://www.idsociety.org/practice-guideline/infectious-diarrhea/'],
         urethralTrauma: ['AUA urotrauma guideline: suspected urethral injury', 'https://www.auanet.org/documents/Guidelines/PDF/clinical-guidance/Urotrauma.PDF'],
@@ -69,7 +74,7 @@
         childFever: ["NICE NG143 fever under 5: clinical assessment", "https://www.nice.org.uk/guidance/NG143/chapter/recommendations"],
         selfharm: ["NICE NG225 self-harm: assessment and limits of risk scores (2022)", "https://www.nice.org.uk/guidance/ng225/chapter/recommendations"],
         cn3: ["Isolated third-nerve palsies: modern management principles (Eye, 2022)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC8727561/"],
-        constipation: ["ASCRS chronic constipation guideline (2024)", "https://www.ascrsu.com/ascrs/view/ASCRS-Toolkit/2851100/all/Evaluation_and_Management_of_Chronic_Constipation__2024_"],
+        constipation: ["ASCRS chronic constipation guideline (2024)", "https://www.unboundmedicine.com/ascrs/view/ASCRS-Evidence-Based-Guidelines-and-Expert-Consensus/3982011/all/Evaluation_and_Management_of_Chronic_Constipation__2024_"],
         pad: ["ACC/AHA multisociety lower-extremity PAD guideline (2024)", "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001251"],
         ssti: ["IDSA skin and soft-tissue infections guideline (2014)", "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/"],
         methb: ["EHA/EuroBloodNet methemoglobinemia recommendations (2021)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9291883/"],
@@ -93,16 +98,16 @@
         'vaginal-bleeding': ['pph', 'rh', 'ectopic'], 'pregnancy-emergency': ['special', 'pe', 'rh', 'hyperemesis', 'pph'],
         'scrotal-pain': ['epididymitis'], seizures: ['seizures', 'esett', 'firstSeizure'], hemoptysis: ['hemoptysis', 'pe'],
         'nausea-vomiting': ['hyperemesis', 'dka', 'adrenal', 'chest'], diarrhea: ['cdi', 'infectiousDiarrhea'], cyanosis: ['methb', 'neonate', 'special'],
-        overdose: ['special', 'acetaminophen', 'selfharm'], jaundice: ['acetaminophen'], 'back-pain': ['mscc', 'back'], 'pediatric-fever': ['infant', 'infant90', 'childFever', 'kawasaki'], hyperglycemia: ['dka', 'adrenal'],
+        overdose: ['special', 'acetaminophen', 'selfharm'], jaundice: ['acetaminophen'], 'back-pain': ['mscc', 'back'], 'pediatric-fever': ['infant', 'infant90', 'childFever', 'kawasaki', 'meningitis'], hyperglycemia: ['dka', 'adrenal'],
         'heat-cold': ['special'], palpitations: ['af', 'als'], syncope: ['syncope', 'syncopeGuideline', 'als'],
-        'airway-stridor': ['special'], anaphylaxis: ['special'], 'flank-pain': ['stones'],
+        'airway-stridor': ['special'], anaphylaxis: ['special', 'rcukAnaphylaxis'], 'flank-pain': ['stones'],
         'urinary-retention': ['stones', 'urethralTrauma', 'catheterCare'], edema: ['pe'], 'multiple-trauma': ['headinjury'],
         'falls-geriatric-trauma': ['headinjury'], 'pediatric-respiratory-distress': ['bronchiolitis', 'asthma'],
         gib: ['ugib', 'lgib', 'lgibASGE'], 'red-eye': ['keratitis', 'chemicalEye'], 'sore-throat': ['gas', 'gasTesting'],
         suicidal: ['selfharm'], constipation: ['constipation'], 'limb-ischemia': ['pad'], rash: ['ssti'],
         'cardiac-arrest': ['acls', 'als', 'special'], electrolytes: ['hyperkalemia', 'hyponatremia'],
         'head-injury': ['tbi', 'headinjury', 'mtbi', 'csfLeak'], 'hypertensive-emergency': ['hypertension', 'stroke'],
-        burns: ['burns', 'special'], 'alcohol-withdrawal': ['withdrawal'], 'thyroid-storm': ['thyroid'],
+        burns: ['burns', 'burnResuscitation', 'burnReferral', 'burnCooling', 'special'], 'alcohol-withdrawal': ['withdrawal', 'wernickeUK'], 'thyroid-storm': ['thyroid'],
         ecg: ['mi', 'af', 'als', 'special', 'pericarditis']
     };
     const topicReviews = {
@@ -282,6 +287,67 @@
             "tbi",
             "mtbi",
             "csfLeak"
+        ]
+    },
+    "pediatric-fever": {
+        "checked": "2026-11-10",
+        "scope": "caregiver history, return advice, antipyretics and LP safety",
+        "sources": [
+            "childFever",
+            "infant90",
+            "meningitis"
+        ]
+    },
+    "pediatric-respiratory-distress": {
+        "checked": "2026-11-10",
+        "scope": "selected bronchiolitis suction and age-specific discharge criteria",
+        "sources": [
+            "bronchiolitis"
+        ]
+    },
+    "anaphylaxis": {
+        "checked": "2026-11-10",
+        "scope": "posture, tryptase limitations, escalation and discharge teaching",
+        "sources": [
+            "rcukAnaphylaxis"
+        ]
+    },
+    "burns": {
+        "checked": "2026-11-10",
+        "scope": "cooling/referral, airway indications and adult starting-fluid calculation",
+        "sources": [
+            "burnResuscitation",
+            "burnReferral",
+            "burnCooling"
+        ]
+    },
+    "heat-cold": {
+        "checked": "2026-11-10",
+        "scope": "parallel resuscitation, temperature monitoring and rewarming support",
+        "sources": [
+            "special"
+        ]
+    },
+    "alcohol-withdrawal": {
+        "checked": "2026-11-10",
+        "scope": "glucose timing, assessment limitations and selected thiamine regimens",
+        "sources": [
+            "withdrawal",
+            "wernickeUK"
+        ]
+    },
+    "suicidal": {
+        "checked": "2026-11-10",
+        "scope": "concurrent assessment, collaborative safety plans and aftercare",
+        "sources": [
+            "selfharm"
+        ]
+    },
+    "constipation": {
+        "checked": "2026-11-10",
+        "scope": "outlet symptoms, selective colonoscopy and ongoing care",
+        "sources": [
+            "constipation"
         ]
     }
 };
