@@ -55,3 +55,38 @@ Final local verification: 290 tests passed, zero failures and zero skips; all 22
 shipped JavaScript files passed syntax checks. The new browser sweeps exercised
 52 topics and 31 main/learning detail routes. Release token: 20261110-search-v73;
 service-worker cache revision v272.
+
+## Coverage follow-up — v74 / v273
+
+Regression tests first reproduced four additional defects: missing dose-line and
+ECG-detail search entries, comparison text lost by an overly broad HTML-removal
+expression, and ASCII/subscript notation mismatch. The index now includes authored
+dose lines with their group, presentation and explicit clinical scope; ECG details
+and action/caution/significance lines retain their actual section targets. Overview
+text is also indexed. Search does not invent or modify dose content.
+
+Tag removal now recognizes tag-shaped markup rather than treating numeric `<…>`
+comparisons as HTML. ASCII `SpO2`, `PaCO2` and `HCO3` queries match subscripted
+notation; highlighting preserves the original displayed characters and escapes
+markup. Additional browser tests open a dose result at its actual section and
+verify its aortic-specific scope stays visible in the search context.
+
+The home review list previously dereferenced the optional ECG module without a
+check and counted unknown activity IDs as visible items. It now reuses the focused
+review's validated activity list, omitting unavailable entries and counting only
+rendered activities. A missing-module browser regression covers that path.
+
+No clinical data, free storage keys, paid-app state, or other installations' cache
+names were modified in this follow-up. Physical-device checks remain outstanding.
+
+Weight-bearing header queries could produce 13 preview options (the twelve normal
+hits plus a calculator suggestion), followed by a View all option hard-coded to
+ID search-result-12. The View all ID now derives from the actual preview length.
+A browser test with `5 kg` verifies the calculator and View all coexist with unique
+option IDs, preserving aria-activedescendant targeting.
+
+Final v74 verification: 298 tests passed with zero failures and zero skips,
+including all-topic interaction sweeps and the new coverage, notation, optional-
+module and weighted-query regressions. All shipped JavaScript syntax and whitespace
+checks passed. Local browser inspection opened a newly indexed dose result in its
+correct expanded section.

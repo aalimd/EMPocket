@@ -38,13 +38,18 @@
         extras = extras || {};
         const byId = extras.byId || {};
         const ecgTopicId = extras.ecgTopicId || 'ecg';
-        const strip = extras.stripTags || function (s) { return String(s).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(); };
+        const strip = extras.stripTags || function (s) { return String(s).replace(/<\/?[a-z][^>]*>/gi, ' ').replace(/\s+/g, ' ').trim(); };
         const idx = [];
         data.forEach(cp => {
             idx.push({ cpId: cp.id, target: 'how-to-think', title: cp.name, sub: cp.tag, kind: 'Presentation' });
             (cp.approach || []).forEach(function (s) {
                 idx.push({ cpId: cp.id, target: 'how-to-think', title: s, sub: 'Approach — ' + cp.name, kind: 'Approach' });
             });
+            if(cp.overview)idx.push({cpId:cp.id,target:'how-to-think',title:strip(cp.overview),sub:cp.name+' — overview',kind:'Overview'});
+            (cp.doses||[]).forEach(group=>group[1].forEach(line=>idx.push({
+                cpId:cp.id,target:'doses',title:line,
+                sub:group[0]+' — '+cp.name+(cp.doseScope?' — '+cp.doseScope:''),kind:'Dose reference'
+            })));
             cp.dontMiss.forEach(d => idx.push({ cpId: cp.id, target: 'dont-miss', title: d[0], sub: d[2], kind: cp.name + ' · ' + d[1] }));
             cp.redFlags.forEach(r => idx.push({ cpId: cp.id, target: 'red-flags', title: r, sub: 'Red flag — ' + cp.name, kind: 'Red flag' }));
             cp.history.forEach(item => idx.push({ cpId: cp.id, target: 'history', title: item, sub: 'Focused history — ' + cp.name, kind: 'History' }));
@@ -62,11 +67,15 @@
             });
             ecg.steps.forEach(function (s) {
                 idx.push({ cpId: ecgTopicId, target: 'step-' + s.id, title: 'Step ' + s.num + ': ' + s.name, sub: s.summary, kind: 'ECG step' });
+                (s.details||[]).forEach(detail=>idx.push({cpId:ecgTopicId,target:'step-'+s.id,title:strip(detail),sub:s.name,kind:'ECG detail'}));
                 if (s.pearl) idx.push({ cpId: ecgTopicId, target: 'step-' + s.id, title: s.pearl, sub: s.name + ' · pearl', kind: 'ECG step' });
                 if (s.pitfall) idx.push({ cpId: ecgTopicId, target: 'step-' + s.id, title: s.pitfall, sub: s.name + ' · pitfall', kind: 'ECG step' });
             });
             ecg.patterns.forEach(function (p) {
                 idx.push({ cpId: ecgTopicId, target: p.id, title: p.name, sub: strip(p.criteria), kind: 'ECG pattern' });
+                ['action','caution','significance'].forEach(field=>{
+                    if(p[field])idx.push({cpId:ecgTopicId,target:p.id,title:strip(p[field]),sub:p.name,kind:'ECG '+field});
+                });
                 if (p.tag) idx.push({ cpId: ecgTopicId, target: p.id, title: p.tag, sub: p.name, kind: 'ECG pattern' });
             });
             ecg.redFlags.forEach(function (r) {

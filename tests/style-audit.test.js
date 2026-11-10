@@ -1327,3 +1327,41 @@ test('More in Dont miss opens its section through a touch tap',async t=>{
   assert.equal(await evaluate(`document.getElementById('section-dont-miss').querySelector('.sec-head').getAttribute('aria-expanded')`),'true');
  }finally{await cdp('Emulation.setTouchEmulationEnabled',{enabled:false});}
 });
+
+test('search reaches newly indexed doses and formatted clinical notation at real sections',async t=>{
+ if(!await ready(t))return;
+ await load('#library');
+ const r=await evaluate(`(()=>{const ui=window.EM_POCKET_UI;return {doses:ui.findSearchHits('nicardipine').filter(h=>h.target==='doses').map(h=>({id:h.cpId,scope:h.sub})),notation:ui.findSearchHits('spo2').length};})()`);
+ assert.ok(r.doses.length>0);assert.ok(r.notation>0);
+ const scoped=r.doses.find(h=>h.id==='chest-pain');assert.match(scoped.scope,/aortic dissection only/);
+ await evaluate(`location.hash='chest-pain~doses'`);
+ const deadline=Date.now()+5000;
+ while(!await evaluate(`!!document.querySelector('#section-doses.section-focus')`)){assert.ok(Date.now()<deadline);await wait(25);}
+ assert.equal(await evaluate(`document.querySelector('#section-doses .sec-head').getAttribute('aria-expanded')`),'true');
+});
+
+test('home review activities survive a missing optional ECG module without empty entries',async t=>{
+ if(!await ready(t))return;
+ await load('#learn~home');
+ const r=await evaluate(`(async()=>{
+  const saved=window.ECG_EXPLORER,errors=[];const capture=e=>errors.push(e.message);
+  window.addEventListener('error',capture);
+  try{
+   window.STUDENT_LEARNING.rate('ecg:normal','again');window.STUDENT_LEARNING.rate('topic:chest-pain','partly');window.STUDENT_LEARNING.rate('topic:missing-topic','again');
+   window.ECG_EXPLORER=undefined;location.hash='library';
+   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+   const section=document.querySelector('.weak-areas');return {errors,count:section?.querySelectorAll('li').length,text:section?.textContent};
+  }finally{window.ECG_EXPLORER=saved;window.removeEventListener('error',capture);}
+ })()`);
+ assert.deepEqual(r.errors,[]);assert.equal(r.count,1);assert.match(r.text,/Chest Pain/);assert.match(r.text,/Activities to revisit \(1\)/);
+});
+
+test('weight calculator suggestions and View all search results have unique option IDs',async t=>{
+ if(!await ready(t))return;
+ await load('#library');
+ await evaluate(`(()=>{const i=document.getElementById('searchInput');i.focus();i.value='5 kg';i.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+ const deadline=Date.now()+5000;
+ while(!await evaluate(`!!document.querySelector('.results-pop .search-all') && document.querySelector('.results-pop')?.style.display==='block'`)){assert.ok(Date.now()<deadline);await wait(25);}
+ const r=await evaluate(`(()=>{const options=[...document.querySelectorAll('.results-pop [role="option"]')];return {ids:options.map(o=>o.id),calculator:options[0].dataset.id};})()`);
+ assert.equal(r.calculator,'calc');assert.equal(new Set(r.ids).size,r.ids.length);
+});

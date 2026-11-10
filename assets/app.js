@@ -556,7 +556,7 @@
         return BY_ID[id] || null;
     }
     function stripTags(s) {
-        return String(s).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+        return String(s).replace(/<\/?[a-z][^>]*>/gi, ' ').replace(/\s+/g, ' ').trim();
     }
     function evidenceHtml(id) {
         const evidence = window.CLINICAL_EVIDENCE;
@@ -2526,7 +2526,11 @@
     function highlightMatch(text, query) {
         const raw = String(text || '');
         const tokens = String(query || '').trim().split(/\s+/).filter(t => t.length >= 2)
-            .map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+            .map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+            .map(t => t.replace(/[0-9\u2080-\u2089]/g, ch => {
+                const digit = ch.charCodeAt(0) >= 0x2080 ? ch.charCodeAt(0)-0x2080 : Number(ch);
+                return '[' + digit + String.fromCharCode(0x2080+digit) + ']';
+            }));
         if (!tokens.length) return esc(raw);
         const re = new RegExp('(' + tokens.join('|') + ')', 'gi');
         return raw.split(re).map((part, idx) => idx % 2 === 1 ? '<mark>' + esc(part) + '</mark>' : esc(part)).join('');
@@ -2588,7 +2592,7 @@
                 '<div class="r-sub">' + (h.sub ? highlightMatch(h.sub, q) : '') + '</div></div>' +
                 '<span class="r-tag">' + esc(h.kind) + '</span></button>').join('')
             : '<div class="res-item res-empty"><div class="r-sub">No results for \u201C' + esc(q) + '\u201D</div><div class="res-empty-actions"><button type="button" class="btn" data-search-action="clear">Clear search</button><button type="button" class="btn" data-search-action="browse">Browse library</button></div></div>';
-        if(allHits.length>12)pop.insertAdjacentHTML('beforeend','<button type="button" class="res-item search-all" id="search-result-12" role="option" aria-selected="false" data-id="search" data-target="'+esc(q)+'">View all '+allHits.length+' results →</button>');
+        if(allHits.length>12)pop.insertAdjacentHTML('beforeend','<button type="button" class="res-item search-all" id="search-result-'+hits.length+'" role="option" aria-selected="false" data-id="search" data-target="'+esc(q)+'">View all '+allHits.length+' results →</button>');
         pop.style.display = 'block';
         if (input) input.setAttribute('aria-expanded', 'true');
         if (hits.length) {
@@ -3410,7 +3414,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = isAppWorker(navigator.serviceWorker.controller);
-                navigator.serviceWorker.register('./sw.js?v=20261110-search-v73').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261110-coverage-v74').then((registration) => {
                     navigator.serviceWorker.ready.then((ready) => {
                         if (ready.scope === new URL('./', location.href).href) setOfflineStatus('Ready for offline use');
                     });

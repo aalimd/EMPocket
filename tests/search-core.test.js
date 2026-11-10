@@ -55,7 +55,7 @@ test('treatment-content kinds outrank plain teaching for the same query', () => 
 
 test('normalize strips diacritics, punctuation and case without touching Arabic', () => {
     assert.equal(core.normalize('  Epinephrine  '), 'epinephrine');
-    assert.equal(core.normalize('SpO₂ <94%'), 'spo 94');
+    assert.equal(core.normalize('SpO₂ <94%'), 'spo2 94');
     assert.equal(core.normalize('أدرينالين'), 'أدرينالين');
 });
 

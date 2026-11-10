@@ -114,13 +114,14 @@
  }
  function starterHtml(){
   const p=read(),last=/^(?:ecg(?:-explorer)?|[a-z-]+)(?:~[a-z0-9-]+)?$/.test(p.last)?p.last:'';
-  const weak=Object.entries(p.ratings).filter(([k,v])=>v&&v.value!=='got').sort((a,b)=>b[1].at-a[1].at);
+  const weak=reviewItems().filter(item=>item.reason.startsWith('Self-rated:'));
   const id=last.split('~')[0],topic=(window.CP_DATA||[]).find(c=>c.id===id);
   const title=topic?topic.name:id==='ecg'?'ECG guide':id==='ecg-explorer'?'ECG cases':'Your previous session';
   return '<section class="student-start" aria-label="Continue learning">'+
    (last?'<div class="student-resume"><div><p class="study-kicker">CONTINUE LEARNING</p><h2>'+esc(title)+'</h2></div><a class="resume-link" href="#'+esc(last)+'">Resume <span aria-hidden="true">→</span></a></div>':'')+
    '<details class="starter-track"><summary>New here? Try a 10-minute learning path</summary><p>Read an approach, inspect a normal ECG, then make your first decision.</p><div class="student-actions"><a href="#chest-pain">1 · Chest pain approach</a><a href="#ecg-explorer~normal">2 · Normal 12-lead ECG</a><a href="#study~case-chest-pain">3 · Chest pain case</a></div></details>'+
-   (weak.length?'<details class="weak-areas"><summary>Topics to revisit ('+weak.length+')</summary><ul>'+weak.map(([key,v])=>{const id=key.split(':')[1];let route=key.startsWith('ecg:')?'ecg-explorer~'+id:key.startsWith('case:')?'study~case-'+id:id+'~study';const name=key.startsWith('ecg:')?(window.ECG_EXPLORER.cases.find(c=>c.id===id)||{}).name:(window.CP_DATA.find(c=>c.id===id)||{}).name;return name?'<li><a href="#'+esc(route)+'">'+esc(name)+'</a> · '+(v.value==='again'?'Review again':'Partly confident')+'</li>':'';}).join('')+'</ul></details>':'')+'</section>';
+   (weak.length?'<details class="weak-areas"><summary>Activities to revisit ('+weak.length+')</summary><ul>'+weak.map(item=>'<li><a href="'+esc(item.href)+'">'+esc(item.title)+'</a> · '+esc(item.reason)+'</li>').join('')+'</ul></details>':'')+'</section>';
+
  }
 
  // Learning depth changes prompts only; clinical content and progress stay available.
