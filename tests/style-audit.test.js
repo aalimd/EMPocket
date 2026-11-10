@@ -1182,3 +1182,28 @@ test('startup performance exposes a usable library and defers recorded ECG evalu
     assert.equal(metrics.recordingsEvaluated,false);
     t.diagnostic('Local unthrottled Chrome baseline (not physical-device timing): '+JSON.stringify(metrics));
 });
+
+test('recording download failure recovers after a user reload when the file is available',async t=>{
+    if(!await ready(t))return;
+    await load('#library');
+    async function until(expression){
+        const deadline=Date.now()+5000;
+        while(!await evaluate(expression)){
+            if(Date.now()>=deadline)assert.fail('recording view did not settle: '+await evaluate(`location.href+' '+document.getElementById('stage')?.textContent.slice(0,700)`));await wait(25);
+        }
+    }
+    try{
+        // Start with a fresh document so a previously evaluated module cannot mask failure.
+        await cdp('Page.reload');
+        await until(`document.readyState==='complete' && !!document.querySelector('#presentationLibrary')`);
+        await cdp('Network.enable');
+        await cdp('Network.setBlockedURLs',{urls:['*ecg-recordings.js*']});
+        await evaluate(`location.hash='learn~visual-recordings'`);
+        await until(`!!document.querySelector('[data-recordings-reload]')`);
+        assert.equal(await evaluate(`document.querySelector('[data-recordings-reload]').closest('[role="alert"]')!==null`),true);
+        await cdp('Network.setBlockedURLs',{urls:[]});
+        await evaluate(`document.querySelector('[data-recordings-reload]').click()`);
+        await until(`!!document.querySelector('[data-recording-plot] svg')`);
+        assert.equal(await evaluate(`!!document.querySelector('[data-recordings-reload]')`),false);
+    }finally{await cdp('Network.setBlockedURLs',{urls:[]});}
+});

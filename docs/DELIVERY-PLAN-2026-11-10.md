@@ -52,3 +52,22 @@ clinical validity. A browser's online flag is not an internet probe.
 
 Payload size alone is not a performance result. Do not raise fixed test delays to
 conceal a loading race. Keep user-facing UX fixes separate from loading experiments.
+
+## Follow-up gap verification — v71 / v270
+
+The opening click is now consumed after capture, preventing a later direct route
+from reusing it. The stronger regression test failed against v70 and passed after
+this fix. Recording import errors now expose reload and Back to ECG; reload clears
+the native module loader's failed-import state. A browser test blocks the actual
+recording request, checks the error action, restores the file, and verifies recovery.
+Detached views are protected on both promise success and failure.
+
+Offline readiness now recognizes this installation's worker script path and exact
+registration scope, rather than treating a parent or sibling worker as this app's
+cache readiness. Online/offline text remains independent. Registration failure does
+not erase readiness already established by this installation's active controller.
+No other worker or installation cache is changed.
+
+Follow-up validation: 275 tests passed with zero failures or skips, including the
+blocked-recording browser recovery test. Syntax checks passed for all 22 shipped
+JavaScript files. No physical-device or production deployment test is claimed.

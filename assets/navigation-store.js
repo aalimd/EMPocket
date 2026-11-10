@@ -31,18 +31,20 @@
     }
     function captureBackSource() {
         backSource = null; // A direct or unrelated navigation must not reuse an earlier card.
-        if (!lastClick || lastClick.hash !== backContext.originHash) return;
-        const el = lastClick.el;
+        const click = lastClick;
+        lastClick = null; // Opening context is a one-use event, not persistent navigation state.
+        if (!click || click.hash !== backContext.originHash) return;
+        const el = click.el;
         if (!el || !el.closest) return;
         const card = el.closest('[data-id]');
         if (card && /^[a-z0-9-]+$/.test(card.dataset.id || '')) {
-            backSource = { selector: '[data-id="' + card.dataset.id + '"]', y: lastClick.scrollY };
+            backSource = { selector: '[data-id="' + card.dataset.id + '"]', y: click.scrollY };
             return;
         }
         const link = el.closest('a[href^="#"]');
         if (!link) return;
         const raw = (link.getAttribute('href') || '').slice(1);
-        if (/^[a-z0-9-]+(?:~[a-z0-9-]+)?$/.test(raw)) backSource = { selector: 'a[href="#' + raw + '"]', y: lastClick.scrollY };
+        if (/^[a-z0-9-]+(?:~[a-z0-9-]+)?$/.test(raw)) backSource = { selector: 'a[href="#' + raw + '"]', y: click.scrollY };
     }
     function restoreBackFocus(stage) {
         const source = backSource;

@@ -271,8 +271,8 @@
     let recordingsPromise = null;
     function loadRecordings() {
         if (!recordingsPromise) {
-            recordingsPromise = import('./ecg-recordings.js?v=20261110-ux-v70')
-                .catch(function () { recordingsPromise = null; });
+            recordingsPromise = import('./ecg-recordings.js?v=20261110-ux-v71')
+                .catch(function (error) { recordingsPromise = null; throw error; });
         }
         return recordingsPromise || Promise.resolve();
     }
@@ -280,7 +280,16 @@
     function mountVisual(body,id) {
         if(id==='recordings'){
             body.innerHTML='<p role="status">Loading recorded ECGs…</p>';
-            loadRecordings().then(function(){if(body.isConnected)mountRecordings(body);});return;
+            loadRecordings().then(function(){
+                if(!body.isConnected)return;
+                if(!window.EM_ECG_RECORDINGS?.length)throw Error('Recording data unavailable');
+                mountRecordings(body);
+            }).catch(function(){
+                if(!body.isConnected)return;
+                body.innerHTML='<section role="alert"><h2>Recorded ECGs could not load</h2><p>Your saved progress is unchanged. Reconnect if needed, then reload to try again.</p><button type="button" data-recordings-reload>Reload recordings</button><a href="#ecg-hub">Back to ECG</a></section>';
+                // Reload also clears the browser module loader’s cached failed import.
+                body.querySelector('[data-recordings-reload]').onclick=()=>location.reload();
+            });return;
         }const v=visuals.find(v=>v[0]===id);if(!v){body.innerHTML='<p>Visual lesson not found.</p>';return;}
         let source='lung',content='';
         if(id==='abg') {

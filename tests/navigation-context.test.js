@@ -50,7 +50,7 @@ test('destinations record their context and topics only record what opened them'
     assert.match(topics, /captureBackSource\(\); renderPresentation\(id, target, preservePosition\);/);
     assert.doesNotMatch(topics, /recordBackContext\(/,
         'opening a topic must never overwrite the destination Back returns to');
-    assert.match(navJs, /if \(!lastClick \|\| lastClick\.hash !== backContext\.originHash\) return;/,
+    assert.match(navJs, /if \(!click \|\| click\.hash !== backContext\.originHash\) return;/,
         'only a card clicked inside the recorded destination becomes the Back target');
 });
 
@@ -62,8 +62,8 @@ test('back labels follow the destination and fall back to the library', () => {
 });
 
 test('back refocuses the card that opened the screen when it survives the render', () => {
-    assert.match(navJs, /backSource = \{ selector: '\[data-id="' \+ card\.dataset\.id \+ '"\]', y: lastClick\.scrollY \}/);
-    assert.match(navJs, /backSource = \{ selector: 'a\[href="#' \+ raw \+ '"\]', y: lastClick\.scrollY \}/);
+    assert.match(navJs, /backSource = \{ selector: '\[data-id="' \+ card\.dataset\.id \+ '"\]', y: click\.scrollY \}/);
+    assert.match(navJs, /backSource = \{ selector: 'a\[href="#' \+ raw \+ '"\]', y: click\.scrollY \}/);
     assert.match(navJs, /document\.getElementById\('presentationLibraryTitle'\) \|\| \(stage && stage\.querySelector\('h1'\)\) \|\| stage/,
         'a destination that lost the card still lands on a heading, never on the body');
     assert.match(navJs, /if \(source && Number\.isFinite\(source\.y\)\) window\.scrollTo\(\{ top: source\.y \}\);/,

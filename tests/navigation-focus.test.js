@@ -26,7 +26,6 @@ test('a direct navigation cannot reuse an earlier opening card',()=>{
     api.recordBackContext('library');
     api.rememberClick({closest:()=>card},'#library',420);
     api.captureBackSource();
-    api.rememberClick(null,'#learn~home',0);
     api.captureBackSource();
     api.restoreBackFocus({querySelector:selector=>{selectors.push(selector);return null;}});
     assert.ok(!selectors.includes('[data-id="chest-pain"]'));

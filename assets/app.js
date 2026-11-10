@@ -457,8 +457,13 @@
     let libraryFiltersOpen = false;
     let librarySystem = 'all';
     let caseCursor = 0;
-    let offlineStatus = ('serviceWorker' in navigator && navigator.serviceWorker.controller) ? 'Ready for offline use' :
-        ('serviceWorker' in navigator ? 'Offline setup pending' : 'Online access');
+    function isAppWorker(worker) {
+        if (!worker || !worker.scriptURL) return false;
+        const actual = new URL(worker.scriptURL), expected = new URL('./sw.js', location.href);
+        return actual.origin === expected.origin && actual.pathname === expected.pathname;
+    }
+    let offlineStatus = ('serviceWorker' in navigator && isAppWorker(navigator.serviceWorker.controller)) ? 'Ready for offline use' :
+        ('serviceWorker' in navigator ? 'Offline setup pending' : 'Offline setup unavailable');
     const PATIENT_CONTEXTS = {
         pediatric: ['pediatric-fever', 'pediatric-respiratory-distress', 'airway-stridor', 'fever', 'rash', 'seizures', 'abdominal-pain', 'headache'],
         pregnancy: ['pregnancy-emergency', 'pelvic-pain', 'vaginal-bleeding', 'abdominal-pain', 'dyspnea', 'chest-pain', 'headache', 'overdose'],
@@ -3391,9 +3396,11 @@
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                const hadController = !!navigator.serviceWorker.controller;
-                navigator.serviceWorker.register('./sw.js?v=20261110-ux-v70').then((registration) => {
-                    navigator.serviceWorker.ready.then(() => setOfflineStatus('Ready for offline use'));
+                const hadController = isAppWorker(navigator.serviceWorker.controller);
+                navigator.serviceWorker.register('./sw.js?v=20261110-ux-v71').then((registration) => {
+                    navigator.serviceWorker.ready.then((ready) => {
+                        if (ready.scope === new URL('./', location.href).href) setOfflineStatus('Ready for offline use');
+                    });
                     const applyUpdate = () => {
                         if(window.POCKET_DESIGN && !window.POCKET_DESIGN.beforeRoute(() => window.location.reload()))return;
                         const waiting = registration.waiting;
@@ -3406,21 +3413,22 @@
                     registration.addEventListener('updatefound', () => {
                         const worker = registration.installing;
                         if (worker) worker.addEventListener('statechange', () => {
-                            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+                            if (worker.state === 'installed' && isAppWorker(navigator.serviceWorker.controller)) {
                                 toastWithAction('New version available', 'Refresh', applyUpdate);
                             }
-                            if (worker.state === 'redundant' && !navigator.serviceWorker.controller) {
-                                setOfflineStatus('Online only');
+                            if (worker.state === 'redundant' && !isAppWorker(navigator.serviceWorker.controller)) {
+                                setOfflineStatus('Offline setup unavailable');
                                 toast('Offline setup could not be completed. The app remains available online.');
                             }
                         });
                     });
                     navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        if (!isAppWorker(navigator.serviceWorker.controller)) return;
                         setOfflineStatus('Ready for offline use');
                         if (hadController) toast('Offline content updated. Refresh to use the latest interface.');
-                    }, { once: true });
+                    });
                 }).catch(function () {
-                    setOfflineStatus('Online only');
+                    if (!isAppWorker(navigator.serviceWorker.controller)) setOfflineStatus('Offline setup unavailable');
                     toast('Offline setup could not be completed. The app remains available online.');
                 });
             });
