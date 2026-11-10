@@ -64,3 +64,12 @@ test('editDistance is bounded and correct for the failing cases', () => {
     assert.equal(core.editDistance('anaphylxis', 'anaphylaxis', 2), 1);
     assert.ok(core.editDistance('xxxx', 'yyyyyyyy', 2) > 2);
 });
+
+test('bounded fuzzy caches retain matching semantics across eviction and repeated words',()=>{
+ for(let i=0;i<4300;i++){
+  const needle='term'+i,word='term'+(i+1),max=needle.length>=6?2:1;
+  assert.equal(core.fuzzyContainsWord(word,needle),core.editDistance(needle,word,max)<=max);
+ }
+ assert.equal(core.fuzzyContainsWord('dysnpnea dyspnea','dyspnea'),true);
+ assert.equal(core.fuzzyContainsWord('outpatient','tpa'),false);
+});

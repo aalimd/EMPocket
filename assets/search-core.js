@@ -117,22 +117,38 @@
 
     /* Whole-word containment: the needle must sit on word boundaries inside
        the haystack. Prevents "tpa" matching "outpatient". */
+    // Bound compiled word expressions; a query reuses each form across the entire index.
+    const wordPatterns = new Map();
     function containsWord(haystack, needle) {
         if (!needle) return false;
         var escaped = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        return new RegExp('(^|[^a-z0-9])' + escaped + '([^a-z0-9]|$)', 'i').test(haystack);
+        let pattern = wordPatterns.get(needle);
+        if (!pattern) {
+            pattern = new RegExp('(^|[^a-z0-9])' + escaped + '([^a-z0-9]|$)', 'i');
+            if (wordPatterns.size >= 128) wordPatterns.delete(wordPatterns.keys().next().value);
+            wordPatterns.set(needle, pattern);
+        }
+        return pattern.test(haystack);
     }
 
     /* Fuzzy fallback for a single token: does any word in the haystack sit
        within an edit distance that scales with token length?
        (≥6 chars: 2 edits; ≥4 chars: 1 edit; shorter: exact only.) */
+    const fuzzyPairs = new Map();
     function fuzzyContainsWord(haystack, needle) {
         if (needle.length < 4) return false;
         var max = needle.length >= 6 ? 2 : 1;
         var words = haystack.split(/[^a-z0-9\u0600-\u06ff]+/i).filter(Boolean);
         for (var i = 0; i < words.length; i++) {
             if (Math.abs(words[i].length - needle.length) > max) continue;
-            if (editDistance(needle, words[i], max) <= max) return true;
+            const key = needle + '\0' + words[i];
+            let matched = fuzzyPairs.get(key);
+            if (matched === undefined) {
+                matched = editDistance(needle, words[i], max) <= max;
+                if (fuzzyPairs.size >= 4096) fuzzyPairs.delete(fuzzyPairs.keys().next().value);
+                fuzzyPairs.set(key, matched);
+            }
+            if (matched) return true;
         }
         return false;
     }

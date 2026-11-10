@@ -2317,7 +2317,7 @@
         else if (id === 'learn' && window.EM_LEARNING) {
             recordBackContext('learn', location.hash);
             currentId=null; markActive('study'); syncNav(target==='visual-recordings'?'ecg':'study'); setTitle(target==='visual-recordings'?'Recorded ECGs':'Learn'); setStageContext(target==='visual-recordings'?'Recorded ECG learning':'Learning workspace');
-            if(design && (!target || ['home','tracks','short'].includes(target) || target.startsWith('track-'))) design.learn(target || 'home');
+            if(design && (!target || ['home','tracks','short','review'].includes(target) || target.startsWith('track-'))) design.learn(target || 'home');
             else window.EM_LEARNING.mount(stage,target||'practice');
             announce('Learning workspace');
         }
@@ -2481,6 +2481,11 @@
             pop.id = 'searchResults';
             pop.setAttribute('role', 'listbox');
             document.querySelector('.searchwrap').appendChild(pop);
+            // Keep input focus through pointer activation. Some mobile browsers blur
+            // to null before click, which would otherwise hide the selected result.
+            pop.addEventListener('pointerdown', (e) => {
+                if (e.button === 0 && e.target.closest('button')) e.preventDefault();
+            });
             document.addEventListener('click', (e) => {
                 if (!e.target.closest('.searchwrap')) hideSearchResults(pop);
             });
@@ -2526,10 +2531,12 @@
         return raw.split(re).map((part, idx) => idx % 2 === 1 ? '<mark>' + esc(part) + '</mark>' : esc(part)).join('');
     }
 
+    const searchHitCache = new Map();
     function findSearchHits(q) {
         if(!q)return [];
         const ql = String(q).trim().toLowerCase();
         if(ql.length<2)return [];
+        if (searchHitCache.has(ql)) return searchHitCache.get(ql).slice();
         const core = window.SEARCH_CORE;
         /* Fallback to plain matching if the search core failed to load, so a
            missing module degrades gracefully instead of breaking search. */
@@ -2540,11 +2547,14 @@
                 return title.indexOf(ql) !== -1 || sub.indexOf(ql) !== -1;
             });
         }
-        return SEARCH_INDEX
+        const results = SEARCH_INDEX
             .filter(x => core.matches((x.title || '') + ' ' + (x.sub || ''), ql))
             .map(x => ({ hit: x, rank: core.score(x.title, x.sub, ql, x.kind) + (x.quick ? 6 : 0) }))
             .sort((a, b) => b.rank - a.rank)
             .map(entry => entry.hit);
+        if (searchHitCache.size >= 12) searchHitCache.delete(searchHitCache.keys().next().value);
+        searchHitCache.set(ql, results);
+        return results.slice();
     }
 
     function runSearch(q) {
@@ -2614,6 +2624,7 @@
         if (id === 'search') location.hash='search~'+encodeURIComponent(target);
         else if (id === 'learn') location.hash='learn~'+target;
         else if (id === 'study') location.hash='study~'+target;
+        else if (id === 'calc') location.hash='calc'+(target?'~'+target:'');
         else if (id === 'shift') showShift(target);
         else if (id === 'ecg-explorer') showExplorer(target);
         else if (id === ECG_TOPIC_ID) showEcg(target || '');
@@ -3275,8 +3286,9 @@
         input.addEventListener('input', () => {
             clearTimeout(searchTimer);
             const value = input.value.trim();
+            hideSearchResults(); // Old matches must not remain clickable for a new query.
             searchPending = true;
-            searchTimer = setTimeout(() => { searchPending = false; runSearch(value); }, 120);
+            searchTimer = setTimeout(() => { searchPending = false; runSearch(value); }, 80);
         });
         if (clearBtn) {
             clearBtn.addEventListener('click', () => {
@@ -3397,7 +3409,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = isAppWorker(navigator.serviceWorker.controller);
-                navigator.serviceWorker.register('./sw.js?v=20261110-ux-v71').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261110-learning-v72').then((registration) => {
                     navigator.serviceWorker.ready.then((ready) => {
                         if (ready.scope === new URL('./', location.href).href) setOfflineStatus('Ready for offline use');
                     });

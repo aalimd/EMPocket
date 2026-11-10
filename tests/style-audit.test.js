@@ -1207,3 +1207,53 @@ test('recording download failure recovers after a user reload when the file is a
         assert.equal(await evaluate(`!!document.querySelector('[data-recordings-reload]')`),false);
     }finally{await cdp('Network.setBlockedURLs',{urls:[]});}
 });
+
+test('pointer selection preserves header search focus and opens the selected result',async t=>{
+ if(!await ready(t))return;
+ await load('#library');
+ await evaluate(`(()=>{const i=document.getElementById('searchInput');i.focus();i.value='chest pain';i.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+ const deadline=Date.now()+5000;
+ while(!await evaluate(`!!document.querySelector('.results-pop [data-id="chest-pain"]') && document.querySelector('.results-pop').style.display==='block'`)){
+  if(Date.now()>=deadline)assert.fail(await evaluate(`location.hash+' '+document.getElementById('stage').textContent.slice(0,350)`));await wait(25);
+ }
+ const r=await evaluate(`(()=>{const b=document.querySelector('.results-pop [data-id="chest-pain"]');const e=new PointerEvent('pointerdown',{bubbles:true,cancelable:true,button:0,pointerType:'touch'});b.querySelector('.r-title').dispatchEvent(e);const result={prevented:e.defaultPrevented,focused:document.activeElement.id};b.click();return result;})()`);
+ assert.ok(r.prevented);assert.equal(r.focused,'searchInput');
+ while(!await evaluate(`location.hash.split('~')[0]==='#chest-pain' && document.querySelector('#presentationTitle')?.textContent.includes('Chest Pain')`)){
+  if(Date.now()>=deadline)assert.fail(await evaluate(`location.hash+' '+document.getElementById('stage').textContent.slice(0,350)`));await wait(25);
+ }
+});
+
+test('repeated search reuses cached matches without exposing the cached result array',async t=>{
+ if(!await ready(t))return;
+ await load('#library');
+ const r=await evaluate(`(()=>{const core=window.SEARCH_CORE,original=core.matches;let calls=0;core.matches=(...args)=>{calls++;return original(...args);};try{const first=window.EM_POCKET_UI.findSearchHits(' chest pressure '),count=first.length,initial=calls;first.length=0;const second=window.EM_POCKET_UI.findSearchHits('CHEST PRESSURE');return {count,initial,repeated:calls-initial,second:second.length};}finally{core.matches=original;}})()`);
+ assert.ok(r.initial>0);assert.ok(r.count>0);assert.equal(r.repeated,0);assert.equal(r.second,r.count);
+});
+
+test('topic journeys expose real practice and focused review links to the recorded activity',async t=>{
+ if(!await ready(t))return;
+ await load('#chest-pain');
+ const links=await evaluate(`[...document.querySelectorAll('.topic-journey a')].map(a=>a.getAttribute('href'))`);
+ assert.ok(links.includes('#study~case-chest-pain'));assert.ok(links.some(h=>h.startsWith('#ecg-explorer~')));
+ await evaluate(`(()=>{const p=window.EM_LEARNING.progress();p.cases.resus={correct:1,total:3,runs:1,last:Date.now()};window.EM_LEARNING.saveProgress(p);window.STUDENT_LEARNING.rate('case:chest-pain','partly');location.hash='learn~review';})()`);
+ const deadline=Date.now()+5000;
+ while(!await evaluate(`document.querySelector('#stage h1')?.textContent==='Review your decisions'`)){assert.ok(Date.now()<deadline);await wait(25);}
+ const text=await evaluate(`document.getElementById('stage').textContent`);
+ assert.match(text,/Self-rated: partly confident/);assert.match(text,/Latest completed attempt: 1 \/ 3/);
+ assert.equal(await evaluate(`!!document.querySelector('#stage a[href="#learn~case-resus"]')`),true);
+});
+
+test('a touch tap on a header result navigates after the on-screen search focus transition',async t=>{
+ if(!await ready(t))return;
+ await load('#library');
+ await cdp('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
+ try{
+  await evaluate(`(()=>{const i=document.getElementById('searchInput');i.focus();i.value='chest pain';i.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+  const deadline=Date.now()+5000;
+  while(!await evaluate(`document.querySelector('.results-pop')?.style.display==='block'`)){assert.ok(Date.now()<deadline);await wait(25);}
+  const point=await evaluate(`(()=>{const b=document.querySelector('.results-pop .res-item[data-id="chest-pain"]'),r=b.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};})()`);
+  await cdp('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[point]});
+  await cdp('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  while(!await evaluate(`location.hash.startsWith('#chest-pain') && !!document.querySelector('#presentationTitle')`)){assert.ok(Date.now()<deadline);await wait(25);}
+ }finally{await cdp('Emulation.setTouchEmulationEnabled',{enabled:false});}
+});

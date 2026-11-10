@@ -79,6 +79,39 @@
   if(cases.some(c=>c.id===id)) return {href:'#study~case-'+id,label:'Practice'};
   return {href:'#learn~practice',label:'All cases'};
  }
+ // Learning routes refer only to existing content; opening a step never marks it complete.
+ const journeyEcg={'chest-pain':'inferior-stemi',palpitations:'vt-vs-svt',syncope:'complete-heart-block'};
+ function journeySteps(id){
+  if(!(window.CP_DATA||[]).some(c=>c.id===id))return [];
+  const steps=[{href:'#'+id+'~how-to-think',label:'Read the approach'}];
+  const practice=practiceFor(id);
+  if(practice.label!=='All cases')steps.push({href:practice.href,label:'Work through a related case'});
+  const example=(window.ECG_EXPLORER?.cases||[]).find(c=>c.id===journeyEcg[id]);
+  if(example)steps.push({href:'#ecg-explorer~'+example.id,label:'Compare ECG: '+example.name});
+  steps.push({href:'#'+id+'~study',label:'Test your recall and plan a review'});
+  return steps;
+ }
+ function journeyHtml(id){
+  const steps=journeySteps(id);if(!steps.length)return '';
+  return '<details class="guided-reasoning topic-journey"><summary>Learn this presentation step by step</summary><p>Read, practise and revisit. Opening a step does not record completion.</p><ol>'+steps.map(s=>'<li><a href="'+esc(s.href)+'">'+esc(s.label)+'</a></li>').join('')+'</ol></details>';
+ }
+ function reviewItems(){
+  const items=[];
+  for(const [key,rating] of Object.entries(read().ratings)){
+   if(!rating||!['partly','again'].includes(rating.value))continue;
+   const [kind,id]=key.split(':');let record,href;
+   if(kind==='case'){record=cases.find(c=>c.id===id);href='#study~case-'+id;}
+   else if(kind==='topic'){record=(window.CP_DATA||[]).find(c=>c.id===id);href='#'+id+'~study';}
+   else if(kind==='ecg'){record=(window.ECG_EXPLORER?.cases||[]).find(c=>c.id===id);href='#ecg-explorer~'+id;}
+   if(record)items.push({href,title:record.title||record.name,reason:rating.value==='again'?'Self-rated: review again':'Self-rated: partly confident'});
+  }
+  const progress=window.EM_LEARNING?.progress?.();
+  for(const c of (window.EM_LEARNING_DATA?.cases||[])){
+   const r=progress?.cases?.[c.id];
+   if(r&&r.correct<r.total)items.push({href:'#learn~case-'+c.id,title:c.title,reason:'Latest completed attempt: '+r.correct+' / '+r.total+' first choices correct'});
+  }
+  return items;
+ }
  function starterHtml(){
   const p=read(),last=/^(?:ecg(?:-explorer)?|[a-z-]+)(?:~[a-z0-9-]+)?$/.test(p.last)?p.last:'';
   const weak=Object.entries(p.ratings).filter(([k,v])=>v&&v.value!=='got').sort((a,b)=>b[1].at-a[1].at);
@@ -114,7 +147,7 @@
   if(stage.querySelector('.student-enhanced'))return;
   const marker=document.createElement('span');marker.className='student-enhanced';marker.hidden=true;stage.append(marker);
   const route=location.hash.slice(1),hero=stage.querySelector('.cp-hero');
-  if(hero){const id=route.split('~')[0];if(id)remember(route);const practice=practiceFor(id);const intro=document.createElement('section');intro.className='student-intro';intro.innerHTML='<div class="student-actions"><a href="#'+(id==='ecg'?'ecg-explorer':'shift~'+esc(id))+'">'+(id==='ecg'?'Explore ECGs':'Quick view')+'</a><a href="'+practice.href+'">'+esc(practice.label)+'</a></div>'+glossaryHtml();hero.after(intro);if(id!=='ecg'&&Array.isArray(window.CP_DATA)&&window.CP_DATA.some(c=>c.id===id)){const learningArea=stage.querySelector('#section-study')||intro;learningArea.insertAdjacentHTML('beforeend',guidedHtml(id));bindGuided(learningArea.querySelector('.guided-reasoning'),id);}}
+  if(hero){const id=route.split('~')[0];if(id)remember(route);const practice=practiceFor(id);const intro=document.createElement('section');intro.className='student-intro';intro.innerHTML='<div class="student-actions"><a href="#'+(id==='ecg'?'ecg-explorer':'shift~'+esc(id))+'">'+(id==='ecg'?'Explore ECGs':'Quick view')+'</a><a href="'+practice.href+'">'+esc(practice.label)+'</a></div>'+glossaryHtml();hero.after(intro);if(id!=='ecg'&&Array.isArray(window.CP_DATA)&&window.CP_DATA.some(c=>c.id===id)){const learningArea=stage.querySelector('#section-study')||intro;learningArea.insertAdjacentHTML('beforeend',journeyHtml(id)+guidedHtml(id));bindGuided(learningArea.querySelector('.guided-reasoning'),id);}}
    const studyIntro=stage.querySelector('.home-intro:not(.library-only)');
    const libraryIntro=stage.querySelector('.home-intro.library-only');
    if(studyIntro||libraryIntro){const holder=document.createElement('div');holder.innerHTML=starterHtml();if(studyIntro){studyIntro.after(holder.firstElementChild);if(!Object.keys(read().ratings).length){const stats=stage.querySelector('.study-dashboard');if(stats)stats.hidden=true;}}else{const hero=libraryIntro.querySelector('.home-hero-card')||libraryIntro;hero.after(holder.firstElementChild);}}
@@ -149,6 +182,6 @@
   });
  }
  function start(){const stage=document.getElementById('stage');if(!stage)return;stage.addEventListener('click',rememberJump);document.addEventListener('click',libraryMenuClick);document.addEventListener('keydown',libraryMenuKey);document.addEventListener('toggle',fitFilterMenus,true);window.addEventListener('resize',fitFilterMenus,{passive:true});window.addEventListener('scroll',fitFilterMenus,{passive:true});new MutationObserver(()=>enhance(stage)).observe(stage,{childList:true});enhance(stage);}
- window.STUDENT_LEARNING={cases,render,bindPractice,shuffled,read,rate,remember,ratingHtml,getFocus,setFocus,guidedHtml,practiceFor};
+ window.STUDENT_LEARNING={cases,render,bindPractice,shuffled,read,rate,remember,ratingHtml,getFocus,setFocus,guidedHtml,practiceFor,journeySteps,journeyHtml,reviewItems};
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 }());

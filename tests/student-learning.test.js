@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-function load(blocked=false){const saved={};const context={window:{},document:{readyState:'loading',addEventListener(){}},localStorage:{getItem:k=>{if(blocked)throw Error('blocked');return saved[k]||null;},setItem:(k,v)=>{if(blocked)throw Error('blocked');saved[k]=v;}}};vm.createContext(context);vm.runInContext(fs.readFileSync('assets/student-learning.js','utf8'),context);return context.window.STUDENT_LEARNING;}
+function load(blocked=false,extra={}){const saved={};const context={window:{...extra},document:{readyState:'loading',addEventListener(){}},localStorage:{getItem:k=>{if(blocked)throw Error('blocked');return saved[k]||null;},setItem:(k,v)=>{if(blocked)throw Error('blocked');saved[k]=v;}}};vm.createContext(context);vm.runInContext(fs.readFileSync('assets/student-learning.js','utf8'),context);return context.window.STUDENT_LEARNING;}
 test('authored practice scenarios have facts, distinct choices and option-specific feedback',()=>{const S=load();assert.equal(S.cases.length,18);for(const c of S.cases){assert.ok(c.stem.length>100,c.id);assert.equal(c.questions.length,2);for(const q of c.questions){assert.equal(q.options.filter(o=>o.correct).length,1);assert.equal(new Set(q.options.map(o=>o.id)).size,3);assert.ok(q.options.every(o=>o.why.length>20));}const html=S.render(S.cases.indexOf(c));assert.match(html,/class="case-complete" hidden/);for(const q of c.questions)for(const o of q.options)assert.ok(!html.includes(o.why),'Feedback leaked before attempt');}});
 test('shuffle preserves stable option IDs and uses all correct-answer positions',()=>{const S=load(),options=S.cases[0].questions[0].options,seen=new Set();for(let seed=0;seed<100;seed++){const result=S.shuffled(options,seed);seen.add(result.findIndex(o=>o.correct));assert.deepEqual(Array.from(result,o=>o.id).sort(),Array.from(options,o=>o.id).sort());}assert.equal(seen.size,3);assert.equal(options[0].id,'best');});
 test('self-rating storage failures retain session progress without saving answers',()=>{const S=load(true);assert.equal(S.rate('ecg:normal','again'),false);assert.equal(S.read().ratings['ecg:normal'].value,'again');S.remember('ecg-explorer~normal');assert.equal(S.read().last,'ecg-explorer~normal');assert.equal(S.rate('ecg:normal','made-up'),false);assert.deepEqual(Object.keys(S.read()).sort(),['last','ratings']);});
@@ -19,4 +19,20 @@ test('practice opens the case that belongs to the topic',()=>{
  assert.equal(S.practiceFor('abdominal-pain').href,'#learn~practice');
  assert.equal(S.practiceFor('abdominal-pain').label,'All cases');
  assert.match(fs.readFileSync('assets/student-learning.js','utf8'),/#study~case-chest-pain/);
+});
+
+test('learning journeys link only related practice and available ECG examples',()=>{
+ const S=load(false,{CP_DATA:[{id:'chest-pain',name:'Chest Pain'},{id:'edema',name:'Edema'}],ECG_EXPLORER:{cases:[{id:'inferior-stemi',name:'Inferior STEMI'}]}});
+ assert.equal(S.journeySteps('chest-pain').length,4);
+ assert.equal(S.journeySteps('edema').length,2);
+ assert.equal(S.journeySteps('unknown').length,0);
+ assert.ok(!S.journeyHtml('edema').includes('#learn~practice'),'no generic case is presented as related');
+});
+test('focused review distinguishes uncertainty from completed-case errors and ignores invalid ratings',()=>{
+ const S=load(false,{CP_DATA:[{id:'chest-pain',name:'Chest Pain'}],EM_LEARNING_DATA:{cases:[{id:'resus',title:'Resuscitation case'}]},EM_LEARNING:{progress:()=>({cases:{resus:{correct:1,total:3}}})}});
+ S.rate('case:chest-pain','partly');S.rate('topic:unknown','again');S.rate('topic:chest-pain','got');
+ const items=S.reviewItems();assert.equal(items.length,2);
+ assert.match(items[0].reason,/Self-rated/);assert.match(items[1].reason,/Latest completed attempt/);
+ assert.ok(items.every(x=>!x.href.includes('unknown')));
+ S.rate('case:chest-pain','got');assert.equal(S.reviewItems().length,1);
 });
