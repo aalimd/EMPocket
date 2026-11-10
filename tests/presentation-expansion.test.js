@@ -8,7 +8,7 @@ const topics=c.window.CP_DATA,evidence=c.window.CLINICAL_EVIDENCE;
 const text=id=>JSON.stringify(topics.find(t=>t.id===id));
 test('selected review records distinguish the new scope from the historical audit',()=>{
  assert.equal(evidence.checked,'2026-10-08');
- const ids=['chest-pain','dyspnea','abdominal-pain','headache','ams','syncope','fever','dizziness','gib','back-pain','joint-pain','pelvic-pain','seizures','overdose','hyperglycemia','flank-pain','red-eye','sore-throat','scrotal-pain','diarrhea','rash','limb-ischemia','urinary-retention','head-injury','pediatric-fever','pediatric-respiratory-distress','anaphylaxis','burns','heat-cold','alcohol-withdrawal','suicidal','constipation','weakness','coma','hemoptysis','shock','palpitations','focal-neurologic-deficit','electrolytes','hypertensive-emergency'];
+ const ids=['chest-pain','dyspnea','abdominal-pain','headache','ams','syncope','fever','dizziness','gib','back-pain','joint-pain','pelvic-pain','seizures','overdose','hyperglycemia','flank-pain','red-eye','sore-throat','scrotal-pain','diarrhea','rash','limb-ischemia','urinary-retention','head-injury','pediatric-fever','pediatric-respiratory-distress','anaphylaxis','burns','heat-cold','alcohol-withdrawal','suicidal','constipation','weakness','coma','hemoptysis','shock','palpitations','focal-neurologic-deficit','electrolytes','hypertensive-emergency','vaginal-bleeding','nausea-vomiting','jaundice','cyanosis','diplopia','airway-stridor','edema','falls-geriatric-trauma'];
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(),ids.sort());
  for(const id of ids){
   const r=evidence.topicReviews[id];assert.equal(r.checked,'2026-11-10');assert.ok(r.scope.length>15);
@@ -41,7 +41,7 @@ test('references display a scoped addition date without relabelling unreviewed t
  for(const name of ['esc','evidenceHtml']){const start=source.indexOf('    function '+name+'('),end=source.indexOf('\n    function ',start+1);vm.runInContext(source.slice(start,end),c);}
  assert.match(c.evidenceHtml('headache'),/Selected additions checked 2026-11-10/);
  assert.match(c.evidenceHtml('headache'),/This date applies only to these additions/);
- assert.doesNotMatch(c.evidenceHtml('jaundice'),/Selected additions checked/);
+ assert.doesNotMatch(c.evidenceHtml('multiple-trauma'),/Selected additions checked/);
 });
 
 test('pregnancy follow-up cannot substitute an hCG trend for clinical reassessment',()=>{
@@ -179,4 +179,31 @@ test('neurological, rhythm and shock additions preserve diagnostic uncertainty',
 test('fifth-batch additions are indexed at their real clinical destinations',()=>{
  const idx=c.window.EM_SEARCH_INDEX.buildSearchIndex(topics,c.window.ECG_DATA);
  for(const [id,target,phrase] of [['weakness','exam','bulbar function'],['coma','workup','Sudden unexplained coma'],['hemoptysis','workup','hemoptysis-specific'],['shock','pearls-pitfalls','monitored peripheral IV'],['palpitations','workup','symptom frequency'],['focal-neurologic-deficit','pearls-pitfalls','do not delay EVT'],['electrolytes','doses','every 30 min'],['hypertensive-emergency','pearls-pitfalls','medication access']])assert.ok(idx.some(h=>h.cpId===id&&h.target===target&&h.title.includes(phrase)),id);
+});
+
+test('negative initial tests retain their indication-specific follow-up',()=>{
+ const edema=topics.find(t=>t.id==='edema');
+ assert.match(edema.approach.join(' '),/two-level Wells score: DVT likely → proximal ultrasound first; DVT unlikely → D-dimer first/);
+ assert.match(text('edema'),/DVT-likely pathway: a negative proximal scan with a positive D-dimer needs a repeat proximal scan in 6–8 days/);
+ assert.doesNotMatch(text('edema'),/low\/moderate probability gets D-dimer/);
+ const falls=text('falls-geriatric-trauma');
+ assert.match(falls,/MRI; if unavailable within 24 h or contraindicated, consider CT/);
+ assert.match(falls,/do not force weight-bearing when fracture remains suspected/);
+ assert.doesNotMatch(falls,/until you have watched the patient walk/);
+ assert.match(text('vaginal-bleeding'),/postmenopausal bleeding needs a documented gynecology\/endometrial assessment/);
+ assert.doesNotMatch(text('vaginal-bleeding'),/TSH for non-pregnant chronic patterns/);
+ assert.match(text('vaginal-bleeding'),/A careful speculum examination by an experienced clinician/);
+ assert.doesNotMatch(text('vaginal-bleeding'),/Speculum exam is for obstetrics once previa is excluded/);
+});
+test('symptom improvement and isolated measurements do not substitute for reassessment',()=>{
+ assert.match(text('jaundice'),/Falling aminotransferases do not prove recovery/);
+ assert.match(text('cyanosis'),/overestimate oxygenation with darker skin pigmentation/);
+ assert.match(text('airway-stridor'),/quieter stridor plus fatigue/);
+ assert.match(text('airway-stridor'),/symptoms do not recur during 2–4 hours/);
+ assert.match(text('nausea-vomiting'),/avoid it with prolonged QTc, Parkinson disease or Lewy body dementia/);
+ assert.match(text('diplopia'),/an initially isolated palsy may change over time/);
+});
+test('sixth-batch teaching is searchable at the authored clinical section',()=>{
+ const idx=c.window.EM_SEARCH_INDEX.buildSearchIndex(topics,c.window.ECG_DATA);
+ for(const [id,target,phrase] of [['vaginal-bleeding','pearls-pitfalls','postmenopausal bleeding'],['nausea-vomiting','history','regular cannabis use'],['jaundice','pearls-pitfalls','Falling aminotransferases'],['cyanosis','history','generators'],['diplopia','exam','facial sensation'],['airway-stridor','pearls-pitfalls','2–4 hours'],['edema','workup','repeat proximal scan'],['falls-geriatric-trauma','pearls-pitfalls','comprehensive falls assessment']])assert.ok(idx.some(h=>h.cpId===id&&h.target===target&&h.title.includes(phrase)),id);
 });

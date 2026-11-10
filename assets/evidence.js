@@ -6,6 +6,23 @@
 (function () {
     'use strict';
     const sources = {
+        antepartumExam: ['RCOG Green-top 63 antepartum haemorrhage (2011): foundational examination precautions', 'https://www.rcog.org.uk/media/pwdi1tef/gtg_63.pdf'],
+        previaExam: ['RCOG placenta praevia patient information: speculum examination', 'https://www.rcog.org.uk/for-the-public/browse-our-patient-information/placenta-praevia-placenta-accreta-and-vasa-praevia'],
+        heavyBleeding: ["NICE NG88 heavy menstrual bleeding: history and selective tests", "https://www.nice.org.uk/guidance/ng88/chapter/Recommendations"],
+        endometrialReferral: ["NICE NG12 suspected cancer: postmenopausal bleeding referral", "https://www.nice.org.uk/guidance/ng12/chapter/Recommendations-organised-by-site-of-cancer"],
+        chs: ["RCEM suspected cannabinoid hyperemesis best-practice guideline (2024)", "https://rcem.ac.uk/wp-content/uploads/2024/02/RCEM_Cannabinoid_Hyperemesis_Syndrome_v5.0.pdf"],
+        alfAssessment: ["AASLD Liver Fellow Network: defining and managing acute liver failure (2025; educational review)", "https://www.aasld.org/liver-fellow-network/core-series/back-basics/defining-and-managing-acute-liver-failure"],
+        alfEASL: ["EASL acute liver failure clinical practice guideline (2017): trajectory and referral", "https://easl.eu/wp-content/uploads/2018/10/LiverFailure-English-report.pdf"],
+        cholangitis: ["ASGE management of cholangitis guideline (2021)", "https://www.asge.org/home/resources/publications/guidelines/asge-guideline-on-the-management-of-cholangitis"],
+        oximetry: ["MHRA pulse oximetry: limitations for healthcare professionals", "https://www.gov.uk/guidance/the-use-and-regulation-of-pulse-oximeters-information-for-healthcare-professionals"],
+        coExposure: ["CDC clinical guidance for carbon monoxide poisoning", "https://www.cdc.gov/carbon-monoxide/hcp/clinical-guidance/index.html"],
+        diplopiaAssessment: ["AAO: evaluation and follow-up of diplopia (2022; clinician education)", "https://www.aao.org/young-ophthalmologists/yo-info/article/when-is-diplopia-a-sign-of-something-dangerous"],
+        croup: ["CPS acute management of croup in the ED (updated March 2026)", "https://cps.ca/en/documents/position/acute-management-of-croup"],
+        dvt: ["NICE NG158 venous thromboembolism: DVT diagnostic pathway", "https://www.nice.org.uk/guidance/ng158/chapter/recommendations"],
+        dvtUltrasound: ["ACEP Sonoguide: DVT ultrasound and limitations", "https://www.acep.org/sonoguide/basic/dvt"],
+        falls: ["NICE NG249 falls assessment and prevention (2025)", "https://www.nice.org.uk/guidance/ng249/chapter/Recommendations"],
+        occultHip: ["NICE CG124 hip fracture: imaging for occult fracture", "https://www.nice.org.uk/guidance/cg124/chapter/Recommendations"],
+
         gbs: ['EAN/PNS Guillain–Barré syndrome guideline (2023)', 'https://doi.org/10.1111/ene.16073'],
         comaAssessment: ['NCS ENLS coma protocol: foundational bedside assessment (v4, 2019)', 'https://higherlogicdownload.s3.amazonaws.com/NEUROCRITICALCARE/fdc4bb32-6722-417b-8839-f68ac1ef3794/UploadedImages/ENLS_Documents/ENLS_V4.0_protocol%20files/ENLS_V_4_0_Protocol_Coma_FINAL.pdf'],
         ambulatoryECG: ['ISHNE/HRS ambulatory ECG consensus (2017): symptom–rhythm correlation', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC6931745/'],
@@ -99,17 +116,17 @@
     const topics = {
         'chest-pain': ['aorta', 'chest', 'acs', 'mi', 'pe'], dyspnea: ['asthma', 'pe', 'dyspneaAssessment'],
         headache: ['headache', 'sah', 'stroke'], ams: ['stroke', 'special', 'meningitis', 'delirium'], coma: ['stroke', 'special', 'comaAssessment'],
-        weakness: ['stroke', 'gbs'], dizziness: ['dizziness', 'stroke'], diplopia: ['cn3', 'stroke'],
+        weakness: ['stroke', 'gbs'], dizziness: ['dizziness', 'stroke'], diplopia: ['cn3', 'stroke', 'diplopiaAssessment'],
         'focal-neurologic-deficit': ['stroke', 'ich'], fever: ['sepsis', 'meningitis'], shock: ['sepsis', 'lung', 'special'],
         'joint-pain': ['joint'], 'pelvic-pain': ['ectopic', 'ectopicDiagnosis', 'pid'], 'abdominal-pain': ['appendicitis', 'ectopic', 'abdominalAssessment', 'mesenteric'],
-        'vaginal-bleeding': ['pph', 'rh', 'ectopic'], 'pregnancy-emergency': ['special', 'pe', 'rh', 'hyperemesis', 'pph'],
+        'vaginal-bleeding': ['pph', 'rh', 'ectopic', 'heavyBleeding', 'endometrialReferral', 'antepartumExam', 'previaExam'], 'pregnancy-emergency': ['special', 'pe', 'rh', 'hyperemesis', 'pph'],
         'scrotal-pain': ['epididymitis'], seizures: ['seizures', 'esett', 'firstSeizure'], hemoptysis: ['hemoptysis', 'pe'],
-        'nausea-vomiting': ['hyperemesis', 'dka', 'adrenal', 'chest'], diarrhea: ['cdi', 'infectiousDiarrhea'], cyanosis: ['methb', 'neonate', 'special'],
-        overdose: ['special', 'acetaminophen', 'selfharm'], jaundice: ['acetaminophen'], 'back-pain': ['mscc', 'back'], 'pediatric-fever': ['infant', 'infant90', 'childFever', 'kawasaki', 'meningitis'], hyperglycemia: ['dka', 'adrenal'],
+        'nausea-vomiting': ['hyperemesis', 'dka', 'adrenal', 'chest', 'chs'], diarrhea: ['cdi', 'infectiousDiarrhea'], cyanosis: ['methb', 'neonate', 'special', 'oximetry', 'coExposure'],
+        overdose: ['special', 'acetaminophen', 'selfharm'], jaundice: ['acetaminophen', 'alfAssessment', 'alfEASL', 'cholangitis'], 'back-pain': ['mscc', 'back'], 'pediatric-fever': ['infant', 'infant90', 'childFever', 'kawasaki', 'meningitis'], hyperglycemia: ['dka', 'adrenal'],
         'heat-cold': ['special'], palpitations: ['af', 'als', 'ambulatoryECG'], syncope: ['syncope', 'syncopeGuideline', 'als'],
-        'airway-stridor': ['special'], anaphylaxis: ['special', 'rcukAnaphylaxis'], 'flank-pain': ['stones'],
-        'urinary-retention': ['stones', 'urethralTrauma', 'catheterCare'], edema: ['pe'], 'multiple-trauma': ['headinjury'],
-        'falls-geriatric-trauma': ['headinjury'], 'pediatric-respiratory-distress': ['bronchiolitis', 'asthma'],
+        'airway-stridor': ['special', 'croup'], anaphylaxis: ['special', 'rcukAnaphylaxis'], 'flank-pain': ['stones'],
+        'urinary-retention': ['stones', 'urethralTrauma', 'catheterCare'], edema: ['pe', 'dvt', 'dvtUltrasound'], 'multiple-trauma': ['headinjury'],
+        'falls-geriatric-trauma': ['headinjury', 'falls', 'occultHip'], 'pediatric-respiratory-distress': ['bronchiolitis', 'asthma'],
         gib: ['ugib', 'lgib', 'lgibASGE'], 'red-eye': ['keratitis', 'chemicalEye'], 'sore-throat': ['gas', 'gasTesting'],
         suicidal: ['selfharm'], constipation: ['constipation'], 'limb-ischemia': ['pad'], rash: ['ssti'],
         'cardiac-arrest': ['acls', 'als', 'special'], electrolytes: ['hyperkalemia', 'hyponatremia', 'sodiumUS', 'potassiumKDIGO'],
@@ -418,6 +435,70 @@
             "acuteBP",
             "aorta",
             "ich"
+        ]
+    },
+    "vaginal-bleeding": {
+        "checked": "2026-11-10",
+        "scope": "selected bleeding assessment, selective tests, referral and examination precautions",
+        "sources": [
+            "heavyBleeding",
+            "endometrialReferral",
+            "antepartumExam",
+            "previaExam"
+        ]
+    },
+    "nausea-vomiting": {
+        "checked": "2026-11-10",
+        "scope": "selected suspected CHS assessment, treatment precautions and prevention",
+        "sources": [
+            "chs"
+        ]
+    },
+    "jaundice": {
+        "checked": "2026-11-10",
+        "scope": "selected acute liver failure trajectory and staged cholangitis source control",
+        "sources": [
+            "alfAssessment",
+            "alfEASL",
+            "cholangitis"
+        ]
+    },
+    "cyanosis": {
+        "checked": "2026-11-10",
+        "scope": "selected oximetry limitations and CO exposure/test interpretation",
+        "sources": [
+            "oximetry",
+            "coExposure"
+        ]
+    },
+    "diplopia": {
+        "checked": "2026-11-10",
+        "scope": "selected symptom evolution, associated findings and follow-up",
+        "sources": [
+            "diplopiaAssessment"
+        ]
+    },
+    "airway-stridor": {
+        "checked": "2026-11-10",
+        "scope": "selected croup deterioration, recurrence and observation principles",
+        "sources": [
+            "croup"
+        ]
+    },
+    "edema": {
+        "checked": "2026-11-10",
+        "scope": "selected DVT probability, ultrasound limits and follow-up pathway",
+        "sources": [
+            "dvt",
+            "dvtUltrasound"
+        ]
+    },
+    "falls-geriatric-trauma": {
+        "checked": "2026-11-10",
+        "scope": "selected multifactorial falls assessment and occult hip imaging",
+        "sources": [
+            "falls",
+            "occultHip"
         ]
     }
 };

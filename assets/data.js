@@ -7,6 +7,7 @@
    Third targeted expansion: 10 Nov 2026, eight additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-10-BATCH-3.md.
    Fourth targeted expansion: 10 Nov 2026, eight additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-10-BATCH-4.md.
    Fifth targeted expansion: 10 Nov 2026, eight additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-10-BATCH-5.md.
+   Sixth targeted expansion: 10 Nov 2026, eight additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-10-BATCH-6.md.
    Educational reference only — never replaces clinical judgment or local protocols.
 */
 const CP_DATA = [
@@ -699,7 +700,7 @@ overview: 'Vaginal bleeding splits cleanly by pregnancy status. In pregnancy: ec
 approach: [
     'Two questions: pregnant or not, stable or not.',
     'Resuscitate shock first. TXA as soon as PPH is diagnosed and within 3 h of birth (WHO/WOMAN).',
-    'No digital exam until previa is excluded by US.',
+    'In later-pregnancy bleeding with possible placenta previa, avoid digital vaginal examination until ultrasound excludes it.',
     'Anti-D depends on gestation and event: follow current obstetric guidance; it is not routinely required for every pregnancy loss before 12 weeks. Abruption is clinical.'
 ],
 dontMiss: [
@@ -712,11 +713,15 @@ dontMiss: [
 ['Anovulatory bleeding / fibroids / cervicitis', 'common', 'Common non-pregnant causes; measure hemoglobin burden.'],
 ['Bleeding disorder / anticoagulation', 'common', 'vWD and coagulopathy hide in \u201Cheavy periods\u201D — ask since menarche.']
 ],
-history: ['Pregnant? LMP, contraception; volume of bleeding (pads/hour, clots, dizziness)', 'Pregnancy stage & prior ultrasounds; trauma (abruption)', 'Postpartum timing (atony vs retained tissue vs infection)', 'Non-pregnant: cycle pattern, intermenstrual or post-coital bleeding, anticoagulants, bleeding since menarche'],
+history: [
+    "Describe the bleeding pattern, persistent intermenstrual bleeding, pelvic pressure and impact on daily life; pad counts alone do not capture the burden.",
+    'Pregnant? LMP, contraception; volume of bleeding (pads/hour, clots, dizziness)', 'Pregnancy stage & prior ultrasounds; trauma (abruption)', 'Postpartum timing (atony vs retained tissue vs infection)', 'Non-pregnant: cycle pattern, intermenstrual or post-coital bleeding, anticoagulants, bleeding since menarche'],
 exam: ['Vitals & orthostatics; signs of shock', 'Abdomen: fundal height if pregnant, tenderness, contractions', 'Speculum exam (avoid digital if previa suspected) — source: cervix vs uterine', 'Postpartum: uterine tone, ongoing loss'],
 workup: [
 ['Bedside', ['Urine/serum hCG immediately in all patients of childbearing potential', 'POCUS; pad counting for quantification']],
-['Labs', ['CBC, type & screen/crossmatch, Rh status (anti-D for Rh-negative unsensitized patients per pathway); Kleihauer-Betke only if significant fetomaternal hemorrhage is a question', 'Coagulation ± DIC panel in abruption/PPH; quantitative β-hCG; TSH for non-pregnant chronic patterns']],
+['Labs', [
+    "Consider coagulation-disorder testing when heavy periods began at menarche and personal or family bleeding history is suggestive.",
+    'CBC, type & screen/crossmatch, Rh status (anti-D for Rh-negative unsensitized patients per pathway); Kleihauer-Betke only if significant fetomaternal hemorrhage is a question', 'Coagulation ± DIC panel in abruption/PPH; quantitative β-hCG when indicated']],
 ['Imaging', ['Transvaginal US in pregnancy: IUP vs ectopic, previa, abruption signs', 'US pelvis for non-pregnant structural causes']]
 ],
 redFlags: ['Any bleeding with positive hCG and pain', 'Painless bright-red bleeding in later pregnancy (previa)', 'Painful rigid uterus with fetal distress (abruption)', 'Postpartum bleeding saturating pads rapidly', 'Orthostatic symptoms or hemodynamic instability', 'Bleeding on anticoagulation or with known bleeding disorder'],
@@ -725,8 +730,12 @@ disposition: [
 ['Admit', 'Ectopic per criteria, symptomatic miscarriage needing care, moderate bleeding with anemia, anticoagulation reversal issues.'],
 ['Emergency obstetrics / OR / ICU', 'Placenta previa or abruption in viable pregnancy, postpartum hemorrhage, shock of any source, molar pregnancy.']
 ],
-pitfalls: ['Never do a digital exam when previa is possible — ultrasound first, always. Speculum exam is for obstetrics once previa is excluded or in a controlled setting.', 'A normal early hematocrit reassures falsely — the bleed is ongoing.', 'Anti-D is event- and gestation-specific. ACOG 2024 suggests forgoing routine Rh testing/RhIg for abortion or pregnancy loss before 12 weeks; do not extend this to every ectopic, trauma, or later-pregnancy event. Follow the local obstetric pathway. Kleihauer-Betke quantifies fetomaternal hemorrhage when indicated.', 'Post-coital bleeding in an older patient = cervical cancer screen.', 'Postpartum \u201Clochia\u201D turning bright red with clots is a hemorrhage, not normal.', 'Ultrasound is insensitive for abruption — the diagnosis is clinical (painful woody uterus, fetal distress).'],
-pearls: ['Two questions run the show: pregnant or not, stable or not.', 'Painless bright-red third-trimester bleeding = previa until US says otherwise — no digital exam.', 'TXA for diagnosed PPH reduces death from bleeding when given promptly within 3 hours of birth (WHO/WOMAN).', 'PALM-COEIN organizes non-pregnant AUB; coagulopathy (including vWD) hides in \u201Cheavy periods since menarche.\u201D'],
+pitfalls: [
+    "Do not routinely order thyroid tests for heavy menstrual bleeding unless other symptoms or signs suggest thyroid disease.",
+    'When placenta previa is possible, avoid digital vaginal examination until ultrasound excludes it. A careful speculum examination by an experienced clinician may help identify the bleeding source; coordinate obstetric assessment.', 'A normal early hematocrit reassures falsely — the bleed is ongoing.', 'Anti-D is event- and gestation-specific. ACOG 2024 suggests forgoing routine Rh testing/RhIg for abortion or pregnancy loss before 12 weeks; do not extend this to every ectopic, trauma, or later-pregnancy event. Follow the local obstetric pathway. Kleihauer-Betke quantifies fetomaternal hemorrhage when indicated.', 'Post-coital bleeding in an older patient = cervical cancer screen.', 'Postpartum \u201Clochia\u201D turning bright red with clots is a hemorrhage, not normal.', 'Ultrasound is insensitive for abruption — the diagnosis is clinical (painful woody uterus, fetal distress).'],
+pearls: [
+    "Unexplained postmenopausal bleeding needs a documented gynecology/endometrial assessment pathway even when bleeding has stopped; use current local cancer-referral criteria, including HRT context.",
+    'Two questions run the show: pregnant or not, stable or not.', 'Painless bright-red third-trimester bleeding = previa until US says otherwise — no digital exam.', 'TXA for diagnosed PPH reduces death from bleeding when given promptly within 3 hours of birth (WHO/WOMAN).', 'PALM-COEIN organizes non-pregnant AUB; coagulopathy (including vWD) hides in \u201Cheavy periods since menarche.\u201D'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — vaginal bleeding', 'ACOG Practice Bulletins (previa, abruption, PPH)', 'WOMAN trial (Lancet 2017) — TXA in PPH; FIGO PALM-COEIN; RCOG guidance']
 },
 {
@@ -966,11 +975,15 @@ dontMiss: [
 ['Acute glaucoma / testicular or ovarian torsion', 'emergent', 'The referred-pain mimics — eye and groin exams exist for a reason.'],
 ['Cannabinoid hyperemesis / cyclic vomiting / gastritis', 'common', 'Hot-water bathing is a cannabinoid clue; capsaicin and haloperidol are options. Still exclude the killers once.']
 ],
-history: ['Duration, bilious vs food vs blood, ability to keep down liquids', 'Pain: before vomiting (surgical) vs after (medical/gastroenteritis)', 'Headache, visual change, chest pain, pregnancy possibility', 'Diabetes, adrenal disease, cannabis, chemotherapy, prior abdominal surgery, hernias'],
+history: [
+    "Ask nonjudgmentally about regular cannabis use, cyclic episodes and hot bathing; these clues support suspected CHS but do not confirm it.",
+    'Duration, bilious vs food vs blood, ability to keep down liquids', 'Pain: before vomiting (surgical) vs after (medical/gastroenteritis)', 'Headache, visual change, chest pain, pregnancy possibility', 'Diabetes, adrenal disease, cannabis, chemotherapy, prior abdominal surgery, hernias'],
 exam: ['Vitals including glucose; orthostatics', 'Abdomen: distension, hernias, peritoneal signs, succussion splash', 'Neuro: pupils, papilledema, ataxia, neck stiffness', 'Eye (glaucoma), groin (torsion), pregnancy'],
 workup: [
 ['Bedside', ['Glucose, hCG, ECG', 'POCUS: AAA, free fluid, IUP, B-lines']],
-['Labs', ['Electrolytes including Na, K, Mg; VBG/ketones if DKA possible; lipase', 'LFTs, CBC, renal panel; cortisol if adrenal crisis is possible']],
+['Labs', [
+    "In suspected cannabinoid hyperemesis, actively assess hypoglycemia, renal injury, electrolyte losses and acid-base disturbance rather than treating nausea alone.",
+    'Electrolytes including Na, K, Mg; VBG/ketones if DKA possible; lipase', 'LFTs, CBC, renal panel; cortisol if adrenal crisis is possible']],
 ['Imaging', ['CT abdomen/pelvis with contrast for obstruction/ischemia when suspected', 'CT/MRI head for raised-ICP features; AXR is insensitive for obstruction']]
 ],
 redFlags: ['Bilious or feculent vomiting, or vomiting with peritonitis', 'Chest pain, dyspnea, or diaphoresis with vomiting', 'Headache, diplopia, or ataxia', 'Glucose high or very low; steroid-dependent patient', 'Positive hCG with pain or bleeding', 'Intractable vomiting with severe electrolyte derangement'],
@@ -979,8 +992,12 @@ disposition: [
 ['Admit', 'Obstruction without ischemia, DKA on a protocol, hyperemesis with ongoing dehydration, electrolyte disturbance or inability to tolerate oral therapy, inability to tolerate oral intake in a high-risk host.'],
 ['OR / ICU / cath lab', 'Perforation, ischemic bowel/volvulus, ACS, raised ICP, adrenal crisis, airway from aspiration.']
 ],
-pitfalls: ['Treating with ondansetron and discharging a missed inferior MI or SBO is a classic error.', 'AXR misses a large fraction of obstruction — CT is the test when suspicion is real.', 'Cannabinoid hyperemesis is a diagnosis of exclusion in the first presentations.', 'Ondansetron prolongs QT — look at the ECG in the already-sick.', 'Children with bilious vomiting have malrotation/volvulus until proven otherwise.'],
-pearls: ['Pain before vomiting leans surgical; vomiting before pain leans medical — not a law, a nudge.', 'ECG and glucose are cheaper than a missed STEMI or DKA.', 'Bilious vomiting in a neonate or young child is surgical until imaging says otherwise.', 'Steroid-dependent + vomiting = stress-dose steroids, do not wait for a cortisol.'],
+pitfalls: [
+    "Before haloperidol for refractory suspected CHS, check ECG/QTc and correct electrolyte abnormalities; avoid it with prolonged QTc, Parkinson disease or Lewy body dementia and monitor for dystonia.",
+    'Treating with ondansetron and discharging a missed inferior MI or SBO is a classic error.', 'AXR misses a large fraction of obstruction — CT is the test when suspicion is real.', 'Cannabinoid hyperemesis is a diagnosis of exclusion in the first presentations.', 'Ondansetron prolongs QT — look at the ECG in the already-sick.', 'Children with bilious vomiting have malrotation/volvulus until proven otherwise.'],
+pearls: [
+    "Explain that sustained cannabis abstinence prevents CHS recurrence; provide written information and practical cessation support rather than a symptom-only discharge plan.",
+    'Pain before vomiting leans surgical; vomiting before pain leans medical — not a law, a nudge.', 'ECG and glucose are cheaper than a missed STEMI or DKA.', 'Bilious vomiting in a neonate or young child is surgical until imaging says otherwise.', 'Steroid-dependent + vomiting = stress-dose steroids, do not wait for a cortisol.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — nausea and vomiting', '2025 ACC/AHA ACS Guideline (atypical symptoms)', 'ADA DKA/HHS guidance; Tintinalli\u2019s 9th ed.']
 },
 {
@@ -1044,11 +1061,15 @@ dontMiss: [
 ['Acute viral hepatitis / alcoholic hepatitis / choledocholithiasis without cholangitis', 'emergent', 'Image the duct; score alcoholic hepatitis (MELD/MDF) for steroids per protocol once infection is excluded.'],
 ['Gilbert syndrome / isolated unconjugated / pancreatic head mass', 'common', 'Gilbert is benign (isolated unconjugated, normal everything else). Painless progressive jaundice with weight loss needs outpatient staging but is rarely an ED crash.']
 ],
-history: ['Tempo: hours–days (obstruction, toxin, hemolysis) vs weeks (viral, malignant)', 'Fever, pale stools, dark urine, pruritus (obstructive)', 'Acetaminophen, alcohol, new drugs (amoxicillin-clavulanate, isoniazid), mushrooms', 'Travel, injections, sexual contacts, pregnancy (HELLP, AFLP)', 'Prior gallstones, biliary stents, hemolytic history'],
+history: [
+    "Reconcile all medicines, over-the-counter products, herbs and supplements, including recent starts and repeated acetaminophen exposure; ask relatives if cognition is impaired.",
+    'Tempo: hours–days (obstruction, toxin, hemolysis) vs weeks (viral, malignant)', 'Fever, pale stools, dark urine, pruritus (obstructive)', 'Acetaminophen, alcohol, new drugs (amoxicillin-clavulanate, isoniazid), mushrooms', 'Travel, injections, sexual contacts, pregnancy (HELLP, AFLP)', 'Prior gallstones, biliary stents, hemolytic history'],
 exam: ['Encephalopathy and asterixis (ALF)', 'Fever, RUQ tenderness, peritoneal signs, Murphy sign', 'Stigmata of chronic liver disease vs an acute unmarked patient', 'Splenomegaly (hemolysis, chronic liver); petechiae (DIC, TTP)', 'Volume status and occult GI bleeding'],
 workup: [
 ['Bedside', ['Glucose (ALF patients crash); POCUS for CBD dilatation, stones, abscess']],
-['Labs', ['Fractionated bilirubin, ALT/AST, ALP/GGT, INR, albumin, glucose, CBC, smear/LDH/haptoglobin if hemolysis', 'Acetaminophen level in nearly every acute hepatocellular pattern', 'Blood cultures if febrile; viral serologies; pregnancy test']],
+['Labs', [
+    "In suspected acute liver failure, follow serial INR, glucose, renal function and neurological findings; discuss evolving organ dysfunction with the liver/transplant team early.",
+    'Fractionated bilirubin, ALT/AST, ALP/GGT, INR, albumin, glucose, CBC, smear/LDH/haptoglobin if hemolysis', 'Acetaminophen level in nearly every acute hepatocellular pattern', 'Blood cultures if febrile; viral serologies; pregnancy test']],
 ['Imaging / procedures', ['RUQ US first for obstruction', 'CT/MRCP if US is inconclusive; ERCP for cholangitis drainage', 'Avoid unnecessary sedation in ALF — ICP risk']]
 ],
 redFlags: ['Fever with jaundice (cholangitis until excluded)', 'Any encephalopathy or INR ≥1.5 in acute liver injury', 'Hypoglycemia, shock, or GI bleeding', 'Acetaminophen exposure, mushrooms, or new drugs', 'Pale stools and dark urine with duct dilatation', 'Pregnancy with jaundice (HELLP/AFLP)'],
@@ -1057,8 +1078,12 @@ disposition: [
 ['Admit', 'Acute hepatitis, choledocholithiasis awaiting ERCP, alcoholic hepatitis under infection screen, hemolysis needing treatment.'],
 ['ICU / transplant / ERCP now', 'Cholangitis with shock, acute liver failure, acetaminophen with rising INR, HELLP/AFLP.']
 ],
-pitfalls: ['Charcot\u2019s triad is absent in a large fraction of cholangitis — do not wait for it.', 'A \u201Cnormal\u201D acetaminophen level late after ingestion does not exclude toxicity — treat on timing and enzymes/INR.', 'Giving sedation for MRI in ALF can mask and worsen intracranial hypertension.', 'Isolated unconjugated bilirubin with a normal CBC and enzymes is Gilbert until you force it to be something else.', 'Painless jaundice is cancer until staged — but it is rarely the reason they die tonight; cholangitis and ALF are.'],
-pearls: ['Three buckets: obstructed duct, injured hepatocyte, lysed red cell. ALP vs ALT vs LDH/smear assigns the bucket.', 'Cholangitis needs source control (ERCP), not antibiotics alone.', 'ALF: acute liver injury with INR ≥1.5 and encephalopathy, usually without pre-existing cirrhosis. Call transplant early.', 'Acetaminophen is the reversible cause you will not forgive yourself for missing.'],
+pitfalls: [
+    "Falling aminotransferases do not prove recovery if INR, bilirubin or encephalopathy is worsening; reassess the whole trajectory.",
+    'Charcot\u2019s triad is absent in a large fraction of cholangitis — do not wait for it.', 'A \u201Cnormal\u201D acetaminophen level late after ingestion does not exclude toxicity — treat on timing and enzymes/INR.', 'Giving sedation for MRI in ALF can mask and worsen intracranial hypertension.', 'Isolated unconjugated bilirubin with a normal CBC and enzymes is Gilbert until you force it to be something else.', 'Painless jaundice is cancer until staged — but it is rarely the reason they die tonight; cholangitis and ALF are.'],
+pearls: [
+    "In cholangitis too unstable for extensive endoscopic therapy, drainage alone may be the initial source-control procedure; coordinate the definitive stone-treatment plan after stabilization.",
+    'Three buckets: obstructed duct, injured hepatocyte, lysed red cell. ALP vs ALT vs LDH/smear assigns the bucket.', 'Cholangitis needs source control (ERCP), not antibiotics alone.', 'ALF: acute liver injury with INR ≥1.5 and encephalopathy, usually without pre-existing cirrhosis. Call transplant early.', 'Acetaminophen is the reversible cause you will not forgive yourself for missing.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — jaundice', 'Tokyo Guidelines 2018 for acute cholangitis', 'EASL / AASLD acute liver failure guidance; 2023 US/Canada acetaminophen consensus']
 },
 {
@@ -1067,7 +1092,7 @@ tag: 'Blue from lung, heart, or the blood itself?',
 overview: 'Visible cyanosis classically occurs at approximately 5 g/dL of deoxyhemoglobin in capillary blood; this is an approximate teaching value, not a fixed diagnostic threshold. Peripheral cyanosis can reflect local stasis. The trap is that dyshemoglobinemias may cause cyanosis with a normal PaO₂; significant methemoglobinemia often drives SpO₂ toward 85%, while sulfhemoglobinemia readings vary. Chocolate-brown blood that does not redden on oxygen is the bedside clue. Treat the airway and the cause — methylene blue for methemoglobin (not in G6PD).',
 approach: [
     'Central (tongue/lips) vs peripheral (nail beds only).',
-    'SpO₂ stuck ~85% with a normal PaO₂ is a saturation gap — send co-oximetry (methemoglobin, CO).',
+    'Unexpected SpO₂ or discordance with PaO₂: check the signal and request measured co-oximetry when dyshemoglobinemia is possible.',
     'Chocolate-brown blood or a saturation gap raises suspicion for dyshemoglobinemia; obtain co-oximetry and urgent toxicology advice. Antidotes depend on symptoms, measured MetHb and contraindications.',
     'A substantial right-to-left shunt may respond poorly to oxygen; support oxygenation and obtain urgent cause-directed assessment.'
 ],
@@ -1079,8 +1104,12 @@ dontMiss: [
 ['Carbon monoxide is NOT cyanosis', 'emergent', 'CO skin color is unreliable; cherry-red appearance is uncommon; SpO₂ is falsely normal — CO-oximetry. Listed here because it is the classic mis-association.'],
 ['Peripheral cyanosis / Raynaud / cold', 'common', 'Warm the patient; central mucous membranes should be pink. If they are not, it is not \u201Cjust cold.\u201D']
 ],
-history: ['Onset with drugs/anesthetics (benzocaine spray), well-water nitrites, dapsone', 'Lung or cardiac disease, altitude, diving', 'Known congenital heart disease', 'Cold exposure vs mucus-membrane involvement'],
-exam: ['Central (lips, tongue) vs peripheral (hands, feet only)', 'Work of breathing, lung findings, cardiac murmurs, clubbing (chronic)', 'Blood color on the gauze: chocolate-brown vs red'],
+history: [
+    "Ask about heaters, generators, fires and other people with similar symptoms; a shared exposure can reveal CO poisoning even without visible cyanosis.",
+    'Onset with drugs/anesthetics (benzocaine spray), well-water nitrites, dapsone', 'Lung or cardiac disease, altitude, diving', 'Known congenital heart disease', 'Cold exposure vs mucus-membrane involvement'],
+exam: [
+    "Check probe position, waveform/signal quality and peripheral perfusion; cold skin or poor circulation can make the displayed saturation unreliable.",
+    'Central (lips, tongue) vs peripheral (hands, feet only)', 'Work of breathing, lung findings, cardiac murmurs, clubbing (chronic)', 'Blood color on the gauze: chocolate-brown vs red'],
 workup: [
 ['Bedside', ['SpO₂, ABG with co-oximetry (MetHb, COHb) — a standard ABG PaO₂ will miss methemoglobin', 'Urgent neonatal/cardiology assessment and echocardiography for suspected critical CHD']],
 ['Labs', ['CBC (polycythemia, anemia changes the cyanosis threshold), co-oximetry panel', 'Check G6PD history and serotonergic medications before methylene blue when feasible; consult toxicology urgently for treatment selection and alternatives']],
@@ -1092,8 +1121,12 @@ disposition: [
 ['Admit', 'New unexplained central cyanosis, treated methemoglobinemia under observation, pneumonia/PE on therapy.'],
 ['ICU', 'Refractory hypoxemia, methemoglobin with shock or level typically >30% (or symptomatic at lower levels), mixing lesions, massive PE.']
 ],
-pitfalls: ['Trusting SpO₂ and PaO₂ without co-oximetry misses methemoglobin and CO.', 'Methylene blue is contraindicated in G6PD deficiency and can worsen hemolysis.', 'Anemic patients may not look blue until they are profoundly hypoxemic (not enough hemoglobin to make 5 g/dL deoxy).', 'Do not assume \u201Cperipheral\u201D until you have seen the tongue.', 'A substantial right-to-left shunt may respond poorly to oxygen; support oxygenation and obtain urgent cause-directed assessment.'],
-pearls: ['A gap between pulse oximetry and calculated saturation suggests dyshemoglobinemia or measurement error; co-oximetry distinguishes the cause.', 'Chocolate blood and an SpO₂ near 85% suggest methemoglobinemia; confirm by co-oximetry rather than treating the color alone.', 'Central vs peripheral is mucous membranes vs nail beds.', 'CO is not a cyanosis diagnosis — do not skip co-oximetry because the patient is not blue.'],
+pitfalls: [
+    "Pulse oximeters may overestimate oxygenation with darker skin pigmentation; investigate discordance with symptoms and examination rather than accepting a reassuring number alone.",
+    'Trusting SpO₂ and PaO₂ without co-oximetry misses methemoglobin and CO.', 'Methylene blue is contraindicated in G6PD deficiency and can worsen hemolysis.', 'Anemic patients may not look blue until they are profoundly hypoxemic (not enough hemoglobin to make 5 g/dL deoxy).', 'Do not assume \u201Cperipheral\u201D until you have seen the tongue.', 'A substantial right-to-left shunt may respond poorly to oxygen; support oxygenation and obtain urgent cause-directed assessment.'],
+pearls: [
+    "Blood CO-oximetry can use venous or arterial samples; interpret COHb with exposure timing, prior oxygen and clinical severity because a delayed low value may underestimate the exposure.",
+    'A gap between pulse oximetry and calculated saturation suggests dyshemoglobinemia or measurement error; co-oximetry distinguishes the cause.', 'Chocolate blood and an SpO₂ near 85% suggest methemoglobinemia; confirm by co-oximetry rather than treating the color alone.', 'Central vs peripheral is mucous membranes vs nail beds.', 'CO is not a cyanosis diagnosis — do not skip co-oximetry because the patient is not blue.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — cyanosis', 'Goldfrank\u2019s / ACMT methemoglobinemia guidance', 'CPS critical CHD detection guidance; EHA/EuroBloodNet methemoglobinemia consensus (2021)']
 },
 {
@@ -1247,10 +1280,16 @@ dontMiss: [
 ['Botulism', 'emergent', 'Descending paralysis, poorly reactive pupils, GI prodrome — antitoxin; do not wait for culture.'],
 ['Microvascular cranial neuropathy / decompensated phoria', 'common', 'Isolated CN IV/VI palsy may be microvascular after appropriate assessment. Every new acquired CN III palsy needs urgent imaging/specialist assessment, even with pupil sparing.']
 ],
-history: ['Monocular (persists covering one eye) vs binocular (resolves covering either)', 'Pain, headache, scalp tenderness, jaw claudication', 'Fatigability through the day, ptosis, dysarthria, limb weakness', 'Vascular risks, atrial fibrillation, trauma, recent infection or canned food'],
-exam: ['Cover-uncover / alternate cover; ductions and versions in nine positions', 'Pupils: size, reactivity, RAPD; complete vs pupil-sparing CN III', 'Fatigable ptosis (sustained upgaze); ice-pack test if MG possible', 'Orbital signs: proptosis, chemosis, resistance to retropulsion', 'Full neuro: INO, ataxia, other cranial nerves, temporal arteries'],
+history: [
+    "Establish onset and progression, fluctuation with fatigue, previous strabismus/eye surgery and antecedent trauma; intermittent symptoms can still reflect myasthenia or GCA.",
+    'Monocular (persists covering one eye) vs binocular (resolves covering either)', 'Pain, headache, scalp tenderness, jaw claudication', 'Fatigability through the day, ptosis, dysarthria, limb weakness', 'Vascular risks, atrial fibrillation, trauma, recent infection or canned food'],
+exam: [
+    "Check visual fields, ptosis, facial sensation and other cranial nerves as well as eye movements; additional deficits broaden concern beyond an isolated ocular motor palsy.",
+    'Cover-uncover / alternate cover; ductions and versions in nine positions', 'Pupils: size, reactivity, RAPD; complete vs pupil-sparing CN III', 'Fatigable ptosis (sustained upgaze); ice-pack test if MG possible', 'Orbital signs: proptosis, chemosis, resistance to retropulsion', 'Full neuro: INO, ataxia, other cranial nerves, temporal arteries'],
 workup: [
-['Bedside', ['Visual acuity, pupils, cover testing; glucose', 'Ice-pack or rest test if MG is likely and the patient is stable']],
+['Bedside', [
+    "Test each eye separately and consider pinhole when diplopia is monocular; improvement supports an optical cause without replacing a full eye examination.",
+    'Visual acuity, pupils, cover testing; glucose', 'Ice-pack or rest test if MG is likely and the patient is stable']],
 ['Labs', ['ESR/CRP if age ≥50 with diplopia or GCA features', 'AChR/MuSK later; they do not change the ED airway decision']],
 ['Imaging', ['Urgent CTA/MRA and specialist assessment for new acquired CN III palsy, including pupil-sparing cases', 'MRI-DWI ± CTA for brainstem/INO features', 'CT/MR orbits and cavernous sinus if orbital or febrile']]
 ],
@@ -1261,7 +1300,9 @@ disposition: [
 ['Stroke / neurosurgery / ICU', 'PCOM aneurysm, brainstem stroke, cavernous sinus thrombosis, myasthenic crisis, botulism.']
 ],
 pitfalls: ['Calling a new CN III palsy microvascular without vascular imaging can miss an aneurysm, including pupil-sparing cases.', 'Monocular diplopia is almost never a brain-attack — check refraction, dry eye, and the lens.', 'GCA diplopia can be fleeting and the ESR can be normal — treat on suspicion.', 'Myasthenia pupils are spared; if the pupils are involved, look elsewhere.', 'CT is a poor posterior-fossa test — MRI-DWI when INO or crossed signs are present.'],
-pearls: ['Binocular + cover test: if covering either eye kills the double vision, it is alignment.', 'Every new acquired CN III palsy needs urgent vascular imaging and specialist assessment, even when the pupil is spared.', 'Diplopia in the over-50s is GCA until you have asked about jaw claudication and started steroids when the story fits.', 'INO is a brainstem localizer — skip the reassurance CT.'],
+pearls: [
+    "Arrange explicit follow-up and return advice for evolving ptosis, pupil changes or new neurological symptoms; an initially isolated palsy may change over time.",
+    'Binocular + cover test: if covering either eye kills the double vision, it is alignment.', 'Every new acquired CN III palsy needs urgent vascular imaging and specialist assessment, even when the pupil is spared.', 'Diplopia in the over-50s is GCA until you have asked about jaw claudication and started steroids when the story fits.', 'INO is a brainstem localizer — skip the reassurance CT.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — diplopia', '2026 AHA/ASA stroke guidance; SAEM GRACE-3 (2023) acute dizziness guideline', 'ACR/EULAR GCA recommendations; AAO cranial neuropathy guidance']
 },
 {
@@ -1498,12 +1539,19 @@ overview: 'Stridor, drooling, muffled voice, rapidly changing voice, or escalati
 approach: ['Assess ability to speak, swallow secretions, oxygenate, and sit upright while calling senior airway/ENT/anesthesia help early.', 'Keep the patient in a position of comfort; never force a patient with upper-airway obstruction to lie flat.', 'Treat reversible airway edema early (IM epinephrine for anaphylaxis; nebulized epinephrine + dexamethasone for croup/edema).', 'Prepare a shared double-setup airway plan: video/fiberoptic primary approach, supraglottic backup, and marked cricothyrotomy landmark before any sedative/paralytic.'],
 dontMiss: [['Impending upper-airway obstruction', 'critical', 'Stridor at rest, drooling, muffled voice, exhaustion, or altered mentation requires immediate expert airway management.'], ['Anaphylaxis / angioedema', 'critical', 'Treat as anaphylaxis when systemic allergic features or airway progression are present; do not wait for rash.'], ['Epiglottitis / deep-neck-space infection', 'critical', 'Toxic appearance, odynophagia out of proportion, trismus, neck swelling, or voice change; avoid forceful examination.'], ['Foreign body aspiration', 'critical', 'Sudden onset, unilateral findings, choking, or persistent symptoms after a choking event.'], ['Croup, laryngitis, vocal-cord dysfunction', 'common', 'Still reassess after therapy; a quiet or tiring patient is not reassuring.']],
 history: ['Tempo, choking event, allergen/ACE-inhibitor exposure, fever and odynophagia', 'Voice change, drooling, dysphagia, recent neck surgery/intubation/radiation, immunosuppression', 'Prior difficult airway, hereditary angioedema history, inhalation/burn injury'],
-exam: ['Work of breathing, stridor at rest, ability to phonate and manage secretions', 'Anterior neck/floor-of-mouth swelling, tracheal position, trismus, tongue elevation, urticaria', 'Avoid tongue-depressor provocation in a child with suspected epiglottitis; keep upright in caregiver\u2019s arms'],
+exam: [
+    "In a child with croup, quieter stridor plus fatigue, reduced air entry or declining consciousness can indicate impending failure rather than improvement.",
+    'Work of breathing, stridor at rest, ability to phonate and manage secretions', 'Anterior neck/floor-of-mouth swelling, tracheal position, trismus, tongue elevation, urticaria', 'Avoid tongue-depressor provocation in a child with suspected epiglottitis; keep upright in caregiver\u2019s arms'],
 workup: [['Bedside', ['Continuous pulse oximetry, waveform capnography, and double-setup airway cart at bedside', 'Awake flexible nasolaryngoscopy only by experienced operator when stable']], ['Labs', ['Blood cultures and CBC/lactate only after the airway is stable or secured', 'Avoid venipuncture in an agitated child with threatened upper airway']], ['Imaging', ['CT neck with IV contrast only in stable patients able to lie flat; never send an unstable stridulous airway to the scanner', 'Portable soft-tissue neck/chest radiograph at bedside only if it will not delay definitive care']]],
 redFlags: ['Stridor at rest or a quiet/fatiguing airway', 'Drooling, tripod posture, or inability to lie flat', 'Rapidly progressive face, tongue, or floor-of-mouth swelling', 'Muffled \u201Chot-potato\u201D voice, severe trismus, or toxic appearance', 'Facial burns, carbonaceous sputum, or enclosed-space smoke inhalation'],
-disposition: [['Discharge', 'Mild croup or benign laryngitis with resolved stridor at rest ≥2–4 h after nebulized epinephrine, normal oxygenation, and reliable return precautions.'], ['Admit / ENT / step-down', 'Persistent stridor, deep-neck infection with stable airway, recurrent angioedema, or post-nebulized-epinephrine rebound risk.'], ['Resuscitation / OR / ICU', 'Threatened airway, progressive tongue/laryngeal edema, epiglottitis, inhalation injury, or obstructing foreign body.']],
-pitfalls: ['Forcing a tripod patient flat for examination or CT scanning and precipitating complete obstruction.', 'Paralyzing a distorted upper airway (epiglottitis, Ludwig angina, angioedema) without an awake/fiberoptic plan and surgical setup.', 'Discharging a child immediately after nebulized epinephrine before observing for rebound stridor.'],
-pearls: ['A calm, upright patient is compensating — protect their posture and call anesthesia/ENT early.', 'Mark the cricothyroid membrane before giving any sedative in a threatened upper airway.', 'Stridor is extrathoracic narrowing; do not treat it like simple bronchospasm.'],
+disposition: [['Discharge', 'For croup treated with dexamethasone and nebulized epinephrine: no recurrent symptoms during 2–4 h observation, no stridor at rest or significant distress, and reliable return precautions. Other causes require their own disposition criteria.'], ['Admit / ENT / step-down', 'Persistent stridor, deep-neck infection with stable airway, recurrent angioedema, or recurrent symptoms after nebulized epinephrine.'], ['Resuscitation / OR / ICU', 'Threatened airway, progressive tongue/laryngeal edema, epiglottitis, inhalation injury, or obstructing foreign body.']],
+pitfalls: [
+    "High fever, toxic appearance or poor response to nebulized epinephrine should prompt reassessment for bacterial tracheitis or another dangerous cause of stridor.",
+    'Forcing a tripod patient flat for examination or CT scanning and precipitating complete obstruction.', 'Paralyzing a distorted upper airway (epiglottitis, Ludwig angina, angioedema) without an awake/fiberoptic plan and surgical setup.', 'Discharging a child immediately after nebulized epinephrine before observing for recurrent stridor.'],
+pearls: [
+    "After dexamethasone and nebulized epinephrine for croup, CPS supports discharge only when symptoms do not recur during 2–4 hours of observation; follow local criteria and escalate persistent or recurrent distress.",
+    "Recurrent, prolonged, unusually severe or very early-age croup warrants assessment for an underlying airway problem rather than repeated treatment under the same label.",
+    'A calm, upright patient is compensating — protect their posture and call anesthesia/ENT early.', 'Mark the cricothyroid membrane before giving any sedative in a threatened upper airway.', 'Stridor is an airway warning; do not treat it like simple bronchospasm.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — airway and upper-respiratory emergencies', 'ACEP difficult-airway guidance; local ENT and anesthesia airway pathways']
 },
 {
@@ -1575,15 +1623,23 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — genitourinary and s
 id: 'edema', name: 'Peripheral Edema', icon: '🦶',
 tag: 'Bilateral or unilateral? Volume overload, venous disease, thrombosis, or a systemic cause?',
 overview: 'Edema is a finding, not a diagnosis. The high-risk split is acute unilateral swelling that may be DVT or infection versus bilateral edema with heart, renal, hepatic, medication, or low-protein causes.',
-approach: ['Split first by symmetry and tempo: acute unilateral swelling is a vascular/infectious problem (DVT, cellulitis, compartment); bilateral swelling is a systemic/hydrostatic/oncotic problem.', 'Check oxygenation, work of breathing, JVP, and lung ultrasound before prescribing diuretics.', 'Apply a validated Wells DVT pretest score: low/moderate probability gets D-dimer; high probability or positive D-dimer gets proximal/whole-leg compression ultrasound.', 'Look for preeclampsia/peripartum cardiomyopathy in any pregnant or postpartum patient with new edema plus hypertension, headache, or dyspnea.'],
+approach: ['Split first by symmetry and tempo: acute unilateral swelling is a vascular/infectious problem (DVT, cellulitis, compartment); bilateral swelling is a systemic/hydrostatic/oncotic problem.', 'Check oxygenation, work of breathing, JVP, and lung ultrasound before prescribing diuretics.', 'Use one validated DVT pathway consistently. NICE uses the two-level Wells score: DVT likely → proximal ultrasound first; DVT unlikely → D-dimer first, then ultrasound if positive.', 'Look for preeclampsia/peripartum cardiomyopathy in any pregnant or postpartum patient with new edema plus hypertension, headache, or dyspnea.'],
 dontMiss: [['Acute heart failure / pulmonary edema', 'critical', 'Dyspnea, hypoxia, JVP elevation, crackles, or diffuse B-lines require an acute-heart-failure assessment.'], ['DVT with pulmonary embolism', 'critical', 'Unilateral swelling plus chest symptoms, syncope, or hypoxia needs VTE pathway assessment.'], ['Necrotizing infection / compartment syndrome', 'critical', 'Pain out of proportion, rapid progression, bullae, anesthesia, or systemic toxicity.'], ['Acute kidney injury / nephrotic syndrome / hepatic decompensation', 'emergent', 'Generalized edema with oliguria, severe hypertension, ascites, or biochemical derangement.'], ['Chronic venous insufficiency / medication-related edema', 'common', 'Consider after dangerous vascular and systemic causes are excluded.']],
-history: ['Unilateral vs bilateral onset, calf/thigh pain, erythema, rapid weight gain, orthopnea, PND', 'VTE risks: recent surgery/trauma, immobilization, active cancer, estrogen/pregnancy, prior DVT/PE', 'Heart failure, CKD/nephrotic history, cirrhosis, dihydropyridine CCBs (amlodipine), NSAIDs, steroids'],
+history: [
+    "For suspected DVT, record previous DVT, active cancer, recent surgery/immobility and whether another diagnosis explains the swelling; use these findings in the validated probability pathway.",
+    'Unilateral vs bilateral onset, calf/thigh pain, erythema, rapid weight gain, orthopnea, PND', 'VTE risks: recent surgery/trauma, immobilization, active cancer, estrogen/pregnancy, prior DVT/PE', 'Heart failure, CKD/nephrotic history, cirrhosis, dihydropyridine CCBs (amlodipine), NSAIDs, steroids'],
 exam: ['Vitals, SpO₂, JVP, lung auscultation, cardiac S3/murmurs, ascites', 'Measure calf circumference 10 cm below tibial tuberosity (>3 cm asymmetry = +1 Wells DVT); check warmth, pitting, and distal pulses', 'Screen for phlegmasia cerulea dolens (massive painful cyanotic limb swelling with arterial compromise) and skin breakdown'],
-workup: [['Bedside', ['POCUS: 2-region/3-point lower-extremity compression ultrasound, lung B-lines, IVC/cardiac contractility', '12-lead ECG and urine dipstick (proteinuria screen for nephrotic syndrome)']], ['Labs', ['BMP (creatinine, electrolytes), LFTs, albumin, urinalysis with protein/creatinine ratio when generalized', 'Wells-gated D-dimer for low/moderate-probability DVT; BNP/NT-proBNP and troponin if heart failure suspected']], ['Imaging', ['Formal duplex venous ultrasound for high-probability DVT or positive D-dimer; CXR if dyspnea/HF suspected']]],
+workup: [['Bedside', ['POCUS: 2-region/3-point lower-extremity compression ultrasound, lung B-lines, IVC/cardiac contractility', '12-lead ECG and urine dipstick (proteinuria screen for nephrotic syndrome)']], ['Labs', ['BMP (creatinine, electrolytes), LFTs, albumin, urinalysis with protein/creatinine ratio when generalized', 'D-dimer according to the selected DVT probability pathway; BNP/NT-proBNP and troponin if heart failure suspected']], ['Imaging', [
+    "NICE DVT-likely pathway: a negative proximal scan with a positive D-dimer needs a repeat proximal scan in 6–8 days; document the appointment and return precautions.",
+    'Formal duplex venous ultrasound for high-probability DVT or positive D-dimer; CXR if dyspnea/HF suspected']]],
 redFlags: ['Concurrent dyspnea, pleuritic chest pain, syncope, or hypoxemia (PE until excluded)', 'Cyanotic, tensely swollen, painful limb with diminished pulses (phlegmasia cerulea dolens)', 'Fever, bullae, crepitus, or pain out of proportion (NSTI)', 'Oliguria/anuria, pulmonary rales, or severe hypertension', 'Pregnant or postpartum patient with headache, visual symptoms, RUQ pain, or BP ≥140/90 mmHg'],
 disposition: [['Discharge', 'Uncomplicated DVT suitable for outpatient DOAC with reliable follow-up, or stable chronic/CCB-induced edema after excluding systemic decompensation.'], ['Admit', 'Decompensated heart failure, acute kidney injury/nephrotic crisis, decompensated cirrhosis, cellulitis failing oral therapy, or high-bleed-risk DVT.'], ['Resuscitation / ICU / IR', 'Acute pulmonary edema, PE with hemodynamic instability, phlegmasia cerulea dolens (catheter/surgical thrombectomy), or NSTI.']],
-pitfalls: ['Prescribing loop diuretics for CCB-induced or venous-insufficiency ankle edema and causing hypovolemia/AKI.', 'Ruling out DVT with a negative D-dimer in a high-pretest-probability patient.', 'Missing bilateral iliac/IVC thrombosis or heart failure because swelling is symmetric.'],
-pearls: ['Unilateral swelling is DVT, ruptured Baker cyst, or cellulitis first; bilateral swelling is heart, kidneys, liver, or drugs first.', 'Amlodipine/nifedipine ankle edema comes from precapillary arteriolar vasodilation, not sodium overload — diuretics rarely fix it.', 'In low-risk proximal DVT, outpatient direct oral anticoagulation (apixaban or rivaroxaban) is safe and effective without bridging.'],
+pitfalls: [
+    "A limited bedside compression scan is not automatically equivalent to a complete diagnostic pathway; interpret a negative study with its anatomical coverage and pretest probability.",
+    'Prescribing loop diuretics for CCB-induced or venous-insufficiency ankle edema and causing hypovolemia/AKI.', 'Ruling out DVT with a negative D-dimer in a high-pretest-probability patient.', 'Missing bilateral iliac/IVC thrombosis or heart failure because swelling is symmetric.'],
+pearls: [
+    "If definitive DVT testing is delayed, follow a timed local pathway for interim therapeutic anticoagulation after contraindication/bleeding-risk assessment; make the scan and result-review plan explicit.",
+    'Unilateral swelling is DVT, ruptured Baker cyst, or cellulitis first; bilateral swelling is heart, kidneys, liver, or drugs first.', 'Amlodipine/nifedipine ankle edema comes from precapillary arteriolar vasodilation, not sodium overload — diuretics rarely fix it.', 'In low-risk proximal DVT, outpatient direct oral anticoagulation (apixaban or rivaroxaban) is safe and effective without bridging.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — peripheral edema, VTE, and heart failure', 'ASH / ACCP VTE guidelines; ACEP acute heart-failure clinical policy']
 },
 {
@@ -1626,15 +1682,22 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — multiple trauma and
 id: 'falls-geriatric-trauma', name: 'Falls & Geriatric Trauma', icon: '🧓',
 tag: 'A fall may be injury, syncope, medication harm, infection, or a sentinel loss of function.',
 overview: 'Older adults can have major injury and serious medical precipitants after low-energy mechanisms. Pain and examination may be muted; anticoagulation, frailty, baseline cognition, and safe disposition matter as much as the initial radiograph.',
-approach: ['Always ask two parallel questions: (1) What injuries did the fall cause? and (2) What medical emergency caused the fall?', 'Have a low threshold for head CT and C-spine CT in older adults, especially with anticoagulants/antiplatelets, cognitive change, or supra-clavicular trauma.', 'Never exclude a hip or pelvic fracture on plain X-ray alone if the patient still cannot bear weight — obtain CT or MRI.', 'Perform a bedside road-test (sit, stand, walk with usual aid) and medication/delirium review before any discharge decision.'],
+approach: ['Always ask two parallel questions: (1) What injuries did the fall cause? and (2) What medical emergency caused the fall?', 'Have a low threshold for head CT and C-spine CT in older adults, especially with anticoagulants/antiplatelets, cognitive change, or supra-clavicular trauma.', 'Persistent suspicion of hip fracture after adequate negative X-rays: NICE prefers MRI; if unavailable within 24 h or contraindicated, consider CT. Maintain injury precautions.', 'Assess safe mobility with the usual aid once injury precautions allow, alongside medication/delirium review and the support available at discharge; do not force weight-bearing when fracture remains suspected.'],
 dontMiss: [['Intracranial hemorrhage', 'critical', 'Head strike, anticoagulation, altered baseline, vomiting, or new neurologic symptom warrants a low imaging threshold and local pathway.'], ['Hip/pelvic fracture', 'critical', 'Persistent hip/groin pain or inability to bear weight can be occult despite normal initial radiographs.'], ['Syncope/arrhythmia/ACS/stroke as precipitant', 'critical', 'An unexplained fall may be transient loss of consciousness or neurologic event.'], ['Cervical-spine injury', 'emergent', 'Neck pain, neurologic symptoms, distracting injury, or unreliable assessment needs imaging per local rule/pathway.'], ['Delirium, infection, medication toxicity, dehydration', 'emergent', 'Often the cause of the fall and a marker of unsafe discharge.']],
 history: ['Exact mechanics (trip vs sudden legs giving way/syncope), witnesses, prodrome, head strike, and total time on the floor (rhabdomyolysis risk)', 'Baseline cognition and mobility (cane/walker), living situation, and high-risk meds (DOACs, warfarin, dual antiplatelets, antihypertensives, sedatives)', 'Preceding chest pain, palpitations, dyspnea, melena, focal weakness, or acute confusion'],
-exam: ['Head-to-toe trauma survey: scalp hematomas, C-spine tenderness, rib/chest wall pain, pelvis/hip rotation and axial-loading pain', 'Compare cognition against baseline (4AT/bCAM delirium screen); full focal neurologic exam', 'Supervised ambulation trial once spine/hip injury is excluded — inability to walk safely is an admission criterion until resolved'],
-workup: [['Bedside', ['12-lead ECG (silent MI, bradyarrhythmia, QTc, block), capillary glucose, and postural vitals when safe', 'POCUS for rib fractures/hemothorax, bladder retention, or free fluid as indicated']], ['Labs', ['CBC, BMP, CK (if prolonged floor lie), coagulation/INR if on warfarin, troponin if syncope or cardiac risk', 'Urinalysis only when dysuria, fever, or systemic sepsis features exist — avoid reflexly blaming asymptomatic bacteriuria']], ['Imaging', ['Noncontrast head CT + C-spine CT for head strike, anticoagulation, age ≥65 rule triggers, or altered baseline', 'AP pelvis + hip radiographs; CT or MRI hip/pelvis if X-rays are negative but weight-bearing fails']]],
+exam: [
+    "When safe, include lying/standing BP, vision, footwear, cognition, nutrition and gait/balance in the falls assessment; tailor examination to pain and injury precautions.",
+    'Head-to-toe trauma survey: scalp hematomas, C-spine tenderness, rib/chest wall pain, pelvis/hip rotation and axial-loading pain', 'Compare cognition against baseline (4AT/bCAM delirium screen); full focal neurologic exam', 'Supervised ambulation trial once spine/hip injury is excluded — inability to walk safely is an admission criterion until resolved'],
+workup: [['Bedside', ['12-lead ECG (silent MI, bradyarrhythmia, QTc, block), capillary glucose, and postural vitals when safe', 'POCUS for rib fractures/hemothorax, bladder retention, or free fluid as indicated']], ['Labs', ['CBC, BMP, CK (if prolonged floor lie), coagulation/INR if on warfarin, troponin if syncope or cardiac risk', 'Urinalysis only when dysuria, fever, or systemic sepsis features exist — avoid reflexly blaming asymptomatic bacteriuria']], ['Imaging', ['Noncontrast head CT + C-spine CT for head strike, anticoagulation, age ≥65 rule triggers, or altered baseline', 'AP pelvis + hip radiographs; persistent hip-fracture suspicion despite negative films → MRI preferred; consider CT if MRI unavailable within 24 h or contraindicated']]],
 redFlags: ['Anticoagulant or antiplatelet therapy with head impact or any supra-clavicular injury', 'Persistent inability to bear weight or painful hip internal/external rotation despite negative X-ray', 'Unwitnessed collapse, facial fractures (lack of protective hand-out), or preceding palpitations/chest pain', 'New delirium, prolonged floor lie (>1 h), CK elevation, or rib fractures in a frail patient', 'Inability to ambulate safely at baseline or lack of safe caregiver support'],
 disposition: [['Discharge', 'No acute fracture or intracranial bleed, benign ECG/medical workup, successful ambulation test at baseline, culprit medications reviewed, and PT/falls follow-up arranged.'], ['Admit / geriatric observation', 'Occult hip fracture workup, multiple rib fractures (pain/incentive spirometry), delirium/medical precipitant, anticoagulated head trauma per local observation policy, or failed mobility trial.'], ['Trauma / neurosurgery / ICU', 'Intracranial hemorrhage (reverse anticoagulation immediately), unstable spine/pelvic fracture, operative hip fracture with instability, or cardiac syncope.']],
-pitfalls: ['Labeling an unexplained geriatric fall \u201Cmechanical\u201D without obtaining an ECG or asking whether they fainted first.', 'Discharging an older patient who cannot walk after a negative hip X-ray — up to 5–10% of hip fractures are radiographically occult.', 'Underestimating ground-level rib fractures in older adults (high pneumonia and respiratory failure mortality).'],
-pearls: ['Facial trauma without hand injuries in an older adult suggests syncope (no time to break the fall).', 'A negative hip X-ray + inability to bear weight = CT or MRI before discharge.', 'You have not finished evaluating a geriatric fall until you have watched the patient walk.'],
+pitfalls: [
+    "A falls-risk score cannot replace assessment of the individual causes and modifiable risks.",
+    'Labeling an unexplained geriatric fall \u201Cmechanical\u201D without obtaining an ECG or asking whether they fainted first.', 'Discharging an older patient who cannot walk after a negative hip X-ray — up to 5–10% of hip fractures are radiographically occult.', 'Underestimating ground-level rib fractures in older adults (high pneumonia and respiratory failure mortality).'],
+pearls: [
+    "Frailty, injury needing treatment, loss of consciousness, inability to get up unaided or recurrent falls should trigger comprehensive falls assessment or an arranged referral.",
+    "Link identified risks to action: structured medication review, tailored strength/balance work and home-hazard assessment when indicated; involve the patient and carers in the follow-up plan.",
+    'Facial trauma without hand injuries in an older adult suggests syncope (no time to break the fall).', 'A negative hip X-ray does not settle persistent fracture suspicion; arrange definitive imaging and a safe disposition.', 'Assess baseline versus current mobility when safe; if testing is limited by suspected injury, arrange supported investigation and disposition instead of forcing a walking trial.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — geriatric emergency and trauma care', 'Geriatric ED Guidelines (ACEP/AGS/ENA/SAEM); Canadian CT Head & C-Spine rules']
 },
 {
