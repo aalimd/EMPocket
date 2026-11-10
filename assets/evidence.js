@@ -6,6 +6,9 @@
 (function () {
     'use strict';
     const sources = {
+        ectopicDiagnosis: ['NICE NG126: pregnancy of unknown location and diagnostic follow-up', 'https://www.nice.org.uk/guidance/NG126/chapter/diagnosis-of-viable-intrauterine-pregnancy-and-of-tubal-ectopic-pregnancy'],
+        firstSeizure: ['NICE NG217: first seizure assessment and selective investigations (updated 2025)', 'https://www.nice.org.uk/guidance/ng217/chapter/diagnosis-and-assessment-of-epilepsy'],
+        lgibASGE: ['ASGE acute lower GI bleeding guideline (2026)', 'https://doi.org/10.1016/j.gie.2026.06.046'],
         sah: ['AHA/ASA aneurysmal subarachnoid hemorrhage guideline (2023)', 'https://www.ahajournals.org/doi/10.1161/STR.0000000000000436'],
         delirium: ['NICE CG103 delirium: recognition, assessment and supportive care (updated 2023)', 'https://www.nice.org.uk/guidance/cg103/chapter/Recommendations'],
         syncopeGuideline: ['ACC/AHA/HRS syncope guideline (2017)', 'https://www.ahajournals.org/doi/10.1161/CIR.0000000000000499'],
@@ -80,16 +83,16 @@
         headache: ['headache', 'sah', 'stroke'], ams: ['stroke', 'special', 'meningitis', 'delirium'], coma: ['stroke', 'special'],
         weakness: ['stroke'], dizziness: ['dizziness', 'stroke'], diplopia: ['cn3', 'stroke'],
         'focal-neurologic-deficit': ['stroke'], fever: ['sepsis', 'meningitis'], shock: ['sepsis', 'lung', 'special'],
-        'joint-pain': ['joint'], 'pelvic-pain': ['ectopic', 'pid'], 'abdominal-pain': ['appendicitis', 'ectopic', 'abdominalAssessment', 'mesenteric'],
+        'joint-pain': ['joint'], 'pelvic-pain': ['ectopic', 'ectopicDiagnosis', 'pid'], 'abdominal-pain': ['appendicitis', 'ectopic', 'abdominalAssessment', 'mesenteric'],
         'vaginal-bleeding': ['pph', 'rh', 'ectopic'], 'pregnancy-emergency': ['special', 'pe', 'rh', 'hyperemesis', 'pph'],
-        'scrotal-pain': ['epididymitis'], seizures: ['seizures', 'esett'], hemoptysis: ['hemoptysis', 'pe'],
+        'scrotal-pain': ['epididymitis'], seizures: ['seizures', 'esett', 'firstSeizure'], hemoptysis: ['hemoptysis', 'pe'],
         'nausea-vomiting': ['hyperemesis', 'dka', 'adrenal', 'chest'], diarrhea: ['cdi'], cyanosis: ['methb', 'neonate', 'special'],
-        overdose: ['special', 'acetaminophen'], jaundice: ['acetaminophen'], 'back-pain': ['mscc', 'back'], 'pediatric-fever': ['infant', 'infant90', 'childFever', 'kawasaki'], hyperglycemia: ['dka', 'adrenal'],
+        overdose: ['special', 'acetaminophen', 'selfharm'], jaundice: ['acetaminophen'], 'back-pain': ['mscc', 'back'], 'pediatric-fever': ['infant', 'infant90', 'childFever', 'kawasaki'], hyperglycemia: ['dka', 'adrenal'],
         'heat-cold': ['special'], palpitations: ['af', 'als'], syncope: ['syncope', 'syncopeGuideline', 'als'],
         'airway-stridor': ['special'], anaphylaxis: ['special'], 'flank-pain': ['stones'],
         'urinary-retention': ['stones'], edema: ['pe'], 'multiple-trauma': ['headinjury'],
         'falls-geriatric-trauma': ['headinjury'], 'pediatric-respiratory-distress': ['bronchiolitis', 'asthma'],
-        gib: ['ugib', 'lgib'], 'red-eye': ['keratitis'], 'sore-throat': ['gas', 'gasTesting'],
+        gib: ['ugib', 'lgib', 'lgibASGE'], 'red-eye': ['keratitis'], 'sore-throat': ['gas', 'gasTesting'],
         suicidal: ['selfharm'], constipation: ['constipation'], 'limb-ischemia': ['pad'], rash: ['ssti'],
         'cardiac-arrest': ['acls', 'als', 'special'], electrolytes: ['hyperkalemia', 'hyponatremia'],
         'head-injury': ['tbi', 'headinjury'], 'hypertensive-emergency': ['hypertension', 'stroke'],
@@ -153,6 +156,66 @@
         "scope": "timing and triggers, focused examination and selective imaging",
         "sources": [
             "dizziness"
+        ]
+    },
+    "gib": {
+        "checked": "2026-11-10",
+        "scope": "bleeding severity, selective CTA and colonoscopy timing",
+        "sources": [
+            "ugib",
+            "lgib",
+            "lgibASGE"
+        ]
+    },
+    "back-pain": {
+        "checked": "2026-11-10",
+        "scope": "changing symptoms, selective imaging and MSCC escalation",
+        "sources": [
+            "back",
+            "mscc"
+        ]
+    },
+    "joint-pain": {
+        "checked": "2026-11-10",
+        "scope": "aspiration priorities, test limitations and treatment response",
+        "sources": [
+            "joint"
+        ]
+    },
+    "pelvic-pain": {
+        "checked": "2026-11-10",
+        "scope": "pregnancy of unknown location, serial assessment and follow-up",
+        "sources": [
+            "ectopicDiagnosis"
+        ]
+    },
+    "seizures": {
+        "checked": "2026-11-10",
+        "scope": "witness history, selective investigations and first-seizure follow-up",
+        "sources": [
+            "firstSeizure"
+        ]
+    },
+    "overdose": {
+        "checked": "2026-11-10",
+        "scope": "recurrent opioid toxicity, prevention and psychosocial care",
+        "sources": [
+            "special",
+            "selfharm"
+        ]
+    },
+    "hyperglycemia": {
+        "checked": "2026-11-10",
+        "scope": "adult crisis monitoring, insulin transition and discharge preparation",
+        "sources": [
+            "dka"
+        ]
+    },
+    "flank-pain": {
+        "checked": "2026-11-10",
+        "scope": "urgent evaluation, passage confirmation and observation limits",
+        "sources": [
+            "stones"
         ]
     }
 };

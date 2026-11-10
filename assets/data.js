@@ -3,6 +3,7 @@
    Educational synthesis; content and selected evidence reviewed 8 Oct 2026. See docs/CLINICAL-AUDIT-2026-10-08.md for scope and limits.
    Targeted expansion: 10 Nov 2026, eight adult presentations — assessment, investigation and reassessment; see docs/PRESENTATION-EXPANSION-2026-11-10.md.
    Severity: critical = life/limb/sight threat now · emergent = time-sensitive morbidity · common = high-frequency.
+   Second targeted expansion: 10 Nov 2026, eight additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-10-BATCH-2.md.
    Educational reference only — never replaces clinical judgment or local protocols.
 */
 const CP_DATA = [
@@ -325,7 +326,7 @@ overview: 'GI bleeding is resuscitation first, diagnosis second. Hemodynamics be
 approach: [
     'Resuscitate first: two large-bore IVs, hemodynamics over the first hematocrit.',
     'Upper vs lower from the story; variceal pathway changes drugs and endoscopy timing.',
-    'Risk-stratify: Glasgow-Blatchford 0–1 can leave (ACG 2021).',
+    'Risk-stratify: Glasgow-Blatchford 0–1 may support outpatient UGIB care when clinical assessment and follow-up are suitable (ACG 2021).',
     'In stable UGIB, usual Hb trigger 7 g/dL (often 8 with CVD); active shock and ACS need individualized transfusion. Avoid over-transfusing varices.'
 ],
 dontMiss: [
@@ -337,12 +338,17 @@ dontMiss: [
 ['Ischemic colitis / IBD flare', 'emergent', 'Pain + bloody diarrhea; steroids for IBD per severity.'],
 ['Peptic ulcer / gastritis / anorectal sources', 'common', 'Most frequent; PPI after endoscopy per ACG; outpatient endoscopy if GBS 0–1.']
 ],
-history: ['Hematemesis vs coffee-ground vs melena vs hematochezia — map the likely level', 'NSAIDs, anticoagulants, antiplatelets, alcohol, cirrhosis', 'Prior ulcers, H. pylori, AAA repair, radiation, IBD', 'Volume-loss symptoms: syncope, angina with anemia'],
-exam: ['Vitals and orthostatics — tachycardia is the earliest reliable sign', 'Stigmata of liver disease: caput, ascites, asterixis', 'Rectal exam: color, mass, trauma', 'Skin: petechiae (thrombocytopenia), telangiectasias'],
+history: [
+    "Record the exact antithrombotic drug, indication and last dose, and assess renal function; reversal and interruption decisions need the bleeding severity and thrombotic risk.",
+    'Hematemesis vs coffee-ground vs melena vs hematochezia — map the likely level', 'NSAIDs, anticoagulants, antiplatelets, alcohol, cirrhosis', 'Prior ulcers, H. pylori, AAA repair, radiation, IBD', 'Volume-loss symptoms: syncope, angina with anemia'],
+exam: ['Serial pulse/BP, mental status and peripheral perfusion; a normal pulse does not establish stability', 'Stigmata of liver disease: caput, ascites, asterixis', 'Rectal exam: color, mass, trauma', 'Skin: petechiae (thrombocytopenia), telangiectasias'],
 workup: [
 ['Bedside', ['Two large-bore IVs; crossmatch early', 'POCUS for ascites; NG lavage is not routinely recommended']],
 ['Labs', ['CBC (expect lag), type & crossmatch, coagulation/INR, BUN/Cr (BUN rise suggests upper source), lactate', 'Glasgow-Blatchford for UGIB disposition; LFTs if liver disease']],
-['Imaging / scope', ['Upper endoscopy within 24 h (within 12 h if variceal suspected)', 'CTA for massive/obscure LGIB → IR; colonoscopy for stable LGIB after prep']]
+['Imaging / scope', [
+    "For ongoing hemodynamically significant hematochezia, consider CTA to localize active bleeding and involve IR promptly when extravasation is found. Resuscitation continues during planning.",
+    "Most stable inpatients needing colonoscopy can undergo a nonurgent examination after bowel preparation; routine colonoscopy within 24 hours has not improved major outcomes.",
+    'Upper endoscopy within 24 h (within 12 h if variceal suspected)']]
 ],
 redFlags: ['Hemodynamic instability or orthostatic symptoms', 'Active hematemesis or massive hematochezia', 'Cirrhosis with any upper GI bleeding', 'Known AAA repair with any bleed', 'Melena + syncope (brisk upper source)', 'Anticoagulation with life-threatening hemorrhage'],
 disposition: [
@@ -350,8 +356,10 @@ disposition: [
 ['Admit (ward / HDU)', 'GBS ≥2, identified stable source, anticoagulation management needed.'],
 ['ICU / endoscopy-IR activation', 'Hemodynamic instability, active transfusion need, suspected variceal bleed, aortoenteric fistula.']
 ],
-pitfalls: ['Hemoglobin/hematocrit may initially be normal in acute hemorrhage and change with equilibration and fluids. Use perfusion, ongoing loss and serial measurements.', 'Melena can come from the right colon; hematochezia can be a brisk upper bleed.', 'Restrictive transfusion is usual in stable UGIB (Hb 7 g/dL; often 8 with CVD). Hemorrhagic shock and active ACS need individualized decisions rather than waiting for that threshold.', 'Over-transfusing variceal bleeding raises portal pressure and rebleeding (Baveno VII).', 'Pre-endoscopic PPI has no ACG recommendation for or against — do not let it delay endoscopy.', 'NG lavage does not reliably risk-stratify and is not required.'],
-pearls: ['An initially normal hemoglobin does not exclude major acute blood loss; reassess perfusion and serial hemoglobin.', 'Glasgow-Blatchford 0–1 can leave for outpatient endoscopy (ACG 2021).', 'Usual Hb triggers in stable bleeding: 7 g/dL (often 8 with CVD); do not apply a fixed trigger to hemorrhagic shock or active ACS.', 'Variceal bleed: vasoactive drug + ceftriaxone + endoscopy within 12 h; do not over-transfuse.'],
+pitfalls: [
+    "Risk scores supplement clinical judgment. A low score does not override ongoing bleeding, unstable physiology, important comorbidity or an unsafe outpatient plan.",
+    'Hemoglobin/hematocrit may initially be normal in acute hemorrhage and change with equilibration and fluids. Use perfusion, ongoing loss and serial measurements.', 'Melena can come from the right colon; hematochezia can be a brisk upper bleed.', 'Restrictive transfusion is usual in stable UGIB (Hb 7 g/dL; often 8 with CVD). Hemorrhagic shock and active ACS need individualized decisions rather than waiting for that threshold.', 'Over-transfusing variceal bleeding raises portal pressure and rebleeding (Baveno VII).', 'Pre-endoscopic PPI has no ACG recommendation for or against — do not let it delay endoscopy.', 'NG lavage does not reliably risk-stratify and is not required.'],
+pearls: ['An initially normal hemoglobin does not exclude major acute blood loss; reassess perfusion and serial hemoglobin.', 'Glasgow-Blatchford 0–1 may support outpatient endoscopy after assessment confirms clinical stability and reliable follow-up (ACG 2021).', 'Usual Hb triggers in stable bleeding: 7 g/dL (often 8 with CVD); do not apply a fixed trigger to hemorrhagic shock or active ACS.', 'Variceal bleed: vasoactive drug + ceftriaxone + endoscopy within 12 h; do not over-transfuse.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — GI bleeding', 'ACG 2021 Clinical Guideline: Upper GI and Ulcer Bleeding (Laine et al.) — GBS 0–1 discharge; Hb 7 g/dL', 'Baveno VII (2022) portal hypertension consensus; AASLD variceal hemorrhage guidance']
 },
 {
@@ -454,7 +462,7 @@ tag: 'Most leave with advice — the task is finding the dangerous few.',
 overview: '>90% of ED back pain is non-specific mechanical disease. The ED task is a red-flag sweep: infection, malignancy (including MSCC), fracture, cauda equina, and AAA. Below age 50 without red flags, imaging adds cost and radiation — not diagnosis.',
 approach: [
     'Red-flag sweep: infection, cancer/MSCC, fracture, cauda equina, AAA.',
-    'No imaging for non-specific pain under 6 weeks without red flags.',
+    'Do not routinely image non-specific back pain without red flags; duration alone does not determine imaging.',
     'Retention, saddle numbness, or bilateral weakness → emergency MRI.',
     'NSAIDs and activity, not bed rest or opioids-first.'
 ],
@@ -469,12 +477,16 @@ dontMiss: [
 ['Renal colic / pyelonephritis / pancreatitis', 'common', 'Flank radiation, urinary symptoms — urinalysis, lipase, CT as indicated.'],
 ['Mechanical / radicular pain (sciatica)', 'common', 'Positional, dermatomal radiation, positive straight-leg raise — NSAIDs, stay active, no bed rest.']
 ],
-history: ['Trauma? Osteoporosis or chronic steroids? Cancer history?', 'Red-flag screen: fever, weight loss, night pain, immunosuppression, IVDU', 'Neuro: leg weakness, saddle numbness, bowel/bladder changes', 'Inflammatory vs mechanical pattern (morning stiffness, activity response)', 'Recent spinal procedures or surgery'],
+history: [
+    "Ask what has changed since prior episodes or earlier assessment; a new symptom requires a fresh differential rather than automatic reuse of a mechanical-pain diagnosis.",
+    'Trauma? Osteoporosis or chronic steroids? Cancer history?', 'Red-flag screen: fever, weight loss, night pain, immunosuppression, IVDU', 'Neuro: leg weakness, saddle numbness, bowel/bladder changes', 'Inflammatory vs mechanical pattern (morning stiffness, activity response)', 'Recent spinal procedures or surgery'],
 exam: ['Midline tenderness (fracture/abscess) vs paraspinal (muscular)', 'Straight-leg raise; dermatomal power, sensation, reflexes', 'Perianal sensation and rectal tone when cauda equina is possible', 'Fever; abdominal and pulsatile-mass exam; CVA tenderness', 'Gait and overall neurologic observation'],
 workup: [
 ['Bedside', ['Focused neuro mapping; post-void residual (bladder scanner) if retention is possible', 'Vitals including temperature', 'Bedside US if AAA is on the list']],
 ['Labs', ['CBC, ESR/CRP for infection/malignancy screen; urinalysis', 'Myeloma screen (SPEP, calcium, creatinine) when age + red flags fit']],
-['Imaging', ['No imaging for non-specific pain <6 weeks without red flags (ACP 2017; NICE NG59)', 'Emergency MRI for cauda equina, abscess, or MSCC — do not delay for plain films', 'X-ray first for osteoporotic fracture screen', 'Bedside US/CTA when AAA is suspected']]
+['Imaging', [
+    "Persistent pain alone is not an automatic indication for imaging at six weeks; in specialist care, image when the result is likely to change management or serious pathology is suspected.",
+    'Do not routinely image non-specific back pain without red flags; specialist imaging should change management (NICE NG59)', 'Emergency MRI for cauda equina, abscess, or MSCC — do not delay for plain films', 'X-ray first for osteoporotic fracture screen', 'Bedside US/CTA when AAA is suspected']]
 ],
 redFlags: ['Urinary retention or saddle anesthesia', 'Bilateral leg weakness or progressive deficit', 'Fever or IVDU with spinal pain', 'Cancer history, unexplained weight loss, night pain', 'Significant trauma — or minor trauma in the osteoporotic/elderly', 'Age >50 with new severe pain + vascular history'],
 disposition: [
@@ -483,7 +495,10 @@ disposition: [
 ['Emergency MRI + neurosurgery/ortho/oncology', 'Cauda equina, MSCC, unstable fracture, spinal infection with neuro signs.']
 ],
 pitfalls: ['Cauda equina with \u201Conly\u201D retention and back pain — do not wait for full saddle numbness.', 'Dexamethasone is for MSCC, not discogenic CES and not for suspected epidural abscess.', 'Epidural abscess can mimic simple sciatica in IVDU/diabetics — ESR/CRP is cheap, MRI is decisive.', 'Myeloma X-rays look normal — escalate to MRI/SPEP if suspicion persists.', 'AAA presenting as back pain in the elderly is a killer misdiagnosis.', 'Bed rest and opioids-first are outdated — NSAIDs plus activity (ACP; Chou JAMA 2023).'],
-pearls: ['Most ED back pain is mechanical — the job is the red-flag sweep, not an x-ray for everyone.', 'Cauda equina: emergency MRI, do not wait for a complete saddle-anesthesia picture.', 'Elderly vasculopath with back pain = AAA until the aorta is seen.', 'NSAIDs plus activity beat bed rest and opioids-first (ACP; Chou JAMA 2023).'],
+pearls: [
+    "Known cancer with new limb weakness, gait change or bladder/bowel dysfunction needs emergency MSCC coordination and urgent MRI, even if back pain is not dramatic.",
+    "For uncomplicated mechanical pain, explain the diagnosis, encourage tolerable normal activity and agree follow-up; new neurological or bladder/bowel symptoms require urgent reassessment.",
+    'Most ED back pain is mechanical — the job is the red-flag sweep, not an x-ray for everyone.', 'Cauda equina: emergency MRI, do not wait for a complete saddle-anesthesia picture.', 'Elderly vasculopath with back pain = AAA until the aorta is seen.', 'NSAIDs plus activity beat bed rest and opioids-first (ACP; Chou JAMA 2023).'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — back pain', 'ACP guideline (Annals 2017); NICE NG59 (low back pain)', 'NICE NG234 (2023) metastatic spinal cord compression', 'Chou et al., JAMA 2023 systematic review']
 },
 {
@@ -548,8 +563,13 @@ dontMiss: [
 history: ['Onset speed: minutes (trauma), hours–days (septic, crystal), weeks (inflammatory, Lyme)', 'Fever, chills, immunosuppression, diabetes, IVDU (septic risk)', 'Prior similar episodes and crystal disease; alcohol/diuretics (gout)', 'Prosthetic joint? Recent procedures or wounds?', 'Travel/ticks (Lyme), sexual history (gonococcal, reactive)'],
 exam: ['Single vs multiple joints; hot, swollen, painful range of motion (all three = septic until excluded)', 'Skin over the joint: entry wounds, cellulitis, pustules (gonococcal)', 'Systemic: rash, psoriasis plaques, urethritis, conjunctivitis', 'Weight-bearing ability; neurovascular status'],
 workup: [
-['Bedside', ['Joint aspiration before antibiotics when possible: Gram stain, culture, crystals, cell count with differential', 'POCUS to confirm effusion and guide the tap']],
-['Labs', ['CBC, ESR/CRP, blood cultures; uric acid is unreliable in the acute flare', 'Gonococcal NAAT (urine/cervix/throat/rectum as exposed); Lyme serology in endemic regions']],
+['Bedside', [
+    "If synovial fluid is scarce, prioritize bacterial identification, then cell count/differential, then crystals; coordinate with the laboratory.",
+    "A dry tap may reflect needle position rather than absence of infection. Seek image guidance when needed; do not inject saline just to improve culture yield.",
+    'Joint aspiration before antibiotics when possible: Gram stain, culture, crystals, cell count with differential', 'POCUS to confirm effusion and guide the tap']],
+['Labs', [
+    "A normal CRP cannot exclude septic arthritis. Serial CRP can help monitor response but must be interpreted with the examination and microbiology.",
+    'CBC, ESR/CRP, blood cultures; uric acid is unreliable in the acute flare', 'Gonococcal NAAT (urine/cervix/throat/rectum as exposed); Lyme serology in endemic regions']],
 ['Imaging', ['X-ray for fracture, gas, chondrocalcinosis', 'MRI for osteomyelitis; US for effusion and guided aspiration']]
 ],
 redFlags: ['Fever with a hot swollen joint', 'Prosthetic joint involved', 'Immunosuppression, diabetes, or IVDU', 'Inability to bear weight or move the joint', 'Overlying skin breaks or pustules', 'Synovial fluid that is purulent or Gram-stain positive (WBC >50,000/µL supports but does not prove infection)'],
@@ -559,7 +579,9 @@ disposition: [
 ['Emergency aspiration/washout + ortho', 'Purulent joint, prosthetic infection, hemarthrosis with coagulopathy.']
 ],
 pitfalls: ['Antibiotics before aspiration can sterilize the culture — tap first when safe.', 'Gout and septic arthritis coexist — crystals do not exclude infection.', 'Gonococcal arthritis is often a migratory tenosynovitis with skin lesions and a modest synovial WBC.', 'The immunosuppressed patient with a \u201Cmildly\u201D swollen joint can have a septic one — and a synovial WBC well under 50,000.', 'Elderly gout often strikes the knee or midfoot, not the big toe.', 'Do not tap a prosthetic joint through cellulitis; call ortho.'],
-pearls: ['Aspirate a concerning hot joint before antibiotics when safe; negative Gram stain, low cell count or crystals do not exclude infection. Do not delay antibiotics in sepsis.', 'Crystals do not exclude infection; gout and septic arthritis coexist.', 'Synovial WBC >50,000/µL is suggestive, not diagnostic — gonococcal and immunocompromised joints run lower.', 'Do not tap a prosthesis through cellulitis; that aspiration belongs to orthopedics.'],
+pearls: [
+    "Persistent pain, swelling, systemic illness or worsening function despite treatment suggests failure; reassess drainage, cultures and possible adjacent abscess or osteomyelitis with orthopedics.",
+    'Aspirate a concerning hot joint before antibiotics when safe; negative Gram stain, low cell count or crystals do not exclude infection. Do not delay antibiotics in sepsis.', 'Crystals do not exclude infection; gout and septic arthritis coexist.', 'Synovial WBC >50,000/µL is suggestive, not diagnostic — gonococcal and immunocompromised joints run lower.', 'Do not tap a prosthesis through cellulitis; that aspiration belongs to orthopedics.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — arthritis & joint infection', 'IDSA guidance on native and prosthetic joint infection', 'EULAR crystal arthritis recommendations; Tintinalli\u2019s 9th ed. — musculoskeletal emergencies']
 },
 {
@@ -622,9 +644,13 @@ dontMiss: [
 history: ['LMP, contraception (IUD), fertility treatments (↑torsion/ectopic risk)', 'Pain: sudden vs gradual, unilateral vs central, migration', 'Vaginal bleeding, discharge, fever, dysuria', 'Prior ectopic, PID, pelvic surgery, endometriosis', 'Sexual history and reliability of contraception'],
 exam: ['Vitals incl. orthostatics; peritoneal signs', 'Abdomen: rebound, guarding, masses', 'Pelvic: cervical motion tenderness, adnexal mass/tenderness, discharge', 'Quantify any bleeding; volume status'],
 workup: [
-['Bedside', ['Urine/serum hCG immediately', 'POCUS then transvaginal US — the definitive study']],
-['Labs', ['Quantitative β-hCG, CBC, type & screen, CRP; urinalysis', 'Cervical cultures / wet mount for PID']],
-['Imaging', ['Transvaginal US for ectopic, torsion, masses', 'CT when US non-diagnostic and pregnancy excluded; MRI in pregnancy if needed']]
+['Bedside', ['Urine/serum hCG immediately', 'POCUS and transvaginal US interpreted with symptoms and follow-up; an inconclusive scan does not exclude ectopic pregnancy']],
+['Labs', [
+    "For a stable pregnancy of unknown location, arrange two serum hCG measurements close to 48 hours apart, not earlier, with an early-pregnancy service directing repeat imaging and further review.",
+    'Quantitative β-hCG, CBC, type & screen, CRP; urinalysis', 'Cervical cultures / wet mount for PID']],
+['Imaging', [
+    "Positive hCG with no pregnancy identified on transvaginal US is a pregnancy of unknown location, not proof of a completed miscarriage; ectopic pregnancy remains possible.",
+    'Transvaginal US for ectopic, torsion, masses', 'CT when US non-diagnostic and pregnancy excluded; MRI in pregnancy if needed']]
 ],
 redFlags: ['Positive hCG with pain or bleeding — ectopic until excluded', 'Hypotension, syncope, or peritoneal signs', 'Sudden severe unilateral pain (torsion)', 'Fever with adnexal tenderness (TOA)', 'IUD in situ with pain or pregnancy', 'Bleeding at any stage of pregnancy'],
 disposition: [
@@ -632,8 +658,12 @@ disposition: [
 ['Admit', 'PID/TOA on IV antibiotics, ectopic needing inpatient treatment/observation (selected methotrexate patients can follow a reliable outpatient pathway), hemorrhagic cyst under observation, uncontrolled pain.'],
 ['Emergency surgery / IR', 'Ruptured ectopic, ovarian torsion, ruptured TOA, unstable hemorrhagic cyst.']
 ],
-pitfalls: ['Ectopic pregnancy can occur without risk factors or abnormal examination. A single hCG cannot locate a pregnancy; interpret symptoms, ultrasound and follow-up together.', 'Preserved Doppler flow does not exclude torsion (dual blood supply).', 'Heterotopic pregnancy in IVF — an IUP does not exclude an ectopic.', 'IUD-associated PID risk is mainly in the first 3 weeks after insertion. Treat PID and reassess at 48–72 h; routine immediate IUD removal is not required (CDC).', 'Don\u2019t assume threatened abortion — image first.'],
-pearls: ['Pregnancy test first, always — unstable + positive hCG goes to the OR, not the scanner.', 'Ovarian torsion is a clinical diagnosis; Doppler is supportive, not exclusive.', 'Moderate/large or complex free fluid with positive hCG raises concern for hemoperitoneum; fluid alone does not diagnose ectopic rupture. Instability requires immediate obstetric assessment.', 'IVF patients can have heterotopic pregnancy — seeing an IUP is not enough.'],
+pitfalls: [
+    "New or worsening symptoms outweigh a previously reassuring hCG trend; reassess immediately rather than waiting for the next scheduled sample.",
+    'Ectopic pregnancy can occur without risk factors or abnormal examination. A single hCG cannot locate a pregnancy; interpret symptoms, ultrasound and follow-up together.', 'Preserved Doppler flow does not exclude torsion (dual blood supply).', 'Heterotopic pregnancy in IVF — an IUP does not exclude an ectopic.', 'IUD-associated PID risk is mainly in the first 3 weeks after insertion. Treat PID and reassess at 48–72 h; routine immediate IUD removal is not required (CDC).', 'Don\u2019t assume threatened abortion — image first.'],
+pearls: [
+    "Before outpatient follow-up of a pregnancy of unknown location, provide written return advice and a 24-hour emergency contact/access plan; confirm who will review results.",
+    'Pregnancy test first, always — unstable + positive hCG goes to the OR, not the scanner.', 'Ovarian torsion is a clinical diagnosis; Doppler is supportive, not exclusive.', 'Moderate/large or complex free fluid with positive hCG raises concern for hemoperitoneum; fluid alone does not diagnose ectopic rupture. Instability requires immediate obstetric assessment.', 'IVF patients can have heterotopic pregnancy — seeing an IUP is not enough.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — acute pelvic pain', 'ACOG Practice Bulletins (ectopic pregnancy; PID)', 'Tintinalli\u2019s 9th ed. — gynecologic emergencies']
 },
 {
@@ -729,12 +759,17 @@ dontMiss: [
 ['Alcohol withdrawal seizure', 'common', 'Usually brief, within 48 h of stopping; still exclude other causes the first time. Benzodiazepines treat the withdrawal, not a new AED.'],
 ['Unprovoked first seizure / known epilepsy breakthrough', 'common', 'Back to baseline, normal exam: neuro follow-up. Breakthrough: levels, infection, missed doses, alcohol.']
 ],
-history: ['Duration, recovery of consciousness, number of events, tongue bite, incontinence', 'Pregnancy / postpartum; fever, HIV, immunosuppression, travel', 'AED list and adherence; alcohol/benzodiazepine withdrawal; INH, tramadol, bupropion', 'Head trauma, anticoagulation, prior epilepsy, developmental history'],
+history: [
+    "Obtain an eyewitness account or available video, including onset and recovery; use it to distinguish epileptic seizures from syncope and other mimics.",
+    'Duration, recovery of consciousness, number of events, tongue bite, incontinence', 'Pregnancy / postpartum; fever, HIV, immunosuppression, travel', 'AED list and adherence; alcohol/benzodiazepine withdrawal; INH, tramadol, bupropion', 'Head trauma, anticoagulation, prior epilepsy, developmental history'],
 exam: ['Ongoing convulsive activity vs post-ictal vs unresponsive (non-convulsive)', 'Glucose, SpO₂, temperature; pupil and focal neuro findings', 'Meningismus, rash, trauma from the fall', 'Blood pressure (eclampsia, PRES, ICH)'],
 workup: [
 ['Bedside', ['Glucose immediately; airway and pulse oximetry', 'ECG (QT, ischemia, TCA); core temperature']],
 ['Labs', ['Na, Ca, Mg, glucose, CBC, renal/hepatic panels, AED levels if relevant', 'hCG; CK after prolonged convulsions; toxicology as indicated']],
-['Imaging / EEG', ['Non-contrast CT for first seizure with incomplete recovery, focal signs, trauma, anticoagulation, HIV, or age >40–50 without a clear provoked cause', 'LP when safe if CNS infection is possible; CT first only when indicated, and never delay empiric antimicrobials', 'EEG for suspected non-convulsive status']]
+['Imaging / EEG', [
+    "A normal routine EEG does not exclude epilepsy. EEG supports diagnosis and classification; urgent EEG for persistent impaired consciousness addresses a different question.",
+    "Do not routinely repeat CT after a typical seizure in established epilepsy when recovery and examination are as expected and no additional concern is present.",
+    'Non-contrast CT for first seizure with incomplete recovery, focal signs, trauma, anticoagulation, HIV, or age >40–50 without a clear provoked cause', 'LP when safe if CNS infection is possible; CT first only when indicated, and never delay empiric antimicrobials', 'EEG for suspected non-convulsive status']]
 ],
 redFlags: ['Seizure ≥5 minutes or no return to baseline', 'Pregnancy or recent postpartum', 'Fever, meningismus, or immunocompromise', 'Focal deficit, trauma, or anticoagulation', 'Status not responding to a benzodiazepine', 'Infantile spasm or neonatal seizure (different pathway)'],
 disposition: [
@@ -743,7 +778,9 @@ disposition: [
 ['ICU / RSI / EEG', 'Established or refractory status, eclampsia, ICH, need for airway protection or continuous EEG.']
 ],
 pitfalls: ['Under-dosing benzodiazepines is the most common treatable error in status.', 'Valproate is contraindicated in pregnancy and in some mitochondrial disease — choose levetiracetam or fosphenytoin.', 'Do not start a daily AED after a single unprovoked seizure solely because it happened in the ED — shared decision with neurology (ILAE).', 'Psychogenic non-epileptic seizures occur (~10% in ESETT) — still treat until you are sure; then stop stacking AEDs.', 'A \u201Cpost-ictal\u201D patient who is not waking up may be in non-convulsive status.'],
-pearls: ['Status starts at 5 minutes — do not wait for 20.', 'After benzos, ESETT: levetiracetam, valproate, and fosphenytoin are equivalent; pick one at a full dose and move on.', 'Eclampsia is magnesium and delivery, not phenytoin-first.', 'Glucose, sodium, pregnancy, and fever are the four checks that change the drug.'],
+pearls: [
+    "After a first suspected seizure, arrange urgent specialist assessment (NICE: within two weeks), with first-aid and safety advice, local driving guidance, and instructions for recurrence while awaiting review.",
+    'Status starts at 5 minutes — do not wait for 20.', 'After benzos, ESETT: levetiracetam, valproate, and fosphenytoin are equivalent; pick one at a full dose and move on.', 'Eclampsia is magnesium and delivery, not phenytoin-first.', 'Glucose, sodium, pregnancy, and fever are the four checks that change the drug.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — seizures', 'AES 2016 evidence-based guideline for convulsive status epilepticus', 'ESETT (Kapur et al., NEJM 2019); RAMPART (Silbergleit et al., NEJM 2012)', 'ACOG / NICE eclampsia — magnesium sulfate']
 },
 {
@@ -1028,12 +1065,18 @@ workup: [
 ],
 redFlags: ['Falling GCS or failing airway reflexes', 'QRS widening or new arrhythmia', 'Seizure, hyperthermia, or severe agitation', 'Metabolic acidosis or rising lactate', 'Hypotension unresponsive to fluids', 'Acetaminophen presentation that will miss the 8 h NAC window if you wait for a level'],
 disposition: [
-['Discharge', 'Awake, below-treatment acetaminophen level on a timed 4 h sample (single acute ingestion), completed observation window for the agent, and safe for psychiatric assessment if needed.'],
+['Discharge', 'Awake, below-treatment acetaminophen level on a timed 4 h sample (single acute ingestion), completed observation window for the agent, and completed psychosocial assessment and an aftercare plan when self-harm is involved.'],
 ['Admit (monitored bed)', 'NAC in progress, delayed-release or staggered ingestions, short-acting agents under observation, self-harm safety planning.'],
 ['ICU', 'Intubated/airway-compromised, pressors, seizures, hyperthermia, hemodialysis (salicylates, methanol, ethylene glycol, lithium), severe TCA cardiotoxicity.']
 ],
-pitfalls: ['A declining GCS in a \u201Cstable\u201D overdose precedes the crash — reassess continuously.', 'Do not plot a pre-4-hour level: the acute nomogram applies to a reliable ingestion history spanning <24 h, including multiple doses (timed from the first dose); extended-release or anticholinergic/opioid co-ingestions may need a 4–6 h repeat level.', 'Do not give flumazenil in undifferentiated, mixed, or chronic benzodiazepine overdose (seizures, withdrawal). A limited role remains for iatrogenic, benzodiazepine-naive procedural sedation (AHA 2023 toxicology update).', 'QRS widening with hypotension in suspected sodium-channel blockade warrants bicarbonate, resuscitation and poison-center input.', 'Never delay dextrose for thiamine.', 'Call the poison center early for high-risk, unknown, or multi-agent ingestions.'],
-pearls: ['Toxidrome first: vitals, pupils, skin, bowel sounds, temperature.', 'Check acetaminophen in every deliberate overdose — silent until day 2–3.', 'Naloxone is titrated to ventilation, not to a GCS of 15.', 'QRS ≥100–110 ms in a possible TCA/sodium-channel blocker = bicarbonate now.'],
+pitfalls: [
+    "After naloxone response, recurrent respiratory depression remains possible. Observation depends on the opioid, formulation and clinical course; a brief improvement is not discharge clearance.",
+    'A declining GCS in a \u201Cstable\u201D overdose precedes the crash — reassess continuously.', 'Do not plot a pre-4-hour level: the acute nomogram applies to a reliable ingestion history spanning <24 h, including multiple doses (timed from the first dose); extended-release or anticholinergic/opioid co-ingestions may need a 4–6 h repeat level.', 'Do not give flumazenil in undifferentiated, mixed, or chronic benzodiazepine overdose (seizures, withdrawal). A limited role remains for iatrogenic, benzodiazepine-naive procedural sedation (AHA 2023 toxicology update).', 'QRS widening with hypotension in suspected sodium-channel blockade warrants bicarbonate, resuscitation and poison-center input.', 'Never delay dextrose for thiamine.', 'Call the poison center early for high-risk, unknown, or multi-agent ingestions.'],
+pearls: [
+    "Before discharge after opioid overdose, reassess consciousness, vital signs and ventilation, and ensure low risk of recurrence; long-acting exposures or recurrent depression need longer monitored care.",
+    "Offer take-home naloxone with recognition and response training where available, and link survivors to treatment for opioid use disorder.",
+    "After intentional self-poisoning, complete psychosocial assessment and a collaborative aftercare/safety plan before discharge; medical stabilization and mental-health care should proceed together.",
+    'Toxidrome first: vitals, pupils, skin, bowel sounds, temperature.', 'Check acetaminophen in every deliberate overdose — silent until day 2–3.', 'Naloxone is titrated to ventilation, not to a GCS of 15.', 'QRS ≥100–110 ms in a possible TCA/sodium-channel blocker = bicarbonate now.'],
 doses: [
     ['Acetaminophen (paracetamol) poisoning — acetylcysteine', ['IV NAC (21-h regimen): 150 mg/kg over 60 min, then 50 mg/kg over 4 h, then 100 mg/kg over 16 h', 'IV NAC (simplified/SNAP): 100 mg/kg over 2 h, then 200 mg/kg over 10 h, then 100 mg/kg over 16 h', 'Oral NAC: 140 mg/kg load, then 70 mg/kg every 4 h for 17 doses', 'Treat by the nomogram/time since ingestion, or empirically if >8 h or the time is unknown — do not wait for a level if the patient is symptomatic']],
     ['Other high-yield antidotes', ['Opioid: naloxone 0.04–0.4 mg IV (0.4 mg IM/IN), titrate to respiration; repeat or infuse', 'Benzodiazepine: flumazenil is generally avoided (seizure risk in mixed overdose)', 'Beta-blocker: high-dose glucagon 3–10 mg IV, then infusion; add high-dose insulin/euglycaemia', 'Calcium-channel blocker: calcium chloride 10% 10–20 mL (or gluconate 30–60 mL) IV, then high-dose insulin/glucose', 'TCA (sodium-channel blockade): sodium bicarbonate 1–2 mEq/kg IV boluses; target QRS <100 ms', 'Methanol/ethylene glycol: fomepizole (or ethanol) + folic acid/thiamine/pyridoxine + dialysis', 'Salicylate: sodium bicarbonate infusion to alkalinise urine; haemodialysis for severe toxicity', 'Iron: deferoxamine 15 mg/kg/h IV', 'Digoxin: digoxin-specific antibody fragments (Fab) for life-threatening toxicity']]
@@ -1242,8 +1285,12 @@ dontMiss: [
 history: ['Polyuria, polydipsia, weight loss, vomiting, abdominal pain', 'SGLT2 inhibitors, insulin omission, infection, pregnancy', 'Steroid use or recent cessation; pituitary disease; pigmentation', 'Chest pain, fever, diarrhea as precipitants'],
 exam: ['Volume status: tachycardia, dry mucosa, delayed cap refill', 'Kussmaul breathing (DKA); focal neuro or coma (HHS)', 'Abdomen (pancreatitis, surgical mimic); fever; skin (meningococcus, candida)', 'Medic-alert jewelry; insulin pump in situ'],
 workup: [
-['Bedside', ['Glucose, VBG, blood β-hydroxybutyrate (urine if unavailable), ECG', 'Potassium on the blood gas while the lab is pending']],
-['Labs', ['Electrolytes with anion gap, osmolality, creatinine, phosphate, CBC, lipase', 'Cultures if febrile; troponin if ACS possible; draw cortisol/ACTH before hydrocortisone only if this causes no treatment delay; hydrocortisone confounds subsequent cortisol interpretation', 'β-hCG when relevant']],
+['Bedside', [
+    "During adult DKA/HHS treatment, check bedside glucose every 1–2 hours; reassess fluid balance, mental status and cardiovascular response throughout treatment.",
+    'Glucose, VBG, blood β-hydroxybutyrate (urine if unavailable), ECG', 'Potassium on the blood gas while the lab is pending']],
+['Labs', [
+    "In adult DKA, repeat electrolytes, creatinine, phosphate, β-hydroxybutyrate and venous pH every 4 hours until resolution. In HHS, also follow serum osmolality every 4 hours; measure potassium 2 hours after starting insulin and every 4 hours thereafter.",
+    'Electrolytes with anion gap, osmolality, creatinine, phosphate, CBC, lipase', 'Cultures if febrile; troponin if ACS possible; draw cortisol/ACTH before hydrocortisone only if this causes no treatment delay; hydrocortisone confounds subsequent cortisol interpretation', 'β-hCG when relevant']],
 ['Imaging', ['CXR; CT only for a suspected surgical or neurologic precipitant', 'Do not delay DKA/HHS therapy for imaging']]
 ],
 redFlags: ['Altered mentation with hyperglycemia or ketones', 'K⁺ <3.5 before insulin, or falling K⁺ on treatment', 'Steroid-dependent patient with shock or vomiting', 'SGLT2 inhibitor + acidosis even with a \u201Cnormal\u201D glucose', 'Headache or falling GCS in a child on a DKA protocol', 'Hypotension that does not respond to fluids (think adrenal, sepsis, ACS)'],
@@ -1253,7 +1300,10 @@ disposition: [
 ['ICU', 'Severe acidosis, shock, HHS with coma, cerebral injury or a dangerous precipitant. All pediatric DKA needs a pediatric protocol and specialist monitored care; ICU depends on severity and neurologic/hemodynamic status. Adrenal crisis with instability needs ICU.']
 ],
 pitfalls: ['Starting insulin before potassium is replaced when K⁺ is already low — ventricular arrhythmia.', 'Missing euglycemic DKA because the glucose is 180 mg/dL on an SGLT2 inhibitor.', 'Waiting for a random cortisol in adrenal crisis.', 'Over-rapid correction of HHS sodium/osmolality.', 'Calling DKA abdominal pain \u201Cjust ketosis\u201D without considering pancreatitis or a surgical abdomen.', 'Do not stop insulin just because glucose falls: add dextrose and continue until ketoacidosis resolves. Adult resolution: β-hydroxybutyrate <0.6 mmol/L plus venous pH ≥7.3 or bicarbonate ≥18 mmol/L; ideally glucose <200 mg/dL. The anion gap and urine ketones are not resolution targets.'],
-pearls: ['Fluids, potassium, then insulin. That order prevents the crash.', 'SGLT2 + unwell = check ketones even if glucose is not high.', 'Hydrocortisone in the crashing steroid-dependent patient is a resuscitation drug, not an endocrine consult.', 'Clear ketonemia and acidosis, not just hyperglycemia; saline-related hyperchloremic acidosis can leave bicarbonate low despite ketone clearance; the anion gap is not a resolution target.'],
+pearls: [
+    "When transitioning resolved adult DKA from IV to subcutaneous insulin, overlap by 1–2 hours according to the protocol to prevent rebound ketosis; account for intake and hypoglycemia risk.",
+    "Before discharge, address the precipitant, insulin access, supplies, injection technique, ketone testing and sick-day advice; agree a follow-up plan rather than treating insulin omission as the whole explanation.",
+    'Fluids, potassium, then insulin. That order prevents the crash.', 'SGLT2 + unwell = check ketones even if glucose is not high.', 'Hydrocortisone in the crashing steroid-dependent patient is a resuscitation drug, not an endocrine consult.', 'Clear ketonemia and acidosis, not just hyperglycemia; saline-related hyperchloremic acidosis can leave bicarbonate low despite ketone clearance; the anion gap is not a resolution target.'],
 doses: [
     ['Fluids', ['Isotonic crystalloid (0.9% saline or balanced crystalloid) 1–1.5 L in the first hour (15–20 mL/kg in children, then reassess)', 'Thereafter 250–500 mL/h guided by volume status, sodium and urine output; prefer balanced crystalloid when chloride is rising', 'Severe hypovolaemia/shock: faster initial resuscitation, then individualise for heart failure, renal failure or frailty']],
     ['Insulin', ['Regular insulin 0.1 U/kg/h IV infusion (or 0.14 U/kg/h if no bolus)', 'Continue until ketoacidosis resolves — do not stop insulin when glucose normalises', 'When glucose <200–250 mg/dL: add dextrose (5–10%) and reduce to 0.05 U/kg/h', 'Subcutaneous rapid-acting analogue (0.1–0.2 U/kg q2h) is an alternative for mild DKA; not for HHS or severe DKA']],
@@ -1373,11 +1423,17 @@ approach: ['Give prompt analgesia (NSAID + IV opioid if severe) while checking v
 dontMiss: [['Infected obstructed urinary system', 'critical', 'Fever/systemic illness plus obstruction requires urgent urology drainage and antibiotics—not outpatient stone management.'], ['Ruptured AAA / aortic dissection', 'critical', 'Older patient, hypotension, vascular risk, abdominal/back pain, or pulse deficit: image the aorta.'], ['Pyelonephritis with sepsis', 'critical', 'Fever, flank tenderness, shock, or vomiting warrants sepsis treatment and source-control assessment.'], ['Ectopic pregnancy / ovarian torsion', 'emergent', 'Pregnancy test and pelvic consideration remain essential when anatomy and symptoms fit.'], ['Uncomplicated ureteral stone', 'common', 'Analgesia, hydration advice, urine straining where used, and follow-up depend on size, location, renal function, and symptoms.']],
 history: ['Abrupt colicky vs constant tearing pain, radiation to groin/testicle/labia, gross hematuria, dysuria', 'Fever, rigors, intractable vomiting, anuria, solitary or transplant kidney, prior stones/stents', 'Pregnancy possibility, age >60 with smoking/hypertension (AAA mimic), anticoagulation, AFib (renal infarct)'],
 exam: ['Vitals (fever, tachycardia, hypotension); abdominal tenderness vs benign soft belly of classic colic', 'CVA tenderness, palpation for pulsatile abdominal mass, femoral pulses', 'Testicular/inguinal exam in males and pelvic consideration in females with lower-quadrant/groin radiation'],
-workup: [['Bedside', ['Urinalysis, urine hCG in childbearing potential, and POCUS (hydronephrosis + abdominal aorta <3 cm)', '12-lead ECG if older or AFib/renal-infarct mimic suspected']], ['Labs', ['BMP/creatinine, CBC; add blood/urine cultures and lactate if febrile or SIRS-positive', 'Absence of microscopic hematuria (~10–15% of stones) does not exclude ureterolithiasis']], ['Imaging', ['Low-dose noncontrast CT abdomen/pelvis for first stone, older patients, febrile obstruction, or uncertain diagnosis', 'Renal/pelvic ultrasound (or MRI) first-line in pregnancy; CT with IV contrast if renal infarct or vascular mimic suspected']]],
+workup: [['Bedside', ['Urinalysis, urine hCG in childbearing potential, and POCUS (hydronephrosis + abdominal aorta <3 cm)', '12-lead ECG if older or AFib/renal-infarct mimic suspected']], ['Labs', ['BMP/creatinine, CBC; add blood/urine cultures and lactate if febrile or SIRS-positive', 'Absence of microscopic hematuria (~10–15% of stones) does not exclude ureterolithiasis']], ['Imaging', [
+    "Fever, a solitary kidney or diagnostic uncertainty requires immediate evaluation; ultrasound can miss ureteral stones, so a negative scan cannot settle a concerning presentation.",
+    'Low-dose noncontrast CT abdomen/pelvis for first stone, older patients, febrile obstruction, or uncertain diagnosis', 'Renal/pelvic ultrasound (or MRI) first-line in pregnancy; CT with IV contrast if renal infarct or vascular mimic suspected']]],
 redFlags: ['Fever, rigors, hypotension, or elevated lactate with flank pain', 'Solitary or transplant kidney, bilateral obstruction, anuria, or acute kidney injury', 'Age >60 with first-ever \u201Crenal colic\u201D (AAA until aorta imaged)', 'Refractory pain or persistent vomiting despite ED analgesia/antiemetics', 'Positive hCG with flank or unilateral lower abdominal pain'],
 disposition: [['Discharge', 'Uncomplicated stone (typically <10 mm, especially ≤5 mm) with oral pain/nausea control, normal renal function, no infection, and urology follow-up.'], ['Admit / urology consult', 'Refractory pain/vomiting, significant AKI, solitary kidney with obstruction, proximal stone >10 mm, or uncomplicated pyelonephritis needing IV therapy.'], ['Urgent decompression / OR / ICU', 'Obstructed infected kidney (stent or percutaneous nephrostomy + broad IV antibiotics), ruptured AAA, or septic shock.']],
 pitfalls: ['Calling flank pain in an older adult a \u201Cfirst kidney stone\u201D without checking the abdominal aorta.', 'Discharging a febrile or leukocytotic patient with an obstructing stone on oral antibiotics instead of urgent drainage.', 'Assuming a normal urinalysis without hematuria rules out a ureteral stone or AAA.'],
-pearls: ['An obstructed infected kidney is surgical pus under pressure — antibiotics alone cannot cure it without drainage.', 'NSAIDs (e.g., IV ketorolac) reduce ureteral spasm and renal capsule pressure when renal function and bleeding risk allow.', 'At the bedside, ultrasound the aorta first in anyone over 60 with new flank or back pain.'],
+pearls: [
+    "Ask the patient to strain urine and retain a recovered stone for analysis; arrange confirmation of stone passage and recovery of baseline renal function.",
+    "Observation is appropriate only while uncomplicated: infection, refractory pain, persistent obstruction or worsening renal function requires reassessment for active treatment.",
+    "Spontaneous passage depends on both stone size and location; a small distal stone is more likely to pass than a similar proximal stone. Explain the follow-up plan and reasons to return.",
+    'An obstructed infected kidney is surgical pus under pressure — antibiotics alone cannot cure it without drainage.', 'NSAIDs (e.g., IV ketorolac) reduce ureteral spasm and renal capsule pressure when renal function and bleeding risk allow.', 'At the bedside, ultrasound the aorta first in anyone over 60 with new flank or back pain.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — renal and genitourinary emergencies', 'EAU/AUA urolithiasis guidelines; ACR Appropriateness Criteria for acute flank pain']
 },
 {

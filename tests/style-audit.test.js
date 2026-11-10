@@ -1388,7 +1388,8 @@ test('expanded presentations render their teaching and scoped source dates on a 
     });
     for(const line of cp[field])if(!rows.includes(line))problems.push(id+': missing '+field+': '+line);
    }
-   if(!stage.textContent.includes(cp.pearls[0]))problems.push(id+': missing pearl');
+   for(const line of cp.pearls)if(!stage.textContent.includes(line))problems.push(id+': missing pearl');
+   for(const group of cp.workup)for(const line of group[1])if(!stage.textContent.includes(line))problems.push(id+': missing workup');
   }
   return problems;
  })()`);

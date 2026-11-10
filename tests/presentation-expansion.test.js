@@ -8,7 +8,7 @@ const topics=c.window.CP_DATA,evidence=c.window.CLINICAL_EVIDENCE;
 const text=id=>JSON.stringify(topics.find(t=>t.id===id));
 test('selected review records distinguish the new scope from the historical audit',()=>{
  assert.equal(evidence.checked,'2026-10-08');
- const ids=['chest-pain','dyspnea','abdominal-pain','headache','ams','syncope','fever','dizziness'];
+ const ids=['chest-pain','dyspnea','abdominal-pain','headache','ams','syncope','fever','dizziness','gib','back-pain','joint-pain','pelvic-pain','seizures','overdose','hyperglycemia','flank-pain'];
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(),ids.sort());
  for(const id of ids){
   const r=evidence.topicReviews[id];assert.equal(r.checked,'2026-11-10');assert.ok(r.scope.length>15);
@@ -42,4 +42,40 @@ test('references display a scoped addition date without relabelling unreviewed t
  assert.match(c.evidenceHtml('headache'),/Selected additions checked 2026-11-10/);
  assert.match(c.evidenceHtml('headache'),/This date applies only to these additions/);
  assert.doesNotMatch(c.evidenceHtml('weakness'),/Selected additions checked/);
+});
+
+test('pregnancy follow-up cannot substitute an hCG trend for clinical reassessment',()=>{
+ assert.match(text('pelvic-pain'),/pregnancy of unknown location, not proof of a completed miscarriage/);
+ assert.match(text('pelvic-pain'),/48 hours apart, not earlier/);
+ assert.match(text('pelvic-pain'),/symptoms outweigh a previously reassuring hCG trend/);
+ assert.doesNotMatch(text('pelvic-pain'),/transvaginal US — the definitive study/);
+ assert.ok(evidence.topicReviews['pelvic-pain'].sources.includes('ectopicDiagnosis'));
+});
+test('joint, bleeding and back-pain additions preserve selective testing and clinical judgment',()=>{
+ assert.match(text('joint-pain'),/normal CRP cannot exclude septic arthritis/);
+ assert.match(text('joint-pain'),/do not inject saline/);
+ assert.match(text('gib'),/nonurgent examination after bowel preparation/);
+ assert.match(text('gib'),/low score does not override ongoing bleeding/);
+ assert.doesNotMatch(text('gib'),/tachycardia is the earliest reliable sign|0–1 can leave/);
+ assert.match(text('back-pain'),/duration alone does not determine imaging/);
+});
+test('seizure, poisoning and renal-colic advice retains uncertainty and aftercare',()=>{
+ assert.match(text('seizures'),/normal routine EEG does not exclude epilepsy/);
+ assert.match(text('seizures'),/no additional concern is present/);
+ assert.match(text('overdose'),/brief improvement is not discharge clearance/);
+ assert.match(text('overdose'),/psychosocial assessment/);
+ assert.match(text('flank-pain'),/confirmation of stone passage/);
+ assert.match(text('flank-pain'),/negative scan cannot settle a concerning presentation/);
+});
+test('adult crisis monitoring and transition remain explicit and searchable',()=>{
+ const t=text('hyperglycemia');
+ assert.match(t,/adult DKA\/HHS treatment/);
+ assert.match(t,/glucose every 1–2 hours/);
+ assert.match(t,/potassium 2 hours after starting insulin and every 4 hours thereafter/);
+ assert.match(t,/overlap by 1–2 hours/);
+ assert.match(t,/All pediatric DKA needs a pediatric protocol/);
+ const idx=c.window.EM_SEARCH_INDEX.buildSearchIndex(topics,c.window.ECG_DATA);
+ for(const [id,target,phrase] of [['gib','workup','nonurgent examination'],['back-pain','workup','six weeks'],['joint-pain','workup','dry tap'],['pelvic-pain','workup','48 hours'],['seizures','workup','normal routine EEG'],['overdose','pearls-pitfalls','take-home naloxone'],['hyperglycemia','workup','potassium 2 hours'],['flank-pain','pearls-pitfalls','stone passage']]){
+  assert.ok(idx.some(h=>h.cpId===id&&h.target===target&&h.title.includes(phrase)),id);
+ }
 });
