@@ -4,6 +4,7 @@
    Targeted expansion: 10 Nov 2026, eight adult presentations — assessment, investigation and reassessment; see docs/PRESENTATION-EXPANSION-2026-11-10.md.
    Severity: critical = life/limb/sight threat now · emergent = time-sensitive morbidity · common = high-frequency.
    Second targeted expansion: 10 Nov 2026, eight additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-10-BATCH-2.md.
+   Third targeted expansion: 10 Nov 2026, eight additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-10-BATCH-3.md.
    Educational reference only — never replaces clinical judgment or local protocols.
 */
 const CP_DATA = [
@@ -506,7 +507,7 @@ id: 'red-eye', name: 'Red Eye & Eye Emergencies', icon: '👁️',
 tag: 'Vision + pain + halos = ophthalmology tonight.',
 overview: 'Red eyes are mostly benign (conjunctivitis), but the vision- or globe-threatening causes — chemical burn, angle-closure glaucoma, keratitis, orbital cellulitis, sudden vision loss — are time-critical. A chemical burn is the one true treat-before-you-assess emergency.',
 approach: [
-    'Chemical burn: irrigate until pH 7.0–7.4, then examine.',
+    'Chemical burn: irrigate promptly to physiologic pH; suspected open-globe injury needs immediate ophthalmology-directed care.',
     'Visual acuity in every other red eye.',
     'Pain, halos, or a white spot (especially contact-lens wearers) is ophthalmology tonight.',
     'CRAO is a stroke equivalent — call both pathways.'
@@ -521,21 +522,28 @@ dontMiss: [
 ['Retinal detachment', 'emergent', 'Curtain over vision, shower of floaters — urgent ophthalmology (hours, not days, if macula is threatened).'],
 ['Conjunctivitis / subconjunctival hemorrhage', 'common', 'Benign when acuity, pupils, and cornea are normal.']
 ],
-history: ['Contact lenses (ulcer risk), trauma, ocular surgery/injections, chemical exposure', 'Pain: deep vs superficial; photophobia; discharge character', 'Vision change: blurring, curtain, floaters, halos around lights', 'Systemic disease: autoimmune (scleritis/uveitis), recent shingles'],
+history: [
+    "For chemical exposure, establish the agent, concentration, time, prior rinsing and any penetrating/high-pressure mechanism while irrigation is being arranged or continued.",
+    'Contact lenses (ulcer risk), trauma, ocular surgery/injections, chemical exposure', 'Pain: deep vs superficial; photophobia; discharge character', 'Vision change: blurring, curtain, floaters, halos around lights', 'Systemic disease: autoimmune (scleritis/uveitis), recent shingles'],
 exam: ['Visual acuity in EVERY red eye — with pinhole and correction (except irrigate first in chemical burns)', 'Pupils: swinging-flashlight for afferent defect', 'Fluorescein staining (ulcer, dendrite), chamber depth, cells/flare, hypopyon', 'Everted lids for foreign body (after anesthetic); red reflex', 'Proptosis, painful eye movements, periorbital edema'],
 workup: [
-['Bedside', ['Acuity, fluorescein/slit-lamp examination; tonometry for suspected glaucoma only after excluding open-globe injury', 'Chemical splash: irrigate first, then measure pH until 7.0–7.4']],
+['Bedside', [
+    "After irrigation normalizes pH, pause for at least five minutes and recheck; rebound suggests retained chemical and requires further assessment/irrigation.",
+    "After excluding open-globe injury, evert the lids and inspect the fornices for retained particles; remove debris and recheck pH.",
+    'Acuity, fluorescein/slit-lamp examination; tonometry for suspected glaucoma only after excluding open-globe injury', 'Chemical splash: irrigate first, then measure pH until 7.0–7.4']],
 ['Labs', ['As indicated: CBC/inflammatory markers for orbital cellulitis; ophthalmology-led corneal scraping']],
 ['Imaging', ['CT orbits for cellulitis, intraocular foreign body, or fracture', 'None needed for simple conjunctivitis; stroke-protocol imaging for CRAO']]
 ],
-redFlags: ['Any loss of visual acuity', 'Moderate-severe pain, photophobia, or halos', 'Contact-lens wearer with pain or a white spot', 'Proptosis, limited/painful movement, fever', 'Abnormal pupil or afferent pupillary defect', 'Chemical splash — irrigate immediately, no exceptions', 'Hypopyon or corneal infiltrate'],
+redFlags: ['Any loss of visual acuity', 'Moderate-severe pain, photophobia, or halos', 'Contact-lens wearer with pain or a white spot', 'Proptosis, limited/painful movement, fever', 'Abnormal pupil or afferent pupillary defect', 'Chemical splash — immediate irrigation unless open-globe injury is strongly suspected; get urgent ophthalmology help', 'Hypopyon or corneal infiltrate'],
 disposition: [
 ['Discharge', 'Uncomplicated conjunctivitis or subconjunctival hemorrhage with normal acuity, pupils, and cornea — hygiene advice and follow-up.'],
 ['Urgent ophthalmology (same day)', 'Keratitis, uveitis, retinal-detachment symptoms, hyphema, preseptal cellulitis.'],
 ['Emergency ophthalmology / admission / stroke pathway', 'Chemical burn (after irrigation), angle-closure glaucoma, endophthalmitis, orbital cellulitis, CRAO.']
 ],
-pitfalls: ['Never patch or give steroids over a possibly herpetic or ulcerated cornea.', 'Chemical burns: delayed irrigation means permanent damage — triage straight to eye-wash and keep going until pH normalizes.', 'Contact lens + painful red eye warrants urgent keratitis assessment. A negative fluorescein examination alone does not exclude early infection; assess infiltrates, acuity and the slit-lamp examination.', 'Skipping visual acuity is the universal red-eye pitfall.', 'Periorbital swelling + fever: test eye movement and proptosis to separate preseptal from orbital.', 'CRAO is a stroke until the workup says otherwise — look for GCA in patients ≥50 y with preceding headache/jaw claudication.'],
-pearls: ['Visual acuity in every red eye — after you finish irrigating a chemical burn.', 'Irrigate alkali/acid until conjunctival pH is 7.0–7.4, then examine.', 'Contact lens + pain + a white spot is a corneal ulcer until fluorescein proves otherwise.', 'CRAO is a stroke equivalent — call ophthalmology and the stroke pathway together.'],
+pitfalls: [
+    "A chemical exposure combined with suspected open-globe injury needs immediate ophthalmology-directed management; avoid pressure, lid manipulation or routine irrigation devices over a possibly ruptured globe.",
+    'Never patch or give steroids over a possibly herpetic or ulcerated cornea.', 'Chemical burns: delayed irrigation means permanent damage — triage straight to eye-wash and keep going until pH normalizes.', 'Contact lens + painful red eye warrants urgent keratitis assessment. A negative fluorescein examination alone does not exclude early infection; assess infiltrates, acuity and the slit-lamp examination.', 'Skipping visual acuity is the universal red-eye pitfall.', 'Periorbital swelling + fever: test eye movement and proptosis to separate preseptal from orbital.', 'CRAO is a stroke until the workup says otherwise — look for GCA in patients ≥50 y with preceding headache/jaw claudication.'],
+pearls: ['Visual acuity in every red eye — after you finish irrigating a chemical burn.', 'Irrigate alkali/acid until conjunctival pH is 7.0–7.4, then examine.', 'Contact lens + pain + a white spot needs urgent keratitis assessment; negative fluorescein alone cannot exclude early infection.', 'CRAO is a stroke equivalent — call ophthalmology and the stroke pathway together.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — ocular emergencies', 'AAO Preferred Practice Patterns (bacterial keratitis, primary angle closure, CRAO)', 'AHA: CRAO as a stroke equivalent; Tintinalli\u2019s 9th ed. — eye emergencies']
 },
 
@@ -726,7 +734,9 @@ history: ['Onset: abrupt severe (torsion) vs gradual (infection)', 'Nausea/vomit
 exam: ['Testis position & lie: high-riding, horizontal = torsion', 'Cremasteric reflex — absent in torsion', 'Point tenderness: upper pole (appendix testis), epididymis vs diffuse testis', 'Groin exam for hernia; perineal crepitus and odor', 'Prehn sign — supportive only, unreliable'],
 workup: [
 ['Bedside', ['Immediate urology consult when torsion is suspected — imaging must not delay the OR', 'POCUS Doppler: flow absence; whirlpool sign of the cord']],
-['Labs', ['Urinalysis & cultures (infection vs torsion overlap)', 'CBC, CRP; lactate/sepsis screen for Fournier; glucose']],
+['Labs', [
+    "When epididymitis is suspected, obtain urine NAAT for gonorrhea/chlamydia and a bacterial urine culture; exposure history and susceptibility results guide treatment.",
+    'Urinalysis & cultures (infection vs torsion overlap)', 'CBC, CRP; lactate/sepsis screen for Fournier; glucose']],
 ['Imaging', ['Doppler US when diagnosis uncertain and OR not imminent', 'CT may define Fournier extent when stable; imaging must not delay debridement in a convincing presentation']]
 ],
 redFlags: ['Sudden severe testicular pain with vomiting', 'High-riding or transverse testis', 'Absent cremasteric reflex', 'Perineal pain with crepitus or sepsis (Fournier)', 'Irreducible groin mass', 'Scrotal trauma with persistent pain (rupture)'],
@@ -735,8 +745,13 @@ disposition: [
 ['Admit', 'Epididymo-orchitis needing IV therapy, Fournier post-debridement, monitored equivocal cases.'],
 ['Emergency surgery', 'Testicular torsion (immediate exploration), Fournier debridement, strangulated hernia, testicular rupture.']
 ],
-pitfalls: ['A negative US does not exclude torsion when the story fits — explore.', 'Recurrent self-resolving pain = intermittent torsion — needs elective fixation.', 'Epididymitis in an older diabetic can coexist with torsion.', 'Fournier pain precedes skin changes — examine for deep tenderness and crepitus.', 'Delaying surgery for CT in suspected torsion is the classic litigation case.', 'Salvage falls after ~6 h but later exploration can still save a testis — do not withhold surgery because \u201Cit has been too long.\u201D'],
-pearls: ['High-riding, transverse testis + absent cremasteric reflex = OR now, not Doppler first.', 'Nausea/vomiting with acute scrotal pain is torsion until proven otherwise.', 'Prehn sign is unreliable — do not use it to rule torsion in or out.', 'Fournier is a clinical diagnosis; skin findings lag the pain and sepsis.'],
+pitfalls: [
+    "Ultrasound may not distinguish partial torsion from epididymitis; persistent clinical concern still needs urgent urologic review.",
+    'A negative US does not exclude torsion when the story fits — explore.', 'Recurrent self-resolving pain = intermittent torsion — needs elective fixation.', 'Epididymitis in an older diabetic can coexist with torsion.', 'Fournier pain precedes skin changes — examine for deep tenderness and crepitus.', 'Delaying surgery for CT in suspected torsion is the classic litigation case.', 'Salvage falls after ~6 h but later exploration can still save a testis — do not withhold surgery because \u201Cit has been too long.\u201D'],
+pearls: [
+    "If epididymitis is not improving within 72 hours, reassess the diagnosis and treatment; persistent swelling after treatment needs evaluation for abscess, infarction or tumor.",
+    "For suspected or confirmed STI-related epididymitis, arrange partner evaluation and HIV/syphilis testing; advise abstinence until both partners are treated and symptoms resolve.",
+    'High-riding, transverse testis + absent cremasteric reflex = OR now, not Doppler first.', 'Nausea/vomiting with acute scrotal pain is torsion until proven otherwise.', 'Prehn sign is unreliable — do not use it to rule torsion in or out.', 'Fournier is a clinical diagnosis; skin findings lag the pain and sepsis.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — scrotal pain', 'AUA urotrauma & acute scrotum guidance', 'Tintinalli\u2019s 9th ed. — urologic emergencies']
 },
 {
@@ -807,7 +822,10 @@ history: ['Tempo: hours (epiglottitis, angioedema) vs days (PTA, viral)', 'Drool
 exam: ['Work of breathing and preferred posture — do not lie the unstable patient down', 'Floor of mouth, tongue elevation, neck crepitus or swelling', 'Tonsillar asymmetry, uvular deviation, trismus', 'IJ tenderness; lung findings (septic emboli)', 'Skin: rash of scarlet fever, membrane of diphtheria'],
 workup: [
 ['Bedside', ['Airway assessment first; flexible nasopharyngoscopy by a skilled operator if stable and epiglottitis is possible', 'Do not force a complete oropharyngeal exam in stridor/drooling']],
-['Labs', ['Use a validated clinical score to guide GAS testing in patients aged ≥3 years; high-risk exposure/complications may warrant testing despite a low score. Back up a negative RADT with culture in symptomatic children aged ≥3 years; follow assay-specific policy for NAAT', 'CBC, blood cultures if toxic; throat NAAT for gonorrhea when indicated']],
+['Labs', [
+    "Clear viral features such as cough, rhinorrhea, hoarseness or oral ulcers usually make GAS testing unnecessary; this does not replace assessment for airway or deep-space disease.",
+    "A negative rapid antigen test in an adult does not routinely need a backup culture; children aged three years or older do need backup culture, with an explicit result-review/contact process.",
+    'Use a validated clinical score to guide GAS testing in patients aged ≥3 years; high-risk exposure/complications may warrant testing despite a low score. Back up a negative RADT with culture in symptomatic children aged ≥3 years; follow assay-specific policy for NAAT', 'CBC, blood cultures if toxic; throat NAAT for gonorrhea when indicated']],
 ['Imaging', ['CT neck with contrast for deep-space abscess once the airway is secure', 'Lateral neck x-ray only in a stable patient if it will not delay airway care']]
 ],
 redFlags: ['Drooling, tripoding, stridor, or sitting bolt upright', 'Trismus or a muffled / hot-potato voice', 'Floor-of-mouth swelling or an elevated tongue', 'Toxic appearance with delayed neck pain after pharyngitis (Lemierre)', 'Rapidly progressive swelling after ACE-inhibitor or allergen', 'Inability to swallow saliva'],
@@ -816,8 +834,12 @@ disposition: [
 ['Admit', 'PTA after drainage if toxic or unable to take fluids, severe pharyngitis in the immunocompromised, recovering deep-space infection on IV antibiotics.'],
 ['Airway team / ICU / OT', 'Epiglottitis, Ludwig, RPA with airway threat, Lemierre with septic emboli, angioedema of the tongue/floor of mouth.']
 ],
-pitfalls: ['A tongue-blade exam in epiglottitis can precipitate complete obstruction.', 'Centor scores do not exclude epiglottitis, PTA, or Lemierre.', 'Adult epiglottitis is often missed because we still think of it as a pediatric Hib disease.', 'Needle aspiration of a \u201CPTA\u201D that is actually a carotid aneurysm or an epiglottic problem is disastrous — confirm anatomy.', 'Exertional throat/chest discomfort can be ACS; a normal first ECG does not exclude it. Use clinical assessment and a validated troponin pathway.'],
-pearls: ['Tripod + drool = airway team, not a throat swab.', 'Ludwig is a floor-of-mouth disease — look up from below the mandible.', 'Pharyngitis that \u201Cgot better\u201D then the patient became septic with neck pain = Lemierre until CT/US of the IJ is negative.', 'Centor gates GAS testing; it is not a license to skip the airway exam.'],
+pitfalls: [
+    "Tonsillar exudate alone does not distinguish GAS from viral infection; confirm GAS when indicated rather than prescribing solely from appearance.",
+    'A tongue-blade exam in epiglottitis can precipitate complete obstruction.', 'Centor scores do not exclude epiglottitis, PTA, or Lemierre.', 'Adult epiglottitis is often missed because we still think of it as a pediatric Hib disease.', 'Needle aspiration of a \u201CPTA\u201D that is actually a carotid aneurysm or an epiglottic problem is disastrous — confirm anatomy.', 'Exertional throat/chest discomfort can be ACS; a normal first ECG does not exclude it. Use clinical assessment and a validated troponin pathway.'],
+pearls: [
+    "For confirmed GAS, explain treatment adherence, hand hygiene and return to school/work only when afebrile and at least 12–24 hours after appropriate antibiotics, following local policy.",
+    'Tripod + drool = airway team, not a throat swab.', 'Ludwig is a floor-of-mouth disease — look up from below the mandible.', 'Pharyngitis that \u201Cgot better\u201D then the patient became septic with neck pain = Lemierre until CT/US of the IJ is negative.', 'Centor gates GAS testing; it is not a license to skip the airway exam.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — sore throat', 'IDSA 2025 GAS pharyngitis risk-assessment update; CDC GAS testing guidance; Centor/McIsaac', 'Tintinalli\u2019s 9th ed. — deep neck infections']
 },
 {
@@ -952,17 +974,23 @@ history: ['Volume, blood, fever, duration (>2 weeks changes the list), restauran
 exam: ['Volume status: orthostatics, mucous membranes, cap refill, mental status', 'Abdomen: peritonitis, distension, masses', 'Fever; rash (typhoid, HSP); joints and uveitis (IBD, reactive)', 'PR exam for blood, overflow, mass'],
 workup: [
 ['Bedside', ['Glucose, orthostatics, pregnancy test when appropriate', 'POCUS for AAA/free fluid if ischemic or surgical features']],
-['Labs', ['CBC, creatinine, electrolytes; hemolysis labs if HUS possible (LDH, smear, platelets)', 'Stool: C. difficile when antibiotics/healthcare; culture/PCR multiplex per severity and travel; STEC testing if bloody', 'Blood cultures if febrile and toxic']],
+['Labs', [
+    "Use stool testing selectively when fever, blood/mucus, severe abdominal tenderness or sepsis makes a result clinically useful; interpret multiplex detections in context, not as proof that every detected organism needs treatment.",
+    'CBC, creatinine, electrolytes; hemolysis labs if HUS possible (LDH, smear, platelets)', 'Stool: C. difficile when antibiotics/healthcare; culture/PCR multiplex per severity and travel; STEC testing if bloody', 'Blood cultures if febrile and toxic']],
 ['Imaging', ['CT angiography if mesenteric ischemia is possible', 'CT/AXR if obstruction, megacolon, or perforation is possible — skip imaging in straightforward viral illness']]
 ],
 redFlags: ['Pain out of proportion, AF, or vasculopathy', 'Bloody diarrhea with little fever after ground beef (STEC)', 'Recent antibiotics or hospitalization (C. difficile)', 'Shock, severe abdominal distension, or immunosuppression', 'Fever in a returned traveler', 'Anuria, petechiae, or rising creatinine after a diarrheal prodrome (HUS)'],
 disposition: [
 ['Discharge', 'Non-bloody, well-hydrated after oral challenge, no host red flags — ORS, hygiene, return precautions. Avoid antimotility agents if bloody or febrile.'],
-['Admit', 'Inability to maintain volume, severe electrolyte derangement, CDI, inflammatory diarrhea needing IV therapy, HUS under observation, high-risk host.'],
+['Admit', 'Inability to maintain volume, severe electrolyte derangement, CDI needing inpatient care, inflammatory diarrhea needing IV therapy, HUS under observation, high-risk host.'],
 ['ICU / surgery / IR', 'Shock, toxic megacolon, mesenteric ischemia, fulminant CDI, severe HUS.']
 ],
 pitfalls: ['Antibiotics for STEC increase HUS risk — do not treat empirically \u201Cjust in case.\u201D', 'Metronidazole is no longer first-line for CDI (IDSA/SHEA 2021): fidaxomicin preferred, vancomycin acceptable.', 'Loperamide in bloody or febrile diarrhea can precipitate megacolon.', '\u201CGastroenteritis\u201D in a 75-year-old with AF is mesenteric ischemia until the pain is explained.', 'HUS presents after the diarrhea is improving — check the smear and the creatinine.'],
-pearls: ['Volume first, then inflammatory vs non-inflammatory, then the host.', 'No antibiotics, no loperamide, if STEC is on the list.', 'Fidaxomicin (or vancomycin) for CDI — metronidazole only if those are unavailable and disease is non-severe.', 'Bloody diarrhea + pain out of proportion = CTA, not a stool PCR first.'],
+pearls: [
+    "Use reduced-osmolarity oral rehydration solution for mild-to-moderate dehydration, replacing ongoing stool losses; shock, ileus, altered mentation or failed oral rehydration needs IV therapy.",
+    "Resume an age-appropriate usual diet during or after rehydration; continue breastfeeding rather than withholding feeds.",
+    "Persistent diarrhea after travel warrants a broader assessment, including parasites; reconsider medications, IBD and postinfectious disease if symptoms continue.",
+    'Volume first, then inflammatory vs non-inflammatory, then the host.', 'No antibiotics, no loperamide, if STEC is on the list.', 'Fidaxomicin (or vancomycin) for CDI — metronidazole only if those are unavailable and disease is non-severe.', 'Bloody diarrhea + pain out of proportion = CTA, not a stool PCR first.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — diarrhea', 'IDSA/SHEA 2021 focused update: C. difficile (fidaxomicin preferred)', 'IDSA infectious diarrhea 2017; CDC traveler\u2019s diarrhea; STEC/HUS literature']
 },
 {
@@ -1246,8 +1274,12 @@ dontMiss: [
 ['Blue toe / cholesterol emboli after cath', 'emergent', 'Livedo and intact pulses after an aortic procedure — do not miss ongoing aortic source.'],
 ['Chronic PAD / claudication flare', 'common', 'Exertional calf pain that resolves with rest, pulses diminished but tissue viable — outpatient vascular pathway if no rest pain or tissue loss.']
 ],
-history: ['Tempo: seconds–minutes (embolus, dissection) vs hours–days (thrombosis, infection)', 'Chest, back, or abdominal pain (dissection, AAA)', 'AF, recent MI, aneurysm, bypass graft, cath access', 'Trauma, crush, lithotomy, anticoagulation, malignancy'],
-exam: ['Pulses and Doppler in both limbs; ankle-brachial index only if it will not delay care', 'Skin: pallor vs cyanosis vs mottling vs crepitus', 'Motor and sensory — paralysis means muscle is dying', 'Heart: AF, murmur; abdomen: AAA; chest: BP in both arms', 'Passive stretch pain of the compartments'],
+history: [
+    "Document the exact onset and previous limb function, prior bypass/stent and earlier claudication; these help the vascular team judge the cause and treatment options.",
+    'Tempo: seconds–minutes (embolus, dissection) vs hours–days (thrombosis, infection)', 'Chest, back, or abdominal pain (dissection, AAA)', 'AF, recent MI, aneurysm, bypass graft, cath access', 'Trauma, crush, lithotomy, anticoagulation, malignancy'],
+exam: [
+    "Record arterial and venous Doppler signals with a timed motor/sensory examination. New weakness or sensory loss changes limb-threat assessment and requires immediate escalation.",
+    'Pulses and Doppler in both limbs; ankle-brachial index only if it will not delay care', 'Skin: pallor vs cyanosis vs mottling vs crepitus', 'Motor and sensory — paralysis means muscle is dying', 'Heart: AF, murmur; abdomen: AAA; chest: BP in both arms', 'Passive stretch pain of the compartments'],
 workup: [
 ['Bedside', ['ECG (AF, ischemia); bilateral arm BP', 'Handheld Doppler; POCUS for AAA and dissection flap if trained', 'Glucose, lactate']],
 ['Labs', ['CBC, coagulation, CK, creatinine, type & screen', 'Cultures if infection/shock']],
@@ -1259,8 +1291,12 @@ disposition: [
 ['Admit (vascular)', 'Viable but symptomatic ischemia, phlegmasia on anticoagulation, post-cath blue toe, infection needing IV therapy.'],
 ['Emergency vascular surgery / OR / ICU', 'Threatened ALI needs revascularization; irreversible ALI needs amputation/source-control planning rather than revascularization. Dissection, compartment syndrome and necrotizing infection also need emergency specialist care.']
 ],
-pitfalls: ['Waiting for ABI or formal angiography while the limb dies.', 'Heparin for \u201Cembolus\u201D that is really a type A dissection.', 'Calling cellulitis when the pain is out of proportion (nec fasc or compartment).', 'Irreversible ischemia still needs source control and often amputation planning — do not send home a dead limb.', 'Reperfusion without watching compartments produces a second disaster.'],
-pearls: ['Six Ps are a clock, not a checklist to complete before calling vascular.', 'Pulse deficit + chest or back pain = aorta, not a femoral embolus in isolation.', 'Heparin unless contraindicated (including bleeding, suspected dissection or HIT); imaging must not delay a threatened limb.', 'Passive stretch pain after crush or reperfusion is compartment syndrome.'],
+pitfalls: [
+    "Do not delay emergency vascular assessment while searching for an embolic source; ECG and cardiac/aortic investigation should not postpone treatment of the threatened limb.",
+    'Waiting for ABI or formal angiography while the limb dies.', 'Heparin for \u201Cembolus\u201D that is really a type A dissection.', 'Calling cellulitis when the pain is out of proportion (nec fasc or compartment).', 'Irreversible ischemia still needs source control and often amputation planning — do not send home a dead limb.', 'Reperfusion without watching compartments produces a second disaster.'],
+pearls: [
+    "After revascularization, continue serial limb and compartment assessments; reperfusion can produce compartment syndrome even after blood flow has returned.",
+    'Six Ps are a clock, not a checklist to complete before calling vascular.', 'Pulse deficit + chest or back pain = aorta, not a femoral embolus in isolation.', 'Heparin unless contraindicated (including bleeding, suspected dissection or HIT); imaging must not delay a threatened limb.', 'Passive stretch pain after crush or reperfusion is compartment syndrome.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — peripheral vascular and aortic disease', '2024 ACC/AHA multisociety PAD guideline; 2022 ACC/AHA aortic disease guideline', 'SVS acute limb ischemia recommendations']
 },
 {
@@ -1406,13 +1442,21 @@ tag: 'Rash is skin until it is sepsis, necrosis, mucosal disease, or anaphylaxis
 overview: 'Most rashes are benign, but the dangerous minority declare themselves through toxicity, nonblanching purpura, pain out of proportion, mucosal involvement, skin failure, or rapid progression.',
 approach: ['Assess systemic toxicity, vital signs, mucosal surfaces (eyes, mouth, genitals), palms/soles, and whether lesions blanch.', 'Separate purpuric/septic, necrotizing soft-tissue, blistering drug-induced (SJS/TEN/DRESS), and anaphylactic patterns.', 'Stop suspected culprit drugs immediately and involve surgery, burn/dermatology, or ophthalmology early when red flags appear.', 'Outline lesion borders with a skin marker and reassess progression rather than relying on a single snapshot exam.'],
 dontMiss: [['Meningococcemia / purpura fulminans', 'critical', 'Toxic patient with nonblanching petechiae or purpura: resuscitate, cultures/antibiotics per sepsis protocol, and escalate.'], ['Necrotizing soft-tissue infection', 'critical', 'Pain out of proportion, rapid progression, bullae, anesthesia, or systemic toxicity; urgent surgical review.'], ['SJS/TEN or severe drug reaction', 'critical', 'Mucosal erosions, targetoid/blistering rash, skin pain, or detachment after a medication exposure.'], ['Anaphylaxis / angioedema', 'critical', 'Skin findings plus airway, breathing, circulation, or severe GI involvement is anaphylaxis.'], ['Cellulitis, urticaria, viral exanthem', 'common', 'Treat the patient and disposition according to systemic features and progression.']],
-history: ['New medications in the past 1–8 weeks (anticonvulsants, sulfonamides, allopurinol, NSAIDs, antibiotics)', 'Fever, skin pain out of proportion, mucosal/ocular irritation, pruritus, speed of spread', 'Immunosuppression, diabetes, cirrhotic/marine/tick exposure, vaccination status'],
-exam: ['Vitals and toxic appearance; diascopy/glass test for blanching vs nonblanching purpura', 'Inspect conjunctivae, oral cavity, and urogenital mucosa; check Nikolsky sign, bullae, crepitus, and wooden induration', 'Mark borders of erythema/tenderness and re-examine within 30–60 minutes when progression is suspected'],
-workup: [['Bedside', ['Vital signs, glass/blanch test, marked skin borders, and bedside glucose', 'POCUS for subcutaneous gas/fluid collection (never use a negative scan to exclude NSTI)']], ['Labs', ['CBC with differential (eosinophilia in DRESS), BMP, lactate, CK, CRP, LFTs, coagulation/DIC panel, blood cultures when toxic', 'Urinalysis and organ-injury screen in suspected systemic drug reaction or vasculitis']], ['Imaging', ['CT or plain radiograph may show fascial gas in NSTI, but never delay surgical exploration of high-suspicion NSTI for imaging']]],
+history: [
+    "Ask about bites, water exposure, penetrating injuries and immune compromise; these change likely pathogens and the need for cultures or broader assessment.",
+    'New medications in the past 1–8 weeks (anticonvulsants, sulfonamides, allopurinol, NSAIDs, antibiotics)', 'Fever, skin pain out of proportion, mucosal/ocular irritation, pruritus, speed of spread', 'Immunosuppression, diabetes, cirrhotic/marine/tick exposure, vaccination status'],
+exam: [
+    "Distinguish a drainable purulent abscess from nonpurulent cellulitis; drainage/source control and antibiotic decisions depend on the pattern and systemic illness.",
+    'Vitals and toxic appearance; diascopy/glass test for blanching vs nonblanching purpura', 'Inspect conjunctivae, oral cavity, and urogenital mucosa; check Nikolsky sign, bullae, crepitus, and wooden induration', 'Mark borders of erythema/tenderness and re-examine within 30–60 minutes when progression is suspected'],
+workup: [['Bedside', ['Vital signs, glass/blanch test, marked skin borders, and bedside glucose', 'POCUS for subcutaneous gas/fluid collection (never use a negative scan to exclude NSTI)']], ['Labs', [
+    "Routine blood or skin cultures are unnecessary in typical uncomplicated cellulitis; consider them with severe systemic illness, neutropenia, major immune compromise, bites or immersion injury.",
+    'CBC with differential (eosinophilia in DRESS), BMP, lactate, CK, CRP, LFTs, coagulation/DIC panel, blood cultures when toxic', 'Urinalysis and organ-injury screen in suspected systemic drug reaction or vasculitis']], ['Imaging', ['CT or plain radiograph may show fascial gas in NSTI, but never delay surgical exploration of high-suspicion NSTI for imaging']]],
 redFlags: ['Nonblanching petechiae/purpura with fever, tachycardia, or hypotension', 'Pain out of proportion, rapid spread, violaceous bullae, skin anesthesia, or crepitus', 'Mucosal erosions (≥2 sites), conjunctival injection, or epidermal detachment (Nikolsky positive)', 'Facial/tongue swelling, stridor, wheeze, or hypotension', 'Fever + rash + facial edema/eosinophilia/transaminitis 2–8 weeks after starting a high-risk drug (DRESS)'],
 disposition: [['Discharge', 'Systemically well patient with benign blanching exanthem, uncomplicated urticaria, or localized cellulitis and clear return precautions.'], ['Admit / specialty consult', 'Extensive cellulitis, immunocompromised host, DRESS without organ failure, or early mucosal drug reaction needing dermatology/ophthalmology review.'], ['Resuscitation / OR / burn unit', 'Meningococcemia/purpura fulminans, necrotizing soft-tissue infection (immediate debridement), anaphylaxis, or SJS/TEN.']],
 pitfalls: ['Labeling severe pain out of proportion as \u201Csimple cellulitis\u201D while necrotizing fasciitis spreads beneath the skin.', 'Missing ocular involvement in SJS/TEN and risking permanent corneal scarring.', 'Waiting for laboratory scores (LRINEC) or CT before calling surgery for clinically obvious NSTI.'],
-pearls: ['Nonblanching purpura + fever/toxicity = empiric IV ceftriaxone/sepsis resuscitation immediately.', 'Skin pain is a red flag; benign rashes itch, whereas SJS/TEN and NSTI hurt.', 'Always examine the eyes, mouth, and genitals in any blistering or febrile drug rash.'],
+pearls: [
+    "For uncomplicated limb cellulitis, elevate the affected area and address edema, eczema and interdigital fissures or fungal disease to reduce recurrence.",
+    'Nonblanching purpura + fever/toxicity = empiric IV ceftriaxone/sepsis resuscitation immediately.', 'Skin pain is a red flag; itching does not establish a benign cause or exclude a serious drug reaction.', 'Always examine the eyes, mouth, and genitals in any blistering or febrile drug rash.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — dermatologic presentations', 'IDSA skin and soft-tissue infection guidelines; UK/US SJS/TEN and burn-center pathways']
 },
 {
@@ -1444,11 +1488,17 @@ approach: ['Screen every retention patient for cauda equina/cord compression (ba
 dontMiss: [['Cauda equina syndrome / spinal cord compression', 'critical', 'Back pain with saddle sensory change, new retention/incontinence, bilateral symptoms, or weakness needs urgent MRI and spine review.'], ['Urosepsis / infected obstruction', 'critical', 'Systemic illness with urinary source needs sepsis treatment and source-control assessment.'], ['Acute kidney injury from obstruction', 'emergent', 'Bilateral obstruction, solitary kidney, anuria, or rising creatinine requires urgent decompression planning.'], ['Prostatitis with retention', 'emergent', 'Fever, pelvic pain, toxic appearance; avoid traumatic repeated instrumentation and involve urology.'], ['UTI / medication-related / BPH-related symptoms', 'common', 'Use targeted therapy and follow-up after excluding high-risk features.']],
 history: ['Last void, suprapubic pain vs painless overflow incontinence, weak stream/hesitancy, gross hematuria/clots', 'Back pain, saddle numbness, bilateral leg pain/weakness, fecal incontinence, malignancy history', 'New anticholinergics, opioids, cold remedies, spinal anesthesia/surgery, urethral trauma or stricture history'],
 exam: ['Vitals, suprapubic palpation, CVA tenderness, external meatus (blood, phimosis/paraphimosis, stricture)', 'Lower-extremity motor/reflexes, perineal/saddle pinprick sensation, and rectal tone when neurologic cause is plausible', 'Gently assess prostate only when indicated; avoid vigorous prostatic massage in suspected acute bacterial prostatitis'],
-workup: [['Bedside', ['Bladder ultrasound/scan before catheterization; record immediate drained residual volume', 'Urinalysis + urine culture; 12-lead ECG if hyperkalemia from obstructive AKI is suspected']], ['Labs', ['BMP (creatinine, K⁺), CBC; blood cultures and lactate if febrile or septic', 'PSA is rarely helpful acutely and is falsely elevated in retention/prostatitis']], ['Imaging', ['Renal ultrasound for bilateral hydronephrosis when creatinine is elevated or retention is chronic', 'Emergent lumbar/spine MRI when cauda equina or cord compression is suspected']]],
+workup: [['Bedside', [
+    "Blood at the urethral meatus after pelvic trauma needs a urethral-injury pathway, usually retrograde urethrography before catheter passage; avoid blind instrumentation and involve urology.",
+    'Bladder ultrasound/scan before catheterization; record immediate drained residual volume', 'Urinalysis + urine culture; 12-lead ECG if hyperkalemia from obstructive AKI is suspected']], ['Labs', ['BMP (creatinine, K⁺), CBC; blood cultures and lactate if febrile or septic', 'PSA is rarely helpful acutely and is falsely elevated in retention/prostatitis']], ['Imaging', ['Renal ultrasound for bilateral hydronephrosis when creatinine is elevated or retention is chronic', 'Emergent lumbar/spine MRI when cauda equina or cord compression is suspected']]],
 redFlags: ['Back pain with saddle anesthesia, bilateral radiculopathy, or lower-limb weakness', 'Fever, rigors, hypotension, or acute bacterial prostatitis with retention', 'Post-obstructive AKI, hyperkalemia, or diuresis >200 mL/h for ≥2 hours', 'Gross hematuria with clot retention or urethral blood after trauma', 'Failed Foley/coudé placement or severe urethral pain during attempt'],
 disposition: [['Discharge', 'Uncomplicated BPH or drug-induced retention after smooth decompression, normal creatinine, no diuresis, alpha-blocker (e.g., tamsulosin) started when appropriate, and leg-bag/trial-without-catheter follow-up in 3–7 days.'], ['Admit / urology consult', 'Obstructive AKI, pathologically brisk post-obstructive diuresis, clot retention needing continuous bladder irrigation, febrile UTI/prostatitis, or difficult/suprapubic catheterization.'], ['Emergent MRI / spine / ICU', 'Suspected cauda equina/spinal cord compression or septic shock from urinary obstruction.']],
 pitfalls: ['Attributing new urinary retention (or overflow incontinence) to BPH or UTI without checking saddle sensation and leg strength.', 'Forcing a standard Foley catheter through a stricture, false passage, or traumatic urethra instead of using a coudé or calling urology.', 'Clamping a draining catheter intermittently — drain completely and monitor for post-obstructive diuresis and transient hypotension.'],
-pearls: ['Painless retention with overflow incontinence + back pain is cauda equina until MRI says otherwise.', 'Drain acute retention completely; intermittent clamping does not prevent hematuria or hypotension and delays decompression.', 'Start an alpha-1 blocker (e.g., tamsulosin) at catheter placement in BPH retention to improve trial-without-catheter success.'],
+pearls: [
+    "Before discharge with a catheter, demonstrate hand hygiene, bag emptying, securement and keeping the bag below bladder level with tubing free of kinks.",
+    "Give a contact plan for a blocked or displaced catheter, fever/rigors, new lower abdominal pain or significant bleeding; leakage can indicate blockage rather than simple incontinence.",
+    "Confirm the catheter review/removal appointment, required supplies and who to contact after hours; a functioning drainage bag alone is not a complete discharge plan.",
+    'Painless retention with overflow incontinence + back pain is cauda equina until MRI says otherwise.', 'Drain acute retention completely; intermittent clamping does not prevent hematuria or hypotension and delays decompression.', 'Start an alpha-1 blocker (e.g., tamsulosin) at catheter placement in BPH retention to improve trial-without-catheter success.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — genitourinary and spinal emergencies', 'AUA acute urinary retention and urethral catheterization guidance; local cauda-equina pathways']
 },
 {
@@ -1619,7 +1669,7 @@ overview: 'Traumatic brain injury ranges from a reassuring minor head injury to 
 approach: [
     'Immobilise the cervical spine until cleared; treat the ABCDEs and any other trauma simultaneously.',
     'Prevent secondary brain injury: SpO₂ ≥94%, MAP to perfuse the brain, normoglycaemia, normocapnia, and normothermia.',
-    'Use a validated rule to decide on CT head; image immediately for any focal deficit, GCS drop, or anticoagulation.',
+    'Use age-appropriate CT criteria; focal deficit or deterioration needs emergency imaging. Anticoagulants and antiplatelets other than aspirin alone lower the CT threshold; apply the recommended timing and clinical context.',
     'Suspect rising intracranial pressure with a falling GCS, new focal deficit, unequal pupils, or Cushing response.',
     'Reverse anticoagulation in haemorrhage, and call neurosurgery early when the lesion is surgical.'
 ],
@@ -1627,19 +1677,27 @@ dontMiss: [
     ['Extradural haematoma', 'critical', 'Classically a lucid interval then deterioration, often temporal with a biconvex lens on CT. A surgical emergency — neurosurgery must be called as soon as it is seen.'],
     ['Acute subdural haematoma', 'critical', 'Crescentic bleed, common in the elderly, anticoagulated and alcohol-dependent. Can expand rapidly; a thin film can look benign and still need surgery.'],
     ['Diffuse axonal injury / cerebral oedema', 'critical', 'Impaired consciousness out of proportion to the CT, or diffuse swelling with lost cisterns. Manage intracranial pressure and avoid hypotension and hypoxia.'],
-    ['Skull base or open fracture', 'critical', 'Raccoon eyes, Battle sign, CSF otorrhoea/rhinorrhoea, haemotympanum — antibiotics and specialist referral; avoid nasal intubation or nasogastric tubes.'],
-    ['Anticoagulation-related haemorrhage', 'critical', 'Warfarin: 4F-PCC + vitamin K. Dabigatran: idarucizumab. Anti-Xa DOACs: andexanet alfa or PCC. Antiplatelet alone still warrants early imaging and observation.'],
+    ['Skull base or open fracture', 'critical', 'Skull-base signs or an open fracture need urgent specialist assessment; avoid nasal instrumentation. Basilar fracture/CSF leak alone does not justify prophylactic antibiotics; open or penetrating injury has separate antibiotic indications.'],
+    ['Anticoagulation-related haemorrhage', 'critical', 'Warfarin: 4F-PCC + vitamin K. Dabigatran: idarucizumab. Anti-Xa DOACs: andexanet alfa or PCC. Antithrombotic use changes the imaging assessment; aspirin monotherapy is not an automatic CT indication. After a reassuring adult minor-injury assessment, admission is not automatic.'],
     ['Cervical spine injury', 'critical', 'Distracting injuries and intoxication mask it. Keep the collar until clinical or imaging clearance per NEXUS/Canadian C-spine rules.']
 ],
-history: ['Mechanism, height of fall, loss of consciousness, amnesia, seizure, vomiting', 'Anticoagulants, antiplatelets, alcohol, other drugs', 'Age, prior neurosurgery, ventriculoperitoneal shunt, seizures, cognitive baseline', 'Witnessed change in conscious level and the time course', 'Other injuries; high-risk mechanisms (pedestrian, ejection, fall >1 m or 5 stairs)'],
+history: [
+    "Establish baseline cognition and neurological function with a carer when possible; interpret post-injury change against that baseline.",
+    'Mechanism, height of fall, loss of consciousness, amnesia, seizure, vomiting', 'Anticoagulants, antiplatelets, alcohol, other drugs', 'Age, prior neurosurgery, ventriculoperitoneal shunt, seizures, cognitive baseline', 'Witnessed change in conscious level and the time course', 'Other injuries; high-risk mechanisms (pedestrian, ejection, fall >1 m or 5 stairs)'],
 exam: ['GCS with its trend (eye, verbal, motor) and the time it was taken', 'Pupils (size, symmetry, reactivity) and eye movements', 'Focal neurological deficits, seizures, posturing', 'Signs of skull fracture, scalp haematoma, facial trauma', 'Cervical spine and the rest of the trauma survey', 'Glucose, temperature, and signs of intoxication'],
-workup: [['Bedside', ['Serial GCS and pupils, documented with times', 'Glucose; treat hypoglycaemia', 'If intubated: sedate, ventilate to normocapnia, avoid hypotension']], ['Labs', ['Full blood count, coagulation, and a pregnancy test when relevant', 'Type & screen if haemorrhage is possible', 'Toxicology screen when the presentation is unclear']], ['Imaging', ['Non-contrast CT head: immediate for any high-risk feature, focal deficit or GCS drop', 'CT cervical spine per clearance rule; CT trauma series for major mechanism', 'Repeat CT if the GCS falls or the patient deteriorates after the first scan']]],
-redFlags: ['GCS falling by ≥1 point (especially motor) or GCS ≤8', 'Unequal or unreactive pupils; Cushing triad (hypertension, bradycardia, irregular respiration)', 'New focal deficit or seizure after the injury', 'Open or depressed fracture, CSF leak, penetrating injury', 'Any anticoagulant or antiplatelet; age ≥65; alcohol intoxication', 'Vomiting ≥2 times or post-traumatic amnesia >30 min'],
-disposition: [['Discharge with head-injury advice', 'GCS 15, no high-risk feature, no anticoagulation, normal CT if done, a reliable carer, and clear return precautions in writing.'],
-['Admit for observation', 'Anticoagulated, intoxicated, isolated, or GCS 13–14 with a normal CT — serial neurological observations with access to rapid re-imaging.'],
+workup: [['Bedside', ['Serial GCS and pupils, documented with times', 'Glucose; treat hypoglycaemia', 'If intubated: sedate, ventilate to normocapnia, avoid hypotension']], ['Labs', ['Full blood count, coagulation, and a pregnancy test when relevant', 'Type & screen if haemorrhage is possible', 'Toxicology screen when the presentation is unclear']], ['Imaging', [
+    "Use each head-CT rule only in its validated population; adult rules cannot be substituted for pediatric assessment or used to exclude CT in anticoagulated patients.",
+    'Non-contrast CT head: immediate for any high-risk feature, focal deficit or GCS drop', 'CT cervical spine per clearance rule; CT trauma series for major mechanism', 'Repeat CT if the GCS falls or the patient deteriorates after the first scan']]],
+redFlags: ['GCS falling by ≥1 point (especially motor) or GCS ≤8', 'Unequal or unreactive pupils; Cushing triad (hypertension, bradycardia, irregular respiration)', 'New focal deficit or seizure after the injury', 'Open or depressed fracture, CSF leak, penetrating injury', 'Anticoagulant/antiplatelet use, age and intoxication need risk-based assessment; aspirin alone is not an automatic CT indication', 'Repeated vomiting or significant amnesia: apply the complete age-appropriate CT criteria, including their eligibility conditions'],
+disposition: [['Discharge with head-injury advice', 'GCS back to 15 or documented baseline, indicated imaging reassuring, no other admission reason, reliable supervision and written return advice. In adult minor injury with normal CT and baseline neurology, antithrombotic use alone does not mandate admission (ACEP).'],
+['Admit for observation', 'Persistent neurological change, concerning symptoms, intoxication preventing assessment, other injuries or unsafe supervision: observe with access to rapid re-imaging. Do not routinely admit or repeat CT solely for antithrombotic use in an otherwise reassuring adult minor-injury assessment (ACEP).'],
 ['Neurosurgery / ICU', 'Any surgical lesion, GCS ≤8, rising intracranial pressure, or a need for invasive monitoring and neuroprotective care.']],
-pitfalls: ['Reassurance by a normal first CT in an anticoagulated or older patient who then deteriorates.', 'Documenting a single GCS without the trend or the time.', 'Hypotension and hypoxia — the two commonest preventable causes of secondary injury.', 'Nasal intubation or a nasogastric tube with a suspected base-of-skull fracture.', 'Missing cervical spine injury because of intoxication or distracting pain.'],
-pearls: ['A lucid interval means an extradural haematoma is still possible — never a reason to relax.', 'A single drop in the motor GCS is the most sensitive bedside sign of deterioration.', 'Prevent the second injury: oxygen, blood pressure, glucose and temperature are treatment.', 'Reverse anticoagulation early in any traumatic intracranial haemorrhage.'],
+pitfalls: [
+    "A normal head CT does not exclude concussion or later symptoms; arrange appropriate follow-up for persistent problems and explain return to usual activities.",
+    'Reassurance by a normal first CT in an anticoagulated or older patient who then deteriorates.', 'Documenting a single GCS without the trend or the time.', 'Hypotension and hypoxia — the two commonest preventable causes of secondary injury.', 'Nasal intubation or a nasogastric tube with a suspected base-of-skull fracture.', 'Missing cervical spine injury because of intoxication or distracting pain.'],
+pearls: [
+    "Give written and verbal advice to the patient and carer, including supervision by a responsible adult for the first 24 hours and urgent return for neurological deterioration.",
+    'A lucid interval means an extradural haematoma is still possible — never a reason to relax.', 'A drop in motor response is an urgent warning; repeat the neurological assessment and escalate unexplained deterioration.', 'Prevent the second injury: oxygen, blood pressure, glucose and temperature are treatment.', 'Reverse anticoagulation early in any traumatic intracranial haemorrhage.'],
 doses: [
     ['Intracranial pressure / neuroprotection', ['Head-up 30°, normocapnia (PaCO₂ 35–40 mmHg) unless herniating, and normothermia', 'Hypertonic saline 3% 100–250 mL bolus or mannitol 0.25–1 g/kg for acute herniation while arranging surgery', 'Brief hyperventilation (PaCO₂ 30–35 mmHg) only as a bridge to definitive treatment']],
     ['Seizure and sedation', ['Levetiracetam 60 mg/kg IV (max 4.5 g) or fosphenytoin 20 mg PE/kg for post-traumatic seizures', 'Ketamine 1–2 mg/kg or etomidate 0.3 mg/kg for induction in haemodynamic compromise (ketamine preserves blood pressure)']],

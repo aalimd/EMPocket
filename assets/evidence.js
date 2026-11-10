@@ -6,6 +6,12 @@
 (function () {
     'use strict';
     const sources = {
+        chemicalEye: ['AAO EyeWiki: chemical eye injury — initial assessment and irrigation', 'https://eyewiki.aao.org/Chemical_(Alkali_and_Acid)_Injury_of_the_Conjunctiva_and_Cornea'],
+        infectiousDiarrhea: ['IDSA infectious diarrhea guideline (2017)', 'https://www.idsociety.org/practice-guideline/infectious-diarrhea/'],
+        urethralTrauma: ['AUA urotrauma guideline: suspected urethral injury', 'https://www.auanet.org/documents/Guidelines/PDF/clinical-guidance/Urotrauma.PDF'],
+        catheterCare: ['NHS: living with a urinary catheter — care and when to seek help', 'https://www.nhs.uk/tests-and-treatments/urinary-catheters/living-with/'],
+        mtbi: ['ACEP adult mild traumatic brain injury clinical policy (2023)', 'https://www.acepnow.com/article/acep-clinical-policy-on-mild-traumatic-brain-injury/?singlepage=1'],
+        csfLeak: ['IDSA ventriculitis/meningitis guideline: basilar fracture and CSF leak (2017)', 'https://www.idsociety.org/practice-guideline/healthcare-associated-ventriculitis-and-meningitis/'],
         ectopicDiagnosis: ['NICE NG126: pregnancy of unknown location and diagnostic follow-up', 'https://www.nice.org.uk/guidance/NG126/chapter/diagnosis-of-viable-intrauterine-pregnancy-and-of-tubal-ectopic-pregnancy'],
         firstSeizure: ['NICE NG217: first seizure assessment and selective investigations (updated 2025)', 'https://www.nice.org.uk/guidance/ng217/chapter/diagnosis-and-assessment-of-epilepsy'],
         lgibASGE: ['ASGE acute lower GI bleeding guideline (2026)', 'https://doi.org/10.1016/j.gie.2026.06.046'],
@@ -86,16 +92,16 @@
         'joint-pain': ['joint'], 'pelvic-pain': ['ectopic', 'ectopicDiagnosis', 'pid'], 'abdominal-pain': ['appendicitis', 'ectopic', 'abdominalAssessment', 'mesenteric'],
         'vaginal-bleeding': ['pph', 'rh', 'ectopic'], 'pregnancy-emergency': ['special', 'pe', 'rh', 'hyperemesis', 'pph'],
         'scrotal-pain': ['epididymitis'], seizures: ['seizures', 'esett', 'firstSeizure'], hemoptysis: ['hemoptysis', 'pe'],
-        'nausea-vomiting': ['hyperemesis', 'dka', 'adrenal', 'chest'], diarrhea: ['cdi'], cyanosis: ['methb', 'neonate', 'special'],
+        'nausea-vomiting': ['hyperemesis', 'dka', 'adrenal', 'chest'], diarrhea: ['cdi', 'infectiousDiarrhea'], cyanosis: ['methb', 'neonate', 'special'],
         overdose: ['special', 'acetaminophen', 'selfharm'], jaundice: ['acetaminophen'], 'back-pain': ['mscc', 'back'], 'pediatric-fever': ['infant', 'infant90', 'childFever', 'kawasaki'], hyperglycemia: ['dka', 'adrenal'],
         'heat-cold': ['special'], palpitations: ['af', 'als'], syncope: ['syncope', 'syncopeGuideline', 'als'],
         'airway-stridor': ['special'], anaphylaxis: ['special'], 'flank-pain': ['stones'],
-        'urinary-retention': ['stones'], edema: ['pe'], 'multiple-trauma': ['headinjury'],
+        'urinary-retention': ['stones', 'urethralTrauma', 'catheterCare'], edema: ['pe'], 'multiple-trauma': ['headinjury'],
         'falls-geriatric-trauma': ['headinjury'], 'pediatric-respiratory-distress': ['bronchiolitis', 'asthma'],
-        gib: ['ugib', 'lgib', 'lgibASGE'], 'red-eye': ['keratitis'], 'sore-throat': ['gas', 'gasTesting'],
+        gib: ['ugib', 'lgib', 'lgibASGE'], 'red-eye': ['keratitis', 'chemicalEye'], 'sore-throat': ['gas', 'gasTesting'],
         suicidal: ['selfharm'], constipation: ['constipation'], 'limb-ischemia': ['pad'], rash: ['ssti'],
         'cardiac-arrest': ['acls', 'als', 'special'], electrolytes: ['hyperkalemia', 'hyponatremia'],
-        'head-injury': ['tbi', 'headinjury'], 'hypertensive-emergency': ['hypertension', 'stroke'],
+        'head-injury': ['tbi', 'headinjury', 'mtbi', 'csfLeak'], 'hypertensive-emergency': ['hypertension', 'stroke'],
         burns: ['burns', 'special'], 'alcohol-withdrawal': ['withdrawal'], 'thyroid-storm': ['thyroid'],
         ecg: ['mi', 'af', 'als', 'special', 'pericarditis']
     };
@@ -216,6 +222,66 @@
         "scope": "urgent evaluation, passage confirmation and observation limits",
         "sources": [
             "stones"
+        ]
+    },
+    "red-eye": {
+        "checked": "2026-11-10",
+        "scope": "chemical exposure, pH reassessment and keratitis test limitations",
+        "sources": [
+            "chemicalEye",
+            "keratitis"
+        ]
+    },
+    "sore-throat": {
+        "checked": "2026-11-10",
+        "scope": "selective GAS testing, result follow-up and transmission advice",
+        "sources": [
+            "gasTesting"
+        ]
+    },
+    "scrotal-pain": {
+        "checked": "2026-11-10",
+        "scope": "epididymitis testing, reassessment and STI aftercare",
+        "sources": [
+            "epididymitis"
+        ]
+    },
+    "diarrhea": {
+        "checked": "2026-11-10",
+        "scope": "selective stool tests, rehydration and persistent symptoms",
+        "sources": [
+            "infectiousDiarrhea"
+        ]
+    },
+    "rash": {
+        "checked": "2026-11-10",
+        "scope": "cellulitis/abscess assessment, culture selection and recurrence prevention",
+        "sources": [
+            "ssti"
+        ]
+    },
+    "limb-ischemia": {
+        "checked": "2026-11-10",
+        "scope": "timed limb assessment, treatment priority and reperfusion monitoring",
+        "sources": [
+            "pad"
+        ]
+    },
+    "urinary-retention": {
+        "checked": "2026-11-10",
+        "scope": "urethral trauma precautions and catheter discharge care",
+        "sources": [
+            "urethralTrauma",
+            "catheterCare"
+        ]
+    },
+    "head-injury": {
+        "checked": "2026-11-10",
+        "scope": "selected imaging/disposition advice and basilar-fracture antibiotic clarification",
+        "sources": [
+            "tbi",
+            "mtbi",
+            "csfLeak"
         ]
     }
 };

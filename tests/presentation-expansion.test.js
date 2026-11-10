@@ -8,7 +8,7 @@ const topics=c.window.CP_DATA,evidence=c.window.CLINICAL_EVIDENCE;
 const text=id=>JSON.stringify(topics.find(t=>t.id===id));
 test('selected review records distinguish the new scope from the historical audit',()=>{
  assert.equal(evidence.checked,'2026-10-08');
- const ids=['chest-pain','dyspnea','abdominal-pain','headache','ams','syncope','fever','dizziness','gib','back-pain','joint-pain','pelvic-pain','seizures','overdose','hyperglycemia','flank-pain'];
+ const ids=['chest-pain','dyspnea','abdominal-pain','headache','ams','syncope','fever','dizziness','gib','back-pain','joint-pain','pelvic-pain','seizures','overdose','hyperglycemia','flank-pain','red-eye','sore-throat','scrotal-pain','diarrhea','rash','limb-ischemia','urinary-retention','head-injury'];
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(),ids.sort());
  for(const id of ids){
   const r=evidence.topicReviews[id];assert.equal(r.checked,'2026-11-10');assert.ok(r.scope.length>15);
@@ -78,4 +78,39 @@ test('adult crisis monitoring and transition remain explicit and searchable',()=
  for(const [id,target,phrase] of [['gib','workup','nonurgent examination'],['back-pain','workup','six weeks'],['joint-pain','workup','dry tap'],['pelvic-pain','workup','48 hours'],['seizures','workup','normal routine EEG'],['overdose','pearls-pitfalls','take-home naloxone'],['hyperglycemia','workup','potassium 2 hours'],['flank-pain','pearls-pitfalls','stone passage']]){
   assert.ok(idx.some(h=>h.cpId===id&&h.target===target&&h.title.includes(phrase)),id);
  }
+});
+
+test('head injury distinguishes adult minor-injury discharge from indications for admission',()=>{
+ const t=topics.find(t=>t.id==='head-injury'),d=JSON.stringify(t.disposition);
+ assert.match(d,/baseline neurology/);assert.match(d,/no other admission reason/);
+ assert.match(d,/Do not routinely admit or repeat CT solely/);
+ assert.doesNotMatch(d,/no anticoagulation|Anticoagulated, intoxicated, isolated/);
+ assert.match(text('head-injury'),/aspirin monotherapy is not an automatic CT indication/);
+ assert.match(text('head-injury'),/Basilar fracture\/CSF leak alone does not justify prophylactic antibiotics/);
+ assert.match(text('head-injury'),/open or penetrating injury has separate antibiotic indications/);
+ assert.ok(evidence.topicReviews['head-injury'].sources.includes('mtbi'));
+ assert.ok(evidence.topicReviews['head-injury'].sources.includes('csfLeak'));
+});
+test('eye and scrotal teaching preserves the limits of negative tests',()=>{
+ assert.doesNotMatch(text('red-eye'),/until fluorescein proves otherwise/);
+ assert.match(text('red-eye'),/negative fluorescein alone cannot exclude early infection/);
+ assert.match(text('red-eye'),/pause for at least five minutes/);
+ assert.match(text('red-eye'),/suspected open-globe injury/);
+ assert.match(text('scrotal-pain'),/Ultrasound may not distinguish partial torsion/);
+ assert.match(text('scrotal-pain'),/not improving within 72 hours/);
+});
+test('infection testing advice remains age- and presentation-specific',()=>{
+ assert.match(text('sore-throat'),/adult does not routinely need a backup culture/);
+ assert.match(text('sore-throat'),/children aged three years or older do need backup culture/);
+ assert.match(text('diarrhea'),/multiplex detections in context/);
+ assert.match(text('rash'),/Routine blood or skin cultures are unnecessary in typical uncomplicated cellulitis/);
+ assert.doesNotMatch(text('rash'),/benign rashes itch/);
+});
+test('third-batch additions remain searchable in their authored sections',()=>{
+ const idx=c.window.EM_SEARCH_INDEX.buildSearchIndex(topics,c.window.ECG_DATA);
+ for(const [id,target,phrase] of [['red-eye','workup','pause for at least five'],['sore-throat','workup','backup culture'],['scrotal-pain','workup','urine NAAT'],['diarrhea','pearls-pitfalls','oral rehydration'],['rash','workup','Routine blood or skin cultures'],['limb-ischemia','exam','arterial and venous Doppler'],['urinary-retention','workup','retrograde urethrography'],['head-injury','workup','validated population']]){
+  assert.ok(idx.some(h=>h.cpId===id&&h.target===target&&h.title.includes(phrase)),id);
+ }
+ assert.match(text('urinary-retention'),/avoid blind instrumentation/);
+ assert.match(text('limb-ischemia'),/compartment syndrome even after blood flow has returned/);
 });
