@@ -1393,7 +1393,7 @@
             return '<div class="dose-card dose-col"><div class="dose-card-top">' +
                 '<h3 class="dose-card-title">' + esc(title) + '</h3></div><ul>' + items + '</ul></div>';
         }).join('');
-        return '<div class="dose-grid" data-dose-grid>' + groups + '</div>' +
+        return (cp.doseScope ? '<p class="workspace-callout" data-dose-scope><strong>' + esc(cp.doseScope) + '</strong></p>' : '') + '<div class="dose-grid" data-dose-grid>' + groups + '</div>' +
             '<p class="clinical-safety-note">Doses shown as published in the cited sources; every dose is an adult reference unless stated. Verify indication, concentration, renal/hepatic function, allergies and local protocol before giving any drug.</p>';
     }
 
@@ -1753,7 +1753,7 @@
                 if (btn.dataset.ecg) showEcg();
                 else showPresentation(btn.dataset.id);
             }));
-        stage.querySelectorAll('.case-action, .section-jump, .rail-jump').forEach(btn =>
+        stage.querySelectorAll('[data-jump]').forEach(btn =>
             btn.addEventListener('click', () => jumpToSection(btn.dataset.jump, true)));
         stage.querySelectorAll('[data-crisis]').forEach(btn =>
             btn.addEventListener('click', () => revealDontMiss(btn.dataset.crisis)));
@@ -2457,6 +2457,7 @@
         });
     }
     const SEARCH_INDEX = buildSearchIndex();
+    const preparedSearch = window.SEARCH_CORE?.createIndex?.(SEARCH_INDEX);
 
     /* Clear the header search field and its results popup. Called on route
        changes so a stale query never lingers across pages. */
@@ -2547,7 +2548,7 @@
                 return title.indexOf(ql) !== -1 || sub.indexOf(ql) !== -1;
             });
         }
-        const results = SEARCH_INDEX
+        const results = preparedSearch ? preparedSearch.search(ql) : SEARCH_INDEX
             .filter(x => core.matches((x.title || '') + ' ' + (x.sub || ''), ql))
             .map(x => ({ hit: x, rank: core.score(x.title, x.sub, ql, x.kind) + (x.quick ? 6 : 0) }))
             .sort((a, b) => b.rank - a.rank)
@@ -2583,7 +2584,7 @@
             ? hits.map((h, i) =>
                 '<button type="button" class="res-item" id="search-result-' + i + '" data-id="' + h.cpId + '" data-target="' + h.target + '" role="option" aria-selected="false">' +
                 '<span class="res-ico" data-cat="' + catFor(h.cpId) + '" data-id="' + h.cpId + '" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS[catIconKey(catFor(h.cpId), h.cpId)] || SEMANTIC_ICONS['generic'], 'badge-svg') + '</span>' +
-                '<div class="res-body"><div class="r-title">' + highlightMatch(h.title, q) + '</div>' +
+                '<div class="res-body"><div class="r-title">' + highlightMatch(h.title, q) + '</div>' + (h.approximate ? '<div class="r-sub">Approximate spelling match</div>' : '') +
                 '<div class="r-sub">' + (h.sub ? highlightMatch(h.sub, q) : '') + '</div></div>' +
                 '<span class="r-tag">' + esc(h.kind) + '</span></button>').join('')
             : '<div class="res-item res-empty"><div class="r-sub">No results for \u201C' + esc(q) + '\u201D</div><div class="res-empty-actions"><button type="button" class="btn" data-search-action="clear">Clear search</button><button type="button" class="btn" data-search-action="browse">Browse library</button></div></div>';
@@ -3409,7 +3410,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = isAppWorker(navigator.serviceWorker.controller);
-                navigator.serviceWorker.register('./sw.js?v=20261110-learning-v72').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261110-search-v73').then((registration) => {
                     navigator.serviceWorker.ready.then((ready) => {
                         if (ready.scope === new URL('./', location.href).href) setOfflineStatus('Ready for offline use');
                     });

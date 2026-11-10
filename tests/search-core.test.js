@@ -73,3 +73,36 @@ test('bounded fuzzy caches retain matching semantics across eviction and repeate
  assert.equal(core.fuzzyContainsWord('dysnpnea dyspnea','dyspnea'),true);
  assert.equal(core.fuzzyContainsWord('outpatient','tpa'),false);
 });
+
+test('prepared search ranks literal titles before related text and uses fuzzy only as fallback',()=>{
+ const engine=core.createIndex([
+  {title:'Chest Pain',sub:'initial approach',kind:'Presentation'},
+  {title:'ECG teaching',sub:'chest pain comparison',kind:'Interactive ECG'},
+  {title:'Anaphylaxis',sub:'recognition',kind:'Presentation'},
+  {title:'Hypokalemia',sub:'low potassium',kind:'Presentation'},
+  {title:'Hyperkalemia',sub:'high potassium',kind:'Presentation'},
+  {title:'Rocuronium dose',sub:'drug reference',kind:'Quick dose'},
+ ]);
+ assert.equal(engine.search('chest pain')[0].title,'Chest Pain');
+ assert.equal(engine.search('ana')[0].title,'Anaphylaxis');
+ assert.equal(engine.search('anaphylxis')[0].approximate,true);
+ assert.equal(engine.search('hyperkalemia').some(x=>x.title==='Hypokalemia'),false);
+ assert.equal(engine.search('rocuronium missingword').length,0);
+ assert.equal(engine.search('rocuronium dose')[0].title,'Rocuronium dose');
+ assert.equal(engine.search('outpatient tpa').length,0);
+});
+test('prepared search resolves multiword synonyms and does not fuzzy-match numerical doses',()=>{
+ const engine=core.createIndex([{title:'Shortness of Breath',sub:'approach'},{title:'Dose 10 mg',sub:''}]);
+ assert.equal(engine.search('dyspnea')[0].title,'Shortness of Breath');
+ assert.equal(engine.search('dose 20 mg').length,0);
+});
+
+test('actual presentation searches prioritize the pathway and metadata supports dose intent',()=>{
+ const c={window:{}};vm.createContext(c);
+ for(const f of ['data','search-index'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../assets/'+f+'.js'),'utf8'),c);
+ const data=c.window.CP_DATA;
+ const index=c.window.EM_SEARCH_INDEX.buildSearchIndex(data,c.window.ECG_DATA,{byId:Object.fromEntries(data.map(x=>[x.id,x])),ecgTopicId:'ecg'});
+ const engine=core.createIndex(index);
+ for(const [query,id] of [['chest pain','chest-pain'],['dyspnea','dyspnea'],['headache','headache'],['anaphylxis','anaphylaxis']])assert.equal(engine.search(query)[0].cpId,id,query);
+ const doses=engine.search('epinephrine dose');assert.ok(doses.length>0);assert.match(doses[0].kind,/dose/);
+});

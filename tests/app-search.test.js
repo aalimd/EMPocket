@@ -29,3 +29,15 @@ test('Escape cancels the delayed query and does not reopen the search',async()=>
  const x=bind();x.type('headache');x.key('Escape');await settle();
  assert.equal(x.input.value,'');assert.deepEqual(x.queries,[]);assert.deepEqual(x.opened,[]);
 });
+
+test('prepared search results are cached by query and returned as independent arrays',()=>{
+ let calls=0;
+ const begin=source.indexOf('    const searchHitCache ='),finish=source.indexOf('    function runSearch(',begin);
+ const ctx={window:{SEARCH_CORE:{}},SEARCH_INDEX:[],preparedSearch:{search(q){calls++;return [{title:q}];}}};
+ vm.runInNewContext(source.slice(begin,finish)+'this.search=findSearchHits;',ctx);
+ const first=ctx.search('Chest Pain');first.length=0;
+ const second=ctx.search(' chest pain ');
+ assert.equal(calls,1);assert.equal(second.length,1);
+ for(let i=0;i<13;i++)ctx.search('query '+i);
+ ctx.search('chest pain');assert.equal(calls,15,'query cache evicts old entries');
+});

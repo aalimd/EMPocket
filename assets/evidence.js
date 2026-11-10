@@ -7,6 +7,7 @@
     const sources = {
         acetaminophen: ['US/Canada acetaminophen poisoning consensus (2023, corrected)', 'https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2808062'],
         mscc: ['NICE NG234 spinal metastases and cord compression', 'https://www.nice.org.uk/guidance/ng234/chapter/recommendations'],
+        aorta: ['ACC/AHA aortic disease guideline (2022), acute aortic syndrome', 'https://www.jacc.org/doi/10.1016/j.jacc.2022.08.004'],
         chest: ['ACC 2022 ED chest-pain pathway', 'https://www.jacc.org/doi/10.1016/j.jacc.2022.08.750'],
         mi: ['Fifth Universal Definition of MI (2026)', 'https://www.jacc.org/doi/full/10.1016/j.jacc.2026.07.025'],
         af: ['ACC/AHA/ACCP/HRS AF guideline (2023)', 'https://www.ahajournals.org/doi/10.1161/CIR.0000000000001193'],
@@ -68,7 +69,7 @@
         thyroid: ["ATA/AACE thyroid storm and myxoedema emergency guidance", "https://www.thyroid.org/thyroid-storm/"]
     };
     const topics = {
-        'chest-pain': ['chest', 'acs', 'mi', 'pe'], dyspnea: ['asthma', 'pe'],
+        'chest-pain': ['aorta', 'chest', 'acs', 'mi', 'pe'], dyspnea: ['asthma', 'pe'],
         headache: ['headache', 'stroke'], ams: ['stroke', 'special', 'meningitis'], coma: ['stroke', 'special'],
         weakness: ['stroke'], dizziness: ['dizziness', 'stroke'], diplopia: ['cn3', 'stroke'],
         'focal-neurologic-deficit': ['stroke'], fever: ['sepsis', 'meningitis'], shock: ['sepsis', 'lung', 'special'],

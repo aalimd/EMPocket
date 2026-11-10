@@ -97,3 +97,12 @@ test('newly added resuscitation and emergency topics carry verified doses and so
  assert.match(prose('alcohol-withdrawal'),/Lorazepam 1–2 mg IV/);
  assert.match(prose('thyroid-storm'),/never before/);
 });
+
+test('aortic dose guidance in Chest Pain is explicitly scoped and uses perfusion-limited targets',()=>{
+ const cp=topics.find(c=>c.id==='chest-pain');
+ assert.match(cp.doseScope,/aortic dissection only/);
+ assert.match(JSON.stringify(cp.doses),/60–80 bpm/);
+ assert.match(JSON.stringify(cp.doses),/adequate end-organ perfusion/);
+ assert.ok(ev.topics['chest-pain'].includes('aorta'));
+ assert.doesNotMatch(JSON.stringify(cp.doses),/heart rate ≤60|when beta-blockade contraindicated/);
+});

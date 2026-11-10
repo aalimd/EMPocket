@@ -203,7 +203,78 @@
         return Math.min(best, 100);
     }
 
+    /* Prepare once: queries intersect word postings instead of rescanning every
+       paragraph and recomputing spelling distances for every result. */
+    function createIndex(entries) {
+        const words = text => text.split(/[^a-z0-9\u0600-\u06ff]+/i).filter(Boolean);
+        const postings = new Map();
+        const docs = entries.map((entry, id) => {
+            const title = normalize(entry.title), sub = normalize(entry.sub);
+            const text = title + ' ' + sub + ' ' + normalize(entry.kind);
+            new Set(words(text)).forEach(word => {
+                if (!postings.has(word)) postings.set(word, new Set());
+                postings.get(word).add(id);
+            });
+            return { entry, title, text };
+        });
+        const vocabulary = [...postings.keys()];
+        function phraseIds(phrase) {
+            const parts = words(phrase);
+            if (!parts.length) return new Set();
+            const lists = parts.map(word => postings.get(word) || new Set()).sort((a,b)=>a.size-b.size);
+            return new Set([...lists[0]].filter(id => lists.every(list=>list.has(id)) && containsWord(docs[id].text, phrase)));
+        }
+        function candidates(token, prefix, fuzzy) {
+            const result = new Set();
+            const add = ids => ids.forEach(id => result.add(id));
+            expandSynonyms(token).forEach(form=>add(phraseIds(form)));
+            if (prefix && token.length >= 3) vocabulary.forEach(word=>{if(word.startsWith(token))add(postings.get(word));});
+            if (fuzzy && token.length >= 4 && !/\d/.test(token)) {
+                const max = token.length >= 8 ? 2 : 1;
+                vocabulary.forEach(word=>{
+                    // Do not turn opposite states or numbers into spelling variants.
+                    if (/\d/.test(word) || Math.abs(word.length-token.length)>max) return;
+                    if ((token.startsWith('hyper') && word.startsWith('hypo')) ||
+                        (token.startsWith('hypo') && word.startsWith('hyper'))) return;
+                    if (editDistance(token,word,max)<=max)add(postings.get(word));
+                });
+            }
+            return result;
+        }
+        function run(tokens, fuzzy) {
+            const lists=tokens.map((token,i)=>candidates(token,i===tokens.length-1,fuzzy)).sort((a,b)=>a.size-b.size);
+            if(!lists.length)return [];
+            return [...lists[0]].filter(id=>lists.every(list=>list.has(id)));
+        }
+        function search(query) {
+            const q=normalize(String(query||'').slice(0,120));
+            if(q.length<2)return [];
+            const tokens=words(q);
+            let ids=run(tokens,false), approximate=false;
+            // Full multiword synonyms also work when token-by-token expansion cannot.
+            const phraseMatches=new Set(ids);
+            expandSynonyms(q).forEach(form=>phraseIds(form).forEach(id=>phraseMatches.add(id)));
+            ids=[...phraseMatches];
+            if(!ids.length){ids=run(tokens,true);approximate=ids.length>0;}
+            return ids.map(id=>{
+                const d=docs[id], title=d.title;
+                let rank=title===q?1000:
+                    d.entry.kind==='Presentation' && expandSynonyms(q).some(form=>containsWord(title,form))?950:
+                    containsWord(title,q)?(words(title).length<=8?850:560):title.startsWith(q)?800:
+                    tokens.every(token=>containsWord(title,token))?700:
+                    approximate && tokens.every(token=>containsWord(title,token)||fuzzyContainsWord(title,token))?650:
+                    expandSynonyms(q).some(form=>containsWord(title,form))?600:300;
+                const doseIntent=/\b(?:dose|doses|dosing|mg|mcg|kg|antidote)\b/.test(q);
+                if(d.entry.kind==='Presentation')rank+=doseIntent?10:50;
+                if(d.entry.quick && doseIntent)rank+=25;
+                return {id,rank,hit:approximate?Object.assign({},d.entry,{approximate:true}):d.entry};
+            }).sort((a,b)=>b.rank-a.rank||a.id-b.id).map(item=>item.hit);
+        }
+        return {search};
+    }
+
     window.SEARCH_CORE = {
+        createIndex: createIndex,
         normalize: normalize,
         expandSynonyms: expandSynonyms,
         editDistance: editDistance,

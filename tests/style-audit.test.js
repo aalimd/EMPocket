@@ -1227,7 +1227,7 @@ test('repeated search reuses cached matches without exposing the cached result a
  if(!await ready(t))return;
  await load('#library');
  const r=await evaluate(`(()=>{const core=window.SEARCH_CORE,original=core.matches;let calls=0;core.matches=(...args)=>{calls++;return original(...args);};try{const first=window.EM_POCKET_UI.findSearchHits(' chest pressure '),count=first.length,initial=calls;first.length=0;const second=window.EM_POCKET_UI.findSearchHits('CHEST PRESSURE');return {count,initial,repeated:calls-initial,second:second.length};}finally{core.matches=original;}})()`);
- assert.ok(r.initial>0);assert.ok(r.count>0);assert.equal(r.repeated,0);assert.equal(r.second,r.count);
+ assert.ok(r.count>0);assert.equal(r.repeated,0);assert.equal(r.second,r.count);
 });
 
 test('topic journeys expose real practice and focused review links to the recorded activity',async t=>{
@@ -1255,5 +1255,75 @@ test('a touch tap on a header result navigates after the on-screen search focus 
   await cdp('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[point]});
   await cdp('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
   while(!await evaluate(`location.hash.startsWith('#chest-pain') && !!document.querySelector('#presentationTitle')`)){assert.ok(Date.now()<deadline);await wait(25);}
+ }finally{await cdp('Emulation.setTouchEmulationEnabled',{enabled:false});}
+});
+
+test('every presentation binds More, section shortcuts, accordions and recall controls',async t=>{
+ if(!await ready(t))return;
+ await load('#library');
+ const problems=await evaluate(`(async()=>{
+  const problems=[];let moreCount=0;
+  for(const cp of window.CP_DATA){
+   location.hash=cp.id;
+   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+   const stage=document.getElementById('stage');
+   if(stage.querySelector('#presentationTitle')?.textContent!==cp.name){problems.push(cp.id+': route not rendered');continue;}
+   if(cp.doseScope && stage.querySelector('[data-dose-scope]')?.textContent!==cp.doseScope)problems.push(cp.id+': missing dose scope');
+   for(const button of stage.querySelectorAll('.sec-head')){
+    const card=button.closest('.section-card');if(!card)continue;
+    const before=card.classList.contains('closed');button.click();
+    if(card.classList.contains('closed')===before)problems.push(cp.id+': accordion '+card.id);
+    button.click();
+   }
+   for(const button of stage.querySelectorAll('.guided-levels [data-learning-focus]')){
+    button.click();
+    if(button.getAttribute('aria-pressed')!=='true' || !stage.querySelector('[data-focus-body]')?.textContent.trim())problems.push(cp.id+': learning depth '+button.dataset.learningFocus);
+   }
+   stage.querySelector('[data-learning-focus="core"]')?.click();
+   for(const button of stage.querySelectorAll('[data-jump]')){
+    const target=document.getElementById('section-'+button.dataset.jump);
+    if(!target){problems.push(cp.id+': missing target '+button.dataset.jump);continue;}
+    if(target.classList.contains('section-card'))target.classList.add('closed');button.click();
+    if(target.classList.contains('closed') || !target.classList.contains('section-focus'))problems.push(cp.id+': inert shortcut '+button.className+' '+button.dataset.jump+' connected='+target.isConnected+' duplicates='+document.querySelectorAll('[id="'+target.id+'"]').length);
+    if(button.classList.contains('crisis-more'))moreCount++;
+   }
+   for(const button of stage.querySelectorAll('.reveal-btn')){
+    const answer=document.getElementById('recall-'+button.dataset.reveal);const before=answer.hidden;
+    button.click();if(answer.hidden===before)problems.push(cp.id+': recall '+button.dataset.reveal);
+   }
+  }
+  return {problems,moreCount,count:window.CP_DATA.length};
+ })()`);
+ assert.equal(problems.count,52);assert.ok(problems.moreCount>0);
+ assert.deepEqual(problems.problems,[]);
+});
+
+test('main destinations and authored learning detail pages render without browser errors',async t=>{
+ if(!await ready(t))return;
+ await load('#library');
+ const result=await evaluate(`(async()=>{
+  const errors=[];const capture=e=>errors.push(e.message);window.addEventListener('error',capture);
+  const routes=['library','learn~home','learn~tracks','learn~short','learn~practice','learn~visuals','learn~skills','learn~progress','learn~review','settings','ecg-hub','ecg','ecg-explorer','shift','calc',
+   ...window.EM_LEARNING_DATA.modules.map(m=>'learn~module-'+m.id),...window.EM_LEARNING_DATA.cases.map(c=>'learn~case-'+c.id),
+   'learn~visual-abg','learn~visual-lung','learn~visual-chest','learn~visual-ecg-pairs'];
+  const failures=[];
+  try{for(const route of routes){location.hash=route;await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));const stage=document.getElementById('stage'),h=stage.querySelector('h1');if(!h||!h.textContent.trim()||/This page is unavailable|could not open/.test(stage.textContent))failures.push(route);}}
+  finally{window.removeEventListener('error',capture);}
+  return {failures,errors,routes:routes.length};
+ })()`);
+ assert.ok(result.routes>=30);assert.deepEqual(result.failures,[]);assert.deepEqual(result.errors,[]);
+});
+
+test('More in Dont miss opens its section through a touch tap',async t=>{
+ if(!await ready(t))return;
+ await load('#chest-pain');
+ await cdp('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
+ try{
+  const point=await evaluate(`(()=>{const s=document.getElementById('section-dont-miss');if(!s.classList.contains('closed'))s.querySelector('.sec-head').click();const b=document.querySelector('.crisis-more');b.scrollIntoView({block:'center'});const r=b.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};})()`);
+  await cdp('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[point]});
+  await cdp('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  const deadline=Date.now()+3000;
+  while(!await evaluate(`!document.getElementById('section-dont-miss').classList.contains('closed')`)){assert.ok(Date.now()<deadline);await wait(25);}
+  assert.equal(await evaluate(`document.getElementById('section-dont-miss').querySelector('.sec-head').getAttribute('aria-expanded')`),'true');
  }finally{await cdp('Emulation.setTouchEmulationEnabled',{enabled:false});}
 });

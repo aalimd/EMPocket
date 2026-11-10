@@ -1,55 +1,55 @@
 /* The EM Pocket service worker — resilient app-shell caching for offline clinical reference. */
-const CACHE_VERSION = 'v271';
+const CACHE_VERSION = 'v272';
 // Preserve case, separators and the full path: sibling installations must never share caches.
 const SCOPE_KEY = encodeURIComponent(new URL(self.registration.scope).pathname);
 const CACHE_PREFIX = 'em-cps-scope-' + SCOPE_KEY + '-';
 const CACHE = CACHE_PREFIX + CACHE_VERSION;
 const CORE_ASSETS = [
     './',
-    './assets/app.css?v=20261110-learning-v72',
-    './assets/design.js?v=20261110-learning-v72',
-    './assets/css/tokens.css?v=20261110-learning-v72',
-    './assets/css/scientific.css?v=20261110-learning-v72',
-    './assets/css/base.css?v=20261110-learning-v72',
-    './assets/css/shell.css?v=20261110-learning-v72',
-    './assets/css/components.css?v=20261110-learning-v72',
-    './assets/css/views.css?v=20261110-learning-v72',
-    './assets/css/shift-tools.css?v=20261110-learning-v72',
-    './assets/css/ecg.css?v=20261110-learning-v72',
-    './assets/css/print.css?v=20261110-learning-v72',
-    './assets/em-learning-data.js?v=20261110-learning-v72',
+    './assets/app.css?v=20261110-search-v73',
+    './assets/design.js?v=20261110-search-v73',
+    './assets/css/tokens.css?v=20261110-search-v73',
+    './assets/css/scientific.css?v=20261110-search-v73',
+    './assets/css/base.css?v=20261110-search-v73',
+    './assets/css/shell.css?v=20261110-search-v73',
+    './assets/css/components.css?v=20261110-search-v73',
+    './assets/css/views.css?v=20261110-search-v73',
+    './assets/css/shift-tools.css?v=20261110-search-v73',
+    './assets/css/ecg.css?v=20261110-search-v73',
+    './assets/css/print.css?v=20261110-search-v73',
+    './assets/em-learning-data.js?v=20261110-search-v73',
     './assets/ptb-xl-LICENSE.txt',
     './assets/material-symbols-LICENSE.txt',
-    './assets/em-learning.js?v=20261110-learning-v72',
-    './assets/student-learning.js?v=20261110-learning-v72',
-    './assets/shift-tools.js?v=20261110-learning-v72',
-    './assets/search-core.js?v=20261110-learning-v72',
-    './assets/learning-store.js?v=20261110-learning-v72',
-    './assets/prefs-store.js?v=20261110-learning-v72',
-    './assets/search-index.js?v=20261110-learning-v72',
-    './assets/agreement-store.js?v=20261110-learning-v72',
-    './assets/navigation-store.js?v=20261110-learning-v72',
-    './assets/app.js?v=20261110-learning-v72',
-    './assets/data.js?v=20261110-learning-v72',
-    './assets/evidence.js?v=20261110-learning-v72',
-    './assets/ecg-svg.js?v=20261110-learning-v72',
-    './assets/ecg-engine.js?v=20261110-learning-v72',
-    './assets/ecg-case-tracings.js?v=20261110-learning-v72',
-    './assets/ecg-interactive.js?v=20261110-learning-v72',
-    './assets/ecg-curriculum.js?v=20261110-learning-v72',
-  './assets/ecg-explorer.js?v=20261110-learning-v72',
-  './assets/ecg-recordings.js?v=20261110-learning-v72'
+    './assets/em-learning.js?v=20261110-search-v73',
+    './assets/student-learning.js?v=20261110-search-v73',
+    './assets/shift-tools.js?v=20261110-search-v73',
+    './assets/search-core.js?v=20261110-search-v73',
+    './assets/learning-store.js?v=20261110-search-v73',
+    './assets/prefs-store.js?v=20261110-search-v73',
+    './assets/search-index.js?v=20261110-search-v73',
+    './assets/agreement-store.js?v=20261110-search-v73',
+    './assets/navigation-store.js?v=20261110-search-v73',
+    './assets/app.js?v=20261110-search-v73',
+    './assets/data.js?v=20261110-search-v73',
+    './assets/evidence.js?v=20261110-search-v73',
+    './assets/ecg-svg.js?v=20261110-search-v73',
+    './assets/ecg-engine.js?v=20261110-search-v73',
+    './assets/ecg-case-tracings.js?v=20261110-search-v73',
+    './assets/ecg-interactive.js?v=20261110-search-v73',
+    './assets/ecg-curriculum.js?v=20261110-search-v73',
+  './assets/ecg-explorer.js?v=20261110-search-v73',
+  './assets/ecg-recordings.js?v=20261110-search-v73'
 ];
 const OPTIONAL_ASSETS = [
-    './manifest.json?v=20261110-learning-v72',
-    './assets/icon.svg?v=20261110-learning-v72',
-    './assets/icon-192.png?v=20261110-learning-v72',
-    './assets/icon-512.png?v=20261110-learning-v72',
-    './assets/icon-maskable-512.png?v=20261110-learning-v72',
-    './assets/apple-touch-icon.png?v=20261110-learning-v72',
+    './manifest.json?v=20261110-search-v73',
+    './assets/icon.svg?v=20261110-search-v73',
+    './assets/icon-192.png?v=20261110-search-v73',
+    './assets/icon-512.png?v=20261110-search-v73',
+    './assets/icon-maskable-512.png?v=20261110-search-v73',
+    './assets/apple-touch-icon.png?v=20261110-search-v73',
     // Optional on purpose: a missing or mis-typed font must never block the
     // offline install, and the UI stays fully usable on the system stack.
-    './assets/fonts/PlusJakartaSans-Variable.ttf?v=20261110-learning-v72'
+    './assets/fonts/PlusJakartaSans-Variable.ttf?v=20261110-search-v73'
 ];
 
 // Cache the canonical directory URL: Pages redirects index.html to this URL.
