@@ -1,55 +1,55 @@
 /* The EM Pocket service worker — resilient app-shell caching for offline clinical reference. */
-const CACHE_VERSION = 'v281';
+const CACHE_VERSION = 'v282';
 // Preserve case, separators and the full path: sibling installations must never share caches.
 const SCOPE_KEY = encodeURIComponent(new URL(self.registration.scope).pathname);
 const CACHE_PREFIX = 'em-cps-scope-' + SCOPE_KEY + '-';
 const CACHE = CACHE_PREFIX + CACHE_VERSION;
 const CORE_ASSETS = [
     './',
-    './assets/app.css?v=20261113-oncology-v82',
-    './assets/design.js?v=20261113-oncology-v82',
-    './assets/css/tokens.css?v=20261113-oncology-v82',
-    './assets/css/scientific.css?v=20261113-oncology-v82',
-    './assets/css/base.css?v=20261113-oncology-v82',
-    './assets/css/shell.css?v=20261113-oncology-v82',
-    './assets/css/components.css?v=20261113-oncology-v82',
-    './assets/css/views.css?v=20261113-oncology-v82',
-    './assets/css/shift-tools.css?v=20261113-oncology-v82',
-    './assets/css/ecg.css?v=20261113-oncology-v82',
-    './assets/css/print.css?v=20261113-oncology-v82',
-    './assets/em-learning-data.js?v=20261113-oncology-v82',
+    './assets/app.css?v=20261113-clinical-v83',
+    './assets/design.js?v=20261113-clinical-v83',
+    './assets/css/tokens.css?v=20261113-clinical-v83',
+    './assets/css/scientific.css?v=20261113-clinical-v83',
+    './assets/css/base.css?v=20261113-clinical-v83',
+    './assets/css/shell.css?v=20261113-clinical-v83',
+    './assets/css/components.css?v=20261113-clinical-v83',
+    './assets/css/views.css?v=20261113-clinical-v83',
+    './assets/css/shift-tools.css?v=20261113-clinical-v83',
+    './assets/css/ecg.css?v=20261113-clinical-v83',
+    './assets/css/print.css?v=20261113-clinical-v83',
+    './assets/em-learning-data.js?v=20261113-clinical-v83',
     './assets/ptb-xl-LICENSE.txt',
     './assets/material-symbols-LICENSE.txt',
-    './assets/em-learning.js?v=20261113-oncology-v82',
-    './assets/student-learning.js?v=20261113-oncology-v82',
-    './assets/shift-tools.js?v=20261113-oncology-v82',
-    './assets/search-core.js?v=20261113-oncology-v82',
-    './assets/learning-store.js?v=20261113-oncology-v82',
-    './assets/prefs-store.js?v=20261113-oncology-v82',
-    './assets/search-index.js?v=20261113-oncology-v82',
-    './assets/agreement-store.js?v=20261113-oncology-v82',
-    './assets/navigation-store.js?v=20261113-oncology-v82',
-    './assets/app.js?v=20261113-oncology-v82',
-    './assets/data.js?v=20261113-oncology-v82',
-    './assets/evidence.js?v=20261113-oncology-v82',
-    './assets/ecg-svg.js?v=20261113-oncology-v82',
-    './assets/ecg-engine.js?v=20261113-oncology-v82',
-    './assets/ecg-case-tracings.js?v=20261113-oncology-v82',
-    './assets/ecg-interactive.js?v=20261113-oncology-v82',
-    './assets/ecg-curriculum.js?v=20261113-oncology-v82',
-  './assets/ecg-explorer.js?v=20261113-oncology-v82',
-  './assets/ecg-recordings.js?v=20261113-oncology-v82'
+    './assets/em-learning.js?v=20261113-clinical-v83',
+    './assets/student-learning.js?v=20261113-clinical-v83',
+    './assets/shift-tools.js?v=20261113-clinical-v83',
+    './assets/search-core.js?v=20261113-clinical-v83',
+    './assets/learning-store.js?v=20261113-clinical-v83',
+    './assets/prefs-store.js?v=20261113-clinical-v83',
+    './assets/search-index.js?v=20261113-clinical-v83',
+    './assets/agreement-store.js?v=20261113-clinical-v83',
+    './assets/navigation-store.js?v=20261113-clinical-v83',
+    './assets/app.js?v=20261113-clinical-v83',
+    './assets/data.js?v=20261113-clinical-v83',
+    './assets/evidence.js?v=20261113-clinical-v83',
+    './assets/ecg-svg.js?v=20261113-clinical-v83',
+    './assets/ecg-engine.js?v=20261113-clinical-v83',
+    './assets/ecg-case-tracings.js?v=20261113-clinical-v83',
+    './assets/ecg-interactive.js?v=20261113-clinical-v83',
+    './assets/ecg-curriculum.js?v=20261113-clinical-v83',
+  './assets/ecg-explorer.js?v=20261113-clinical-v83',
+  './assets/ecg-recordings.js?v=20261113-clinical-v83'
 ];
 const OPTIONAL_ASSETS = [
-    './manifest.json?v=20261113-oncology-v82',
-    './assets/icon.svg?v=20261113-oncology-v82',
-    './assets/icon-192.png?v=20261113-oncology-v82',
-    './assets/icon-512.png?v=20261113-oncology-v82',
-    './assets/icon-maskable-512.png?v=20261113-oncology-v82',
-    './assets/apple-touch-icon.png?v=20261113-oncology-v82',
+    './manifest.json?v=20261113-clinical-v83',
+    './assets/icon.svg?v=20261113-clinical-v83',
+    './assets/icon-192.png?v=20261113-clinical-v83',
+    './assets/icon-512.png?v=20261113-clinical-v83',
+    './assets/icon-maskable-512.png?v=20261113-clinical-v83',
+    './assets/apple-touch-icon.png?v=20261113-clinical-v83',
     // Optional on purpose: a missing or mis-typed font must never block the
     // offline install, and the UI stays fully usable on the system stack.
-    './assets/fonts/PlusJakartaSans-Variable.ttf?v=20261113-oncology-v82'
+    './assets/fonts/PlusJakartaSans-Variable.ttf?v=20261113-clinical-v83'
 ];
 
 // Cache the canonical directory URL: Pages redirects index.html to this URL.

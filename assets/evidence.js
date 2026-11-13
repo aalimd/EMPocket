@@ -6,6 +6,15 @@
 (function () {
     'use strict';
     const sources = {
+        acmtNAC: ["ACMT IV acetylcysteine duration and stopping criteria (2026)", "https://www.acmt.net/news/acmt-practice-statement-duration-of-intravenous-acetylcysteine-therapy-following-acetaminophen-overdose-2026-update/"],
+        snapNAC: ["SNAP 12-hour IV acetylcysteine regimen study", "https://pmc.ncbi.nlm.nih.gov/articles/PMC6610779/"],
+        cchr: ["Canadian CT Head Rule derivation study", "https://pubmed.ncbi.nlm.nih.gov/11356436/"],
+        pecarn: ["PECARN pediatric blunt head trauma decision rule derivation and validation", "https://pubmed.ncbi.nlm.nih.gov/19758692/"],
+        intubationACEP: ["ACEP adult emergency endotracheal intubation clinical policy (2026)", "https://www.acep.org/patient-care/clinical-policies/endotracheal-intubation"],
+        intubationTrial: ["Ketamine versus etomidate for emergency intubation in critically ill adults, randomized trial", "https://pubmed.ncbi.nlm.nih.gov/41369227/"],
+        waoAnaphylaxis: ["World Allergy Organization anaphylaxis guidance (2020)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC7607509/"],
+        jtfppAnaphylaxis: ["JTFPP anaphylaxis practice parameter (2023 update)", "https://pubmed.ncbi.nlm.nih.gov/38108678/"],
+        hillierSodium: ["Hillier et al.: sodium correction estimate in hyperglycemia", "https://pubmed.ncbi.nlm.nih.gov/10225241/"],
         oncologyGI: ["AGIHO/DGHO adult gastrointestinal complications guideline, including neutropenic enterocolitis", "https://pmc.ncbi.nlm.nih.gov/articles/PMC5748412/"],
         neutropenicNICE: ["NICE CG151: neutropenic sepsis in people with cancer", "https://www.nice.org.uk/guidance/cg151/chapter/Recommendations"],
         neutropenicASCO: ["ASCO/IDSA adult fever and neutropenia guideline (2018)", "https://pubmed.ncbi.nlm.nih.gov/29461916/"],
@@ -150,15 +159,15 @@
         'vaginal-bleeding': ['pph', 'rh', 'ectopic', 'heavyBleeding', 'endometrialReferral', 'antepartumExam', 'previaExam'], 'pregnancy-emergency': ['special', 'pe', 'rh', 'hyperemesis', 'pph', 'obstetricBP', 'obstetricSevereFeatures', 'ectopicDiagnosis', 'pregnancyTrauma'],
         'scrotal-pain': ['epididymitis'], seizures: ['seizures', 'esett', 'firstSeizure'], hemoptysis: ['hemoptysis', 'pe'],
         'nausea-vomiting': ['hyperemesis', 'dka', 'adrenal', 'chest', 'chs'], diarrhea: ['cdi', 'infectiousDiarrhea'], cyanosis: ['methb', 'neonate', 'special', 'oximetry', 'coExposure'],
-        overdose: ['special', 'acetaminophen', 'selfharm'], jaundice: ['acetaminophen', 'alfAssessment', 'alfEASL', 'cholangitis'], 'back-pain': ['mscc', 'back'], 'pediatric-fever': ['infant', 'infant90', 'childFever', 'kawasaki', 'meningitis'], hyperglycemia: ['dka', 'adrenal'],
+        overdose: ['special', 'acetaminophen', 'selfharm', 'acmtNAC', 'snapNAC'], jaundice: ['acetaminophen', 'alfAssessment', 'alfEASL', 'cholangitis'], 'back-pain': ['mscc', 'back'], 'pediatric-fever': ['infant', 'infant90', 'childFever', 'kawasaki', 'meningitis'], hyperglycemia: ['dka', 'adrenal', 'hillierSodium'],
         'heat-cold': ['special'], palpitations: ['af', 'als', 'ambulatoryECG'], syncope: ['syncope', 'syncopeGuideline', 'als'],
-        'airway-stridor': ['special', 'croup'], anaphylaxis: ['special', 'rcukAnaphylaxis'], 'flank-pain': ['stones'],
+        'airway-stridor': ['special', 'croup', 'intubationACEP', 'intubationTrial'], anaphylaxis: ['special', 'rcukAnaphylaxis', 'waoAnaphylaxis', 'jtfppAnaphylaxis'], 'flank-pain': ['stones'],
         'urinary-retention': ['stones', 'urethralTrauma', 'catheterCare'], edema: ['pe', 'dvt', 'dvtUltrasound'], 'multiple-trauma': ['headinjury', 'majorTrauma', 'traumaBleeding'],
         'falls-geriatric-trauma': ['headinjury', 'falls', 'occultHip'], 'pediatric-respiratory-distress': ['bronchiolitis', 'asthma'],
         gib: ['ugib', 'lgib', 'lgibASGE'], 'red-eye': ['keratitis', 'chemicalEye'], 'sore-throat': ['gas', 'gasTesting'],
         suicidal: ['selfharm'], constipation: ['constipation'], 'limb-ischemia': ['pad'], rash: ['ssti'],
         'cardiac-arrest': ['acls', 'als', 'special', 'cardioversionEnergy', 'postArrest'], electrolytes: ['hyperkalemia', 'hyponatremia', 'sodiumUS', 'potassiumKDIGO'],
-        'head-injury': ['tbi', 'headinjury', 'mtbi', 'csfLeak'], 'hypertensive-emergency': ['hypertension', 'stroke', 'acuteBP', 'aorta', 'ich'],
+        'head-injury': ['tbi', 'headinjury', 'mtbi', 'csfLeak', 'cchr', 'pecarn', 'intubationACEP', 'intubationTrial'], 'hypertensive-emergency': ['hypertension', 'stroke', 'acuteBP', 'aorta', 'ich'],
         burns: ['burns', 'burnResuscitation', 'burnReferral', 'burnCooling', 'special'], 'alcohol-withdrawal': ['withdrawal', 'wernickeUK'], 'thyroid-storm': ['stormConsensus', 'myxoedemaConsensus', 'ataThyrotoxicosis', 'ataHypothyroidism'],
         ecg: ['mi', 'af', 'als', 'special', 'pericarditis']
     };
@@ -261,17 +270,20 @@
     },
     "overdose": {
         "checked": "2026-11-10",
-        "scope": "recurrent opioid toxicity, prevention and psychosocial care",
+        "scope": "acetaminophen treatment and stopping criteria, opioid aftercare, and sodium-channel blockade reassessment",
         "sources": [
             "special",
-            "selfharm"
+            "selfharm",
+            "acmtNAC",
+            "snapNAC"
         ]
     },
     "hyperglycemia": {
         "checked": "2026-11-10",
-        "scope": "adult crisis monitoring, insulin transition and discharge preparation",
+        "scope": "adult hyperglycemic crises, insulin transition and osmolality calculation",
         "sources": [
-            "dka"
+            "dka",
+            "hillierSodium"
         ]
     },
     "flank-pain": {
@@ -334,11 +346,15 @@
     },
     "head-injury": {
         "checked": "2026-11-10",
-        "scope": "selected imaging/disposition advice and basilar-fracture antibiotic clarification",
+        "scope": "adult minor head injury, imaging rule scope, and emergency intubation precautions",
         "sources": [
             "tbi",
             "mtbi",
-            "csfLeak"
+            "csfLeak",
+            "cchr",
+            "pecarn",
+            "intubationACEP",
+            "intubationTrial"
         ]
     },
     "pediatric-fever": {
@@ -359,9 +375,11 @@
     },
     "anaphylaxis": {
         "checked": "2026-11-10",
-        "scope": "posture, tryptase limitations, escalation and discharge teaching",
+        "scope": "recognition, IM epinephrine, positioning, refractory care and discharge teaching",
         "sources": [
-            "rcukAnaphylaxis"
+            "rcukAnaphylaxis",
+            "waoAnaphylaxis",
+            "jtfppAnaphylaxis"
         ]
     },
     "burns": {
@@ -508,9 +526,11 @@
     },
     "airway-stridor": {
         "checked": "2026-11-10",
-        "scope": "selected croup deterioration, recurrence and observation principles",
+        "scope": "selected croup recognition and observation, and emergency intubation precautions",
         "sources": [
-            "croup"
+            "croup",
+            "intubationACEP",
+            "intubationTrial"
         ]
     },
     "edema": {

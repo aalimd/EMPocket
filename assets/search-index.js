@@ -15,13 +15,13 @@
 
     const QUICK_SEARCH_CARDS = [
         { route: 'shift', term: 'Rapid Sequence Intubation (RSI)', target: 'airway-stridor', kind: 'Quick · airway dose',
-          text: 'Rapid Sequence Intubation RSI induction paralytics ketamine 1-2 mg/kg IV etomidate 0.3 mg/kg reduce shock rocuronium 1.2 mg/kg roc succinylcholine suxamethonium 1.5 mg/kg post-intubation sedation push-dose vasopressor' },
+          text: 'Rapid Sequence Intubation RSI induction paralytics ketamine 1-2 mg/kg IV etomidate 0.3 mg/kg rocuronium 1.2 mg/kg roc succinylcholine suxamethonium 1.5 mg/kg post-intubation sedation push-dose vasopressor' },
         { route: 'shift', term: 'Shock Vasopressors & Inotropes', target: 'shock', kind: 'Quick · vasopressor dose',
           text: 'Shock first-line vasopressors inotropes norepinephrine noradrenaline 0.05-0.5 mcg/kg/min target MAP 65 epinephrine adrenaline 0.05-0.5 mcg/kg/min dobutamine 2-20 mcg/kg/min' },
         { route: 'shift', term: 'High-Yield Antidotes & Hyperkalemia', target: 'overdose', kind: 'Quick · antidote dose',
-          text: 'Antidotes hyperkalemia acetaminophen paracetamol N-acetylcysteine NAC acetylcysteine Rumack-Matthew opioid naloxone narcan 0.04-0.4 mg IV TCA tricyclic sodium bicarbonate 1-2 mEq/kg QRS calcium gluconate 10% 10-30 mL calcium chloride insulin dextrose albuterol salbutamol nebulized potassium removal' },
+          text: 'Antidotes hyperkalemia acetaminophen paracetamol N-acetylcysteine NAC acetylcysteine Rumack-Matthew opioid naloxone narcan 0.04-0.4 mg IV TCA tricyclic sodium bicarbonate 1-2 mEq/kg QRS calcium gluconate 10% 30 mL over 10 minutes calcium chloride insulin dextrose albuterol salbutamol nebulized potassium removal' },
         { route: 'shift', term: 'Anaphylaxis IM Epinephrine', target: 'anaphylaxis', kind: 'Quick · dose',
-          text: 'Anaphylaxis first-line IM epinephrine adrenaline 0.3-0.5 mg adult child 0.01 mg/kg max 0.3 mg autoinjector 0.15 mg 0.3 mg RCUK age bands 0.15 0.3 0.5 mg crystalloid 20 mL/kg' },
+          text: 'Anaphylaxis first-line IM epinephrine adrenaline 0.3-0.5 mg adult child 0.01 mg/kg max 0.3 mg autoinjector 0.15 mg 0.3 mg RCUK age bands 0.15 0.3 0.5 mg crystalloid 10 mL/kg children' },
         { route: 'shift', term: 'Status Epilepticus Timed Escalation', target: 'seizures', kind: 'Quick · dose',
           text: 'Status epilepticus benzodiazepine midazolam 10 mg 5 mg 0.2 mg/kg lorazepam 0.1 mg/kg max 4 mg levetiracetam 60 mg/kg fosphenytoin 20 mg PE/kg valproate 40 mg/kg ESETT' },
         { route: 'shift', term: 'HEART Pathway & hs-Troponin', target: 'chest-pain', kind: 'Quick · decision rule',
@@ -30,7 +30,7 @@
           text: 'PERC rule pulmonary embolism pretest probability D-dimer age-adjusted YEARS CTPA Wells' },
         { route: 'shift', term: 'NEXUS & Canadian C-Spine', target: 'multiple-trauma', kind: 'Quick · decision rule',
           text: 'NEXUS Canadian C-Spine rule cervical spine clearance blunt trauma imaging rotation' },
-        { route: 'shift', term: 'PECARN Pediatric Head Trauma', target: 'headache', kind: 'Quick · decision rule',
+        { route: 'shift', term: 'PECARN Pediatric Head Trauma', target: 'head-injury', kind: 'Quick · decision rule',
           text: 'PECARN pediatric head trauma rule CT head GCS altered mental status skull fracture scalp hematoma LOC mechanism' }
     ];
 

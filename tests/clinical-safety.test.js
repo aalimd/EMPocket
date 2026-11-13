@@ -107,3 +107,13 @@ test('aortic dose guidance in Chest Pain is explicitly scoped and uses perfusion
  assert.ok(ev.topics['chest-pain'].includes('aorta'));
  assert.doesNotMatch(JSON.stringify(cp.doses),/heart rate ≤60|when beta-blockade contraindicated/);
 });
+
+test('acetylcysteine protocols and stopping criteria remain distinct', () => {
+ const overdose = topics.find(topic => topic.id === 'overdose');
+ const [, rows] = overdose.doses.find(([title]) => title.includes('acetylcysteine'));
+ const snap = rows.find(line => line.includes('SNAP'));
+ assert.match(snap, /100 mg\/kg over 2 h, then 200 mg\/kg over 10 h/);
+ assert.doesNotMatch(snap, /100 mg\/kg over 16 h/);
+ assert.match(rows.join(' '), /acetaminophen <10 µg\/mL.*INR <2/);
+ assert.doesNotMatch(prose('overdose'), /target QRS <100 ms/);
+});

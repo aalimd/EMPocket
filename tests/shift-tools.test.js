@@ -31,13 +31,18 @@ test('GCS sums components and reports severe at 8', () => {
 test('Wells DVT applies the −2 alternative-diagnosis weight', () => {
     const high = ev('wells-dvt', { ca: 1, swell: 1, calf: 1, tender: 1 });
     assert.match(high.band, /DVT likely/);
+    assert.match(ev('wells-dvt', { ca: 1 }).band, /unlikely/);
+    assert.match(ev('wells-dvt', { ca: 1, swell: 1 }).advice, /ultrasound first/);
     const cancelled = ev('wells-dvt', { swell: 1, alt: 1 });
     assert.ok(cancelled.points < 0, 'alternative diagnosis must reduce the score');
 });
 
-test('Canadian CT Head flags CT when any high-risk feature is present', () => {
-    assert.match(ev('canadian-ct-head', {}).band, /CT not indicated/);
-    assert.match(ev('canadian-ct-head', { gcs: 1 }).band, /CT indicated/);
+test('Canadian CT Head Rule requires eligibility and includes all seven findings', () => {
+    assert.match(ev('canadian-ct-head', {}).band, /Confirm rule eligibility/);
+    assert.match(ev('canadian-ct-head', { eligible: true }).band, /CT not indicated/);
+    for (const key of ['gcs', 'open', 'basal', 'vomit', 'age65', 'amnesia', 'mechanism']) {
+        assert.match(ev('canadian-ct-head', { eligible: true, [key]: true }).band, /CT indicated/, key);
+    }
 });
 
 test('anion gap and delta ratio match the worked examples', () => {
@@ -51,8 +56,10 @@ test('anion gap and delta ratio match the worked examples', () => {
 
 test('corrected sodium uses 2.4 mmol/L per 100 mg/dL glucose', () => {
     const r = ev('corrected-sodium', { na: 128, glu: 400, bun: 14 });
-    assert.match(r.band, /Corrected Na⁺ 135/);
-    assert.match(r.band, /osm 283/);
+    assert.match(r.band, /Corrected Na⁺ 135\.2/);
+    assert.match(r.band, /effective 278\.2.*total 283\.2/);
+    assert.doesNotMatch(ev('corrected-sodium', { na: 128, glu: 400 }).band, /total/);
+    assert.equal(ev('corrected-sodium', { na: 140, glu: 60 }).points, 140);
 });
 
 test('QTc computes Bazett and Fridericia', () => {
@@ -63,8 +70,9 @@ test('QTc computes Bazett and Fridericia', () => {
 });
 
 test('PERC requires all eight criteria to be absent', () => {
-    assert.match(ev('perc', {}).band, /PERC negative/);
-    assert.match(ev('perc', { age: 1 }).band, /PERC positive/);
+    assert.match(ev('perc', {}).band, /Assess pretest probability/);
+    assert.match(ev('perc', { lowPretest: true }).band, /PERC negative/);
+    assert.match(ev('perc', { lowPretest: true, age: true }).band, /PERC positive/);
 });
 
 test('paediatric weight-based doses scale with weight and respect maxima', () => {
@@ -73,10 +81,17 @@ test('paediatric weight-based doses scale with weight and respect maxima', () =>
     assert.ok(Math.abs(byKey['epi-arrest'].value - 0.12) < 1e-9);
     assert.ok(Math.abs(byKey['defib'].value - 24) < 1e-9);
     assert.ok(Math.abs(byKey['amio'].value - 60) < 1e-9);
-    assert.ok(Math.abs(byKey['fluid'].value - 240) < 1e-9);
+    assert.ok(Math.abs(byKey['fluid'].value - 120) < 1e-9);
     /* Maxima must cap in a large child. */
     const big = Object.fromEntries(ST.pedsDoses(60).map(x => [x.key, x]));
     assert.equal(big['epi-arrest'].value, 0.6);          /* 60 kg × 0.01, under the 1 mg cap */
+    assert.equal(big['epi-anaph'].value, 0.3);
+    assert.equal(big['epi-anaph'].capped, true);
+    assert.equal(byKey['d10'].value, 24);
+    assert.equal(byKey['ceftriaxone'].value, 1200);
+    const infantAtropine = ST.pedsDoses(3).find(row => row.key === 'atropine');
+    assert.equal(infantAtropine.value, 0.1);
+    assert.equal(infantAtropine.floored, true);
     const huge = Object.fromEntries(ST.pedsDoses(200).map(x => [x.key, x]));
     assert.equal(huge['epi-arrest'].value, 1);
     assert.equal(huge['epi-arrest'].capped, true);

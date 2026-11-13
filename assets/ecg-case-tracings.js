@@ -515,7 +515,7 @@
     { lead: 'V3', wave: 'dewinter', title: 'de Winter: J-point STD → tall T', label: 'de Winter pattern: 1–3 mm upsloping ST depression at the J-point continuing into tall, prominent, symmetric T waves in precordial leads. Acute proximal LAD occlusion.' },
     { lead: 'aVR', wave: 'dewinter', title: 'aVR: reciprocal STE', label: 'Lead aVR elevation can accompany the precordial de Winter pattern; it is supportive and not required.' }
   ];
-  cases['dewinter'].note2 = 'de Winter is an anterior OMI equivalent (~2% of LAD occlusions). Do NOT wait for millimeter STEMI — activate cath lab.';
+  cases['dewinter'].note2 = 'In a compatible ischemic presentation, seek immediate cardiology/reperfusion assessment. The de Winter pattern can occur without classic ST elevation.';
   /* Smith-modified Sgarbossa in LBBB (paced uses same thresholds) — one lead
      per criterion so concordance vs discordance is actually visible, like a
      real ECG: V5 lateral positive QRS + concordant STE, V3 anterior negative

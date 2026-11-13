@@ -78,6 +78,7 @@
             summary: 'Pulmonary Embolism Rule-out Criteria. All 8 must be absent to rule out PE without D-dimer — only when pretest probability is already very low (< 15%).',
             caveat: 'Do NOT apply when pretest probability is not low. PERC does not override clinical gestalt, pregnancy, or a Wells/age-adjusted D-dimer pathway when indicated.',
             inputs: [
+                { key: 'lowPretest', label: 'I confirmed very low pretest probability and assessed all eight PERC criteria', type: 'check' },
                 { key: 'age', label: 'Age ≥ 50 years', type: 'check' },
                 { key: 'hr', label: 'Heart rate ≥ 100/min', type: 'check' },
                 { key: 'sat', label: 'SpO₂ < 95% on room air', type: 'check' },
@@ -88,7 +89,8 @@
                 { key: 'estro', label: 'Exogenous estrogen use', type: 'check' }
             ],
             compute: function (v) {
-                const hits = Object.keys(v).filter(function (k) { return v[k]; }).length;
+                const hits = this.inputs.filter(input => input.key !== 'lowPretest' && v[input.key]).length;
+                if (!v.lowPretest) return { points: hits, band: 'Assess pretest probability first', riskLevel: 'emergent', advice: 'PERC is for adults with very low pretest probability. Use a validated PE pathway for other patients.' };
                 if (hits === 0) return { points: 0, band: 'PERC negative', riskLevel: 'common', advice: 'All 8 criteria absent: in a very-low-pretest patient, PE can be excluded without D-dimer or imaging. Document the low gestalt. If pretest probability is not low, do not use this result.' };
                 return { points: hits, band: hits + ' of 8 present — PERC positive', riskLevel: 'emergent', advice: 'PERC cannot rule out PE. Use a validated pathway: age-adjusted D-dimer (age × 10 ng/mL FEU if > 50 yr) or YEARS before CTPA. High pretest probability → proceed directly to CTPA.' };
             }
@@ -102,7 +104,7 @@
             caveat: 'Combine with D-dimer only for low/intermediate probability. Do not use D-dimer to exclude PE in high probability or high-risk presentations.',
             inputs: [
                 { key: 'dvt', label: 'Clinical signs of DVT', type: 'check', weight: 3 },
-                { key: 'alt', label: 'PE is the most likely diagnosis (or equally likely)', type: 'check', weight: 3 },
+                { key: 'alt', label: 'PE is more likely than an alternative diagnosis', type: 'check', weight: 3 },
                 { key: 'hr', label: 'Heart rate > 100/min', type: 'check', weight: 1.5 },
                 { key: 'immob', label: 'Immobilisation ≥ 3 days or surgery in previous 4 weeks', type: 'check', weight: 1.5 },
                 { key: 'prev', label: 'Previous DVT or PE', type: 'check', weight: 1.5 },
@@ -201,15 +203,15 @@
             name: 'Wells Score — DVT',
             topic: 'Deep vein thrombosis',
             href: '#edema',
-            summary: 'Pretest probability estimate for a first lower-limb deep vein thrombosis.',
-            caveat: 'Use with a validated D-dimer pathway for low/intermediate probability. Do not use D-dimer alone to exclude DVT in high probability.',
+            summary: 'NICE two-level Wells score for suspected lower-limb DVT in adults.',
+            caveat: 'Use the adult NICE NG158 pathway. Pregnancy requires a separate assessment pathway.',
             inputs: [
                 { key: 'ca', label: 'Active cancer (treatment within 6 months or palliative)', type: 'check', weight: 1 },
                 { key: 'para', label: 'Paralysis, paresis or recent plaster immobilisation of the leg', type: 'check', weight: 1 },
-                { key: 'bed', label: 'Bedridden ≥ 3 days or major surgery within 12 weeks', type: 'check', weight: 1 },
+                { key: 'bed', label: 'Recently bedridden ≥3 days or major surgery with general or regional anesthesia within 12 weeks', type: 'check', weight: 1 },
                 { key: 'tender', label: 'Tenderness along the deep venous system', type: 'check', weight: 1 },
                 { key: 'swell', label: 'Entire leg swollen', type: 'check', weight: 1 },
-                { key: 'calf', label: 'Calf swelling ≥ 3 cm greater than the other side', type: 'check', weight: 1 },
+                { key: 'calf', label: 'Calf ≥3 cm larger than the other side, measured 10 cm below the tibial tuberosity', type: 'check', weight: 1 },
                 { key: 'pitting', label: 'Pitting oedema confined to the symptomatic leg', type: 'check', weight: 1 },
                 { key: 'collat', label: 'Collateral (non-varicose) superficial veins', type: 'check', weight: 1 },
                 { key: 'prev', label: 'Previously documented DVT', type: 'check', weight: 1 },
@@ -218,30 +220,33 @@
             compute: function (v) {
                 let points = 0;
                 this.inputs.forEach(function (i) { if (v[i.key]) points += i.weight; });
-                if (points <= 0) return { points: points, band: 'DVT unlikely (≤ 0)', riskLevel: 'common', advice: 'DVT unlikely: a negative high-sensitivity D-dimer can exclude DVT; if positive, proceed to duplex ultrasound.' };
-                if (points <= 2) return { points: points, band: 'DVT likely (1–2)', riskLevel: 'emergent', advice: 'Intermediate: obtain a D-dimer and/or duplex ultrasound per local pathway; treat on suspicion if the ultrasound will be delayed.' };
-                return { points: points, band: 'DVT likely (≥ 3)', riskLevel: 'critical', advice: 'High probability: proceed to duplex ultrasound; consider empirical anticoagulation while awaiting imaging if bleeding risk allows.' };
+                if (points <= 1) return { points: points, band: 'DVT unlikely (≤1)', riskLevel: 'common', advice: 'Start with D-dimer. If positive, obtain proximal leg ultrasound. Follow local timing and interim anticoagulation guidance if testing is delayed.' };
+                return { points: points, band: 'DVT likely (≥2)', riskLevel: 'emergent', advice: 'Obtain proximal leg ultrasound first. If negative, check D-dimer and arrange a repeat proximal scan in 6–8 days if D-dimer is positive. If imaging is delayed, use the local interim anticoagulation pathway and check bleeding risk.' };
             }
         },
         {
             id: 'canadian-ct-head',
             name: 'Canadian CT Head Rule',
             topic: 'Minor head injury (GCS 13–15)',
-            href: '#multiple-trauma',
+            href: '#head-injury',
             summary: 'CT-head decision support for minor head trauma with GCS 13–15 after a witnessed loss of consciousness, amnesia or confusion.',
-            caveat: 'Applies to adults with minor head injury only. Do not use for GCS <13, age <16, anticoagulation, seizure, or obvious open/depressed skull fracture — image these directly.',
+            caveat: 'Apply only to eligible patients aged 16 or older with blunt minor head injury and loss of consciousness, amnesia or disorientation. Use a separate assessment for anticoagulation, antiplatelets other than aspirin, post-traumatic seizure, focal deficits or other exclusions.',
             inputs: [
-                { key: 'gcs', label: 'GCS < 15 at 2 h after injury', type: 'check', weight: 1 },
+                { key: 'eligible', label: 'I confirmed eligibility and assessed all seven criteria', type: 'check' },
+                { key: 'gcs', label: 'GCS <15 at 2 hours after injury', type: 'check', weight: 1 },
+                { key: 'open', label: 'Suspected open or depressed skull fracture', type: 'check', weight: 1 },
+                { key: 'basal', label: 'Signs of basal skull fracture', type: 'check', weight: 1 },
                 { key: 'vomit', label: 'Vomiting ≥ 2 times', type: 'check', weight: 1 },
                 { key: 'age65', label: 'Age ≥ 65 years', type: 'check', weight: 1 },
                 { key: 'amnesia', label: 'Amnesia before impact > 30 min', type: 'check', weight: 1 },
-                { key: 'mechanism', label: 'Dangerous mechanism (pedestrian, ejection, fall > 1 m / 5 stairs)', type: 'check', weight: 1 }
+                { key: 'mechanism', label: 'Dangerous mechanism (pedestrian, ejection, fall from ≥3 feet or ≥5 stairs)', type: 'check', weight: 1 }
             ],
             compute: function (v) {
                 let points = 0;
-                this.inputs.forEach(function (i) { if (v[i.key]) points += i.weight; });
+                this.inputs.forEach(function (i) { if (v[i.key] && i.weight) points += i.weight; });
+                if (!v.eligible) return { points: points, band: 'Confirm rule eligibility', riskLevel: 'emergent', advice: 'Check the inclusion and exclusion criteria before using this rule to exclude imaging. Suspected skull fracture or neurological deterioration needs urgent assessment.' };
                 if (points === 0) return { points: points, band: 'CT not indicated by the rule', riskLevel: 'common', advice: 'No high- or medium-risk feature: CT is not indicated by the Canadian CT Head Rule. Provide head-injury observation advice and return precautions.' };
-                return { points: points, band: points + ' feature(s) present — CT indicated', riskLevel: 'emergent', advice: 'At least one high-risk criterion is present: obtain a non-contrast CT head. A normal CT does not by itself permit discharge — apply observation criteria and anticoagulation status.' };
+                return { points: points, band: points + ' feature(s) present — CT indicated', riskLevel: 'emergent', advice: 'At least one high- or medium-risk criterion is present. Obtain a non-contrast head CT. A normal CT does not by itself permit discharge — apply observation criteria and anticoagulation status.' };
             }
         },
         {
@@ -280,29 +285,29 @@
             id: 'corrected-sodium',
             name: 'Corrected sodium & osmolality',
             topic: 'Dysnatraemia',
-            href: '#ams',
-            summary: 'Glucose-corrected sodium and calculated serum osmolality with the osmolal gap.',
-            caveat: 'Correction factors differ between references; the 2.4 mmol/L per 10 mg/dL (100 mg/dL) glucose rule is a common bedside estimate. Confirm with your local lab method. Interpret the osmolal gap cautiously.',
+            href: '#hyperglycemia',
+            summary: 'Estimate glucose-corrected sodium and calculate effective osmolality. Add BUN to calculate total osmolality.',
+            caveat: 'This estimate adds 2.4 mmol/L to measured sodium per 100 mg/dL of glucose above 100 mg/dL. Correction factors vary. Use measured sodium for the osmolality calculations.',
             inputs: [
                 { key: 'na', label: 'Measured sodium (mmol/L)', type: 'number', placeholder: 'e.g. 128' },
                 { key: 'glu', label: 'Glucose (mg/dL)', type: 'number', placeholder: 'e.g. 400' },
-                { key: 'bun', label: 'Urea / BUN (mg/dL, optional)', type: 'number', placeholder: 'e.g. 14' }
+                { key: 'bun', label: 'Blood urea nitrogen (BUN, mg/dL, optional)', type: 'number', placeholder: 'e.g. 14' }
             ],
             compute: function (v) {
-                if (!isFinite(v.na) || !isFinite(v.glu)) return { points: 0, band: 'Enter sodium and glucose', riskLevel: 'common', advice: 'Enter sodium and glucose to estimate the corrected sodium.' };
-                const corrected = v.na + 2.4 * ((v.glu - 100) / 100);
-                const osm = 2 * v.na + v.glu / 18 + (isFinite(v.bun) ? v.bun / 2.8 : 0);
-                const band = 'Corrected Na⁺ ' + corrected.toFixed(0) + ' mmol/L · osm ' + osm.toFixed(0) + ' mOsm/kg';
-                if (corrected < 130) return { points: corrected, band: band, riskLevel: 'critical', advice: 'Corrected sodium is low: consider true hyponatraemia once hyperglycaemia is accounted for. Assess volume status, urine osmolality and sodium, and correct slowly to avoid osmotic demyelination.' };
-                if (corrected > 145) return { points: corrected, band: band, riskLevel: 'critical', advice: 'Corrected sodium is high: consider hypernatraemia — assess free-water deficit and ongoing losses; correct gradually.' };
-                return { points: corrected, band: band, riskLevel: 'common', advice: 'Corrected sodium is within the usual range. Interpret alongside the measured osmolality and the osmolal gap (measured − calculated).' };
+                if (!isFinite(v.na) || !isFinite(v.glu) || v.na <= 0 || v.glu <= 0 || (isFinite(v.bun) && v.bun < 0)) return { points: 0, band: 'Enter valid sodium and glucose values', riskLevel: 'common', advice: 'Enter sodium and glucose to estimate the corrected sodium.' };
+                const corrected = v.na + 2.4 * (Math.max(0, v.glu - 100) / 100);
+                const effective = 2 * v.na + v.glu / 18;
+                const total = isFinite(v.bun) ? effective + v.bun / 2.8 : null;
+                const band = 'Corrected Na⁺ ' + corrected.toFixed(1) + ' mmol/L · effective ' + effective.toFixed(1) + ' mOsm/kg' +
+                    (total === null ? '' : ' · total ' + total.toFixed(1) + ' mOsm/kg');
+                return { points: corrected, band, riskLevel: 'common', advice: 'Interpret with symptoms, volume status and serial results. Use the full DKA/HHS criteria and treatment pathway when a hyperglycemic crisis is suspected.' };
             }
         },
         {
             id: 'qtc',
             name: 'QTc (Bazett & Fridericia)',
             topic: 'QT interval',
-            href: '#palpitations',
+            href: '#ecg~step-intervals',
             summary: 'Corrects a measured QT for heart rate by two common formulas.',
             caveat: 'Bazett over-corrects at high and under-corrects at low rates; Fridericia is more stable. Use the lead with the longest QT, and review the QT visually — automated values on a 12-lead can mislead.',
             inputs: [
@@ -310,14 +315,13 @@
                 { key: 'rr', label: 'RR interval (ms)', type: 'number', placeholder: 'e.g. 800' }
             ],
             compute: function (v) {
-                if (!isFinite(v.qt) || !isFinite(v.rr) || v.rr <= 0) return { points: 0, band: 'Enter QT and RR', riskLevel: 'common', advice: 'Enter the measured QT and the RR interval to estimate the QTc.' };
+                if (!isFinite(v.qt) || !isFinite(v.rr) || v.qt <= 0 || v.rr <= 0) return { points: 0, band: 'Enter QT and RR', riskLevel: 'common', advice: 'Enter the measured QT and the RR interval to estimate the QTc.' };
                 const rr = v.rr / 1000;
                 const bazett = v.qt / Math.sqrt(rr);
                 const fridericia = v.qt / Math.cbrt(rr);
                 const band = 'QTc Bazett ' + bazett.toFixed(0) + ' ms · Fridericia ' + fridericia.toFixed(0) + ' ms';
-                if (bazett >= 500 || fridericia >= 500) return { points: bazett, band: band, riskLevel: 'critical', advice: 'QTc ≥ 500 ms carries a high torsades risk. Stop QT-prolonging drugs, correct K⁺/Mg²⁺/Ca²⁺, and consider overdrive pacing or isoprenaline for bradycardia-dependent torsades.' };
-                if (bazett >= 460) return { points: bazett, band: band, riskLevel: 'emergent', advice: 'QTc is prolonged. Review all QT-prolonging medications, replete electrolytes to high-normal, and monitor the ECG.' };
-                return { points: bazett, band: band, riskLevel: 'common', advice: 'QTc is within the usual range. Reassess after any change in QT-prolonging drugs, electrolytes or rate.' };
+                if (bazett >= 500 || fridericia >= 500) return { points: bazett, band: band, riskLevel: 'critical', advice: 'A calculated QTc ≥500 ms needs prompt review. Confirm the QT measurement, QRS width and correction formula, and assess medications, electrolytes and rhythm. Use the resuscitation pathway for active torsades.' };
+                return { points: bazett, band: band, riskLevel: 'common', advice: 'Interpret the estimates with age, sex, heart rate and QRS width. Review the ECG intervals guide for thresholds and measurement limits.' };
             }
         }
     ];
@@ -465,19 +469,19 @@
        resident gets a real number, not just a formula. Educational reference.
     ──────────────────────────────────────────────────────────── */
     const PEDS_DOSES = [
-        { key: 'epi-arrest', label: 'Epinephrine (cardiac arrest)', perKg: 0.01, unit: 'mg', route: 'IV/IO', max: 1, note: '1:10,000; repeat every 3–5 min. ETT 0.1 mg/kg.' },
-        { key: 'epi-anaph', label: 'Epinephrine (anaphylaxis IM)', perKg: 0.01, unit: 'mg', route: 'IM', max: 0.5, note: '1 mg/mL; max 0.3 mg per JTFPP, or use RCUK age bands.' },
+        { key: 'epi-arrest', label: 'Epinephrine (cardiac arrest)', perKg: 0.01, unit: 'mg', route: 'IV/IO', max: 1, note: 'AHA/AAP PALS cardiac arrest: 0.1 mg/mL IV/IO. Repeat every 3–5 minutes.' },
+        { key: 'epi-anaph', label: 'Epinephrine (anaphylaxis IM)', perKg: 0.01, unit: 'mg', route: 'IM', max: 0.3, note: 'Pediatric weight-based regimen shown. Use 1 mg/mL IM. RCUK uses separate age bands.' },
         { key: 'defib', label: 'Defibrillation (VF / pulseless VT)', perKg: 2, unit: 'J', route: 'unsynchronised', max: 200, note: 'First shock 2 J/kg; subsequent 4 J/kg (max 10 J/kg or adult dose).' },
         { key: 'cardio', label: 'Synchronised cardioversion', perKg: 0.75, unit: 'J', route: 'synchronised', max: 100, note: '0.5–1 J/kg first, then 2 J/kg. Sedate if conscious.' },
-        { key: 'amio', label: 'Amiodarone', perKg: 5, unit: 'mg', route: 'IV/IO', max: 300, note: 'Can repeat up to 15 mg/kg/day for refractory VF/VT.' },
+        { key: 'amio', label: 'Amiodarone', perKg: 5, unit: 'mg', route: 'IV/IO', max: 300, note: 'For refractory VF/pulseless VT. PALS permits up to 3 total doses, with a 150 mg cap on subsequent doses.' },
         { key: 'lido', label: 'Lidocaine', perKg: 1, unit: 'mg', route: 'IV/IO', max: 100, note: 'Alternative to amiodarone.' },
         { key: 'mgso4', label: 'Magnesium sulfate (torsades)', perKg: 40, unit: 'mg', route: 'IV/IO', max: 2000, note: '25–50 mg/kg for torsades de pointes.' },
-        { key: 'atropine', label: 'Atropine', perKg: 0.02, unit: 'mg', route: 'IV/IO', max: 0.5, note: 'Minimum single dose 0.1 mg to avoid paradoxical bradycardia.' },
+        { key: 'atropine', label: 'Atropine (vagal bradycardia or primary AV block)', perKg: 0.02, unit: 'mg', route: 'IV/IO', min: 0.1, max: 0.5, note: 'PALS bradycardia with compromise. This 0.1 mg minimum applies to this indication. Intubation premedication has separate dosing.' },
         { key: 'adenosine', label: 'Adenosine (SVT)', perKg: 0.1, unit: 'mg', route: 'IV/IO rapid', max: 6, note: 'First 0.1 mg/kg (max 6 mg); second 0.2 mg/kg (max 12 mg).' },
-        { key: 'fluid', label: 'Crystalloid bolus', perKg: 20, unit: 'mL', route: 'IV/IO', max: 1000, note: 'Reassess after each bolus for rales, hepatomegaly, work of breathing.' },
-        { key: 'd10', label: 'Dextrose 10% (neonate/hypoglycaemia)', perKg: 5, unit: 'mL of D10W', route: 'IV/IO', max: 250, note: '2 mL/kg of D25W or 5 mL/kg of D10W; recheck glucose.' },
-        { key: 'ceftriaxone', label: 'Ceftriaxone (suspected meningitis)', perKg: 50, unit: 'mg', route: 'IV/IM', max: 2000, note: '50 mg/kg for meningitis; add vancomycin per local protocol.' },
-        { key: 'dex-croup', label: 'Dexamethasone (croup)', perKg: 0.15, unit: 'mg', route: 'PO/IV/IM', max: 10, note: '0.15–0.6 mg/kg single dose.' }
+        { key: 'fluid', label: 'Initial crystalloid aliquot (septic shock)', perKg: 10, unit: 'mL', route: 'IV/IO', note: 'Use balanced isotonic crystalloid when available. Reassess perfusion and signs of fluid overload after each aliquot. Adjust to the clinical setting and shock cause.' },
+        { key: 'd10', label: 'Glucose 10% (severe hypoglycemia in children)', perKg: 2, unit: 'mL of D10W', route: 'IV', note: 'RCH pediatric regimen. Recheck glucose and provide ongoing carbohydrate or glucose infusion as indicated. Use a neonatal pathway for newborns.' },
+        { key: 'ceftriaxone', label: 'Ceftriaxone (suspected meningitis, age ≥2 months)', perKg: 100, unit: 'mg', route: 'IV', max: 4000, note: 'RCH initial regimen for this age group. Follow local resistance guidance and age-specific antibiotic coverage.' },
+        { key: 'dex-croup', label: 'Dexamethasone (severe croup)', perKg: 0.6, unit: 'mg', route: 'PO/IM/IV', max: 12, note: 'RCH severe croup single dose. Give indicated nebulized epinephrine and reassess the airway. Follow the separate mild or moderate croup regimen.' }
     ];
 
     /* Age-based airway equipment (does not need weight). */
@@ -493,10 +497,11 @@
         if (!isFinite(w) || w <= 0) return [];
         return PEDS_DOSES.map(function (d) {
             const raw = w * d.perKg;
-            const capped = Math.min(raw, d.max);
+            const capped = Math.min(raw, d.max ?? Infinity);
+            const value = Math.max(capped, d.min ?? 0);
             return {
                 key: d.key, label: d.label, route: d.route, unit: d.unit, note: d.note,
-                value: capped, capped: capped < raw, max: d.max
+                value, capped: capped < raw, floored: value > capped, max: d.max
             };
         });
     }
@@ -513,7 +518,7 @@
     function fmtValue(v) {
         if (v >= 100) return String(Math.round(v));
         if (v >= 10) return (Math.round(v * 10) / 10).toString();
-        return (Math.round(v * 100) / 100).toString();
+        return Number(v.toPrecision(3)).toString();
     }
 
     /* Pure: map a route string to the semantic badge class it earns. The colour
@@ -749,7 +754,7 @@
         return '<section class="st-score st-peds" data-st-peds>' +
             '<div class="st-score-head"><div><h2>Pediatric weight-based doses</h2><p class="st-score-topic">Resuscitation &amp; common drugs</p></div>' +
             '<button type="button" class="st-reset" data-st-peds-reset>Reset</button></div>' +
-            '<p class="st-score-summary">Enter a weight to see calculated PALS and common emergency doses. Age gives airway device sizes. Values are rounded for bedside use.</p>' +
+            '<p class="st-score-summary">Enter a weight to see calculated PALS and common emergency doses. Age gives airway device sizes. Check the indication, concentration and source for each row.</p>' +
             '<div class="st-inputs"><div class="st-peds-inputs">' +
             '<label class="st-field"><span>Weight (kg)</span><input type="number" inputmode="decimal" step="any" data-st-peds-weight value="' + esc(pedsState.weight) + '" placeholder="e.g. 12"></label>' +
             '<label class="st-field"><span>Age (years, optional)</span><input type="number" inputmode="decimal" step="any" data-st-peds-age value="' + esc(pedsState.age) + '" placeholder="e.g. 3"></label>' +
@@ -770,7 +775,7 @@
         const rows = pedsDoses(w);
         const dsRows = rows.map(function (r) {
             return '<tr><th scope="row">' + esc(r.label) + '<span class="route-badge ' + routeClass(r.route) + '">' + esc(r.route) + '</span></th>' +
-                '<td><span class="dose-amount">' + esc(fmtValue(r.value)) + ' ' + esc(r.unit) + '</span>' + (r.capped ? ' <span class="st-peds-max">(max)</span>' : '') + '</td></tr>';
+                '<td><span class="dose-amount">' + esc(fmtValue(r.value)) + ' ' + esc(r.unit) + '</span>' + (r.capped ? ' <span class="st-peds-max">(max)</span>' : r.floored ? ' <span class="st-peds-max">(min)</span>' : '') + '</td></tr>';
         }).join('');
         let airwayHtml = '';
         if (pedsState.age !== '' && isFinite(num(pedsState.age))) {
@@ -783,8 +788,8 @@
         out.innerHTML = '<p class="st-advice"><strong>Weight ' + esc(fmtValue(num(w))) + ' kg</strong> — calculated doses:</p>' +
             '<table class="st-peds-table"><tbody>' + dsRows + '</tbody></table>' + airwayHtml +
             '<details class="st-peds-notes"><summary>Notes, maxima and sources</summary><ul>' +
-            rows.map(function (r) { return '<li><strong>' + esc(r.label) + ':</strong> ' + esc((r.unit === 'J' ? r.max + ' J max' : r.max + ' ' + r.unit + ' max') ) + ' — ' + esc(r.note) + '</li>'; }).join('') +
-            '</ul><p>Sources: AHA 2025 PALS (resuscitation drugs, defibrillation, cardioversion); standard emergency references for the remaining rows. Confirm against your local formulary.</p></details>';
+            rows.map(function (r) { return '<li><strong>' + esc(r.label) + ':</strong> ' + (r.max === undefined ? '' : esc(r.max + ' ' + r.unit + ' max. ')) + esc(r.note) + '</li>'; }).join('') +
+            '</ul><p>Sources: <a href="https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/pediatric-advanced-life-support">AHA/AAP PALS</a>, <a href="https://www.rch.org.au/clinicalguide/guideline_index/Hypoglycaemia/">RCH hypoglycemia</a>, <a href="https://www.rch.org.au/clinicalguide/guideline_index/Meningitis_encephalitis/">RCH meningitis</a>, <a href="https://pubmed.ncbi.nlm.nih.gov/38108678/">JTFPP anaphylaxis</a> <a href="https://www.rch.org.au/clinicalguide/guideline_index/Croup_Laryngotracheobronchitis/">RCH croup</a> and <a href="https://sccm.org/clinical-resources/guidelines/guidelines/surviving-sepsis-campaign-international-guidelines-for-the-management-of-sepsis-and-septic-shock-in">SSC pediatric sepsis (2026)</a>. Confirm against your local formulary.</p></details>';
     }
 
     function calculatorsHtml(filter, facetKey) {
