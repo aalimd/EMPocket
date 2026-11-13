@@ -136,9 +136,17 @@
         { title: 'Airway, allergy, skin & pediatrics', ids: ['airway-stridor', 'anaphylaxis', 'rash', 'fever', 'pediatric-fever', 'pediatric-respiratory-distress', 'sore-throat', 'red-eye', 'joint-pain'] },
         { title: 'Toxic, metabolic & environmental', ids: ['overdose', 'suicidal', 'hyperglycemia', 'heat-cold', 'electrolytes', 'thyroid-storm', 'alcohol-withdrawal', 'burns'] },
         { title: 'Trauma, pregnancy & older adults', ids: ['multiple-trauma', 'pregnancy-emergency', 'falls-geriatric-trauma', 'head-injury'] },
-        { title: 'Resuscitation & acute medicine', ids: ['cardiac-arrest', 'hypertensive-emergency'] }
+        { title: 'Resuscitation & acute medicine', ids: ['cardiac-arrest', 'hypertensive-emergency'] },
+        { title: 'Oncology Emergencies', ids: ['neutropenic-sepsis', 'tumor-lysis-syndrome', 'metastatic-spinal-cord-compression', 'hypercalcemia-of-malignancy', 'superior-vena-cava-syndrome', 'cancer-immunotherapy-toxicity'] }
     ];
     const RELATED = {
+        'neutropenic-sepsis': ['fever', 'shock', 'abdominal-pain'],
+        'tumor-lysis-syndrome': ['electrolytes', 'palpitations', 'seizures'],
+        'metastatic-spinal-cord-compression': ['back-pain', 'weakness', 'urinary-retention'],
+        'hypercalcemia-of-malignancy': ['electrolytes', 'ams', 'constipation'],
+        'superior-vena-cava-syndrome': ['dyspnea', 'airway-stridor', 'edema'],
+        'cancer-immunotherapy-toxicity': ['neutropenic-sepsis', 'shock', 'ams', 'dyspnea'],
+
         'chest-pain': ['dyspnea', 'syncope', 'shock', 'nausea-vomiting', 'limb-ischemia'],
         'dyspnea': ['chest-pain', 'shock', 'cyanosis', 'hemoptysis'],
         'limb-ischemia': ['chest-pain', 'shock', 'back-pain', 'fever'],
@@ -148,9 +156,9 @@
         'syncope': ['chest-pain', 'seizures', 'gib', 'shock'],
         'weakness': ['back-pain', 'seizures', 'ams', 'diplopia'],
         'gib': ['shock', 'abdominal-pain', 'syncope'],
-        'fever': ['pediatric-fever', 'shock', 'sore-throat', 'ams', 'heat-cold', 'limb-ischemia'],
+        'fever': ['pediatric-fever', 'shock', 'sore-throat', 'ams', 'heat-cold', 'limb-ischemia', 'neutropenic-sepsis'],
         'dizziness': ['headache', 'syncope', 'diplopia'],
-        'back-pain': ['weakness', 'abdominal-pain', 'constipation'],
+        'back-pain': ['weakness', 'abdominal-pain', 'constipation', 'metastatic-spinal-cord-compression'],
         'red-eye': ['headache', 'diplopia', 'sore-throat'],
         'joint-pain': ['fever', 'back-pain'],
         'coma': ['ams', 'seizures', 'overdose', 'shock'],
@@ -178,14 +186,14 @@
         'rash': ['fever', 'anaphylaxis', 'joint-pain', 'overdose'],
         'flank-pain': ['abdominal-pain', 'pelvic-pain', 'scrotal-pain', 'fever'],
         'urinary-retention': ['back-pain', 'weakness', 'fever', 'flank-pain'],
-        'edema': ['dyspnea', 'chest-pain', 'shock', 'limb-ischemia'],
+        'edema': ['dyspnea', 'chest-pain', 'shock', 'limb-ischemia', 'superior-vena-cava-syndrome'],
         'anaphylaxis': ['airway-stridor', 'dyspnea', 'rash', 'overdose'],
         'multiple-trauma': ['shock', 'coma', 'back-pain', 'limb-ischemia'],
         'falls-geriatric-trauma': ['syncope', 'weakness', 'coma', 'multiple-trauma'],
         'pregnancy-emergency': ['pelvic-pain', 'vaginal-bleeding', 'dyspnea', 'abdominal-pain'],
         'pediatric-respiratory-distress': ['dyspnea', 'airway-stridor', 'pediatric-fever', 'anaphylaxis'],
         'cardiac-arrest': ['chest-pain', 'shock', 'dyspnea', 'electrolytes', 'palpitations'],
-        'electrolytes': ['overdose', 'hyperglycemia', 'seizures', 'weakness', 'cardiac-arrest'],
+        'electrolytes': ['overdose', 'hyperglycemia', 'seizures', 'weakness', 'cardiac-arrest', 'tumor-lysis-syndrome'],
         'head-injury': ['multiple-trauma', 'coma', 'ams', 'seizures', 'weakness'],
         'hypertensive-emergency': ['headache', 'chest-pain', 'focal-neurologic-deficit', 'dyspnea', 'pregnancy-emergency'],
         'burns': ['multiple-trauma', 'airway-stridor', 'shock', 'overdose', 'pediatric-fever'],
@@ -354,6 +362,12 @@
         'multiple-trauma': 'trauma', 'falls-geriatric-trauma': 'trauma', 'pregnancy-emergency': 'obgyn',
         'cardiac-arrest': 'critical', 'electrolytes': 'endocrine', 'head-injury': 'neuro',
         'hypertensive-emergency': 'cardio', 'burns': 'trauma', 'alcohol-withdrawal': 'toxic', 'thyroid-storm': 'endocrine',
+        'neutropenic-sepsis': 'infect',
+        'tumor-lysis-syndrome': 'endocrine',
+        'metastatic-spinal-cord-compression': 'neuro',
+        'hypercalcemia-of-malignancy': 'endocrine',
+        'superior-vena-cava-syndrome': 'vascular',
+        'cancer-immunotherapy-toxicity': 'critical',
         'ecg': 'ecg', 'ecg-explorer': 'ecg', 'learn': 'learn', 'study': 'learn'
     };
     function catFor(id) {
@@ -393,7 +407,8 @@
             'Abdomen, pelvis & GU': 'gi',
             'Airway, allergy, skin & pediatrics': 'pulm',
             'Toxic, metabolic & environmental': 'toxic',
-            'Trauma, pregnancy & older adults': 'trauma'
+            'Trauma, pregnancy & older adults': 'trauma',
+            'Oncology Emergencies': 'infect'
         };
         const key = map[title] || 'generic';
         return semanticSvg(SEMANTIC_ICONS[key] || SEMANTIC_ICONS['generic'], 'group-svg');
@@ -468,7 +483,7 @@
         pediatric: ['pediatric-fever', 'pediatric-respiratory-distress', 'airway-stridor', 'fever', 'rash', 'seizures', 'abdominal-pain', 'headache'],
         pregnancy: ['pregnancy-emergency', 'pelvic-pain', 'vaginal-bleeding', 'abdominal-pain', 'dyspnea', 'chest-pain', 'headache', 'overdose'],
         geriatric: ['falls-geriatric-trauma', 'ams', 'syncope', 'abdominal-pain', 'chest-pain', 'dyspnea', 'headache', 'weakness', 'back-pain'],
-        immunocompromised: ['fever', 'pediatric-fever', 'dyspnea', 'abdominal-pain', 'headache', 'rash', 'sore-throat'],
+        immunocompromised: ['neutropenic-sepsis', 'cancer-immunotherapy-toxicity', 'fever', 'pediatric-fever', 'dyspnea', 'abdominal-pain', 'headache', 'rash', 'sore-throat'],
         trauma: ['multiple-trauma', 'falls-geriatric-trauma', 'back-pain', 'headache', 'weakness', 'limb-ischemia', 'chest-pain']
     };
     function esc(s) {
@@ -3416,7 +3431,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = isAppWorker(navigator.serviceWorker.controller);
-                navigator.serviceWorker.register('./sw.js?v=20261113-content-v81').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261113-oncology-v82').then((registration) => {
                     navigator.serviceWorker.ready.then((ready) => {
                         if (ready.scope === new URL('./', location.href).href) setOfflineStatus('Ready for offline use');
                     });

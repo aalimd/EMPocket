@@ -862,7 +862,11 @@ test('the teaching viewer shows and hides normal-reference paths without alterin
 });
 
 test('Quick starts with an explicit choice when no topic is selected',async t=>{
-    if(!await ready(t))return;await load('#shift');assert.equal(await evaluate(`document.querySelector('h1').textContent`),'Quick');assert.equal(await evaluate(`document.getElementById('quickPresentation').value`),'');assert.equal(await evaluate(`document.getElementById('quickPresentation').options.length`),53);
+    if(!await ready(t))return;await load('#shift');assert.equal(await evaluate(`document.querySelector('h1').textContent`),'Quick');assert.equal(await evaluate(`document.getElementById('quickPresentation').value`),'');const options = await evaluate(`({
+        actual: Array.from(document.getElementById('quickPresentation').options).slice(1).map(option => option.value).sort(),
+        expected: window.CP_DATA.map(topic => topic.id).sort()
+    })`);
+    assert.deepEqual(options.actual, options.expected);
 });
 
 test('saved topics are reachable directly from the phone library',async t=>{
@@ -1199,7 +1203,7 @@ test('startup performance exposes a usable library and defers recorded ECG evalu
         domContentLoadedMs:Math.round(nav.domContentLoadedEventEnd),loadMs:Math.round(nav.loadEventEnd),
         scripts:performance.getEntriesByType('resource').filter(e=>e.initiatorType==='script').length};
     })()`);
-    assert.equal(metrics.topics,52);
+    assert.equal(metrics.topics,58);
     assert.equal(metrics.recordingsEvaluated,false);
     t.diagnostic('Local unthrottled Chrome baseline (not physical-device timing): '+JSON.stringify(metrics));
 });
@@ -1315,7 +1319,7 @@ test('every presentation binds More, section shortcuts, accordions and recall co
   }
   return {problems,moreCount,count:window.CP_DATA.length};
  })()`);
- assert.equal(problems.count,52);assert.ok(problems.moreCount>0);
+ assert.equal(problems.count,58);assert.ok(problems.moreCount>0);
  assert.deepEqual(problems.problems,[]);
 });
 
@@ -1415,4 +1419,33 @@ test('expanded presentations render their teaching and scoped source dates on a 
   return problems;
  })()`);
  assert.deepEqual(result,[]);
+});
+
+test('Oncology Emergencies is discoverable through the library filter and clinical search', async t => {
+    if (!await ready(t)) return;
+    await load('#library');
+    const library = await evaluate(`(() => {
+        const filter = Array.from(document.querySelectorAll('#stage select'))
+            .find(select => Array.from(select.options).some(option => option.value === 'Oncology Emergencies'));
+        filter.value = 'Oncology Emergencies';
+        filter.dispatchEvent(new Event('change', { bubbles: true }));
+        return Array.from(document.querySelectorAll('#stage .home-group .cp-card'), card => card.dataset.id);
+    })()`);
+    assert.deepEqual(library, [
+        'neutropenic-sepsis', 'tumor-lysis-syndrome', 'metastatic-spinal-cord-compression',
+        'hypercalcemia-of-malignancy', 'superior-vena-cava-syndrome', 'cancer-immunotherapy-toxicity'
+    ]);
+    const searchResult = await evaluate(`(() => {
+        const hit = window.EM_POCKET_UI.findSearchHits('CAR-T fever')
+            .find(hit => hit.cpId === 'cancer-immunotherapy-toxicity');
+        return hit?.title;
+    })()`);
+    assert.equal(searchResult, 'CAR-T fever');
+    await evaluate(`location.hash = 'metastatic-spinal-cord-compression~doses'`);
+    const deadline = Date.now() + 5000;
+    while (!await evaluate(`!!document.querySelector('#section-doses.section-focus')`)) {
+        assert.ok(Date.now() < deadline, 'MSCC dose section did not open');
+        await wait(25);
+    }
+    assert.match(await evaluate(`document.querySelector('#section-doses').textContent`), /16 mg daily/);
 });

@@ -6,6 +6,18 @@
 (function () {
     'use strict';
     const sources = {
+        oncologyGI: ["AGIHO/DGHO adult gastrointestinal complications guideline, including neutropenic enterocolitis", "https://pmc.ncbi.nlm.nih.gov/articles/PMC5748412/"],
+        neutropenicNICE: ["NICE CG151: neutropenic sepsis in people with cancer", "https://www.nice.org.uk/guidance/cg151/chapter/Recommendations"],
+        neutropenicASCO: ["ASCO/IDSA adult fever and neutropenia guideline (2018)", "https://pubmed.ncbi.nlm.nih.gov/29461916/"],
+        acuteOncology: ["UKONS acute oncology initial management guidelines", "https://ukons.hosting.sundownsolutions.com/"],
+        tlsBSH: ["British Society for Haematology tumor lysis syndrome guideline (2025)", "https://b-s-h.org.uk/guidelines/guidelines/updated-guidelines-for-the-diagnosis-and-management-of-tumour-lysis-syndrome-in-adults-and-children"],
+        tlsMDAnderson: ["MD Anderson adult tumor lysis syndrome algorithm", "https://www.mdanderson.org/content/dam/mdanderson/documents/for-physicians/algorithms/clinical-management/clin-management-tumor-lysis-web-algorithm.pdf"],
+        tlsEviQ: ["eviQ tumor lysis prevention and rasburicase safety", "https://www.eviq.org.au/clinical-resources/side-effect-and-toxicity-management/prophylaxis-and-treatment/108-prevention-of-tumour-lysis-syndrome"],
+        malignancyCalcium: ["Endocrine Society guideline: hypercalcemia of malignancy in adults", "https://www.endocrine.org/clinical-practice-guidelines/hypercalcemia"],
+        svcImaging: ["ACR Appropriateness Criteria: suspected superior vena cava syndrome", "https://acsearch.acr.org/docs/3196043/Narrative"],
+        svcNHS: ["NHS Ayrshire & Arran: initial management of superior vena cava obstruction", "https://aaamedicines.org.uk/guidelines/respiratory-system/initial-management-of-superior-vena-cava-obstruction/"],
+        sitcCell: ["SITC immune effector cell-related adverse events guideline", "https://jitc.bmj.com/content/8/2/e001511"],
+        sitcCheckpoint: ["SITC immune checkpoint inhibitor-related adverse events guideline", "https://jitc.bmj.com/content/9/6/e002435"],
         majorTrauma: ["NICE NG39: major trauma assessment and initial management", "https://www.nice.org.uk/guidance/ng39/chapter/recommendations"],
         traumaBleeding: ["European guideline on major bleeding and coagulopathy following trauma (2023)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9977110/"],
         pregnancyTrauma: ["EAST practice management guideline on trauma in pregnancy (2025)", "https://www.east.org/education-resources/practice-management-guidelines/details/trauma-in-pregnancy-a-systematic-review-metaanalysis-and-practice-management-guideline-from-the-east"],
@@ -124,6 +136,12 @@
         withdrawal: ["ASAM clinical practice guideline on alcohol withdrawal management (2020)", "https://www.asam.org/quality-care/clinical-guidelines/alcohol-withdrawal"],
     };
     const topics = {
+        'neutropenic-sepsis': ['neutropenicNICE', 'neutropenicASCO', 'oncologyGI'],
+        'tumor-lysis-syndrome': ['tlsBSH', 'tlsMDAnderson', 'tlsEviQ'],
+        'metastatic-spinal-cord-compression': ['mscc'],
+        'hypercalcemia-of-malignancy': ['malignancyCalcium', 'acuteOncology'],
+        'superior-vena-cava-syndrome': ['svcImaging', 'svcNHS'],
+        'cancer-immunotherapy-toxicity': ['sitcCell', 'sitcCheckpoint'],
         'chest-pain': ['aorta', 'chest', 'acs', 'mi', 'pe'], dyspnea: ['asthma', 'pe', 'dyspneaAssessment'],
         headache: ['headache', 'sah', 'stroke'], ams: ['stroke', 'special', 'meningitis', 'delirium'], coma: ['stroke', 'special', 'comaAssessment'],
         weakness: ['stroke', 'gbs'], dizziness: ['dizziness', 'stroke'], diplopia: ['cn3', 'stroke', 'diplopiaAssessment'],
@@ -548,6 +566,55 @@
             "myxoedemaConsensus",
             "ataThyrotoxicosis",
             "ataHypothyroidism"
+        ]
+    },
+    "neutropenic-sepsis": {
+        "checked": "2026-11-13",
+        "scope": "adult recognition, immediate empiric treatment and disposition",
+        "sources": [
+            "neutropenicNICE",
+            "neutropenicASCO",
+            "oncologyGI"
+        ]
+    },
+    "tumor-lysis-syndrome": {
+        "checked": "2026-11-13",
+        "scope": "adult recognition, electrolyte monitoring and rasburicase precautions",
+        "sources": [
+            "tlsBSH",
+            "tlsMDAnderson",
+            "tlsEviQ"
+        ]
+    },
+    "metastatic-spinal-cord-compression": {
+        "checked": "2026-11-13",
+        "scope": "neurological red flags, urgent imaging and dexamethasone",
+        "sources": [
+            "mscc"
+        ]
+    },
+    "hypercalcemia-of-malignancy": {
+        "checked": "2026-11-13",
+        "scope": "adult evaluation, initial treatment and monitoring",
+        "sources": [
+            "malignancyCalcium",
+            "acuteOncology"
+        ]
+    },
+    "superior-vena-cava-syndrome": {
+        "checked": "2026-11-13",
+        "scope": "adult airway assessment, imaging and urgent escalation",
+        "sources": [
+            "svcImaging",
+            "svcNHS"
+        ]
+    },
+    "cancer-immunotherapy-toxicity": {
+        "checked": "2026-11-13",
+        "scope": "adult CAR-T and immune checkpoint inhibitor toxicity recognition",
+        "sources": [
+            "sitcCell",
+            "sitcCheckpoint"
         ]
     }
 };

@@ -76,7 +76,7 @@ test('the stylesheet has explicit modules, one drawing layer and a bounded size'
        components with no per-screen copies. Raised again, deliberately, for the
        arrest cycle timer and its header crisis pill: a single timer card plus a
        state-driven pill shared by every route. Raised once more for the hero
-       crisis bar — one shared component used by all 52 presentations, not a
+       crisis bar — one shared component used by all presentations, not a
        per-screen copy. Raised again for the bedside action rows on the Quick
        screen: one shared row list and chip row that reuse the existing chip and
        route-badge components rather than duplicating them per screen. Merged

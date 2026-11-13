@@ -21,7 +21,7 @@ function load() {
 test('the unfiltered library exposes every shipped presentation once',()=>{
     const c=load();
     assert.deepEqual(Array.from(c.libraryItems(),cp=>cp.id),Array.from(c.window.CP_DATA,cp=>cp.id));
-    assert.equal(new Set(c.libraryItems().map(cp=>cp.id)).size,52);
+    assert.equal(new Set(c.libraryItems().map(cp=>cp.id)).size,58);
 });
 test('clinical system filters cover the library without losing or duplicating topics',()=>{
     const c=load(),groups=vm.runInContext('GROUPS',c),seen=[];
@@ -31,8 +31,8 @@ test('clinical system filters cover the library without losing or duplicating to
         assert.deepEqual(ids.slice().sort(),Array.from(g.ids).sort(),g.title);
         seen.push(...ids);
     }
-    assert.equal(seen.length,52);
-    assert.equal(new Set(seen).size,52);
+    assert.equal(seen.length,58);
+    assert.equal(new Set(seen).size,58);
 });
 test('system and patient context narrow results together, including an empty intersection',()=>{
     const c=load(); c.librarySystem='Neurologic'; c.patientFilter='pregnancy';
@@ -40,7 +40,7 @@ test('system and patient context narrow results together, including an empty int
     c.librarySystem='Trauma, pregnancy & older adults';c.patientFilter='pediatric';
     assert.equal(c.libraryItems().length,0);
     c.librarySystem=c.patientFilter=c.severityFilter='all';
-    assert.equal(c.libraryItems().length,52);
+    assert.equal(c.libraryItems().length,58);
 });
 test('severity filtering preserves relevant diagnoses and does not mutate the clinical records',()=>{
     const c=load(),before=JSON.stringify(c.window.CP_DATA);

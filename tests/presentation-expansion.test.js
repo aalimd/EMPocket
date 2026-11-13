@@ -9,12 +9,16 @@ const text=id=>JSON.stringify(topics.find(t=>t.id===id));
 test('selected review records distinguish the new scope from the historical audit',()=>{
  assert.equal(evidence.checked,'2026-10-08');
  const ids=['chest-pain','dyspnea','abdominal-pain','headache','ams','syncope','fever','dizziness','gib','back-pain','joint-pain','pelvic-pain','seizures','overdose','hyperglycemia','flank-pain','red-eye','sore-throat','scrotal-pain','diarrhea','rash','limb-ischemia','urinary-retention','head-injury','pediatric-fever','pediatric-respiratory-distress','anaphylaxis','burns','heat-cold','alcohol-withdrawal','suicidal','constipation','weakness','coma','hemoptysis','shock','palpitations','focal-neurologic-deficit','electrolytes','hypertensive-emergency','vaginal-bleeding','nausea-vomiting','jaundice','cyanosis','diplopia','airway-stridor','edema','falls-geriatric-trauma'];
- const finalBatch = ['multiple-trauma', 'pregnancy-emergency', 'cardiac-arrest', 'thyroid-storm'];
- assert.deepEqual(Object.keys(evidence.topicReviews).sort(), [...ids, ...finalBatch].sort());
+ const november13 = [
+  'multiple-trauma', 'pregnancy-emergency', 'cardiac-arrest', 'thyroid-storm',
+  'neutropenic-sepsis', 'tumor-lysis-syndrome', 'metastatic-spinal-cord-compression',
+  'hypercalcemia-of-malignancy', 'superior-vena-cava-syndrome', 'cancer-immunotherapy-toxicity'
+ ];
+ assert.deepEqual(Object.keys(evidence.topicReviews).sort(), [...ids, ...november13].sort());
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(), Array.from(topics, topic => topic.id).sort());
- for(const id of [...ids, ...finalBatch]){
+ for(const id of [...ids, ...november13]){
   const r=evidence.topicReviews[id];
-  assert.equal(r.checked, finalBatch.includes(id) ? '2026-11-13' : '2026-11-10');assert.ok(r.scope.length>15);
+  assert.equal(r.checked, november13.includes(id) ? '2026-11-13' : '2026-11-10');assert.ok(r.scope.length>15);
   assert.ok(r.sources.length);for(const key of r.sources){assert.ok(evidence.topics[id].includes(key),id+': '+key);assert.ok(evidence.sources[key]);}
  }
 });

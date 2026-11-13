@@ -9,6 +9,7 @@
    Fifth targeted expansion: 10 Nov 2026, eight additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-10-BATCH-5.md.
    Sixth targeted expansion: 10 Nov 2026, eight additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-10-BATCH-6.md.
    Final targeted expansion: 13 Nov 2026, four additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-13-BATCH-7.md.
+   Oncology Emergencies: 13 Nov 2026, six adult emergency guides. See docs/ONCOLOGY-EMERGENCIES-2026-11-13.md.
    Educational reference only — never replaces clinical judgment or local protocols.
 */
 const CP_DATA = [
@@ -2038,6 +2039,203 @@ doses: [
     ['Myxoedema coma', ['Hydrocortisone 100 mg IV before levothyroxine, then 50 mg IV every 6 h until the adrenal axis has been evaluated and cleared', 'Levothyroxine 200–400 mcg IV loading after glucocorticoid coverage. Use a lower load for smaller or older patients or those with coronary disease or arrhythmia. Maintenance is 1.6 mcg/kg/day enterally, reduced to 75% while given IV.', 'Liothyronine is an optional specialist adjunct if response is inadequate. Consider cardiac risk and follow the endocrine protocol.', 'Passive rewarming, cautious IV fluids, and ventilatory support as needed']]
 ],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders', 'Joint endocrine society consensus statements (2026) and ATA hyperthyroidism and hypothyroidism guidelines']
+},
+{
+    id: 'neutropenic-sepsis',
+    name: 'Febrile Neutropenia & Neutropenic Sepsis',
+    icon: '🩺',
+    tag: 'Recognize infection after anticancer treatment and give empiric antibiotics promptly.',
+    overview: 'Adult emergency assessment after myelosuppressive therapy or with known neutropenia. Infection can progress quickly with few localizing signs. An unwell patient can have neutropenic sepsis even without fever.',
+    approach: [
+        'Assess airway, breathing and circulation, obtain IV access and contact acute oncology or hematology early.',
+        'Give empiric antibiotics immediately when neutropenic sepsis is suspected. ASCO/IDSA specifies initial antibiotics within 1 hour of triage for febrile neutropenia.',
+        'Use the local neutropenic sepsis regimen with antipseudomonal coverage. Check allergies, renal function, prior resistant organisms and recent antimicrobial exposure.',
+        'Draw blood cultures promptly if this can be done without delaying antibiotics. Start sepsis resuscitation and escalate organ dysfunction or shock.'
+    ],
+    dontMiss: [
+        ['Afebrile neutropenic sepsis', 'critical', 'Hypotension, rigors, confusion or unexplained deterioration after anticancer therapy can be the presenting clues.'],
+        ['Neutropenic enterocolitis', 'critical', 'New abdominal pain, distension, diarrhea or bleeding warrants urgent assessment and consideration of CT when safe.'],
+        ['Central line infection', 'emergent', 'Inspect the line and consider paired peripheral and line cultures when feasible. A central line alone is insufficient reason for routine empiric glycopeptide coverage.']
+    ],
+    history: ['Document the cancer, regimen, last treatment date, prior neutrophil count and any transplant.', 'Ask about fever at home, rigors, focal symptoms, antibiotics, allergies and prior culture results.'],
+    exam: ['Reassess perfusion, mentation and respiratory effort. Inspect oral mucosa, skin and vascular access sites.', 'Assess abdominal tenderness, distension and signs of peritonitis.'],
+    workup: [
+        ['Initial tests', ['Obtain CBC with differential, renal and liver function, lactate and blood cultures. NICE defines confirmed neutropenic sepsis during anticancer treatment as ANC ≤0.5 × 10⁹/L with temperature above 38°C or other signs of clinically significant sepsis. Begin treatment on suspicion while results are pending.']],
+        ['Directed tests', ['Select imaging and further cultures by the clinical presentation. Obtain chest imaging when respiratory findings or another indication warrants it.']]
+    ],
+    redFlags: ['Shock, new oxygen requirement or altered mental status.', 'New abdominal pain with tenderness, distension or bleeding.', 'Unwell after anticancer treatment despite a normal temperature.'],
+    disposition: [
+        ['Admit / critical care as indicated', 'Organ dysfunction, instability, high-risk neutropenia, uncontrolled symptoms or unreliable follow-up.'],
+        ['Selected outpatient pathway', 'Consider only after treatment, clinical observation and specialist-led validated risk assessment, with reliable access to medications, follow-up and urgent reassessment. ASCO/IDSA calls for at least 4 hours of monitoring before discharge.']
+    ],
+    pitfalls: ['Waiting for a neutrophil count or culture result before treating suspected neutropenic sepsis.', 'Using a risk score alone to justify discharge.'],
+    pearls: ['Record the triage and first antibiotic times, then reassess perfusion and response.'],
+    refs: ['NICE CG151 neutropenic sepsis', 'ASCO/IDSA adult fever and neutropenia guideline', 'AGIHO/DGHO adult gastrointestinal complications guideline']
+},
+{
+    id: 'tumor-lysis-syndrome',
+    name: 'Tumor Lysis Syndrome (TLS)',
+    icon: '🩺',
+    tag: 'Recognize the electrolyte pattern and monitor for arrhythmia and acute kidney injury.',
+    overview: 'Tumor lysis can occur spontaneously or after effective cancer treatment. Suspect it with rising potassium, phosphate and uric acid, falling calcium, or acute kidney injury in a patient with cancer, particularly a high-burden or rapidly proliferating hematologic malignancy.',
+    approach: [
+        'Obtain an ECG and start cardiac monitoring when TLS is suspected. Treat life-threatening hyperkalemia through the emergency electrolyte pathway.',
+        'Contact hematology or oncology early and involve nephrology for kidney injury, oliguria, or severe or refractory electrolyte disturbance.',
+        'Use IV hydration tailored to perfusion, urine output and volume status. Reassess for pulmonary edema and fluid overload.',
+        'Discuss urgent rasburicase for established TLS with the treating team. It is contraindicated in G6PD deficiency. Establish G6PD status and involve pharmacy and hematology promptly when the result is unknown.'
+    ],
+    dontMiss: [
+        ['Hyperkalemic arrhythmia', 'critical', 'Treat immediately through the emergency hyperkalemia pathway when the ECG or clinical state warrants it.'],
+        ['Phosphate-driven hypocalcemia', 'critical', 'Seizure, tetany or arrhythmia requires urgent specialist-directed treatment. Routine replacement for asymptomatic hypocalcemia can promote calcium-phosphate deposition.'],
+        ['Progressive acute kidney injury', 'critical', 'Oliguria, refractory electrolyte disturbance or fluid overload warrants urgent assessment for renal replacement therapy.']
+    ],
+    history: ['Ask about recent systemic therapy, including targeted agents, and about high tumor burden or baseline renal disease.', 'Review urine output, vomiting, muscle cramps, palpitations and previous TLS prophylaxis.'],
+    exam: ['Check perfusion and volume status, including pulmonary congestion.', 'Assess for tetany, weakness, seizure or altered mental status.'],
+    workup: [
+        ['Initial and repeat labs', ['Measure potassium, phosphate, calcium, uric acid, creatinine and LDH. Follow trends at intervals set by severity and the TLS protocol.']],
+        ['Bedside', ['Obtain ECG, monitor rhythm and chart strict intake and output. Tell the laboratory if rasburicase was given so uric acid specimens are handled correctly.']]
+    ],
+    redFlags: ['ECG changes, arrhythmia or severe hyperkalemia.', 'Seizure, tetany, oliguria or pulmonary edema.', 'Rapidly changing electrolytes or rising creatinine after anticancer treatment.'],
+    disposition: [
+        ['Monitored admission', 'Suspected or established TLS requires serial labs and specialist treatment.'],
+        ['Critical care / nephrology', 'Escalate unstable patients and those with severe electrolyte disturbance, worsening kidney injury or fluid overload.']
+    ],
+    pitfalls: ['Excluding TLS because anticancer treatment has not yet started.', 'Relying on allopurinol alone to remove uric acid that is already elevated.'],
+    pearls: ['Compare with pretreatment results when available, and treat dangerous abnormalities while confirming the diagnosis.'],
+    refs: ['BSH tumor lysis syndrome guideline (2025)', 'MD Anderson adult TLS algorithm', 'eviQ TLS prevention and rasburicase safety']
+},
+{
+    id: 'metastatic-spinal-cord-compression',
+    name: 'Metastatic Spinal Cord Compression (MSCC)',
+    icon: '🩺',
+    tag: 'Act on new neurological symptoms in a patient with current or previous cancer.',
+    overview: 'Severe progressive back pain can precede weakness and bladder or bowel dysfunction. Recognize spinal cord or cauda equina compression early to protect neurological function.',
+    approach: [
+        'In a patient with current or previous cancer and symptoms of cord or cauda equina compression, contact the MSCC pathway immediately.',
+        'Document baseline motor, sensory, gait and bladder or bowel function. Start spinal precautions promptly if neurological findings suggest spinal instability.',
+        'Arrange urgent whole-spine MRI as soon as possible and within 24 hours for suspected MSCC. Use radiology and specialist advice if MRI is contraindicated.',
+        'For neurological symptoms or signs of MSCC, give dexamethasone promptly per the NICE regimen below. Coordinate surgery or radiotherapy planning with the specialist team.'
+    ],
+    dontMiss: [
+        ['Motor deficit or new gait change', 'critical', 'New weakness, difficulty walking, or neurological deterioration requires immediate MSCC assessment.'],
+        ['Cauda equina compression', 'critical', 'New urinary retention or incontinence, saddle sensory change or bowel dysfunction requires urgent evaluation.'],
+        ['Pain suggesting spinal metastases', 'emergent', 'With a cancer history, severe unremitting, progressive, nocturnal or mechanical spinal pain warrants MSCC pathway advice within 24 hours even without neurological findings.']
+    ],
+    history: ['Ask about prior cancer, known spinal lesions, escalating pain, radicular symptoms and pain with movement or straining.', 'Establish the onset and trajectory of weakness, gait change, sensory symptoms and bladder or bowel dysfunction.'],
+    exam: ['Document limb strength, sensation and any sensory level. Assess gait only if safe.', 'Reassess neurological function while awaiting imaging and treatment.'],
+    workup: [
+        ['Imaging', ['Arrange whole-spine MRI for suspected MSCC. Discuss CT with radiology if MRI is contraindicated. Plain radiographs cannot exclude MSCC.']],
+        ['Bedside', ['Assess bladder symptoms and consider a bladder scan when retention is suspected. Imaging urgency depends on the full neurological presentation.']]
+    ],
+    redFlags: ['New weakness, gait difficulty or sensory loss.', 'Bladder or bowel dysfunction or saddle sensory change.', 'Progressive spinal pain with new radicular symptoms in a patient with cancer.'],
+    disposition: [
+        ['Urgent admission or coordinated transfer', 'Suspected MSCC needs timely imaging and specialist management. Arrange supported transfer if the required imaging or care is unavailable locally.'],
+        ['Spinal metastasis concern without neurological signs', 'Seek specialist advice within 24 hours and provide explicit instructions for neurological deterioration.']
+    ],
+    pitfalls: ['Waiting for paralysis or retention before escalating.', 'Starting corticosteroids in radiologically suspected lymphoma or myeloma with spinal lesions and no neurological symptoms or signs before seeking hematology advice.'],
+    pearls: ['Record baseline mobility and the time symptoms changed to help the receiving team prioritize treatment.'],
+    doseScope: 'NICE NG234 regimen for neurological symptoms or signs of metastatic spinal cord compression.',
+    doses: [
+        ['Dexamethasone', ['Give 16 mg orally or an equivalent parenteral dose as soon as possible. Continue 16 mg daily while awaiting surgery or radiotherapy, then taper according to specialist guidance. Stop dexamethasone given for suspected MSCC if imaging rules out both spinal metastases and MSCC. Account for other indications or prior steroid exposure. Monitor glucose and provide gastric protection.']]
+    ],
+    refs: ['NICE NG234 spinal metastases and metastatic spinal cord compression']
+},
+{
+    id: 'hypercalcemia-of-malignancy',
+    name: 'Hypercalcemia of Malignancy',
+    icon: '🩺',
+    tag: 'Treat symptomatic calcium elevation while assessing renal function and volume status.',
+    overview: 'Think of hypercalcemia in a patient with cancer who develops thirst, polyuria, constipation, weakness or confusion. The speed of the rise, symptoms, kidney function and volume status all matter.',
+    approach: [
+        'Assess mental status, perfusion, volume status and ECG. Confirm the calcium result with albumin and use ionized calcium when total calcium is difficult to interpret.',
+        'Restore volume with isotonic IV fluid when depleted, adjusting for cardiac and renal function.',
+        'Arrange IV bisphosphonate or denosumab with the treating team. Check renal function before an IV bisphosphonate and plan follow-up calcium monitoring.',
+        'For severe hypercalcemia of malignancy above 14 mg/dL (3.5 mmol/L), the Endocrine Society suggests adding calcitonin initially to an antiresorptive. Limit calcitonin to 48–72 hours.'
+    ],
+    dontMiss: [
+        ['Severe symptomatic hypercalcemia', 'critical', 'Marked confusion, arrhythmia, dehydration or kidney injury warrants monitored treatment and early specialist involvement.'],
+        ['Calcitriol-mediated hypercalcemia', 'emergent', 'Consider this mechanism in lymphoma. Glucocorticoids may be indicated with specialist guidance.'],
+        ['Another cause of elevated calcium', 'emergent', 'Cancer can coexist with primary hyperparathyroidism or medication-related hypercalcemia. Use PTH and clinical context to investigate the mechanism.']
+    ],
+    history: ['Ask about symptom onset, intake, polyuria, constipation and previous calcium results.', 'Review supplements, thiazides, lithium, cardiac or kidney disease and prior antiresorptive therapy.'],
+    exam: ['Assess hydration, mental status and strength. Look for congestion before and during IV fluids.'],
+    workup: [
+        ['Initial tests', ['Total calcium and albumin or ionized calcium, creatinine, electrolytes, phosphate and magnesium. Check ECG when symptomatic or severely elevated.']],
+        ['Cause and response', ['Measure PTH when the mechanism is uncertain and trend calcium, renal function and fluid balance after treatment.']]
+    ],
+    redFlags: ['Altered mental status, arrhythmia or severe dehydration.', 'Oliguria or acute kidney injury.', 'Severe calcium elevation or rapid rise with symptoms.'],
+    disposition: [
+        ['Admit', 'Severe or symptomatic disease, kidney injury, inability to maintain hydration, or a need for monitored treatment.'],
+        ['Selected outpatient follow-up', 'For mild, asymptomatic disease with a reliable oncology plan, arrange repeat labs and clear return instructions.']
+    ],
+    pitfalls: ['Using calcitonin alone as definitive treatment or continuing it beyond the short initial window.', 'Giving large fluid volumes without reassessing for overload.'],
+    pearls: ['Plan calcium reassessment after antiresorptive treatment because the effect evolves over days.'],
+    refs: ['Endocrine Society guideline on treatment of hypercalcemia of malignancy in adults', 'UKONS acute oncology initial management']
+},
+{
+    id: 'superior-vena-cava-syndrome',
+    name: 'Superior Vena Cava Syndrome (SVCS)',
+    icon: '🩺',
+    tag: 'Identify airway or neurological compromise in a patient with upper-body venous congestion.',
+    overview: 'Superior vena cava obstruction can result from tumor compression or invasion, thrombosis, or both. Face, neck or arm swelling with prominent chest veins and dyspnea can be the first sign of malignancy.',
+    approach: [
+        'Assess airway, oxygenation, mental status and perfusion immediately. Keep the patient in a position that maintains breathing.',
+        'Call airway and critical-care teams for stridor, severe respiratory distress, altered consciousness or hemodynamic compromise.',
+        'Discuss contrast-enhanced chest CT with radiology when safe to define the obstruction, assess thrombus and guide management.',
+        'Involve oncology and interventional radiology early. Urgent endovascular treatment may be needed for severe compromise. In stable patients coordinate diagnosis, including tissue sampling when needed, and cause-directed therapy.'
+    ],
+    dontMiss: [
+        ['Laryngeal edema or central airway obstruction', 'critical', 'Stridor, rapidly worsening dyspnea or inability to tolerate lying flat requires an expert airway plan.'],
+        ['Neurological or circulatory compromise', 'critical', 'New confusion, syncope or hypotension requires immediate escalation.'],
+        ['Catheter-associated thrombosis', 'emergent', 'Ask about venous devices and evaluate for thrombus. Choose anticoagulation with specialist advice and bleeding-risk assessment.']
+    ],
+    history: ['Ask about the timing of swelling and breathlessness, positional symptoms, cancer history and central venous devices.'],
+    exam: ['Look for face, neck and arm swelling, distended neck or chest wall veins, stridor and altered mental status.'],
+    workup: [
+        ['Imaging', ['Use contrast-enhanced chest CT or a venous-phase study selected with radiology. Escalate stabilization before transport when the airway or circulation is threatened.']],
+        ['Before intervention', ['Check renal function and obtain blood counts and coagulation studies when relevant to contrast or procedural planning.']]
+    ],
+    redFlags: ['Stridor or rapidly progressive respiratory symptoms.', 'Altered consciousness, syncope or hypotension.'],
+    disposition: [
+        ['Resuscitation / critical care', 'Threatened airway or neurological or circulatory compromise needs immediate coordinated care.'],
+        ['Urgent specialist assessment', 'New symptomatic obstruction needs a plan for monitoring, imaging and definitive treatment.']
+    ],
+    pitfalls: ['Assuming every obstruction is caused by tumor compression and overlooking catheter-related thrombus.', 'Sending a patient with positional airway compromise to lie flat without an airway plan.'],
+    pearls: ['Include airway symptoms, time course, ability to lie flat and venous access history in the specialist handover.'],
+    refs: ['ACR Appropriateness Criteria for suspected SVC syndrome', 'NHS Ayrshire & Arran initial management of superior vena cava obstruction']
+},
+{
+    id: 'cancer-immunotherapy-toxicity',
+    name: 'Cancer Immunotherapy Emergencies',
+    icon: '🩺',
+    tag: 'Recognize CAR-T and checkpoint inhibitor toxicities and evaluate infection in parallel.',
+    overview: 'CAR-T and other immune effector therapies can cause cytokine release syndrome (CRS) and immune effector cell-associated neurotoxicity syndrome (ICANS). Checkpoint inhibitors can cause inflammatory injury in multiple organs, including after treatment has stopped.',
+    approach: [
+        'Identify the exact product, last dose or infusion, treating center and any treatment alert card. Contact the oncology or cell therapy team early.',
+        'After CAR-T, consider CRS with fever, hypotension or hypoxia. Evaluate for infection and give indicated empiric antimicrobials because CRS and sepsis can coexist.',
+        'Assess new confusion, language difficulty or seizure for ICANS and other acute neurological causes. Document change from baseline and use the local neurotoxicity assessment.',
+        'After a checkpoint inhibitor, investigate the affected organ and competing causes. Coordinate urgent organ-specific therapy with the treating team.'
+    ],
+    dontMiss: [
+        ['Cytokine release syndrome (CRS)', 'critical', 'Fever with hypotension or hypoxia after immune effector therapy needs monitored resuscitation and urgent treatment-center guidance.'],
+        ['Immune effector cell-associated neurotoxicity (ICANS)', 'critical', 'Aphasia, encephalopathy or seizure can develop during or after CRS. Evaluate neurological mimics and escalate promptly.'],
+        ['Checkpoint inhibitor myocarditis', 'critical', 'New cardiac symptoms, troponin elevation or conduction abnormalities need ECG, monitoring and urgent cardiology and oncology input. Screen for overlapping myositis or myasthenia when weakness is present.'],
+        ['Pneumonitis, colitis or endocrine crisis', 'emergent', 'New dyspnea, diarrhea, or unexplained hypotension after checkpoint blockade warrants targeted assessment for toxicity and alternative diagnoses.']
+    ],
+    history: ['Ask about immunotherapy, infusion timing, prior toxicity, immunosuppression and recent infection.', 'Clarify baseline bowel frequency, exercise tolerance, cognition and strength.'],
+    exam: ['Assess oxygen requirement, perfusion, speech and mentation. Look for ptosis, bulbar weakness or respiratory muscle involvement.'],
+    workup: [
+        ['Fever or instability after CAR-T', ['Obtain cultures and initial sepsis studies. Repeat respiratory, hemodynamic and neurological assessments during treatment.']],
+        ['Suspected checkpoint inhibitor toxicity', ['Order organ-specific investigations. For suspected myocarditis obtain ECG and troponin, and consider CK when muscle involvement is suspected.']]
+    ],
+    redFlags: ['Hypotension, hypoxia or rapidly rising oxygen needs.', 'New aphasia, confusion, seizure or reduced consciousness.', 'New heart block, arrhythmia, troponin rise or bulbar weakness.'],
+    disposition: [
+        ['Monitored admission / critical care', 'Escalate suspected myocarditis, significant CRS, neurotoxicity, or respiratory or circulatory compromise.'],
+        ['Specialist-directed disposition', 'Discuss even mild suspected toxicity with the treating team, using the exact product and clinical course to guide monitoring.']
+    ],
+    pitfalls: ['Attributing fever after CAR-T to CRS and missing sepsis.', 'Treating CAR-T neurotoxicity as isolated CRS. Grade and treat both syndromes through the cell therapy protocol.'],
+    pearls: ['Aphasia or a change in handwriting can be an early neurotoxicity clue after CAR-T.'],
+    refs: ['SITC immune effector cell-related adverse events guideline', 'SITC immune checkpoint inhibitor-related adverse events guideline']
 }
 ];
 if (typeof window !== 'undefined') window.CP_DATA = CP_DATA;
