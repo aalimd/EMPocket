@@ -1,11 +1,25 @@
 /* Selected primary guidance for the teaching points reviewed 8 October 2026.
- * Targeted presentation additions checked 10–13 November 2026; topicReviews records scope.
+ * Targeted presentation additions checked 10–14 November 2026; topicReviews records scope.
  * Links support specific topics, not certification of every statement on a page.
  * Keep titles/URLs explicit: no guessed links generated from citation text.
  */
 (function () {
     'use strict';
     const sources = {
+        acepEarlyPregnancy: ["ACEP clinical policy: early pregnancy in the emergency department", "https://www.acep.org/siteassets/new-pdfs/clinical-policies/cp-earlypregnancy-doc.pdf"],
+        adnexalTorsion: ["ACOG committee opinion: adnexal torsion in adolescents", "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2019/08/adnexal-torsion-in-adolescents"],
+        acutePelvicImaging: ["ACR Appropriateness Criteria: acute pelvic pain in the reproductive age group", "https://acsearch.acr.org/docs/69503/Narrative/"],
+        acuteScrotumAUA: ["AUA medical student curriculum: acute scrotum", "https://www.auanet.org/documents/education/Acute-Scrotum.pdf"],
+        acuteScrotumEAU: ["EAU paediatric urology guideline: acute scrotum", "https://uroweb.org/guidelines/paediatric-urology/chapter/acute-scrotum"],
+        perforatedUlcer: ["WSES perforated and bleeding peptic ulcer guideline (2020)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC6947898/"],
+        surgicalSourceControl: ["WSES and partner societies: source control in emergency general surgery (2023)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC10362628/"],
+        cholecystitisEAST: ["EAST high-risk acute cholecystitis guideline (2026)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC13583704/"],
+        cholecystitisWSES: ["WSES acute calculous cholecystitis guideline (2020)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC7643471/"],
+        pancreatitisACG: ["ACG acute pancreatitis guideline (2024)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC13221274/"],
+        pancreatitisIAP: ["IAP and partner societies: acute pancreatitis guideline (2025)", "https://doi.org/10.1016/j.pan.2025.04.020"],
+        diverticulitisACG: ["ACG colonic diverticulitis guideline (2026)", "https://doi.org/10.14309/ajg.0000000000004047"],
+        diverticulitisIDSA: ["IDSA diagnostic imaging for acute diverticulitis (2024)", "https://doi.org/10.1093/cid/ciae350"],
+        diverticulitisNICE: ["NICE NG147: diverticular disease", "https://www.nice.org.uk/guidance/ng147/chapter/recommendations"],
         mesentericESVS: ['ESVS mesenteric and renal vessel disease guideline (2025)', 'https://doi.org/10.1016/j.ejvs.2025.06.010'],
         sboEGS: ['Emergency General Surgery Algorithms working group: small bowel obstruction (2025)', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC12893134/'],
         ercSpecial: ['ERC special circumstances in resuscitation (2025): traumatic arrest', 'https://www.erc.edu/media/wwufbysp/gl2025-06-spec-circ-e.pdf'],
@@ -152,6 +166,14 @@
         withdrawal: ["ASAM clinical practice guideline on alcohol withdrawal management (2020)", "https://www.asam.org/quality-care/clinical-guidelines/alcohol-withdrawal"],
     };
     const topics = {
+        'ectopic-pregnancy': ['ectopicDiagnosis', 'ectopic', 'acepEarlyPregnancy'],
+        'ovarian-torsion': ['adnexalTorsion', 'acutePelvicImaging'],
+        'testicular-torsion': ['acuteScrotumAUA', 'acuteScrotumEAU'],
+        'perforated-peptic-ulcer': ['perforatedUlcer', 'surgicalSourceControl'],
+        'acute-cholecystitis': ['cholecystitisWSES', 'cholecystitisEAST'],
+        'acute-cholangitis': ['cholangitis', 'sepsis'],
+        'acute-pancreatitis': ['pancreatitisACG', 'pancreatitisIAP'],
+        'acute-diverticulitis': ['diverticulitisACG', 'diverticulitisIDSA', 'diverticulitisNICE'],
         'acute-coronary-syndrome': ['acs', 'chest', 'mi'],
         'acute-aortic-syndrome': ['aorta'],
         'pulmonary-embolism': ['pe'],
@@ -732,6 +754,72 @@
         "sources": [
             "sboBologna",
             "sboEGS"
+        ]
+    },
+    "ectopic-pregnancy": {
+        "checked": "2026-11-14",
+        "scope": "early-pregnancy ultrasound, rupture, pregnancy of unknown location and follow-up",
+        "sources": [
+            "ectopicDiagnosis",
+            "ectopic",
+            "acepEarlyPregnancy"
+        ]
+    },
+    "ovarian-torsion": {
+        "checked": "2026-11-14",
+        "scope": "adolescent and reproductive-age recognition, Doppler limitations and surgical escalation",
+        "sources": [
+            "adnexalTorsion",
+            "acutePelvicImaging"
+        ]
+    },
+    "testicular-torsion": {
+        "checked": "2026-11-14",
+        "scope": "acute scrotal assessment, Doppler limitations and urgent exploration",
+        "sources": [
+            "acuteScrotumAUA",
+            "acuteScrotumEAU"
+        ]
+    },
+    "perforated-peptic-ulcer": {
+        "checked": "2026-11-14",
+        "scope": "adult CT, initial antimicrobial therapy and emergency source control",
+        "sources": [
+            "perforatedUlcer",
+            "surgicalSourceControl"
+        ]
+    },
+    "acute-cholecystitis": {
+        "checked": "2026-11-14",
+        "scope": "adult ultrasound, early surgery and high-risk source-control decisions",
+        "sources": [
+            "cholecystitisWSES",
+            "cholecystitisEAST"
+        ]
+    },
+    "acute-cholangitis": {
+        "checked": "2026-11-14",
+        "scope": "adult recognition, sepsis resuscitation and severity-based biliary drainage",
+        "sources": [
+            "cholangitis",
+            "sepsis"
+        ]
+    },
+    "acute-pancreatitis": {
+        "checked": "2026-11-14",
+        "scope": "adult diagnosis, early fluids and feeding, severity reassessment and biliary intervention",
+        "sources": [
+            "pancreatitisACG",
+            "pancreatitisIAP"
+        ]
+    },
+    "acute-diverticulitis": {
+        "checked": "2026-11-14",
+        "scope": "adult CT, selective antibiotics, complications and disposition",
+        "sources": [
+            "diverticulitisACG",
+            "diverticulitisIDSA",
+            "diverticulitisNICE"
         ]
     }
 };

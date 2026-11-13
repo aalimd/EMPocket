@@ -1203,7 +1203,7 @@ test('startup performance exposes a usable library and defers recorded ECG evalu
         domContentLoadedMs:Math.round(nav.domContentLoadedEventEnd),loadMs:Math.round(nav.loadEventEnd),
         scripts:performance.getEntriesByType('resource').filter(e=>e.initiatorType==='script').length};
     })()`);
-    assert.equal(metrics.topics,68);
+    assert.equal(metrics.topics,76);
     assert.equal(metrics.recordingsEvaluated,false);
     t.diagnostic('Local unthrottled Chrome baseline (not physical-device timing): '+JSON.stringify(metrics));
 });
@@ -1319,7 +1319,7 @@ test('every presentation binds More, section shortcuts, accordions and recall co
   }
   return {problems,moreCount,count:window.CP_DATA.length};
  })()`);
- assert.equal(problems.count,68);assert.ok(problems.moreCount>0);
+ assert.equal(problems.count,76);assert.ok(problems.moreCount>0);
  assert.deepEqual(problems.problems,[]);
 });
 
@@ -1472,5 +1472,26 @@ test('diagnosis guides open from differential cards in Full and Quick, and appea
     await waitForTitle('Acute Mesenteric Ischemia');
     for (const [query, id] of [['ACS', 'acute-coronary-syndrome'], ['mesenteric ischemia', 'acute-mesenteric-ischemia']]) {
         assert.ok(await evaluate(`window.EM_POCKET_UI.findSearchHits(${JSON.stringify(query)})[0]?.cpId === ${JSON.stringify(id)}`), query);
+    }
+});
+
+test('second-batch guides are discoverable from the diagnosis filter, differential and search', async t => {
+    if (!await ready(t)) return;
+    await load('#library');
+    await evaluate(`(() => {
+        const filter = document.getElementById('librarySystem');
+        filter.value = 'Diagnosis guides';
+        filter.dispatchEvent(new Event('change', { bubbles: true }));
+    })()`);
+    assert.equal(await evaluate(`document.querySelectorAll('#presentationLibrary .cp-card').length`), 18);
+    await load('#pelvic-pain~dont-miss');
+    await evaluate(`document.querySelector('#section-dont-miss a[href="#ectopic-pregnancy"]').click()`);
+    const deadline = Date.now() + 5000;
+    while (await evaluate(`document.querySelector('#stage h1')?.textContent`) !== 'Ectopic Pregnancy') {
+        assert.ok(Date.now() < deadline, 'ectopic pregnancy opens from pelvic pain');
+        await wait(25);
+    }
+    for (const [query, id] of [['cholangitis', 'acute-cholangitis'], ['ovarian torsion', 'ovarian-torsion'], ['testicular torsion', 'testicular-torsion'], ['diverticulitis', 'acute-diverticulitis']]) {
+        assert.equal(await evaluate(`window.EM_POCKET_UI.findSearchHits(${JSON.stringify(query)})[0]?.cpId`), id);
     }
 });

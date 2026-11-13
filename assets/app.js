@@ -142,6 +142,14 @@
         { title: 'Oncology Emergencies', ids: ['neutropenic-sepsis', 'tumor-lysis-syndrome', 'metastatic-spinal-cord-compression', 'hypercalcemia-of-malignancy', 'superior-vena-cava-syndrome', 'cancer-immunotherapy-toxicity'] }
     ];
     const RELATED = {
+        'ectopic-pregnancy': ['pelvic-pain', 'vaginal-bleeding', 'pregnancy-emergency', 'abdominal-pain'],
+        'ovarian-torsion': ['pelvic-pain', 'abdominal-pain', 'nausea-vomiting'],
+        'testicular-torsion': ['scrotal-pain', 'abdominal-pain', 'nausea-vomiting'],
+        'perforated-peptic-ulcer': ['abdominal-pain', 'nausea-vomiting', 'shock'],
+        'acute-cholecystitis': ['abdominal-pain', 'jaundice', 'fever'],
+        'acute-cholangitis': ['jaundice', 'abdominal-pain', 'fever', 'shock'],
+        'acute-pancreatitis': ['abdominal-pain', 'nausea-vomiting', 'back-pain', 'jaundice'],
+        'acute-diverticulitis': ['abdominal-pain', 'pelvic-pain', 'fever'],
         'acute-coronary-syndrome': ['chest-pain', 'dyspnea', 'nausea-vomiting'],
         'acute-aortic-syndrome': ['chest-pain', 'back-pain', 'limb-ischemia'],
         'pulmonary-embolism': ['chest-pain', 'dyspnea', 'hemoptysis', 'shock'],
@@ -360,6 +368,14 @@
     if (typeof window !== 'undefined') window.EM_ICONS = { svg: semanticSvg, map: SEMANTIC_ICONS };
 
     const TOPIC_CATS = {
+        'ectopic-pregnancy': 'obgyn',
+        'ovarian-torsion': 'obgyn',
+        'testicular-torsion': 'gu',
+        'perforated-peptic-ulcer': 'gi',
+        'acute-cholecystitis': 'gi',
+        'acute-cholangitis': 'gi',
+        'acute-pancreatitis': 'gi',
+        'acute-diverticulitis': 'gi',
         'acute-coronary-syndrome': 'cardio', 'cardiac-tamponade': 'cardio',
         'acute-aortic-syndrome': 'vascular', 'ruptured-abdominal-aortic-aneurysm': 'vascular', 'acute-mesenteric-ischemia': 'vascular',
         'pulmonary-embolism': 'pulm', 'tension-pneumothorax': 'pulm',
@@ -3455,7 +3471,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = isAppWorker(navigator.serviceWorker.controller);
-                navigator.serviceWorker.register('./sw.js?v=20261113-diagnoses-v84').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261114-diagnoses-v85').then((registration) => {
                     navigator.serviceWorker.ready.then((ready) => {
                         if (ready.scope === new URL('./', location.href).href) setOfflineStatus('Ready for offline use');
                     });

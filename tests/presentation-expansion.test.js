@@ -17,11 +17,12 @@ test('selected review records distinguish the new scope from the historical audi
   'esophageal-perforation', 'cardiac-tamponade', 'acute-mesenteric-ischemia',
   'ruptured-abdominal-aortic-aneurysm', 'acute-appendicitis', 'small-bowel-obstruction'
  ];
- assert.deepEqual(Object.keys(evidence.topicReviews).sort(), [...ids, ...november13].sort());
+ const november14 = ['ectopic-pregnancy', 'ovarian-torsion', 'testicular-torsion', 'perforated-peptic-ulcer', 'acute-cholecystitis', 'acute-cholangitis', 'acute-pancreatitis', 'acute-diverticulitis'];
+ assert.deepEqual(Object.keys(evidence.topicReviews).sort(), [...ids, ...november13, ...november14].sort());
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(), Array.from(topics, topic => topic.id).sort());
- for(const id of [...ids, ...november13]){
+ for(const id of [...ids, ...november13, ...november14]){
   const r=evidence.topicReviews[id];
-  assert.equal(r.checked, november13.includes(id) ? '2026-11-13' : '2026-11-10');assert.ok(r.scope.length>15);
+  assert.equal(r.checked, november14.includes(id) ? '2026-11-14' : november13.includes(id) ? '2026-11-13' : '2026-11-10');assert.ok(r.scope.length>15);
   assert.ok(r.sources.length);for(const key of r.sources){assert.ok(evidence.topics[id].includes(key),id+': '+key);assert.ok(evidence.sources[key]);}
  }
 });
@@ -256,5 +257,17 @@ test('differential cards link only to existing topics and cover the first diagno
  ]);
  for (const id of ['acute-mesenteric-ischemia', 'ruptured-abdominal-aortic-aneurysm', 'acute-appendicitis', 'small-bowel-obstruction']) {
   assert.ok(linked('abdominal-pain').includes(id));
+ }
+});
+
+test('abdominal, pelvic, biliary and scrotal differentials open their diagnosis guides', () => {
+ const linked = id => topics.find(topic => topic.id === id).dontMiss.flatMap(row => row[3] || []);
+ for (const [presentation, guides] of [
+  ['abdominal-pain', ['perforated-peptic-ulcer', 'acute-cholecystitis', 'acute-diverticulitis', 'acute-cholangitis', 'acute-pancreatitis']],
+  ['pelvic-pain', ['ectopic-pregnancy', 'ovarian-torsion']],
+  ['scrotal-pain', ['testicular-torsion']],
+  ['jaundice', ['acute-cholangitis']]
+ ]) {
+  for (const guide of guides) assert.ok(linked(presentation).includes(guide), presentation + ' → ' + guide);
  }
 });

@@ -11,7 +11,7 @@
    Final targeted expansion: 13 Nov 2026, four additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-13-BATCH-7.md.
    Oncology Emergencies: 13 Nov 2026, six adult emergency guides. See docs/ONCOLOGY-EMERGENCIES-2026-11-13.md.
    Clinical consistency audit: 13 Nov 2026, selected high-risk treatment rows and decision tools. See docs/CLINICAL-CONSISTENCY-2026-11-13.md.
-   Adult diagnosis guides: 13 Nov 2026. See docs/DIAGNOSIS-GUIDES-2026-11-13.md.
+   Diagnosis guides: 13–14 Nov 2026. See docs/DIAGNOSIS-GUIDES-2026-11-13.md.
    Optional fourth differential field: a list of topic IDs with dedicated guidance.
    Educational reference only — never replaces clinical judgment or local protocols.
 */
@@ -127,12 +127,14 @@ approach: [
 dontMiss: [
 ['Ruptured AAA', 'critical', 'New abdominal or back pain, syncope or shock with an aortic risk feature needs early vascular assessment. Use bedside ultrasound for an aneurysm and urgent CTA when safe.', ['ruptured-abdominal-aortic-aneurysm']],
 ['Mesenteric ischemia', 'critical', 'Pain out of proportion, AFib or vasculopathy; lactate and WBC may be normal early — CTA is the test.', ['acute-mesenteric-ischemia']],
-['Ruptured ectopic pregnancy', 'critical', 'Every patient of childbearing potential with abdominal pain gets a pregnancy test.', ['pelvic-pain']],
-['Perforated viscus', 'critical', 'Sudden severe pain, rigid abdomen, free air (upright CXR or CT).'],
-['Ovarian / testicular torsion', 'critical', 'Acute one-sided pain — Doppler US. Testicular salvage is highest if detorsion is within ~6 h, but operate on suspicion — do not wait out a clock.', ['pelvic-pain', 'scrotal-pain']],
+['Ruptured ectopic pregnancy', 'critical', "Test for pregnancy when possible. Suspected rupture with instability needs hemorrhage resuscitation and immediate gynecology.", ['ectopic-pregnancy']],
+['Perforated viscus', 'critical', "Abrupt severe pain or peritonitis needs urgent surgical review. CT can identify free air or the source when transport is safe. A perforated ulcer is one cause.", ['perforated-peptic-ulcer']],
+['Ovarian / testicular torsion', 'critical', "Abrupt unilateral pelvic, groin or scrotal pain with vomiting warrants urgent specialist assessment. Preserved Doppler flow does not exclude torsion.", ['ovarian-torsion', 'testicular-torsion']],
 ['Aortic dissection with abdominal malperfusion', 'critical', 'Abrupt abdominal or back pain with pulse deficits, neurologic changes or shock warrants urgent aortic assessment.', ['acute-aortic-syndrome']],
+['Acute cholangitis', 'critical', 'Right upper quadrant pain with fever, jaundice or sepsis warrants evaluation for infected biliary obstruction.', ['acute-cholangitis']],
 ['DKA, inferior MI, basal pneumonia', 'emergent', 'Medical mimics — check glucose, ECG, and lungs in every atypical story.', ['hyperglycemia', 'acute-coronary-syndrome']],
-['Appendicitis / cholecystitis / diverticulitis / obstruction', 'common', 'Time-sensitive; score and image. Selected imaging-confirmed uncomplicated appendicitis may receive antibiotics after shared decision-making (WSES 2025 / CODA).', ['acute-appendicitis', 'small-bowel-obstruction']]
+['Appendicitis / cholecystitis / diverticulitis / obstruction', 'common', "Use pain location, serial examination and selective imaging to narrow the cause. Escalate peritonitis, sepsis or suspected bowel compromise.", ['acute-appendicitis', 'acute-cholecystitis', 'acute-diverticulitis', 'small-bowel-obstruction']],
+['Acute pancreatitis', 'emergent', 'Persistent epigastric pain, often radiating to the back, warrants lipase testing when the presentation fits.', ['acute-pancreatitis']]
 ],
 history: [
     "Ask about the last bowel movement and passage of flatus, prior abdominal operations and hernias when obstruction is possible.",
@@ -261,7 +263,7 @@ dontMiss: [
 ['Lethal arrhythmia (long QT, WPW, Brugada, advanced block, VT)', 'critical', 'Abnormal ECG, exertional or supine syncope, no prodrome, family history of sudden death.'],
 ['Severe aortic stenosis / HCM', 'critical', 'Exertional syncope with a pathologic murmur — echo.'],
 ['High-risk PE', 'critical', 'Syncope can be the only symptom; check VTE risks and RV strain.', ['pulmonary-embolism']],
-['Internal hemorrhage (AAA, GI bleed, ectopic)', 'critical', 'Syncope with anemia, abdominal/back pain, or positive hCG.', ['ruptured-abdominal-aortic-aneurysm', 'gib', 'pelvic-pain']],
+['Internal hemorrhage (AAA, GI bleed, ectopic)', 'critical', 'Syncope with anemia, abdominal/back pain, or positive hCG.', ['ruptured-abdominal-aortic-aneurysm', 'gib', 'ectopic-pregnancy']],
 ['SAH and other intracranial causes', 'critical', 'Headache + collapse; \u201Csyncope with head injury\u201D may be the other way around.'],
 ['Carotid / subclavian steal', 'emergent', 'Arm-exercise syncope with pulse/BP asymmetry.'],
 ['Vasovagal / orthostatic / situational', 'common', 'Prodrome (warmth, pallor, nausea) + trigger + upright posture — the reassuring triad.']
@@ -491,7 +493,7 @@ dontMiss: [
 ['Rupturing / expanding AAA', 'critical', 'Elderly vasculopath with back pain = AAA until excluded (bedside US/CTA).', ['ruptured-abdominal-aortic-aneurysm']],
 ['Osteoporotic compression fracture', 'emergent', 'Elderly, steroids, minimal or no trauma — X-ray, treat pain, brace per ortho. Not immediately life-threatening but easy to miss.'],
 ['Inflammatory spondyloarthropathy', 'common', 'Night pain, morning stiffness >30 min, improves with activity, onset <40 y — not an ED emergency; HLA-B27 and SI-joint MRI as outpatient.'],
-['Renal colic / pyelonephritis / pancreatitis', 'common', 'Flank radiation, urinary symptoms — urinalysis, lipase, CT as indicated.'],
+['Renal colic / pyelonephritis / pancreatitis', 'common', 'Flank radiation, urinary symptoms — urinalysis, lipase, CT as indicated.', ['acute-pancreatitis']],
 ['Mechanical / radicular pain (sciatica)', 'common', 'Positional, dermatomal radiation, positive straight-leg raise — NSAIDs, stay active, no bed rest.']
 ],
 history: [
@@ -664,12 +666,12 @@ approach: [
     'IVF: an IUP does not exclude heterotopic pregnancy.'
 ],
 dontMiss: [
-['Ruptured ectopic pregnancy', 'critical', 'hCG first in every patient of childbearing potential; unstable = operating room, not imaging.'],
-['Ovarian torsion', 'critical', 'Sudden severe unilateral pain ± mass; Doppler US — delay loses the ovary.'],
+['Ruptured ectopic pregnancy', 'critical', 'Test for pregnancy when possible. Suspected rupture with instability needs immediate hemorrhage resuscitation and gynecology involvement.', ['ectopic-pregnancy']],
+['Ovarian torsion', 'critical', 'Sudden severe unilateral pain ± mass; Doppler US — delay loses the ovary.', ['ovarian-torsion']],
 ['Tubo-ovarian abscess', 'critical', 'PID with mass or sepsis — admission, IV antibiotics, drainage per response.'],
 ['Hemorrhagic ruptured ovarian cyst', 'critical', 'Sudden pain with free fluid; watch hemodynamics, especially anticoagulated.'],
 ['Septic abortion / puerperal infection', 'critical', 'Fever + bleeding + uterine tenderness in pregnancy or postpartum.'],
-['Appendicitis / diverticulitis', 'emergent', 'GI mimics — CT when US is non-diagnostic and pregnancy excluded.'],
+['Appendicitis / diverticulitis', 'emergent', 'GI mimics — CT when US is non-diagnostic and pregnancy excluded.', ['acute-appendicitis', 'acute-diverticulitis']],
 ['UTI / kidney stone', 'common', 'Dysuria or flank-to-groin radiation — urinalysis ± CT.'],
 ['Mittelschmerz / dysmenorrhea / endometriosis', 'common', 'Cyclical patterns with a benign exam.']
 ],
@@ -710,7 +712,7 @@ approach: [
 ],
 dontMiss: [
 ['Hemorrhagic shock from any source', 'critical', 'Resuscitate before diagnosing: two IVs, crossmatch. TXA promptly for diagnosed PPH within 3 h of birth (WHO/WOMAN); TXA is also used for selected non-pregnant heavy bleeding.'],
-['Ectopic pregnancy', 'critical', 'Bleeding + pain + positive hCG — transvaginal US urgently.'],
+['Ectopic pregnancy', 'critical', 'Bleeding + pain + positive hCG — transvaginal US urgently.', ['ectopic-pregnancy']],
 ['Placenta previa', 'critical', 'Painless bright-red bleeding in later pregnancy — NO digital vaginal exam; US first.'],
 ['Placental abruption', 'critical', 'Painful woody uterus, fetal distress — obstetric emergency, deliver.'],
 ['Postpartum hemorrhage', 'critical', 'Uterine atony > retained tissue > trauma; uterotonics + bimanual compression pathway.'],
@@ -754,7 +756,7 @@ approach: [
     'Then Fournier, incarcerated hernia, and trauma.'
 ],
 dontMiss: [
-['Testicular torsion', 'critical', 'Sudden pain, high-riding transverse testis, absent cremasteric reflex — urology/OR immediately; US must not delay exploration when suspicion is high.'],
+['Testicular torsion', 'critical', 'Sudden pain, high-riding transverse testis, absent cremasteric reflex — urology/OR immediately; US must not delay exploration when suspicion is high.', ['testicular-torsion']],
 ['Fournier gangrene', 'critical', 'Perineal pain, crepitus, sepsis, diabetes — broad antibiotics + debridement.'],
 ['Incarcerated / strangulated inguinal hernia', 'critical', 'Irreducible tender groin mass with obstruction signs — surgery.'],
 ['Traumatic rupture / testicular hematoma', 'critical', 'Scrotal trauma — US; rupture needs repair within hours.'],
@@ -972,12 +974,12 @@ approach: [
     'Ondansetron is a treatment, not a workup.'
 ],
 dontMiss: [
-['Bowel obstruction / volvulus / perforation', 'critical', 'Bilious or feculent vomiting, distension, prior surgery, hernia — CT. Sigmoid/cecal volvulus is time-critical ischemia.', ['small-bowel-obstruction']],
+['Bowel obstruction / volvulus / perforation', 'critical', 'Bilious or feculent vomiting, distension, prior surgery, hernia — CT. Sigmoid/cecal volvulus is time-critical ischemia.', ['small-bowel-obstruction', 'perforated-peptic-ulcer']],
 ['ACS / inferior MI', 'critical', 'Isolated vomiting, especially in women, elderly, and diabetics — ECG before the antiemetic is blamed for the \u201Ccure.\u201D', ['acute-coronary-syndrome']],
 ['Raised ICP / SAH / posterior stroke', 'critical', 'Headache, diplopia, ataxia, no abdominal findings — CT/MRI. Projectile vomiting is a clue, not a rule.'],
 ['DKA / HHS / adrenal crisis / hyponatremia', 'critical', 'Glucose and electrolytes in every unexplained case. Steroid-dependent patients get stress-dose steroids.'],
-['Pregnancy complications (hyperemesis vs ectopic vs molar)', 'critical', 'hCG first; assess oral intake, weight loss, hydration and electrolytes in hyperemesis. Ketonuria does not grade severity; blood ketones/acidosis are relevant if DKA is suspected. Ectopic if pain + bleeding.'],
-['Acute glaucoma / testicular or ovarian torsion', 'emergent', 'The referred-pain mimics — eye and groin exams exist for a reason.'],
+['Pregnancy complications (hyperemesis vs ectopic vs molar)', 'critical', 'hCG first; assess oral intake, weight loss, hydration and electrolytes in hyperemesis. Ketonuria does not grade severity; blood ketones/acidosis are relevant if DKA is suspected. Ectopic if pain + bleeding.', ['ectopic-pregnancy']],
+['Acute glaucoma / testicular or ovarian torsion', 'emergent', 'The referred-pain mimics — eye and groin exams exist for a reason.', ['ovarian-torsion', 'testicular-torsion']],
 ['Cannabinoid hyperemesis / cyclic vomiting / gastritis', 'common', 'Hot-water bathing is a cannabinoid clue; capsaicin and haloperidol are options. Still exclude the killers once.']
 ],
 history: [
@@ -1058,7 +1060,7 @@ approach: [
     'Acetaminophen is the reversible cause you must not miss.'
 ],
 dontMiss: [
-['Ascending cholangitis', 'critical', 'Fever + jaundice ± RUQ pain (Charcot); shock/confusion (Reynolds). Tokyo criteria. Resuscitate, cultures, broad antibiotics, urgent biliary drainage (ERCP).'],
+['Ascending cholangitis', 'critical', 'Fever + jaundice ± RUQ pain (Charcot); shock/confusion (Reynolds). Tokyo criteria. Resuscitate, cultures, broad antibiotics, urgent biliary drainage (ERCP).', ['acute-cholangitis']],
 ['Acute liver failure', 'critical', 'INR ≥1.5 plus encephalopathy in acute liver injury without established cirrhosis (distinguish acute-on-chronic failure) — transplant pathway, NAC if acetaminophen or even if etiology is unclear in many protocols, glucose, ICP precautions.'],
 ['Acetaminophen (and other toxin) hepatitis', 'critical', 'A treatable cause — obtain acetaminophen level, AST/ALT and INR; start NAC promptly for suspected toxic exposure with delayed testing or liver injury and use the poison-center pathway for unknown timing or repeated ingestion.'],
 ['Ascending cholangitis mimics / hepatic abscess / sepsis', 'critical', 'Jaundice in the septic patient is not \u201Cjust Gilbert.\u201D'],
@@ -1587,7 +1589,7 @@ id: 'flank-pain', name: 'Flank Pain & Renal Colic', icon: '🪨',
 tag: 'Confirm the stone—but first exclude infected obstruction, AAA, and the surgical mimics.',
 overview: 'Renal colic is common, but flank pain can be vascular, infectious, gynecologic, gastrointestinal, or spinal. A stone with sepsis, solitary kidney, anuria, or refractory symptoms is not a routine discharge.',
 approach: ['Give prompt analgesia (NSAID + IV opioid if severe) while checking vitals, pregnancy status, urinalysis, and creatinine.', 'Screen older or hypotensive patients with flank/back pain for ruptured AAA by bedside aorta ultrasound before calling it a first stone.', 'Rule out infected ureteral obstruction (fever/SIRS/pyuria + hydronephrosis/stone) — that requires emergency urologic decompression.', 'Choose imaging wisely: POCUS/ultrasound first in young recurrent stone formers and pregnancy; low-dose noncontrast CT for first episode, older age, or diagnostic uncertainty.'],
-dontMiss: [['Infected obstructed urinary system', 'critical', 'Fever/systemic illness plus obstruction requires urgent urology drainage and antibiotics—not outpatient stone management.'], ['Ruptured AAA / aortic dissection', 'critical', 'Older patient, hypotension, vascular risk, abdominal/back pain, or pulse deficit: image the aorta.', ['ruptured-abdominal-aortic-aneurysm', 'acute-aortic-syndrome']], ['Pyelonephritis with sepsis', 'critical', 'Fever, flank tenderness, shock, or vomiting warrants sepsis treatment and source-control assessment.'], ['Ectopic pregnancy / ovarian torsion', 'emergent', 'Pregnancy test and pelvic consideration remain essential when anatomy and symptoms fit.'], ['Uncomplicated ureteral stone', 'common', 'Analgesia, hydration advice, urine straining where used, and follow-up depend on size, location, renal function, and symptoms.']],
+dontMiss: [['Infected obstructed urinary system', 'critical', 'Fever/systemic illness plus obstruction requires urgent urology drainage and antibiotics—not outpatient stone management.'], ['Ruptured AAA / aortic dissection', 'critical', 'Older patient, hypotension, vascular risk, abdominal/back pain, or pulse deficit: image the aorta.', ['ruptured-abdominal-aortic-aneurysm', 'acute-aortic-syndrome']], ['Pyelonephritis with sepsis', 'critical', 'Fever, flank tenderness, shock, or vomiting warrants sepsis treatment and source-control assessment.'], ['Ectopic pregnancy / ovarian torsion', 'emergent', 'Pregnancy test and pelvic consideration remain essential when anatomy and symptoms fit.', ['ectopic-pregnancy', 'ovarian-torsion']], ['Uncomplicated ureteral stone', 'common', 'Analgesia, hydration advice, urine straining where used, and follow-up depend on size, location, renal function, and symptoms.']],
 history: ['Abrupt colicky vs constant tearing pain, radiation to groin/testicle/labia, gross hematuria, dysuria', 'Fever, rigors, intractable vomiting, anuria, solitary or transplant kidney, prior stones/stents', 'Pregnancy possibility, age >60 with smoking/hypertension (AAA mimic), anticoagulation, AFib (renal infarct)'],
 exam: ['Vitals (fever, tachycardia, hypotension); abdominal tenderness vs benign soft belly of classic colic', 'CVA tenderness, palpation for pulsatile abdominal mass, femoral pulses', 'Testicular/inguinal exam in males and pelvic consideration in females with lower-quadrant/groin radiation'],
 workup: [['Bedside', ['Urinalysis, urine hCG in childbearing potential, and POCUS (hydronephrosis + abdominal aorta <3 cm)', '12-lead ECG if older or AFib/renal-infarct mimic suspected']], ['Labs', ['BMP/creatinine, CBC; add blood/urine cultures and lactate if febrile or SIRS-positive', 'Absence of microscopic hematuria (~10–15% of stones) does not exclude ureterolithiasis']], ['Imaging', [
@@ -1716,7 +1718,7 @@ id: 'pregnancy-emergency', name: 'Pregnancy-Related Emergency', icon: '🤰',
 tag: 'Pregnancy status changes the differential, imaging, medications, destination, and team.',
 overview: 'Pregnant and postpartum patients can present with the same emergencies as anyone else plus pregnancy-specific catastrophes. The ED must stabilize first, establish gestational/postpartum context, and involve obstetric expertise early under local pathways.',
 approach: ['Confirm pregnancy status and gestational age or time since delivery. Consider postpartum preeclampsia, VTE and cardiomyopathy based on symptoms and timing.', 'Stabilize the mother first: left uterine displacement at ≥20 weeks, oxygen to keep SpO₂ ≥95%, and early obstetrics/anesthesia/neonatology activation.', 'Repeat severe BP promptly. Treat confirmed persistent SBP ≥160 or DBP ≥110 mmHg as soon as possible within 30–60 minutes using the obstetric pathway (IV labetalol, IV hydralazine or immediate-release oral nifedipine). Use IV magnesium sulfate for eclampsia or seizure prophylaxis in preeclampsia with severe features.', 'Never withhold indicated maternal life-saving imaging (CTA, head CT, trauma CT) or resuscitation because the patient is pregnant.'],
-dontMiss: [['Ruptured ectopic pregnancy', 'critical', 'Pain/bleeding with positive pregnancy test and instability is a surgical emergency.'], ['Severe preeclampsia / eclampsia', 'critical', 'Severe hypertension, headache, visual symptoms, RUQ pain, dyspnea, seizure, or postpartum presentation needs immediate obstetric protocol.'], ['Obstetric hemorrhage / placental abruption', 'critical', 'Bleeding, pain, uterine tenderness, shock, or trauma requires resuscitation and obstetric escalation.'], ['Pulmonary embolism / peripartum cardiomyopathy', 'critical', 'Dyspnea, chest symptoms, syncope, hypoxia, or new heart-failure signs require urgent evaluation.'], ['Hyperemesis, UTI, uncomplicated early-pregnancy symptoms', 'common', 'Assess oral intake, hydration, electrolytes, infection and obstetric context; ketonuria does not grade hyperemesis severity. Give thiamine in prolonged vomiting/poor intake, especially before planned dextrose; never delay correction of hypoglycemia.']],
+dontMiss: [['Ruptured ectopic pregnancy', 'critical', 'Pain/bleeding with positive pregnancy test and instability is a surgical emergency.', ['ectopic-pregnancy']], ['Severe preeclampsia / eclampsia', 'critical', 'Severe hypertension, headache, visual symptoms, RUQ pain, dyspnea, seizure, or postpartum presentation needs immediate obstetric protocol.'], ['Obstetric hemorrhage / placental abruption', 'critical', 'Bleeding, pain, uterine tenderness, shock, or trauma requires resuscitation and obstetric escalation.'], ['Pulmonary embolism / peripartum cardiomyopathy', 'critical', 'Dyspnea, chest symptoms, syncope, hypoxia, or new heart-failure signs require urgent evaluation.'], ['Hyperemesis, UTI, uncomplicated early-pregnancy symptoms', 'common', 'Assess oral intake, hydration, electrolytes, infection and obstetric context; ketonuria does not grade hyperemesis severity. Give thiamine in prolonged vomiting/poor intake, especially before planned dextrose; never delay correction of hypoglycemia.']],
 history: [
     "Ask about hypertension in pregnancy, antihypertensives and the last BP check. New postpartum headache or visual symptoms need prompt BP measurement.",
     'Gestational age (LMP vs dating ultrasound), gravidity/parity, days/weeks postpartum, prior ectopic/cesarean/placenta previa', 'Vaginal bleeding, abdominal/pelvic/shoulder-tip pain, contractions, gush of fluid, fetal movement (≥20 weeks)', 'Headache, scotomata, RUQ/epigastric pain, orthopnea/dyspnea, unilateral leg swelling, minor or major trauma'],
@@ -2524,6 +2526,232 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
     pitfalls: ['Assuming every obstruction after surgery is uncomplicated adhesive disease.', 'Letting ongoing stool passage or a normal initial lactate override concerning findings.'],
     pearls: ['Describe the transition point, hernia findings, perfusion and whether the pain is changing from intermittent to continuous.'],
     refs: ['WSES Bologna guideline for adhesive small bowel obstruction', 'Emergency General Surgery Algorithms working group: small bowel obstruction (2025)']
+},
+{
+    id: 'ectopic-pregnancy', type: 'diagnosis', name: "Ectopic Pregnancy", icon: '🩺',
+    tag: "Recognize rupture early and arrange follow-up until pregnancy location or resolution is established.",
+    overview: "Ectopic pregnancy can present with pelvic or abdominal pain, vaginal bleeding, syncope or shock. Tubal pregnancy is the focus of this guide. Risk factors may be absent.",
+    approach: [
+        "For suspected rupture with instability, resuscitate, activate hemorrhage support as indicated and call gynecology immediately for operative management. Do not delay for formal imaging.",
+        "In stable patients with pain or bleeding and a positive pregnancy test, obtain pelvic ultrasound regardless of the hCG value. Use transvaginal imaging when appropriate.",
+        "If ultrasound identifies neither an intrauterine nor an ectopic pregnancy, document pregnancy of unknown location (PUL). Arrange early-pregnancy follow-up with two quantitative hCG measurements as close as possible to 48 hours apart and no earlier, and repeat ultrasound according to the pathway. Reassess sooner for new or worsening symptoms.",
+        "Confirmed unruptured tubal ectopic pregnancy may qualify for expectant management, methotrexate or surgery. Gynecology selects the option using symptoms, imaging, hCG, contraindications and ability to complete follow-up."
+    ],
+    dontMiss: [
+        ["Ruptured ectopic pregnancy", "critical", "Syncope, shoulder-tip pain, peritonism, hypotension or concerning free fluid with possible pregnancy requires immediate escalation."],
+        ["Heterotopic pregnancy", "emergent", "Persistent concerning pain or an adnexal mass warrants reassessment even with a confirmed intrauterine pregnancy, especially after assisted reproduction."]
+    ],
+    history: ["Ask about pain, bleeding, fainting, prior ectopic pregnancy, tubal surgery and assisted reproduction."],
+    exam: ["Assess perfusion and abdominal tenderness or guarding. Repeat vitals and examination if symptoms evolve."],
+    workup: [
+        ["Imaging", ["Assess pregnancy location, both adnexa and free fluid. An empty uterus alone does not establish ectopic pregnancy."]],
+        ["Labs", ["Quantitative serum hCG, CBC, blood type and testing for transfusion or Rh prophylaxis as indicated by the local pathway."]]
+    ],
+    redFlags: ["Shock, syncope, increasing pain, peritonism or significant free fluid."],
+    disposition: [
+        ["Emergency operation or transfer", "Suspected rupture with instability needs immediate gynecologic and hemorrhage management."],
+        ["Reliable specialist follow-up", "A stable patient with PUL needs a named follow-up service, a scheduled test plan and written 24-hour return instructions. After methotrexate, follow serial hCG to resolution under the treating team."]
+    ],
+    pitfalls: [
+        "Using one hCG result or a reassuring trend to rule out ectopic pregnancy.",
+        "Giving methotrexate at the first visit based only on an empty uterus or an hCG threshold."
+    ],
+    pearls: ["When symptoms worsen, reassess immediately even if hCG is falling."],
+    refs: ["NICE NG126 pregnancy location and follow-up", "NICE NG126 management of tubal ectopic pregnancy", "ACEP clinical policy: early pregnancy in the emergency department"]
+},
+{
+    id: 'ovarian-torsion', type: 'diagnosis', name: "Ovarian Torsion (Adnexal Torsion)", icon: '🩺',
+    tag: "Call gynecology promptly when the history suggests torsion, even with preserved Doppler flow.",
+    overview: "Twisting of the ovary and sometimes the fallopian tube can compromise blood supply. Pain can be intermittent. An adnexal mass raises suspicion, but adolescents can have torsion without a mass.",
+    approach: [
+        "Suspect torsion with sudden unilateral pelvic or lower abdominal pain, particularly with nausea or vomiting.",
+        "Provide analgesia and antiemetics, keep NPO and obtain a pregnancy test when relevant. Contact gynecology early when suspicion is high.",
+        "Obtain pelvic ultrasound with Doppler promptly if it can be done without delaying specialist assessment. Use the transabdominal and, when appropriate, transvaginal approach.",
+        "Persistent clinical concern needs urgent surgical evaluation despite equivocal imaging. Laparoscopy confirms the diagnosis and allows detorsion. Ovarian preservation is the usual goal in adolescents."
+    ],
+    dontMiss: [
+        ["Intermittent torsion", "critical", "Pain can improve after spontaneous detorsion. Recurrent abrupt unilateral pain warrants assessment."],
+        ["Ectopic pregnancy", "critical", "Assess pregnancy location and bleeding risk when the pregnancy test is positive.", ["ectopic-pregnancy"]]
+    ],
+    history: ["Ask about sudden onset, prior episodes, known adnexal cysts or masses, fertility treatment and pregnancy possibility."],
+    exam: ["Assess perfusion and localized or generalized tenderness. Exam findings can be mild between episodes."],
+    workup: [["Pelvic ultrasound", ["Look for ovarian enlargement, edema, peripheral follicles, a twisted pedicle and asymmetry. Preserved arterial flow does not rule out torsion."]]],
+    redFlags: ["Abrupt or recurrent unilateral pain with vomiting, especially with an adnexal mass or concerning imaging."],
+    disposition: [["Urgent gynecology assessment", "Arrange timely evaluation for laparoscopy or transfer when surgery is unavailable."]],
+    pitfalls: ["Discharging solely because pain improved or Doppler flow is present."],
+    pearls: ["Report pain onset and recurrence, adnexal findings and pregnancy status in the handover."],
+    refs: ["ACOG committee opinion: adnexal torsion in adolescents", "ACR Appropriateness Criteria: acute pelvic pain in the reproductive age group"]
+},
+{
+    id: 'testicular-torsion', type: 'diagnosis', name: "Testicular Torsion", icon: '🩺',
+    tag: "Contact urology immediately when torsion is likely. Arrange exploration without delaying for imaging.",
+    overview: "Twisting of the spermatic cord threatens testicular viability. Torsion can occur at any age and may present as lower abdominal or groin pain, especially in children and adolescents.",
+    approach: [
+        "Ask about onset and prior self-resolving episodes. Examine the testes when lower abdominal or groin pain could be referred.",
+        "Give analgesia, keep NPO and contact urology immediately when suspicion is high. Arrange emergency exploration or transfer if definitive care is unavailable.",
+        "Use urgent color Doppler ultrasound in equivocal cases when this will not delay treatment. Preserved flow can occur in partial or intermittent torsion.",
+        "Manual detorsion may be attempted by an experienced clinician while awaiting surgery. Pain relief or restored flow still requires definitive surgical exploration and fixation."
+    ],
+    dontMiss: [
+        ["Intermittent torsion", "critical", "Prior abrupt episodes or transient pain relief can indicate torsion and detorsion."],
+        ["Incarcerated hernia or necrotizing infection", "critical", "Assess the inguinal region and perineum for other time-critical causes of an acute scrotum.", ["scrotal-pain"]]
+    ],
+    history: ["Establish the time of symptom onset. Ask about nausea, vomiting, trauma, dysuria and prior episodes."],
+    exam: ["Compare testicular lie, position, swelling and tenderness. A present cremasteric reflex cannot exclude torsion."],
+    workup: [["Doppler when appropriate", ["Compare flow with the opposite testis and assess for a twisted cord. Keep urology involved if imaging and examination disagree."]]],
+    redFlags: ["Sudden severe unilateral pain, vomiting or a high-riding or transverse testis."],
+    disposition: [["Emergency urology or transfer", "Salvage decreases with time. Escalate even when presentation is delayed or duration is uncertain."]],
+    pitfalls: [
+        "Treating presumed epididymitis before excluding torsion in a concerning presentation.",
+        "Using six hours as a cutoff for referral or exploration."
+    ],
+    pearls: ["Give the receiving team the earliest known onset and details of any detorsion attempt."],
+    refs: ["AUA medical student curriculum: acute scrotum", "EAU paediatric urology guideline: acute scrotum"]
+},
+{
+    id: 'perforated-peptic-ulcer', type: 'diagnosis', name: "Perforated Peptic Ulcer", icon: '🩺',
+    tag: "Suspect gastroduodenal perforation with abrupt severe epigastric pain and peritonism.",
+    overview: "A perforated gastric or duodenal ulcer can rapidly cause peritonitis and sepsis. The findings can be subtle with a contained leak, in older adults or in immunosuppressed patients.",
+    approach: [
+        "Assess perfusion, obtain IV access, give analgesia and keep NPO. Contact general surgery early when perforation is suspected.",
+        "Start broad-spectrum IV antibiotics covering enteric gram-negative, gram-positive and anaerobic organisms, guided by local policy. Resuscitate for sepsis or shock as indicated.",
+        "Obtain urgent CT when the patient can safely undergo imaging. A radiograph can show free air if CT is unavailable, but a negative radiograph does not exclude a leak.",
+        "Arrange urgent surgical source control for peritonitis, ongoing leak or significant free air in a compatible presentation. If CT is nondiagnostic and suspicion remains, discuss further imaging or exploration with surgery."
+    ],
+    dontMiss: [
+        ["Free perforation with peritonitis", "critical", "Generalized guarding or deterioration needs urgent source-control assessment."],
+        ["Other causes of abrupt abdominal pain", "critical", "Assess for mesenteric ischemia or a ruptured AAA in parallel when the clinical context fits.", ["acute-mesenteric-ischemia", "ruptured-abdominal-aortic-aneurysm"]]
+    ],
+    history: ["Ask about NSAIDs, ulcer disease, recent procedures and whether the pain started abruptly."],
+    exam: ["Check perfusion, abdominal tenderness and guarding. Repeat examination after analgesia and resuscitation."],
+    workup: [
+        ["Imaging", ["CT can show extraluminal gas, fluid or a focal gastroduodenal defect. Discuss a water-soluble contrast study when concern remains despite initial imaging."]],
+        ["Labs", ["Obtain CBC, renal function, lactate and type and screen as indicated without delaying surgical contact."]]
+    ],
+    redFlags: ["Generalized peritonitis, septic shock or imaging evidence of a free leak."],
+    disposition: [["Emergency surgical assessment", "Most free perforations need prompt repair. Observation is reserved for carefully selected stable patients with evidence of a sealed leak under a surgical team."]],
+    pitfalls: [
+        "Using absence of free air on radiography to exclude perforation.",
+        "Waiting for lab abnormalities before consulting surgery."
+    ],
+    pearls: ["Perforation and bleeding are distinct ulcer complications and require different first steps."],
+    refs: ["WSES perforated and bleeding peptic ulcer guideline (2020)", "WSES and partner societies: source control in emergency general surgery (2023)"]
+},
+{
+    id: 'acute-cholecystitis', type: 'diagnosis', name: "Acute Cholecystitis", icon: '🩺',
+    tag: "Distinguish gallbladder inflammation from biliary colic and infected duct obstruction.",
+    overview: "Acute cholecystitis commonly follows persistent cystic duct obstruction. Persistent right upper quadrant pain and signs of inflammation raise suspicion. Acalculous disease in critical illness follows a separate specialist pathway.",
+    approach: [
+        "Assess for sepsis and provide analgesia, antiemetics and fluids as indicated. Keep NPO while arranging surgical assessment.",
+        "Use right upper quadrant ultrasound first. Interpret stones, gallbladder wall thickening, pericholecystic fluid and sonographic Murphy sign with the rest of the assessment.",
+        "If suspicion persists after nondiagnostic ultrasound, discuss additional imaging with radiology and surgery. Assess for common bile duct obstruction if jaundice or cholestatic labs are present.",
+        "Start antibiotics according to severity and local policy. Early laparoscopic cholecystectomy is preferred when feasible. If operative risk is high, individualize treatment with surgery. Consider drainage if surgery is unsuitable and infection remains uncontrolled."
+    ],
+    dontMiss: [
+        ["Gangrenous, emphysematous or perforated cholecystitis", "critical", "Sepsis, peritonitis or concerning imaging needs urgent surgical source control."],
+        ["Acute cholangitis", "critical", "Systemic inflammation plus cholestasis or imaging evidence of duct obstruction warrants prompt biliary drainage assessment.", ["acute-cholangitis"]]
+    ],
+    history: ["Ask about duration and recurrence, prior gallstones or biliary procedures, fever, jaundice and dark urine."],
+    exam: ["Assess right upper quadrant tenderness, Murphy sign, jaundice and perfusion. No single exam sign excludes disease."],
+    workup: [
+        ["Labs", ["CBC, liver chemistry and bilirubin. Check lipase if pancreatitis is possible."]],
+        ["Imaging", ["Ultrasound first. Additional imaging depends on whether the unresolved question is gallbladder inflammation, duct obstruction or another cause."]]
+    ],
+    redFlags: ["Hypotension, peritonitis, jaundice with systemic illness or concern for gallbladder necrosis."],
+    disposition: [["Surgical assessment / admission", "Confirmed cholecystitis needs an early source-control plan. Escalate complications or organ dysfunction immediately."]],
+    pitfalls: [
+        "Diagnosing cholecystitis from gallstones alone.",
+        "Assuming abnormal liver enzymes alone prove a common duct stone."
+    ],
+    pearls: ["Name whether the leading concern is gallbladder inflammation or infected duct obstruction."],
+    refs: ["WSES acute calculous cholecystitis guideline (2020)", "EAST high-risk acute cholecystitis guideline (2026)"]
+},
+{
+    id: 'acute-cholangitis', type: 'diagnosis', name: "Acute (Ascending) Cholangitis", icon: '🩺',
+    tag: "Treat infection promptly and arrange drainage of the obstructed biliary system.",
+    overview: "Acute cholangitis is infection of the biliary tree, usually with obstruction from a stone, stricture or blocked stent. Fever, jaundice and right upper quadrant pain need not all be present.",
+    approach: [
+        "Look for systemic inflammation, cholestasis and evidence of biliary obstruction. Check for shock, confusion and organ dysfunction early.",
+        "Obtain cultures when feasible without delaying indicated antibiotics. Start empiric IV antibiotics and resuscitation according to severity and the local biliary sepsis pathway.",
+        "Contact the biliary endoscopy team early. ERCP is preferred for drainage when feasible. In shock or deterioration, coordinate urgent drainage in parallel with resuscitation. ASGE generally favors decompression within 48 hours.",
+        "If ERCP is unavailable or unsuccessful, coordinate transfer or alternative drainage. In an unstable patient, initial drainage alone may be safer than adding definitive stone clearance at the same procedure."
+    ],
+    dontMiss: [
+        ["Cholangitis with shock or organ dysfunction", "critical", "Escalate to critical care and the drainage team immediately. A general timing target is not a reason to wait."],
+        ["Obstructed biliary stent", "critical", "Ask about prior ERCP, stents and expected exchange dates when new fever or jaundice develops."]
+    ],
+    history: ["Ask about gallstones, biliary surgery or instrumentation, malignancy and previous resistant organisms."],
+    exam: ["Assess perfusion, mental status, jaundice and abdominal tenderness. Repeat vital signs after treatment."],
+    workup: [
+        ["Labs", ["CBC, liver chemistry, bilirubin and renal function. Add lactate, cultures and coagulation studies when indicated."]],
+        ["Imaging", ["Start with ultrasound when appropriate. A nondilated duct does not exclude early obstruction. Discuss CT, MRCP or endoscopic ultrasound if uncertainty remains and testing will not delay necessary drainage."]]
+    ],
+    redFlags: ["Hypotension, altered mental status, oliguria or respiratory compromise with suspected biliary infection."],
+    disposition: [["Admission with drainage plan", "Coordinate timing and modality with gastroenterology and the receiving center. Organ dysfunction warrants critical-care assessment."]],
+    pitfalls: [
+        "Waiting for the full Charcot triad.",
+        "Continuing antibiotics without reassessing source control when the patient worsens."
+    ],
+    pearls: ["Share prior biliary anatomy, stent history and resuscitation response when calling for drainage."],
+    refs: ["ASGE management of cholangitis guideline (2021)", "Surviving Sepsis Campaign adult guideline (2026)"]
+},
+{
+    id: 'acute-pancreatitis', type: 'diagnosis', name: "Acute Pancreatitis", icon: '🩺',
+    tag: "Confirm the diagnosis, reassess early for organ failure, and identify a biliary cause.",
+    overview: "Diagnose acute pancreatitis when at least two of three findings are present: typical pain, lipase or amylase at least three times the upper limit of normal, or characteristic imaging.",
+    approach: [
+        "Provide analgesia and antiemetics. Use moderately aggressive isotonic crystalloid when IV resuscitation is needed, preferably lactated Ringer’s. Reassess early and adjust to perfusion, volume status and cardiac or renal comorbidity.",
+        "Check for gallstones with ultrasound and investigate other causes when the history and labs suggest them.",
+        "Offer early oral feeding as tolerated in mild disease. Avoid routine prophylactic antibiotics, including for sterile necrosis.",
+        "If biliary pancreatitis is complicated by cholangitis, discuss early ERCP with gastroenterology. Coordinate same-admission cholecystectomy for mild biliary pancreatitis when appropriate."
+    ],
+    dontMiss: [
+        ["Organ failure", "critical", "Hypoxemia, shock or evolving kidney injury requires monitored care and reassessment."],
+        ["Associated cholangitis", "critical", "Fever or sepsis with cholestasis calls for urgent biliary drainage assessment.", ["acute-cholangitis"]]
+    ],
+    history: ["Ask about prior episodes, alcohol, gallstones, new medications, recent ERCP and hypertriglyceridemia."],
+    exam: ["Assess hydration, perfusion, respiratory status and abdominal findings. Consider alternative emergencies if there is peritonism or an atypical course."],
+    workup: [
+        ["Labs", ["Lipase, renal function, electrolytes, glucose and liver chemistry. Check triglycerides when a cause is unclear and hypertriglyceridemia is plausible."]],
+        ["Imaging", ["Reserve early CT for diagnostic uncertainty or a suspected alternative emergency. Consider CT or MRI for failure to improve after 48–72 hours."]]
+    ],
+    redFlags: ["Shock, hypoxemia, oliguria, worsening renal function or suspected cholangitis."],
+    disposition: [["Monitored admission or critical care", "Escalate evolving organ failure. Guide subsequent care by clinical severity, oral intake, cause and local criteria."]],
+    pitfalls: [
+        "Using lipase magnitude to grade severity.",
+        "Continuing fluids at a fixed rate despite overload or poor response."
+    ],
+    pearls: ["Recheck perfusion, oxygen needs and volume status after initial treatment."],
+    refs: ["ACG acute pancreatitis guideline (2024)", "IAP and partner societies: acute pancreatitis guideline (2025)"]
+},
+{
+    id: 'acute-diverticulitis', type: 'diagnosis', name: "Acute Colonic Diverticulitis", icon: '🩺',
+    tag: "Identify abscess, perforation or obstruction and select outpatient treatment carefully.",
+    overview: "Diverticulitis often causes persistent lower abdominal pain, fever or bowel habit changes. Complicated disease includes abscess, free perforation, fistula or obstruction.",
+    approach: [
+        "Assess for sepsis, peritonitis and obstruction. Provide analgesia and fluids as needed.",
+        "Use abdominal CT to confirm a first suspected episode and assess severe or atypical presentations for complications. Select imaging for repeat episodes according to the clinical course. Use a pregnancy-adapted imaging pathway when relevant.",
+        "Antibiotics can be omitted in selected stable, immunocompetent, low-risk adults with uncomplicated disease and reliable follow-up. Treat complicated disease and consider antibiotics for immunocompromise, frailty or other high-risk features.",
+        "Consult surgery for generalized peritonitis, obstruction, uncontrolled sepsis or other complications. Discuss drainable abscesses with surgery and interventional radiology."
+    ],
+    dontMiss: [
+        ["Abscess or free perforation", "critical", "Persistent fever, sepsis, peritoneal signs or concerning CT warrants urgent source-control assessment."],
+        ["Alternative diagnosis", "emergent", "Consider urinary and gynecologic causes, ischemia and malignancy when the presentation or recovery is atypical.", ["pelvic-pain", "acute-mesenteric-ischemia"]]
+    ],
+    history: ["Ask about prior imaging-confirmed episodes, immune suppression, bowel habits and ability to manage at home."],
+    exam: ["Assess localized tenderness, guarding, distention and perfusion. Reassess after treatment."],
+    workup: [
+        ["Imaging", ["CT can distinguish localized inflammation from abscess, free air and obstruction. Discuss modality with radiology when contrast or pregnancy changes the plan."]],
+        ["Labs", ["Use CBC, inflammatory markers and renal function to support severity assessment as indicated."]]
+    ],
+    redFlags: ["Generalized tenderness or guarding, organ dysfunction, obstruction, inability to tolerate fluids or worsening in an immunocompromised patient."],
+    disposition: [
+        ["Admission or surgical assessment", "Complications, systemic illness or inability to manage safely at home need inpatient evaluation."],
+        ["Selected outpatient care", "Use symptom control, oral tolerance and reliable follow-up to guide discharge. Give return precautions for worsening pain, fever or inability to drink, and arrange follow-up to discuss whether interval colon evaluation is indicated."]
+    ],
+    pitfalls: ["Applying the no-antibiotic approach to a septic, immunocompromised or otherwise high-risk patient."],
+    pearls: ["Document whether imaging shows uncomplicated inflammation or a source-control problem."],
+    refs: ["ACG colonic diverticulitis guideline (2026)", "IDSA diagnostic imaging for acute diverticulitis (2024)", "NICE NG147: diverticular disease"]
 }
 ];
 if (typeof window !== 'undefined') window.CP_DATA = CP_DATA;

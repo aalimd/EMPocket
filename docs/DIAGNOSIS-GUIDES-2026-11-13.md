@@ -10,3 +10,9 @@ The References section of each guide lists its selected sources and the scope of
 An authored differential row has the form `[name, severity, clue, linkedTopicIds?]`. Use the optional list of topic IDs for guidance relevant to the named differential. Grouped rows can link to more than one topic. Each diagnosis guide has links back to relevant presentations under See also. The Library groups the new guides under Diagnosis guides and includes them in search.
 
 The review covers the ten additions and the companion wording changes in Chest Pain, Abdominal Pain and Cardiac Arrest.
+
+## 14 November expansion
+
+Added ectopic pregnancy, ovarian torsion, testicular torsion, perforated peptic ulcer, acute cholecystitis, acute cholangitis, acute pancreatitis and acute colonic diverticulitis. Differential links also appear in related pathways including Pelvic Pain, Scrotal Pain, Jaundice, Vaginal Bleeding and Pregnancy Emergencies.
+
+The review distinguishes the limits of hCG and Doppler imaging, gallbladder inflammation from infected bile duct obstruction, and low-risk uncomplicated diverticulitis from complications needing source control. The References section on each guide records its sources and scope. Testicular torsion includes children and adolescents. The ovarian guide focuses on adolescents and reproductive-age patients.
