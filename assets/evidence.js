@@ -6,6 +6,12 @@
 (function () {
     'use strict';
     const sources = {
+        mesentericESVS: ['ESVS mesenteric and renal vessel disease guideline (2025)', 'https://doi.org/10.1016/j.ejvs.2025.06.010'],
+        sboEGS: ['Emergency General Surgery Algorithms working group: small bowel obstruction (2025)', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC12893134/'],
+        ercSpecial: ['ERC special circumstances in resuscitation (2025): traumatic arrest', 'https://www.erc.edu/media/wwufbysp/gl2025-06-spec-circ-e.pdf'],
+        esophagealPerforation: ['WSES esophageal emergencies guideline (2019)', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC6544956/'],
+        aaaESVS: ['ESVS abdominal aorto-iliac aneurysm guideline (2024)', 'https://doi.org/10.1016/j.ejvs.2023.11.002'],
+        sboBologna: ['WSES Bologna guideline for adhesive small bowel obstruction (2017 update)', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC6006983/'],
         acmtNAC: ["ACMT IV acetylcysteine duration and stopping criteria (2026)", "https://www.acmt.net/news/acmt-practice-statement-duration-of-intravenous-acetylcysteine-therapy-following-acetaminophen-overdose-2026-update/"],
         snapNAC: ["SNAP 12-hour IV acetylcysteine regimen study", "https://pmc.ncbi.nlm.nih.gov/articles/PMC6610779/"],
         cchr: ["Canadian CT Head Rule derivation study", "https://pubmed.ncbi.nlm.nih.gov/11356436/"],
@@ -81,7 +87,8 @@
         syncopeGuideline: ['ACC/AHA/HRS syncope guideline (2017)', 'https://www.ahajournals.org/doi/10.1161/CIR.0000000000000499'],
         dyspneaAssessment: ['SAEM CDEM: shortness of breath — initial assessment and respiratory support', 'https://www.saem.org/about-saem/academies-interest-groups-affiliates2/cdem/for-students/online-education/m4-curriculum/group-m4-approach-to/shortness-of-breath'],
         abdominalAssessment: ['SAEM CDEM: approach to abdominal pain — assessment and investigation', 'https://www.saem.org/about-saem/academies-interest-groups-affiliates2/cdem/for-students/online-education/m4-curriculum/group-m4-approach-to/approach-to-abdominal-pain'],
-        mesenteric: ['WSES acute mesenteric ischemia guideline (2022)', 'https://wjes.biomedcentral.com/articles/10.1186/s13017-022-00443-x'],
+        mesentericEGS: ['Emergency General Surgery Algorithms working group: acute mesenteric ischemia (2025)', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC12363320/'],
+        mesenteric: ['WSES acute mesenteric ischemia guideline (2022)', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC9580452/'],
         acetaminophen: ['US/Canada acetaminophen poisoning consensus (2023, corrected)', 'https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2808062'],
         mscc: ['NICE NG234 spinal metastases and cord compression', 'https://www.nice.org.uk/guidance/ng234/chapter/recommendations'],
         aorta: ['ACC/AHA aortic disease guideline (2022), acute aortic syndrome', 'https://www.jacc.org/doi/10.1016/j.jacc.2022.08.004'],
@@ -145,6 +152,17 @@
         withdrawal: ["ASAM clinical practice guideline on alcohol withdrawal management (2020)", "https://www.asam.org/quality-care/clinical-guidelines/alcohol-withdrawal"],
     };
     const topics = {
+        'acute-coronary-syndrome': ['acs', 'chest', 'mi'],
+        'acute-aortic-syndrome': ['aorta'],
+        'pulmonary-embolism': ['pe'],
+        'tension-pneumothorax': ['majorTrauma', 'ercSpecial', 'lung'],
+        'esophageal-perforation': ['esophagealPerforation'],
+        'cardiac-tamponade': ['pericarditis', 'ercSpecial', 'aorta'],
+        'acute-mesenteric-ischemia': ['mesenteric', 'mesentericESVS', 'mesentericEGS'],
+        'ruptured-abdominal-aortic-aneurysm': ['aaaESVS'],
+        'acute-appendicitis': ['appendicitis'],
+        'small-bowel-obstruction': ['sboBologna', 'sboEGS'],
+
         'neutropenic-sepsis': ['neutropenicNICE', 'neutropenicASCO', 'oncologyGI'],
         'tumor-lysis-syndrome': ['tlsBSH', 'tlsMDAnderson', 'tlsEviQ'],
         'metastatic-spinal-cord-compression': ['mscc'],
@@ -635,6 +653,85 @@
         "sources": [
             "sitcCell",
             "sitcCheckpoint"
+        ]
+    },
+    "acute-coronary-syndrome": {
+        "checked": "2026-11-13",
+        "scope": "adult ECG and reperfusion triage, initial aspirin and high-sensitivity troponin pathways",
+        "sources": [
+            "acs",
+            "chest",
+            "mi"
+        ]
+    },
+    "acute-aortic-syndrome": {
+        "checked": "2026-11-13",
+        "scope": "adult aortic imaging, anti-impulse therapy and emergency surgical escalation",
+        "sources": [
+            "aorta"
+        ]
+    },
+    "pulmonary-embolism": {
+        "checked": "2026-11-13",
+        "scope": "adult probability-based testing, severity assessment and initial treatment",
+        "sources": [
+            "pe"
+        ]
+    },
+    "tension-pneumothorax": {
+        "checked": "2026-11-13",
+        "scope": "adult recognition of tension physiology, emergency decompression and reassessment",
+        "sources": [
+            "majorTrauma",
+            "ercSpecial",
+            "lung"
+        ]
+    },
+    "esophageal-perforation": {
+        "checked": "2026-11-13",
+        "scope": "adult leak recognition, CT, empiric antibiotics and source-control escalation",
+        "sources": [
+            "esophagealPerforation"
+        ]
+    },
+    "cardiac-tamponade": {
+        "checked": "2026-11-13",
+        "scope": "adult bedside hemodynamics, echocardiography and cause-specific drainage",
+        "sources": [
+            "pericarditis",
+            "ercSpecial",
+            "aorta"
+        ]
+    },
+    "acute-mesenteric-ischemia": {
+        "checked": "2026-11-13",
+        "scope": "adult urgent multiphase CTA, initial resuscitation and mechanism-specific escalation",
+        "sources": [
+            "mesenteric",
+            "mesentericESVS",
+            "mesentericEGS"
+        ]
+    },
+    "ruptured-abdominal-aortic-aneurysm": {
+        "checked": "2026-11-13",
+        "scope": "adult rupture recognition, aortic imaging, hemorrhage resuscitation and transfer",
+        "sources": [
+            "aaaESVS"
+        ]
+    },
+    "acute-appendicitis": {
+        "checked": "2026-11-13",
+        "scope": "adult risk-guided imaging, complicated disease and treatment options",
+        "sources": [
+            "appendicitis"
+        ]
+    },
+    "small-bowel-obstruction": {
+        "checked": "2026-11-13",
+        "scope": "adult CT, indications for urgent surgery and selection for adhesive SBO observation",
+        "sources": [
+            "sboBologna",
+            "sboEGS"
         ]
     }
 };

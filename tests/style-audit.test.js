@@ -1056,7 +1056,7 @@ test('active library filters report one count and a reset that keeps progress',a
     assert.equal(await evaluate(`!!document.querySelector('.library-filter-status')`),false);
     await evaluate(`document.querySelector('.chip[data-sev="critical"]').click()`);await wait(250);
     const r=await evaluate(`(function(){var s=document.querySelector('.library-filter-status');return {text:s.querySelector('span').textContent.replace(/\\s+/g,' ').trim(),reset:s.querySelector('[data-reset-library]').textContent.trim(),cards:document.querySelectorAll('.cp-card').length};})()`);
-    assert.match(r.text,/^Filters · 1 active · \d+ presentations$/);
+    assert.match(r.text,/^Filters · 1 active · \d+ topics$/);
     assert.equal(r.reset,'Reset filters');
     assert.ok(r.cards>=1);
     await evaluate(`document.querySelector('[data-reset-library]').click()`);await wait(300);
@@ -1203,7 +1203,7 @@ test('startup performance exposes a usable library and defers recorded ECG evalu
         domContentLoadedMs:Math.round(nav.domContentLoadedEventEnd),loadMs:Math.round(nav.loadEventEnd),
         scripts:performance.getEntriesByType('resource').filter(e=>e.initiatorType==='script').length};
     })()`);
-    assert.equal(metrics.topics,58);
+    assert.equal(metrics.topics,68);
     assert.equal(metrics.recordingsEvaluated,false);
     t.diagnostic('Local unthrottled Chrome baseline (not physical-device timing): '+JSON.stringify(metrics));
 });
@@ -1319,7 +1319,7 @@ test('every presentation binds More, section shortcuts, accordions and recall co
   }
   return {problems,moreCount,count:window.CP_DATA.length};
  })()`);
- assert.equal(problems.count,58);assert.ok(problems.moreCount>0);
+ assert.equal(problems.count,68);assert.ok(problems.moreCount>0);
  assert.deepEqual(problems.problems,[]);
 });
 
@@ -1448,4 +1448,29 @@ test('Oncology Emergencies is discoverable through the library filter and clinic
         await wait(25);
     }
     assert.match(await evaluate(`document.querySelector('#section-doses').textContent`), /16 mg daily/);
+});
+
+test('diagnosis guides open from differential cards in Full and Quick, and appear in search', async t => {
+    if (!await ready(t)) return;
+    const waitForTitle = async title => {
+        const deadline = Date.now() + 5000;
+        while (!await evaluate(`document.querySelector('#stage h1')?.textContent === ${JSON.stringify(title)}`)) {
+            assert.ok(Date.now() < deadline, 'topic opens: ' + title);
+            await wait(25);
+        }
+    };
+    await load('#chest-pain~dont-miss');
+    assert.equal(await evaluate(`document.querySelectorAll('#section-dont-miss .diagnosis-links a').length`), 6);
+    await evaluate(`document.querySelector('#section-dont-miss a[href="#acute-coronary-syndrome"]').click()`);
+    await waitForTitle('Acute Coronary Syndrome (ACS)');
+    assert.ok(await evaluate(`!!document.querySelector('#section-see-also [data-id="chest-pain"]')`));
+    await evaluate('history.back()');
+    await waitForTitle('Chest Pain');
+    assert.equal(await evaluate('location.hash'), '#chest-pain~dont-miss');
+    await load('#shift~abdominal-pain');
+    await evaluate(`document.querySelector('.shift-crit a[href="#acute-mesenteric-ischemia"]').click()`);
+    await waitForTitle('Acute Mesenteric Ischemia');
+    for (const [query, id] of [['ACS', 'acute-coronary-syndrome'], ['mesenteric ischemia', 'acute-mesenteric-ischemia']]) {
+        assert.ok(await evaluate(`window.EM_POCKET_UI.findSearchHits(${JSON.stringify(query)})[0]?.cpId === ${JSON.stringify(id)}`), query);
+    }
 });

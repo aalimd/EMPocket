@@ -12,7 +12,8 @@
                 return cp[field].every(function (item) { return typeof item === 'string'; });
             }) ||
             !cp.dontMiss.every(function (item) {
-                return Array.isArray(item) && item.length >= 3 && item.every(function (part) { return typeof part === 'string'; }) &&
+                return Array.isArray(item) && typeof item[0] === 'string' && typeof item[2] === 'string' &&
+                    (item[3] === undefined || (Array.isArray(item[3]) && item[3].every(function (id) { return typeof id === 'string'; }))) &&
                     ['critical', 'emergent', 'common'].indexOf(item[1]) !== -1;
             }) ||
             !cp.workup.every(function (item) {
@@ -137,9 +138,20 @@
         { title: 'Toxic, metabolic & environmental', ids: ['overdose', 'suicidal', 'hyperglycemia', 'heat-cold', 'electrolytes', 'thyroid-storm', 'alcohol-withdrawal', 'burns'] },
         { title: 'Trauma, pregnancy & older adults', ids: ['multiple-trauma', 'pregnancy-emergency', 'falls-geriatric-trauma', 'head-injury'] },
         { title: 'Resuscitation & acute medicine', ids: ['cardiac-arrest', 'hypertensive-emergency'] },
+        { title: 'Diagnosis guides', ids: DATA.filter(cp => cp.type === 'diagnosis').map(cp => cp.id) },
         { title: 'Oncology Emergencies', ids: ['neutropenic-sepsis', 'tumor-lysis-syndrome', 'metastatic-spinal-cord-compression', 'hypercalcemia-of-malignancy', 'superior-vena-cava-syndrome', 'cancer-immunotherapy-toxicity'] }
     ];
     const RELATED = {
+        'acute-coronary-syndrome': ['chest-pain', 'dyspnea', 'nausea-vomiting'],
+        'acute-aortic-syndrome': ['chest-pain', 'back-pain', 'limb-ischemia'],
+        'pulmonary-embolism': ['chest-pain', 'dyspnea', 'hemoptysis', 'shock'],
+        'tension-pneumothorax': ['chest-pain', 'dyspnea', 'multiple-trauma'],
+        'esophageal-perforation': ['chest-pain', 'nausea-vomiting'],
+        'cardiac-tamponade': ['chest-pain', 'dyspnea', 'shock'],
+        'acute-mesenteric-ischemia': ['abdominal-pain', 'shock', 'constipation'],
+        'ruptured-abdominal-aortic-aneurysm': ['abdominal-pain', 'back-pain', 'flank-pain', 'syncope'],
+        'acute-appendicitis': ['abdominal-pain', 'pelvic-pain', 'nausea-vomiting'],
+        'small-bowel-obstruction': ['abdominal-pain', 'nausea-vomiting', 'constipation'],
         'neutropenic-sepsis': ['fever', 'shock', 'abdominal-pain'],
         'tumor-lysis-syndrome': ['electrolytes', 'palpitations', 'seizures'],
         'metastatic-spinal-cord-compression': ['back-pain', 'weakness', 'urinary-retention'],
@@ -348,6 +360,10 @@
     if (typeof window !== 'undefined') window.EM_ICONS = { svg: semanticSvg, map: SEMANTIC_ICONS };
 
     const TOPIC_CATS = {
+        'acute-coronary-syndrome': 'cardio', 'cardiac-tamponade': 'cardio',
+        'acute-aortic-syndrome': 'vascular', 'ruptured-abdominal-aortic-aneurysm': 'vascular', 'acute-mesenteric-ischemia': 'vascular',
+        'pulmonary-embolism': 'pulm', 'tension-pneumothorax': 'pulm',
+        'esophageal-perforation': 'gi', 'acute-appendicitis': 'gi', 'small-bowel-obstruction': 'gi',
         'chest-pain': 'cardio', 'palpitations': 'cardio', 'syncope': 'cardio',
         'dyspnea': 'pulm', 'hemoptysis': 'pulm', 'cyanosis': 'pulm',
         'shock': 'critical', 'limb-ischemia': 'vascular', 'edema': 'vascular',
@@ -408,6 +424,7 @@
             'Airway, allergy, skin & pediatrics': 'pulm',
             'Toxic, metabolic & environmental': 'toxic',
             'Trauma, pregnancy & older adults': 'trauma',
+            'Diagnosis guides': 'references',
             'Oncology Emergencies': 'infect'
         };
         const key = map[title] || 'generic';
@@ -964,17 +981,17 @@
             '<div class="home-hero-body">' +
             '<span class="study-kicker">' + semanticSvg(SEMANTIC_ICONS['generic'], 'kicker-svg') + ' THE EM POCKET · REFERENCE</span>' +
             '<h1>Library</h1>' +
-            '<p>Find an emergency presentation and explore its approach, warning signs, workup and disposition.</p>' +
-            '<div class="home-meta"><span><span class="meta-dot"></span> ' + DATA.length + ' presentations</span><span id="offlineStatus">' + esc(offlineStatus) + '</span><span data-connection-status role="status">' + esc(connectionStatus()) + '</span></div>' +
+            '<p>Find a presentation or diagnosis and explore its approach, warning signs, workup and disposition.</p>' +
+            '<div class="home-meta"><span><span class="meta-dot"></span> ' + DATA.length + ' topics</span><span id="offlineStatus">' + esc(offlineStatus) + '</span><span data-connection-status role="status">' + esc(connectionStatus()) + '</span></div>' +
             '</div></div></section>' +
             '<section class="presentation-library" id="presentationLibrary" aria-labelledby="presentationLibraryTitle" tabindex="-1">' +
-            '<div class="library-head"><div><h2 id="presentationLibraryTitle"><span class="sec-inline-ico" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['generic'], 'badge-svg') + '</span> Presentation library</h2><p>' + visibleCount + ' of ' + DATA.length + ' presentations · grouped by clinical system</p></div>' +
+            '<div class="library-head"><div><h2 id="presentationLibraryTitle"><span class="sec-inline-ico" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['generic'], 'badge-svg') + '</span> Presentation library</h2><p>' + visibleCount + ' of ' + DATA.length + ' topics · grouped by clinical system</p></div>' +
             '<a class="design-action" href="#library~saved">' + STAR_SVG.filled + ' <span>Saved topics · ' + savedIds().length + '</span></a></div><div class="library-toolbar"><label class="library-system"><span class="lib-system-label"><span class="lib-ico" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['cardio'], 'field-svg') + '</span> Clinical system</span><select id="librarySystem">' +
             '<option value="all"' + (librarySystem === 'all' ? ' selected' : '') + '>All clinical systems</option>' +
             GROUPS.map(g => '<option value="' + esc(g.title) + '"' + (librarySystem === g.title ? ' selected' : '') + '>' + esc(g.title) + '</option>').join('') + '</select></label>' +
             '<div class="library-filter-controls"><details class="library-filters"' + (libraryFiltersOpen ? ' open' : '') + '><summary><span class="lib-ico" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['peds'], 'field-svg') + '</span> Patient context' + (patientFilter !== 'all' ? ' · ' + esc(PATIENT_FILTER_OPTIONS.find(f => f[0] === patientFilter)[1]) : '') + '</summary>' + patientFiltersHtml() + '</details></div></div>' +
-            (filtered ? '<div class="library-filter-status" role="status"><span>Filters · ' + activeFilters + ' active · ' + visibleCount + ' presentations</span><button type="button" data-reset-library>Reset filters</button></div>' : '') +
-            (groupsHtml || '<div class="empty-filter"><h3>No matching presentations</h3><p>Clear the filters to return to the full library.</p></div>') + '</section>';
+            (filtered ? '<div class="library-filter-status" role="status"><span>Filters · ' + activeFilters + ' active · ' + visibleCount + ' topics</span><button type="button" data-reset-library>Reset filters</button></div>' : '') +
+            (groupsHtml || '<div class="empty-filter"><h3>No matching topics</h3><p>Clear the filters to return to the full library.</p></div>') + '</section>';
         bindCards(stage);
         stage.querySelectorAll('[data-browse-library]').forEach(btn => btn.addEventListener('click', (e) => {
             if (btn.tagName === 'A') e.preventDefault();
@@ -1014,7 +1031,7 @@
             else showStudy(btn.dataset.study);
         }));
         window.scrollTo({ top: preservePosition ? position : 0 });
-        announce('Library — ' + visibleCount + ' of ' + DATA.length + ' presentations');
+        announce('Library — ' + visibleCount + ' of ' + DATA.length + ' topics');
     }
 
     function showHome() {
@@ -1083,6 +1100,13 @@
 
     /* ---------- shift-ready view ---------- */
     const SHIFT_STEP_KEYS = ['first-minutes', 'red-flags', 'workup', 'dont-miss', 'disposition'];
+    function diagnosisLinksHtml(ids) {
+        if (!ids) return '';
+        const links = ids.map(id => BY_ID[id]).filter(Boolean).map(topic =>
+            '<a href="#' + esc(topic.id) + '">' + esc(topic.name) + ' <span aria-hidden="true">→</span></a>'
+        );
+        return links.length ? '<div class="design-links diagnosis-links">' + links.join('') + '</div>' : '';
+    }
     function shiftHtml(cp) {
         const immediateWorkup = (cp.workup || []).flatMap(w => w[1].map(item => w[0] + ': ' + item));
         const critical = cp.dontMiss;
@@ -1104,11 +1128,11 @@
             '<a class="review-btn" href="#calc"><span>Calculators</span></a>' +
             '<a class="review-btn" href="' + esc(practice.href) + '"><span>' + esc(practice.label) + '</span></a>' +
             '</div></div>' +
-            '<div class="shift-warning"><span class="ios-icon-badge ios-emoji-badge warning-badge" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['red-flags'], 'warning-svg') + '</span><span>Educational reference. All approach, red-flag, workup, differential and disposition items from this presentation are shown. Use the full pathway for history, examination and sources.</span></div>' +
+            '<div class="shift-warning"><span class="ios-icon-badge ios-emoji-badge warning-badge" aria-hidden="true">' + semanticSvg(SEMANTIC_ICONS['red-flags'], 'warning-svg') + '</span><span>Educational reference. All approach, red-flag, workup, differential and disposition items from this topic are shown. Use the full pathway for history, examination and sources.</span></div>' +
             '<div class="shift-grid"><section>' + step(1, 'Approach') + '<ol>' + (cp.approach || []).map(x => '<li>' + esc(x) + '</li>').join('') + '</ol></section>' +
             '<section class="shift-red">' + step(2, 'Escalate now if') + '<ul>' + (cp.redFlags || []).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></section>' +
             '<section>' + step(3, 'Workup') + '<ul>' + immediateWorkup.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></section>' +
-            '<section class="shift-crit">' + step(4, 'Don’t miss') + '<ul>' + critical.map(x => '<li><strong>' + esc(x[0]) + '</strong><br><small>' + esc(x[2]) + '</small></li>').join('') + '</ul></section>' +
+            '<section class="shift-crit">' + step(4, 'Don’t miss') + '<ul>' + critical.map(x => '<li><strong>' + esc(x[0]) + '</strong><br><small>' + esc(x[2]) + '</small>' + diagnosisLinksHtml(x[3]) + '</li>').join('') + '</ul></section>' +
             '<section class="shift-disposition">' + step(5, 'Disposition lane') + escalation.map(x => '<div><strong>' + esc(x[0]) + '</strong><p>' + esc(x[1]) + '</p></div>').join('') + '</section></div></section>';
     }
     /* Clipboard access is unavailable on insecure origins and can be denied by the
@@ -1205,7 +1229,7 @@
                 '<details id="med-shock"><summary>Shock First-Line Vasopressors &amp; Inotropes</summary><ul><li><strong>Norepinephrine (0.05–0.5 mcg/kg/min IV):</strong> First-line vasopressor in septic, vasodilatory, and hypotensive cardiogenic shock (target MAP ≥65 mmHg).</li><li><strong>Epinephrine (0.05–0.5 mcg/kg/min IV):</strong> Use a monitored infusion for refractory anaphylaxis with expert support. In septic shock, select add-on therapy per the sepsis pathway. After cardiac arrest, choose vasopressors based on the cause and hemodynamics.</li><li><strong>Dobutamine (2–20 mcg/kg/min IV):</strong> Inotrope for low-output cardiogenic shock or septic myocardial dysfunction once MAP is supported.</li></ul><p><a href="#shift~shock">Open Shock quick sheet →</a></p></details>' +
                 '<details id="med-antidote"><summary>High-Yield Antidotes &amp; Hyperkalemia Stabilization</summary><ul><li><strong>Acetaminophen:</strong> Use the nomogram only with a reliable acute ingestion timeline. Repeated or unknown-time exposure needs its own concentration and liver-test pathway. Check stopping criteria before ending acetylcysteine.</li><li><strong>Opioids:</strong> Naloxone 0.04–0.4 mg IV titrated to restore respiratory drive, not full agitation.</li><li><strong>TCA / Na-channel blockade:</strong> Sodium bicarbonate 1–2 mEq/kg IV bolus for QRS &gt;100 ms, ventricular arrhythmia, or hypotension (keep pH ≤7.55 and Na ≤155 mEq/L).</li><li><strong>Severe hyperkalemia with ECG changes:</strong> UKKA adult regimen: IV calcium gluconate 10% 30 mL over 10 minutes for ECG changes outside arrest or peri-arrest. Use the separate arrest pathway when indicated. For potassium shifting, see the Electrolyte Emergencies guide for insulin–glucose, scheduled glucose checks and potassium removal.</li></ul><p><a href="#shift~overdose">Open Poisoning &amp; Overdose quick sheet →</a> · <a href="#electrolytes~doses">Open electrolyte doses →</a></p></details>' +
                 '</section>';
-            stage.innerHTML='<header class="design-header"><span class="study-kicker">THE EM POCKET · FOCUSED REFERENCE</span><h1>Quick</h1><p>Choose a presentation to see its approach, red flags, workup, important diagnoses and disposition together.</p></header>'+bedsideCardsHtml()+'<section class="settings-section"><label for="quickPresentation">Presentation</label><select id="quickPresentation"><option value="">Choose a presentation…</option>'+DATA.map(cp=>'<option value="'+cp.id+'">'+esc(cp.name)+'</option>').join('')+'</select><p class="clinical-safety-note">Educational reference. Read the full pathway for history, examination, supporting sources and context.</p><h2>Critical first-minutes pathways</h2><div class="design-links">'+highAcuity.map(k=>'<a class="design-action" href="#shift~'+esc(k)+'">'+esc(BY_ID[k].name)+' <span aria-hidden="true">→</span></a>').join('')+'</div></section>'+calculatorsHubHtml()+personalHtml+decisionRulesHtml+medsHtml;
+            stage.innerHTML='<header class="design-header"><span class="study-kicker">THE EM POCKET · FOCUSED REFERENCE</span><h1>Quick</h1><p>Choose a topic to see its approach, red flags, workup, important diagnoses and disposition together.</p></header>'+bedsideCardsHtml()+'<section class="settings-section"><label for="quickPresentation">Topic</label><select id="quickPresentation"><option value="">Choose a topic…</option>'+DATA.map(cp=>'<option value="'+cp.id+'">'+esc(cp.name)+'</option>').join('')+'</select><p class="clinical-safety-note">Educational reference. Read the full pathway for history, examination, supporting sources and context.</p><h2>Critical first-minutes pathways</h2><div class="design-links">'+highAcuity.map(k=>'<a class="design-action" href="#shift~'+esc(k)+'">'+esc(BY_ID[k].name)+' <span aria-hidden="true">→</span></a>').join('')+'</div></section>'+calculatorsHubHtml()+personalHtml+decisionRulesHtml+medsHtml;
             stage.querySelector('#quickPresentation').onchange=function(){if(this.value)showShift(this.value);};
             /* A bedside row whose dose lives in a collapsed reference block on
                this same screen reveals that block instead of only re-routing to
@@ -1581,7 +1605,7 @@
             const name = r.d[0], sev = r.d[1], key = r.d[2];
             return '<div class="dx-card sev-' + sev + '" data-dx="' + r.i + '"><h3>' + sevDot(sev) + esc(name) +
                 ' <span class="sev-tag">' + (SEV_LABEL[sev] || sev) + '</span></h3>' +
-                '<div class="dx-key"><strong>Key:</strong> ' + esc(key) + '</div></div>';
+                '<div class="dx-key"><strong>Key:</strong> ' + esc(key) + '</div>' + diagnosisLinksHtml(r.d[3]) + '</div>';
         }).join('') + '</div>';
     }
 
@@ -3431,7 +3455,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = isAppWorker(navigator.serviceWorker.controller);
-                navigator.serviceWorker.register('./sw.js?v=20261113-clinical-v83').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261113-diagnoses-v84').then((registration) => {
                     navigator.serviceWorker.ready.then((ready) => {
                         if (ready.scope === new URL('./', location.href).href) setOfflineStatus('Ready for offline use');
                     });

@@ -271,7 +271,7 @@
     let recordingsPromise = null;
     function loadRecordings() {
         if (!recordingsPromise) {
-            recordingsPromise = import('./ecg-recordings.js?v=20261113-clinical-v83')
+            recordingsPromise = import('./ecg-recordings.js?v=20261113-diagnoses-v84')
                 .catch(function (error) { recordingsPromise = null; throw error; });
         }
         return recordingsPromise || Promise.resolve();

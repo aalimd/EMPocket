@@ -41,7 +41,9 @@
         const strip = extras.stripTags || function (s) { return String(s).replace(/<\/?[a-z][^>]*>/gi, ' ').replace(/\s+/g, ' ').trim(); };
         const idx = [];
         data.forEach(cp => {
-            idx.push({ cpId: cp.id, target: 'how-to-think', title: cp.name, sub: cp.tag, kind: 'Presentation' });
+            const isDiagnosis = cp.type === 'diagnosis';
+            idx.push({ cpId: cp.id, target: isDiagnosis ? '' : 'how-to-think', title: cp.name, sub: cp.tag,
+                kind: isDiagnosis ? 'Diagnosis guide' : 'Presentation' });
             (cp.approach || []).forEach(function (s) {
                 idx.push({ cpId: cp.id, target: 'how-to-think', title: s, sub: 'Approach — ' + cp.name, kind: 'Approach' });
             });

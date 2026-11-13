@@ -12,7 +12,10 @@ test('selected review records distinguish the new scope from the historical audi
  const november13 = [
   'multiple-trauma', 'pregnancy-emergency', 'cardiac-arrest', 'thyroid-storm',
   'neutropenic-sepsis', 'tumor-lysis-syndrome', 'metastatic-spinal-cord-compression',
-  'hypercalcemia-of-malignancy', 'superior-vena-cava-syndrome', 'cancer-immunotherapy-toxicity'
+  'hypercalcemia-of-malignancy', 'superior-vena-cava-syndrome', 'cancer-immunotherapy-toxicity',
+  'acute-coronary-syndrome', 'acute-aortic-syndrome', 'pulmonary-embolism', 'tension-pneumothorax',
+  'esophageal-perforation', 'cardiac-tamponade', 'acute-mesenteric-ischemia',
+  'ruptured-abdominal-aortic-aneurysm', 'acute-appendicitis', 'small-bowel-obstruction'
  ];
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(), [...ids, ...november13].sort());
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(), Array.from(topics, topic => topic.id).sort());
@@ -235,4 +238,23 @@ test('final batch replaces outdated emergency action rows with sourced distincti
  assert.doesNotMatch(text('thyroid-storm'), /50–100 mcg IV daily/);
 
  assert.match(text('multiple-trauma'), /negative eFAST leaves intraperitoneal and retroperitoneal bleeding possible/);
+});
+
+test('differential cards link only to existing topics and cover the first diagnosis guides', () => {
+ const ids = new Set(topics.map(topic => topic.id));
+ const linked = id => topics.find(topic => topic.id === id).dontMiss.flatMap(row => row[3] || []);
+ for (const topic of topics) {
+  for (const row of topic.dontMiss.filter(row => row[3])) {
+   assert.ok(Array.isArray(row[3]) && row[3].length, topic.id + ' ' + row[0]);
+   assert.equal(new Set(row[3]).size, row[3].length);
+   for (const target of row[3]) assert.ok(ids.has(target) && target !== topic.id, topic.id + ' → ' + target);
+  }
+ }
+ assert.deepEqual(Array.from(linked('chest-pain')), [
+  'acute-coronary-syndrome', 'acute-aortic-syndrome', 'pulmonary-embolism',
+  'tension-pneumothorax', 'esophageal-perforation', 'cardiac-tamponade'
+ ]);
+ for (const id of ['acute-mesenteric-ischemia', 'ruptured-abdominal-aortic-aneurysm', 'acute-appendicitis', 'small-bowel-obstruction']) {
+  assert.ok(linked('abdominal-pain').includes(id));
+ }
 });

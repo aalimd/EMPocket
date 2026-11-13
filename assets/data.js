@@ -11,6 +11,8 @@
    Final targeted expansion: 13 Nov 2026, four additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-13-BATCH-7.md.
    Oncology Emergencies: 13 Nov 2026, six adult emergency guides. See docs/ONCOLOGY-EMERGENCIES-2026-11-13.md.
    Clinical consistency audit: 13 Nov 2026, selected high-risk treatment rows and decision tools. See docs/CLINICAL-CONSISTENCY-2026-11-13.md.
+   Adult diagnosis guides: 13 Nov 2026. See docs/DIAGNOSIS-GUIDES-2026-11-13.md.
+   Optional fourth differential field: a list of topic IDs with dedicated guidance.
    Educational reference only — never replaces clinical judgment or local protocols.
 */
 const CP_DATA = [
@@ -26,12 +28,12 @@ approach: [
     'Record posterior (V7–V9) or right-sided (V4R) leads when inferior STE or anterior V1–V3 ST depression is present.'
 ],
 dontMiss: [
-['Acute Coronary Syndrome (STEMI / NSTEMI / UA / OMI)', 'critical', 'Serial ECG + hs-troponin algorithm — not a single snapshot. Occlusion MI can exist without classic STE.'],
-['Aortic dissection', 'critical', 'Tearing pain to the back, pulse/BP differential, wide mediastinum. Anticoagulating this as ACS can be lethal.'],
-['Pulmonary embolism', 'critical', 'Very-low gestalt → PERC; otherwise a validated Wells/age-adjusted or YEARS probability-adapted D-dimer pathway. Normal sats do not exclude it.'],
-['Tension pneumothorax', 'critical', 'A clinical diagnosis — hypotension + unilateral absent breath sounds = decompress, don\u2019t image first.'],
-['Esophageal rupture (Boerhaave)', 'critical', 'Post-emesis chest pain, subcutaneous emphysema, mediastinal air on CT.'],
-['Cardiac tamponade', 'critical', 'Beck triad is late; pulsus paradoxus and electrical alternans — bedside echo is the test.'],
+['Acute Coronary Syndrome (STEMI / NSTEMI / UA / OMI)', 'critical', 'Serial ECG + hs-troponin algorithm — not a single snapshot. Occlusion MI can exist without classic STE.', ['acute-coronary-syndrome']],
+['Aortic dissection', 'critical', 'Tearing pain to the back, pulse/BP differential, wide mediastinum. Anticoagulating this as ACS can be lethal.', ['acute-aortic-syndrome']],
+['Pulmonary embolism', 'critical', 'Very-low gestalt → PERC; otherwise a validated Wells/age-adjusted or YEARS probability-adapted D-dimer pathway. Normal sats do not exclude it.', ['pulmonary-embolism']],
+['Tension pneumothorax', 'critical', 'Suspected tension with hemodynamic instability or severe respiratory compromise needs immediate decompression before imaging.', ['tension-pneumothorax']],
+['Esophageal rupture (Boerhaave)', 'critical', 'Post-emesis chest pain, subcutaneous emphysema, mediastinal air on CT.', ['esophageal-perforation']],
+['Cardiac tamponade', 'critical', 'The full Beck triad may be absent. Interpret bedside echo with perfusion and hemodynamics, and arrange cause-specific drainage.', ['cardiac-tamponade']],
 ['Myocarditis / Takotsubo / cocaine ischemia', 'emergent', 'Young patients with atypical pain, HF features, or sympathomimetic use.'],
 ['GERD / musculoskeletal / anxiety', 'common', 'Real diagnoses — only after life-threats and validated ACS/PE pathways are negative.']
 ],
@@ -78,11 +80,11 @@ approach: [
     "If respiratory distress prevents a history, obtain collateral information from EMS or family while stabilization continues."
 ],
 dontMiss: [
-['Pulmonary embolism', 'critical', 'Sudden dyspnea with clear lungs; PERC if very-low gestalt, otherwise a validated Wells/age-adjusted or YEARS D-dimer pathway. Echo may show RV strain.'],
-['Tension pneumothorax', 'critical', 'Trauma, COPD or PPV + hemodynamic collapse → decompress before imaging.'],
+['Pulmonary embolism', 'critical', 'Sudden dyspnea with clear lungs; PERC if very-low gestalt, otherwise a validated Wells/age-adjusted or YEARS D-dimer pathway. Echo may show RV strain.', ['pulmonary-embolism']],
+['Tension pneumothorax', 'critical', 'Trauma, COPD or PPV + hemodynamic collapse → decompress before imaging.', ['tension-pneumothorax']],
 ['Acute pulmonary edema / LV failure', 'critical', 'Orthopnea, crackles, diffuse B-lines — early NIV + nitrates if hypertensive.'],
 ['Near-fatal asthma / COPD exacerbation', 'critical', 'Silent chest, normalizing CO₂, exhaustion = pre-arrest physiology.'],
-['Anaphylaxis', 'critical', 'IM epinephrine into the anterolateral thigh immediately — do not wait for urticaria (it may be absent).'],
+['Anaphylaxis', 'critical', 'IM epinephrine into the anterolateral thigh immediately — do not wait for urticaria (it may be absent).', ['anaphylaxis']],
 ['Carbon monoxide poisoning', 'critical', 'Headache, whole household ill; standard SpO₂ is falsely normal — CO-oximetry.'],
 ['Metabolic acidosis (Kussmaul breathing)', 'emergent', 'DKA, sepsis, salicylates, uremia — lungs compensating for the blood.'],
 ['Neuromuscular weakness (GBS, myasthenia)', 'emergent', 'Orthopnea, weak cough, falling NIF/VC — monitor before the crash.'],
@@ -123,14 +125,14 @@ approach: [
     'Consider extra-abdominal and metabolic causes alongside abdominal disease: inferior MI, basal pneumonia and DKA.'
 ],
 dontMiss: [
-['Ruptured AAA', 'critical', 'Age >60 + pain/hypotension/pulsatile mass — bedside US, straight to OR/vascular; do not wait for a perfect CT.'],
-['Mesenteric ischemia', 'critical', 'Pain out of proportion, AFib or vasculopathy; lactate and WBC may be normal early — CTA is the test.'],
-['Ruptured ectopic pregnancy', 'critical', 'Every patient of childbearing potential with abdominal pain gets a pregnancy test.'],
+['Ruptured AAA', 'critical', 'New abdominal or back pain, syncope or shock with an aortic risk feature needs early vascular assessment. Use bedside ultrasound for an aneurysm and urgent CTA when safe.', ['ruptured-abdominal-aortic-aneurysm']],
+['Mesenteric ischemia', 'critical', 'Pain out of proportion, AFib or vasculopathy; lactate and WBC may be normal early — CTA is the test.', ['acute-mesenteric-ischemia']],
+['Ruptured ectopic pregnancy', 'critical', 'Every patient of childbearing potential with abdominal pain gets a pregnancy test.', ['pelvic-pain']],
 ['Perforated viscus', 'critical', 'Sudden severe pain, rigid abdomen, free air (upright CXR or CT).'],
-['Ovarian / testicular torsion', 'critical', 'Acute one-sided pain — Doppler US. Testicular salvage is highest if detorsion is within ~6 h, but operate on suspicion — do not wait out a clock.'],
-['Abdominal aortic / mesenteric dissection', 'critical', 'Consider in the same breath as chest-dissection presentations.'],
-['DKA, inferior MI, basal pneumonia', 'emergent', 'Medical mimics — check glucose, ECG, and lungs in every atypical story.'],
-['Appendicitis / cholecystitis / diverticulitis / obstruction', 'common', 'Time-sensitive; score and image. Selected imaging-confirmed uncomplicated appendicitis may receive antibiotics after shared decision-making (WSES 2025 / CODA).']
+['Ovarian / testicular torsion', 'critical', 'Acute one-sided pain — Doppler US. Testicular salvage is highest if detorsion is within ~6 h, but operate on suspicion — do not wait out a clock.', ['pelvic-pain', 'scrotal-pain']],
+['Aortic dissection with abdominal malperfusion', 'critical', 'Abrupt abdominal or back pain with pulse deficits, neurologic changes or shock warrants urgent aortic assessment.', ['acute-aortic-syndrome']],
+['DKA, inferior MI, basal pneumonia', 'emergent', 'Medical mimics — check glucose, ECG, and lungs in every atypical story.', ['hyperglycemia', 'acute-coronary-syndrome']],
+['Appendicitis / cholecystitis / diverticulitis / obstruction', 'common', 'Time-sensitive; score and image. Selected imaging-confirmed uncomplicated appendicitis may receive antibiotics after shared decision-making (WSES 2025 / CODA).', ['acute-appendicitis', 'small-bowel-obstruction']]
 ],
 history: [
     "Ask about the last bowel movement and passage of flatus, prior abdominal operations and hernias when obstruction is possible.",
@@ -258,8 +260,8 @@ approach: [
 dontMiss: [
 ['Lethal arrhythmia (long QT, WPW, Brugada, advanced block, VT)', 'critical', 'Abnormal ECG, exertional or supine syncope, no prodrome, family history of sudden death.'],
 ['Severe aortic stenosis / HCM', 'critical', 'Exertional syncope with a pathologic murmur — echo.'],
-['High-risk PE', 'critical', 'Syncope can be the only symptom; check VTE risks and RV strain.'],
-['Internal hemorrhage (AAA, GI bleed, ectopic)', 'critical', 'Syncope with anemia, abdominal/back pain, or positive hCG.'],
+['High-risk PE', 'critical', 'Syncope can be the only symptom; check VTE risks and RV strain.', ['pulmonary-embolism']],
+['Internal hemorrhage (AAA, GI bleed, ectopic)', 'critical', 'Syncope with anemia, abdominal/back pain, or positive hCG.', ['ruptured-abdominal-aortic-aneurysm', 'gib', 'pelvic-pain']],
 ['SAH and other intracranial causes', 'critical', 'Headache + collapse; \u201Csyncope with head injury\u201D may be the other way around.'],
 ['Carotid / subclavian steal', 'emergent', 'Arm-exercise syncope with pulse/BP asymmetry.'],
 ['Vasovagal / orthostatic / situational', 'common', 'Prodrome (warmth, pallor, nausea) + trigger + upright posture — the reassuring triad.']
@@ -483,10 +485,10 @@ approach: [
 ],
 dontMiss: [
 ['Cauda equina syndrome', 'critical', 'Saddle anesthesia, urinary retention/incontinence, bilateral leg weakness — emergency MRI + neurosurgery. Do not wait for a \u201Ccomplete\u201D picture.'],
-['Metastatic cord compression', 'critical', 'Cancer history + spinal pain or neurology — contact the MSCC pathway, MRI, and start dexamethasone 16 mg if there are neurological signs (NICE NG234).'],
+['Metastatic cord compression', 'critical', 'Cancer history + spinal pain or neurology — contact the MSCC pathway, MRI, and start dexamethasone 16 mg if there are neurological signs (NICE NG234).', ['metastatic-spinal-cord-compression']],
 ['Spinal epidural abscess / discitis', 'critical', 'Fever, IVDU, immunosuppression, recent procedures, exquisite midline tenderness — MRI + antibiotics. Do not give steroids if infection is the leading diagnosis.'],
 ['Pathologic fracture / malignancy', 'critical', 'Cancer history, night pain, weight loss, age >50 — MRI; myeloma can have normal X-rays.'],
-['Rupturing / expanding AAA', 'critical', 'Elderly vasculopath with back pain = AAA until excluded (bedside US/CTA).'],
+['Rupturing / expanding AAA', 'critical', 'Elderly vasculopath with back pain = AAA until excluded (bedside US/CTA).', ['ruptured-abdominal-aortic-aneurysm']],
 ['Osteoporotic compression fracture', 'emergent', 'Elderly, steroids, minimal or no trauma — X-ray, treat pain, brace per ortho. Not immediately life-threatening but easy to miss.'],
 ['Inflammatory spondyloarthropathy', 'common', 'Night pain, morning stiffness >30 min, improves with activity, onset <40 y — not an ED emergency; HLA-B27 and SI-joint MRI as outpatient.'],
 ['Renal colic / pyelonephritis / pancreatitis', 'common', 'Flank radiation, urinary symptoms — urinalysis, lipase, CT as indicated.'],
@@ -845,7 +847,7 @@ dontMiss: [
 ['Lemierre syndrome', 'critical', 'Pharyngitis then septic thrombophlebitis of the IJ (Fusobacterium) — persistent fever, neck pain, pulmonary septic emboli. CT/US of the neck + blood cultures + prolonged antibiotics.'],
 ['Peritonsillar abscess', 'emergent', 'Trismus, uvular deviation, hot-potato voice — drain + antibiotics. Distinguish from epiglottitis before you put a needle in.'],
 ['Diphtheria / angioedema / anaphylaxis', 'critical', 'Gray membrane, travel/unimmunized; or rapid swelling after ACE-inhibitor or allergen — airway + epinephrine as indicated.'],
-['ACS presenting as throat pain', 'emergent', 'Especially women, diabetics, and the elderly — ECG if the story is exertional or accompanied by diaphoresis/dyspnea.'],
+['ACS presenting as throat pain', 'emergent', 'Especially women, diabetics, and the elderly — ECG if the story is exertional or accompanied by diaphoresis/dyspnea.', ['acute-coronary-syndrome']],
 ['Viral pharyngitis / GAS', 'common', 'Centor/McIsaac to gate testing; treat confirmed GAS. Most do not need antibiotics.']
 ],
 history: ['Tempo: hours (epiglottitis, angioedema) vs days (PTA, viral)', 'Drooling, trismus, voice change, inability to swallow saliva', 'Dental pain or recent extraction (Ludwig)', 'Immunization (Hib, diphtheria); travel; ACE-inhibitor use', 'Sexual history (gonococcal pharyngitis); immunosuppression'],
@@ -885,7 +887,7 @@ approach: [
 dontMiss: [
 ['Massive / airway-threatening hemoptysis', 'critical', 'If the bleeding side is known, place it dependent; support oxygenation and urgently involve airway/bronchoscopy experts for suction and lung isolation when needed. Reverse coagulopathy and arrange bronchial-artery embolization.'],
 ['Diffuse alveolar hemorrhage', 'critical', 'Falling hemoglobin, dropping saturations, bilateral infiltrates — capillaritis, cocaine, anticoagulants; bronchoscopy, immunosuppression per cause.'],
-['Pulmonary embolism', 'critical', 'Hemoptysis can be the presenting feature; do not assume \u201Cbronchitis\u201D in a patient with VTE risks.'],
+['Pulmonary embolism', 'critical', 'Hemoptysis can be the presenting feature; do not assume \u201Cbronchitis\u201D in a patient with VTE risks.', ['pulmonary-embolism']],
 ['Lung cancer / aspergilloma / bronchiectasis', 'critical', 'The most common sources of massive bleeding in adults — CT and IR, not a discharge inhaler.'],
 ['TB / necrotizing pneumonia / lung abscess', 'critical', 'Fever, night sweats, endemic or reactivation risk — isolation + imaging + micro.'],
 ['Mitral stenosis / pulmonary venous hypertension', 'emergent', 'The cardiac cause that is easy to forget — murmur, AF, echo.'],
@@ -926,12 +928,12 @@ approach: [
     'The drug follows the box: blood, epinephrine, norepinephrine, needle, or OR.'
 ],
 dontMiss: [
-['Obstructive shock (tamponade, tension PTX, massive PE)', 'critical', 'Use clinical assessment and rapid POCUS when available: effusion/chamber collapse or RV strain may support the cause. Absent lung sliding alone does not diagnose PTX. Treat tension PTX immediately without waiting for imaging; arrange tamponade drainage or PE reperfusion as indicated. Fluids require individualized reassessment.'],
+['Obstructive shock (tamponade, tension PTX, massive PE)', 'critical', 'Use clinical assessment and rapid POCUS when available: effusion/chamber collapse or RV strain may support the cause. Absent lung sliding alone does not diagnose PTX. Treat tension PTX immediately without waiting for imaging; arrange tamponade drainage or PE reperfusion as indicated. Fluids require individualized reassessment.', ['cardiac-tamponade', 'tension-pneumothorax', 'pulmonary-embolism']],
 ['Cardiogenic shock', 'critical', 'Wet, cool, JVP up, B-lines, poor LV — cautious fluids, vasopressors (norepinephrine), urgent revascularization if ACS (2025 ACC/AHA ACS).'],
 ['Septic / distributive shock', 'critical', 'Antibiotics within 1 h. Use balanced crystalloid for initial resuscitation, then dynamic reassessment to guide further fluid. Start norepinephrine if MAP remains low (SSC 2026).'],
 ['Neurogenic shock', 'critical', 'Hypotension with warm dry skin after spinal injury — fluids then norepinephrine; do not treat as hypovolemia alone.'],
 ['Hemorrhagic / hypovolemic shock', 'critical', 'Blood, source control, TXA in trauma/PPH per pathway; do not dilute with liters of crystalloid in exsanguination.'],
-['Anaphylactic shock', 'critical', 'IM epinephrine anterolateral thigh immediately, then fluids and aerosolized epinephrine if airway edema — do not wait for a rash.'],
+['Anaphylactic shock', 'critical', 'IM epinephrine anterolateral thigh immediately, then fluids and aerosolized epinephrine if airway edema — do not wait for a rash.', ['anaphylaxis']],
 ['Adrenal crisis / occult bleeding / mixed', 'emergent', 'Steroid-dependent, meningococcemia, GI bleed without hematemesis, ruptured AAA — treat while you look.'],
 ['Compensated / occult shock', 'common', 'Normal BP with lactate, delayed cap refill, or unexplained tachypnea — especially in the young and pregnant.']
 ],
@@ -970,8 +972,8 @@ approach: [
     'Ondansetron is a treatment, not a workup.'
 ],
 dontMiss: [
-['Bowel obstruction / volvulus / perforation', 'critical', 'Bilious or feculent vomiting, distension, prior surgery, hernia — CT. Sigmoid/cecal volvulus is time-critical ischemia.'],
-['ACS / inferior MI', 'critical', 'Isolated vomiting, especially in women, elderly, and diabetics — ECG before the antiemetic is blamed for the \u201Ccure.\u201D'],
+['Bowel obstruction / volvulus / perforation', 'critical', 'Bilious or feculent vomiting, distension, prior surgery, hernia — CT. Sigmoid/cecal volvulus is time-critical ischemia.', ['small-bowel-obstruction']],
+['ACS / inferior MI', 'critical', 'Isolated vomiting, especially in women, elderly, and diabetics — ECG before the antiemetic is blamed for the \u201Ccure.\u201D', ['acute-coronary-syndrome']],
 ['Raised ICP / SAH / posterior stroke', 'critical', 'Headache, diplopia, ataxia, no abdominal findings — CT/MRI. Projectile vomiting is a clue, not a rule.'],
 ['DKA / HHS / adrenal crisis / hyponatremia', 'critical', 'Glucose and electrolytes in every unexplained case. Steroid-dependent patients get stress-dose steroids.'],
 ['Pregnancy complications (hyperemesis vs ectopic vs molar)', 'critical', 'hCG first; assess oral intake, weight loss, hydration and electrolytes in hyperemesis. Ketonuria does not grade severity; blood ketones/acidosis are relevant if DKA is suspected. Ectopic if pain + bleeding.'],
@@ -1014,7 +1016,7 @@ approach: [
     'Pain out of proportion in a vasculopath is CTA, not a stool PCR.'
 ],
 dontMiss: [
-['Mesenteric ischemia', 'critical', 'Pain out of proportion ± bloody diarrhea in AF or vasculopathy — CTA, not stool studies first.'],
+['Mesenteric ischemia', 'critical', 'Pain out of proportion ± bloody diarrhea in AF or vasculopathy — CTA, not stool studies first.', ['acute-mesenteric-ischemia']],
 ['Toxic megacolon / fulminant C. difficile / IBD', 'critical', 'Fever, shock, distension, immunosuppression or recent antibiotics — AXR/CT, surgical consult, oral/NG vancomycin plus IV metronidazole for fulminant CDI; consider rectal vancomycin with ileus (IDSA/SHEA).'],
 ['STEC / HUS', 'critical', 'Bloody diarrhea after undercooked beef or outbreaks, little or no fever — do not give antibiotics or antimotility agents; watch creatinine, hemolysis, platelets.'],
 ['Cholera / severe secretory dehydration', 'critical', 'Rice-water stool, travel; WHO-ORS or IV; antibiotics as an adjunct once volume is restored.'],
@@ -1319,8 +1321,8 @@ approach: [
     'No red flags and a benign exam: bowel regimen and follow-up, not a CT.'
 ],
 dontMiss: [
-['Bowel obstruction / volvulus', 'critical', 'Vomiting, distension, prior surgery, hernia, tympany — CT. Sigmoid/cecal volvulus is time-critical.'],
-['Mesenteric ischemia', 'critical', 'Pain out of proportion, AF, bloody stool — CTA, not a discharge laxative.'],
+['Bowel obstruction / volvulus', 'critical', 'Vomiting, distension, prior surgery, hernia, tympany — CT. Sigmoid/cecal volvulus is time-critical.', ['small-bowel-obstruction']],
+['Mesenteric ischemia', 'critical', 'Pain out of proportion, AF, bloody stool — CTA, not a discharge laxative.', ['acute-mesenteric-ischemia']],
 ['Cauda equina / cord compression', 'critical', 'New constipation plus back pain, saddle anesthesia, or urinary retention — emergency MRI.'],
 ['Fecal impaction with overflow / stercoral colitis', 'critical', 'The frail elderly \u201Cdiarrhea\u201D that is overflow; DRE. Stercoral ulceration can perforate.'],
 ['Hypercalcemia / myxedema / opioid ileus', 'emergent', 'Bones, stones, groans, psychiatric overtones; delayed reflexes; the medication list.'],
@@ -1363,7 +1365,7 @@ approach: [
 ],
 dontMiss: [
 ['Embolic or thrombotic acute limb ischemia', 'critical', 'Sudden pain, pallor, pulselessness — Rutherford threatened but salvageable limb needs revascularization now; irreversible ischemia needs a different surgical plan. Give heparin unless contraindicated, including active bleeding, suspected dissection or HIT; obtain urgent vascular advice for alternatives.'],
-['Aortic dissection into a limb', 'critical', 'Chest/back pain + pulse deficit or a cold arm/leg — CTA aorta first; anticoagulating this as a simple embolus can be lethal.'],
+['Aortic dissection into a limb', 'critical', 'Chest/back pain + pulse deficit or a cold arm/leg — CTA aorta first; anticoagulating this as a simple embolus can be lethal.', ['acute-aortic-syndrome']],
 ['Phlegmasia cerulea dolens / massive DVT', 'critical', 'Cyanotic swollen limb, often malignant or post-op — anticoagulation ± thrombolysis/thrombectomy; watch for venous gangrene.'],
 ['Compartment syndrome', 'critical', 'Pain on passive stretch after trauma, crush, or reperfusion — compartment pressures support but do not override clinical diagnosis; fasciotomy.'],
 ['Necrotizing soft-tissue infection', 'critical', 'Pain out of proportion, rapid spread, crepitus, or shock — surgery now.'],
@@ -1585,7 +1587,7 @@ id: 'flank-pain', name: 'Flank Pain & Renal Colic', icon: '🪨',
 tag: 'Confirm the stone—but first exclude infected obstruction, AAA, and the surgical mimics.',
 overview: 'Renal colic is common, but flank pain can be vascular, infectious, gynecologic, gastrointestinal, or spinal. A stone with sepsis, solitary kidney, anuria, or refractory symptoms is not a routine discharge.',
 approach: ['Give prompt analgesia (NSAID + IV opioid if severe) while checking vitals, pregnancy status, urinalysis, and creatinine.', 'Screen older or hypotensive patients with flank/back pain for ruptured AAA by bedside aorta ultrasound before calling it a first stone.', 'Rule out infected ureteral obstruction (fever/SIRS/pyuria + hydronephrosis/stone) — that requires emergency urologic decompression.', 'Choose imaging wisely: POCUS/ultrasound first in young recurrent stone formers and pregnancy; low-dose noncontrast CT for first episode, older age, or diagnostic uncertainty.'],
-dontMiss: [['Infected obstructed urinary system', 'critical', 'Fever/systemic illness plus obstruction requires urgent urology drainage and antibiotics—not outpatient stone management.'], ['Ruptured AAA / aortic dissection', 'critical', 'Older patient, hypotension, vascular risk, abdominal/back pain, or pulse deficit: image the aorta.'], ['Pyelonephritis with sepsis', 'critical', 'Fever, flank tenderness, shock, or vomiting warrants sepsis treatment and source-control assessment.'], ['Ectopic pregnancy / ovarian torsion', 'emergent', 'Pregnancy test and pelvic consideration remain essential when anatomy and symptoms fit.'], ['Uncomplicated ureteral stone', 'common', 'Analgesia, hydration advice, urine straining where used, and follow-up depend on size, location, renal function, and symptoms.']],
+dontMiss: [['Infected obstructed urinary system', 'critical', 'Fever/systemic illness plus obstruction requires urgent urology drainage and antibiotics—not outpatient stone management.'], ['Ruptured AAA / aortic dissection', 'critical', 'Older patient, hypotension, vascular risk, abdominal/back pain, or pulse deficit: image the aorta.', ['ruptured-abdominal-aortic-aneurysm', 'acute-aortic-syndrome']], ['Pyelonephritis with sepsis', 'critical', 'Fever, flank tenderness, shock, or vomiting warrants sepsis treatment and source-control assessment.'], ['Ectopic pregnancy / ovarian torsion', 'emergent', 'Pregnancy test and pelvic consideration remain essential when anatomy and symptoms fit.'], ['Uncomplicated ureteral stone', 'common', 'Analgesia, hydration advice, urine straining where used, and follow-up depend on size, location, renal function, and symptoms.']],
 history: ['Abrupt colicky vs constant tearing pain, radiation to groin/testicle/labia, gross hematuria, dysuria', 'Fever, rigors, intractable vomiting, anuria, solitary or transplant kidney, prior stones/stents', 'Pregnancy possibility, age >60 with smoking/hypertension (AAA mimic), anticoagulation, AFib (renal infarct)'],
 exam: ['Vitals (fever, tachycardia, hypotension); abdominal tenderness vs benign soft belly of classic colic', 'CVA tenderness, palpation for pulsatile abdominal mass, femoral pulses', 'Testicular/inguinal exam in males and pelvic consideration in females with lower-quadrant/groin radiation'],
 workup: [['Bedside', ['Urinalysis, urine hCG in childbearing potential, and POCUS (hydronephrosis + abdominal aorta <3 cm)', '12-lead ECG if older or AFib/renal-infarct mimic suspected']], ['Labs', ['BMP/creatinine, CBC; add blood/urine cultures and lactate if febrile or SIRS-positive', 'Absence of microscopic hematuria (~10–15% of stones) does not exclude ureterolithiasis']], ['Imaging', [
@@ -1671,7 +1673,7 @@ id: 'multiple-trauma', name: 'Multiple Trauma / Primary Survey', icon: '🚑',
 tag: 'Treat immediate threats in order; reassess after every intervention.',
 overview: 'Major trauma is a time-critical systems problem. A structured primary survey prevents fixation on a visible injury while airway obstruction, tension physiology, hemorrhage, brain injury, or pelvic bleeding progresses.',
 approach: ['Activate the trauma team and follow xABCDE: control catastrophic external bleeding first, then Airway + C-spine, Breathing, Circulation, Disability, and Exposure/environment.', 'Decompress tension pneumothorax clinically, apply a pelvic binder at the greater trochanters for suspected pelvic hemorrhage, and keep the patient warm.', 'Activate the local major hemorrhage protocol for suspected life-threatening bleeding. Give blood components per protocol, monitor ionized calcium and give TXA promptly when indicated within 3 hours of injury.', 'If suspected hemorrhage causes persistent instability despite resuscitation, limit imaging to what directs immediate bleeding control. Stable patients and sustained responders can proceed to indicated CT.'],
-dontMiss: [['Catastrophic hemorrhage', 'critical', 'Tourniquet/pressure/pelvic stabilization and massive-transfusion pathway per local protocol; definitive control is surgical/IR.'], ['Tension pneumothorax / massive hemothorax', 'critical', 'Treat clinically in an unstable patient; do not wait for imaging.'], ['Traumatic brain injury with herniation risk', 'critical', 'Prevent hypoxia and hypotension; urgent neuro/trauma input.'], ['Unstable pelvic, abdominal, or vascular injury', 'critical', 'Shock after blunt/penetrating trauma needs rapid source-control decisions.'], ['Spinal cord injury / airway burn', 'emergent', 'Immobilize selectively by mechanism and examination; plan early airway support for inhalation injury.']],
+dontMiss: [['Catastrophic hemorrhage', 'critical', 'Tourniquet/pressure/pelvic stabilization and massive-transfusion pathway per local protocol; definitive control is surgical/IR.'], ['Tension pneumothorax / massive hemothorax', 'critical', 'Treat clinically in an unstable patient; do not wait for imaging.', ['tension-pneumothorax']], ['Traumatic brain injury with herniation risk', 'critical', 'Prevent hypoxia and hypotension; urgent neuro/trauma input.'], ['Unstable pelvic, abdominal, or vascular injury', 'critical', 'Shock after blunt/penetrating trauma needs rapid source-control decisions.'], ['Spinal cord injury / airway burn', 'emergent', 'Immobilize selectively by mechanism and examination; plan early airway support for inhalation injury.']],
 history: ['AMPLE history, exact time of injury (3-h TXA window), mechanism (high-speed MVC, ejection, fall height, penetrating weapon)', 'Prehospital vital trends, GCS trajectory, tourniquet application time, blood/fluids given', 'Anticoagulants/antiplatelets, beta-blockers (mask tachycardia), pregnancy status, tetanus status'],
 exam: ['Primary survey (xABCDE) with continuous vital reassessment after every maneuver', 'Chest wall symmetry, breath sounds, subcutaneous emphysema; abdomen and single gentle pelvic stability check (do not rock the pelvis)', 'GCS + pupils, four-limb motor/sensory, hard signs of vascular injury, full exposure + log-roll with normothermia protection'],
 workup: [['Bedside', ['eFAST (pericardial, RUQ, LUQ, pelvis, bilateral anterior pleura), bedside glucose, and core temperature', 'Use portable chest or pelvic imaging in unstable blunt trauma when the result will direct immediate intervention']], ['Labs', ['Type & crossmatch (activate MTP early), VBG/ABG with base deficit and lactate, ionized calcium, CBC, coagulation/TEG/ROTEM', 'Urine/serum hCG in all females of childbearing potential; urinalysis for gross hematuria']], ['Imaging', ['Consider whole-body CT for adults with blunt major trauma and suspected multiple injuries when physiology permits. Select imaging by suspected injuries in children.']]],
@@ -1768,7 +1770,7 @@ dontMiss: [
     ['Pulseless electrical activity', 'critical', 'Organised rhythm without a pulse. Treat as a reversible-cause problem: hypoxia, hypovolaemia, hypo/hyperkalaemia, hypothermia, H⁺ (acidaemia), toxins, tamponade, tension pneumothorax, thrombosis (coronary/pulmonary).'],
     ['Unstable bradycardia', 'critical', 'Bradycardia with hypotension, ischaemia, altered mental status, or shock — atropine 1 mg IV (repeat to max 3 mg), then transcutaneous pacing and/or a dopamine or epinephrine infusion.'],
     ['Unstable tachycardia', 'critical', 'Identify whether the tachyarrhythmia is causing shock, ischemia, acute heart failure or altered mentation. Use rhythm-specific electrical treatment promptly.'],
-    ['Tension pneumothorax / cardiac tamponade', 'critical', 'Obstructive shock that mimics PEA: unilateral absent breath sounds and tracheal deviation, or distended neck veins with muffled heart sounds. Needle decompression or pericardiocentesis is the treatment.'],
+    ['Tension pneumothorax / cardiac tamponade', 'critical', 'Both can cause PEA. Treat suspected tension with emergency pleural decompression. For tamponade, arrange cause-specific drainage and involve the trauma or cardiac surgical team when bleeding or dissection is suspected.', ['tension-pneumothorax', 'cardiac-tamponade']],
     ['Hyperkalaemia / toxicologic arrest', 'critical', 'Treat the suspected reversible cause alongside CPR and indicated shocks. Follow the local hyperkalemic arrest or toxicology pathway as appropriate.']
 ],
 history: ['Collapse circumstances and bystander CPR; downtime and any ROSC', 'Witnessed vs unwitnessed; any prodrome (chest pain, palpitations, syncope)', 'Comorbidities: dialysis, heart failure, prior arrhythmia, implanted device', 'Drugs and toxins: QT-prolonging agents, sodium-channel blockers, opioids', 'Recent fever/infection, immobilisation, immobility (thrombosis), temperature exposure'],
@@ -1891,9 +1893,9 @@ approach: [
 ],
 dontMiss: [
     ['Hypertensive encephalopathy', 'critical', 'Severe hypertension with headache, confusion, visual disturbance, seizure or coma — cerebral oedema. Reduce MAP by ~20–25% in the first hour. Nicardipine or labetalol.'],
-    ['Acute aortic dissection', 'critical', 'Tearing chest/back pain with a pulse or pressure differential. Target heart rate ≤60 bpm first (esmolol or labetalol), then SBP 100–120 mmHg; avoid pure vasodilators before beta-blockade.'],
+    ['Acute aortic dissection', 'critical', 'Tearing chest/back pain with a pulse or pressure differential. Target heart rate ≤60 bpm first (esmolol or labetalol), then SBP 100–120 mmHg; avoid pure vasodilators before beta-blockade.', ['acute-aortic-syndrome']],
     ['Acute pulmonary oedema', 'critical', 'Hypertension with flash pulmonary oedema — nitroglycerin infusion plus non-invasive ventilation.'],
-    ['Acute coronary syndrome / ischaemic stroke', 'critical', 'Lower blood pressure only when it threatens therapy or exceeds the thrombolysis threshold; navigate within the ACS/stroke pathways.'],
+    ['Acute coronary syndrome / ischaemic stroke', 'critical', 'Lower blood pressure only when it threatens therapy or exceeds the thrombolysis threshold; navigate within the ACS/stroke pathways.', ['acute-coronary-syndrome', 'focal-neurologic-deficit']],
     ['Intracerebral haemorrhage', 'emergent', 'Smoothly target SBP ~140 mmHg when presenting SBP is 150–220 mmHg (INTERACT2/ATACH-II); avoid drops below 130 mmHg.'],
     ['Eclampsia / pre-eclampsia', 'critical', 'Magnesium sulfate for seizure prophylaxis and treatment; labetalol, hydralazine or nifedipine for blood pressure. Delivery is definitive.'],
     ['Catecholamine excess', 'emergent', 'Cocaine, amphetamine, phaeochromocytoma, or clonidine withdrawal — avoid unopposed beta-blockade; use a vasodilator or an alpha-blocker first.']
@@ -2237,6 +2239,291 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
     pitfalls: ['Attributing fever after CAR-T to CRS and missing sepsis.', 'Treating CAR-T neurotoxicity as isolated CRS. Grade and treat both syndromes through the cell therapy protocol.'],
     pearls: ['Aphasia or a change in handwriting can be an early neurotoxicity clue after CAR-T.'],
     refs: ['SITC immune effector cell-related adverse events guideline', 'SITC immune checkpoint inhibitor-related adverse events guideline']
+},
+{
+    id: 'acute-coronary-syndrome', type: 'diagnosis', name: 'Acute Coronary Syndrome (ACS)', icon: '🫀',
+    tag: 'Recognize coronary occlusion early and use serial testing for suspected non-ST-elevation ACS.',
+    overview: 'ACS includes STEMI, NSTEMI and unstable angina from acute myocardial ischemia. Chest pressure, dyspnea, diaphoresis, nausea or epigastric discomfort can be the presenting symptom. Adult emergency pathway.',
+    approach: [
+        'Obtain and interpret a 12-lead ECG within 10 minutes. Repeat with persistent or recurrent symptoms and compare with prior tracings when available.',
+        'Activate the local reperfusion pathway for STEMI. For other patterns concerning for acute coronary occlusion, ongoing refractory ischemia or hemodynamic instability, seek immediate cardiology and reperfusion assessment. Do not wait for troponin.',
+        'Give aspirin 162–325 mg orally, chewed, for ACS if eligible. If acute aortic syndrome is suspected, prioritize urgent aortic assessment before starting antithrombotic therapy. Coordinate further antiplatelet and anticoagulant treatment with the local ACS pathway.',
+        'For suspected non-ST-elevation ACS without an immediate invasive indication, use serial ECGs and a validated, assay-specific high-sensitivity troponin pathway.'
+    ],
+    dontMiss: [
+        ['Posterior or right ventricular infarction', 'critical', 'Record V7–V9 for suspected posterior infarction and right-sided leads such as V4R for suspected right ventricular involvement.'],
+        ['Acute aortic syndrome with coronary malperfusion', 'critical', 'Abrupt chest or back pain with pulse deficit, neurologic signs or new aortic regurgitation changes the immediate pathway.', ['acute-aortic-syndrome']],
+        ['Mechanical complication of MI', 'critical', 'New murmur, pulmonary edema or shock after MI needs urgent echo and cardiology assessment.']
+    ],
+    history: ['Establish onset, ongoing or recurrent symptoms, exertional pattern, previous coronary disease and antithrombotic use. Ask about recent bleeding.'],
+    exam: ['Assess perfusion, heart failure, new murmur and pulse asymmetry. A reassuring exam can occur in ACS.'],
+    workup: [
+        ['ECG', ['Repeat during symptoms. ST depression maximal in V1–V3 may reflect posterior occlusion even with negative supplemental leads.']],
+        ['Biomarkers', ['Acute MI requires acute myocardial injury, usually a rise or fall in troponin with a value above the assay’s 99th percentile, and evidence of ischemia. An elevated troponin alone indicates injury.']]
+    ],
+    redFlags: ['STEMI or suspected acute coronary occlusion.', 'Ongoing ischemia, shock, acute heart failure or a life-threatening arrhythmia.'],
+    disposition: [
+        ['Immediate invasive assessment', 'STEMI or very-high-risk ACS needs emergency cardiology and the appropriate reperfusion or transfer pathway.'],
+        ['Monitored evaluation', 'Confirmed or suspected ACS with unresolved risk requires continued observation or admission and a documented management plan.'],
+        ['Discharge', 'Use a completed validated low-risk pathway, reassess symptoms and alternative diagnoses, and arrange follow-up and return precautions.']
+    ],
+    pitfalls: ['Ruling out ACS with a single reference-range troponin or a nondiagnostic ECG.', 'Equating every troponin rise with type 1 MI.'],
+    pearls: ['Document symptom onset, serial ECG and troponin times, and the reason for escalation or discharge.'],
+    refs: ['2025 ACC/AHA multisociety ACS guideline', '2022 ACC ED chest pain pathway', 'Fifth Universal Definition of MI']
+},
+{
+    id: 'acute-aortic-syndrome', type: 'diagnosis', name: 'Acute Aortic Syndrome (Aortic Dissection)', icon: '🩺',
+    tag: 'Think of the aorta in abrupt severe pain, unexplained shock or signs of malperfusion.',
+    overview: 'Acute aortic syndrome includes dissection, intramural hematoma and penetrating aortic ulcer. Ascending aortic involvement can cause tamponade, acute aortic regurgitation or coronary and cerebral malperfusion. Adult emergency pathway.',
+    approach: [
+        'Monitor closely, obtain IV access, give analgesia and contact the aortic team early. Involve cardiothoracic surgery immediately for suspected ascending involvement.',
+        'Obtain urgent aortic CTA when transport is safe. Discuss bedside transesophageal echocardiography when CT is unsafe or impractical.',
+        'For a hypertensive patient with adequate perfusion, start monitored IV anti-impulse therapy, usually a beta blocker first if appropriate. Target HR 60–80 bpm and SBP <120 mmHg or the lowest pressure maintaining organ perfusion. Add a vasodilator only after rate control if needed.',
+        'If hypotensive or shocked, support perfusion and urgently assess for rupture, tamponade or severe aortic regurgitation with the surgical team.'
+    ],
+    dontMiss: [
+        ['Type A dissection', 'critical', 'Any ascending aortic involvement requires emergency surgical evaluation.'],
+        ['Complicated type B dissection', 'critical', 'Rupture, malperfusion, extension or refractory pain or hypertension needs urgent aortic intervention assessment.'],
+        ['Tamponade or coronary malperfusion', 'critical', 'Shock or ischemic ECG changes can be caused by dissection and require cause-directed treatment.', ['cardiac-tamponade', 'acute-coronary-syndrome']]
+    ],
+    history: ['Ask about abrupt pain maximal at onset, syncope, prior aortic disease or surgery, connective-tissue disease and family history.'],
+    exam: ['Check pulses, limb perfusion, both arm pressures when feasible, focused neurologic findings and a new diastolic murmur.'],
+    workup: [
+        ['Imaging', ['Coordinate an aortic protocol with radiology to define the full extent and branch-vessel involvement. Use bedside echo to identify complications while definitive assessment proceeds.']],
+        ['Parallel tests', ['Obtain ECG, blood counts, renal function and type and crossmatch when indicated. Keep imaging and surgical contact moving.']]
+    ],
+    redFlags: ['Shock, syncope, focal neurologic deficit or a painful ischemic limb.', 'Abrupt severe chest, back or abdominal pain with an aortic risk feature.'],
+    disposition: [
+        ['Emergency surgery / transfer', 'Suspected or confirmed type A dissection or complicated type B disease requires immediate specialist coordination.'],
+        ['Monitored admission', 'Uncomplicated type B disease starts with specialist-led medical management and surveillance.']
+    ],
+    pitfalls: ['Using a normal chest radiograph, symmetric pulses or a negative bedside echo to exclude dissection.', 'Giving a vasodilator before rate control or lowering BP in a poorly perfused patient.'],
+    pearls: ['Chest pain with a new neurologic deficit or ischemic limb may be one aortic diagnosis.'],
+    refs: ['2022 ACC/AHA aortic disease guideline']
+},
+{
+    id: 'pulmonary-embolism', type: 'diagnosis', name: 'Acute Pulmonary Embolism (PE)', icon: '🫁',
+    tag: 'Match diagnostic testing to pretest probability and treatment urgency to clinical severity.',
+    overview: 'PE may present with dyspnea, pleuritic pain, syncope or hemoptysis. The diagnostic pathway below is for nonpregnant adults. Pregnancy and postpartum evaluation need an adapted pathway.',
+    approach: [
+        'In shock or deterioration, resuscitate and involve critical care and the local PE response or reperfusion team early. Use bedside echo when transport to CT is unsafe and integrate other causes of shock.',
+        'In a stable patient with very low clinical probability, apply PERC when appropriate. If all criteria are negative, further PE testing is generally unnecessary.',
+        'For low or intermediate probability, use D-dimer in a validated pathway, with age-adjusted or probability-adjusted thresholds as specified. High probability goes directly to imaging.',
+        'Treat confirmed PE with anticoagulation when eligible. Choose the agent according to bleeding risk, renal function and procedural plans. Assess patients with shock or deterioration for urgent reperfusion.'
+    ],
+    dontMiss: [
+        ['PE with cardiopulmonary failure', 'critical', 'Persistent hypotension, shock or arrest needs immediate resuscitation and consideration of advanced therapy.'],
+        ['Impending deterioration', 'critical', 'Escalating oxygen needs or signs of hypoperfusion call for monitored reassessment and early team involvement.'],
+        ['Other causes of obstructive shock', 'critical', 'Assess for tension pneumothorax and tamponade while evaluating a crashing patient.', ['tension-pneumothorax', 'cardiac-tamponade']]
+    ],
+    history: ['Ask about prior VTE, surgery, immobilization, cancer, estrogen, bleeding and current anticoagulation.'],
+    exam: ['Assess oxygenation, perfusion, work of breathing and unilateral leg swelling.'],
+    workup: [
+        ['Imaging', ['CT pulmonary angiography is the usual definitive study. Consider ventilation-perfusion imaging when CTPA is unsuitable.']],
+        ['Severity assessment', ['Use hemodynamics, oxygen needs, RV imaging and biomarkers as appropriate to determine monitoring and treatment. RV strain alone does not establish a reperfusion indication.']]
+    ],
+    redFlags: ['Persistent hypotension, hypoperfusion, syncope with instability or rising oxygen needs.'],
+    disposition: [
+        ['Critical care', 'Shock, clinical deterioration or advanced therapy needs critical care and specialty input.'],
+        ['Admission', 'Elevated clinical severity or barriers to safe outpatient care require inpatient treatment.'],
+        ['Selected outpatient care', 'Use a validated low-risk assessment such as Hestia or PESI-based criteria plus bleeding risk, medication access and reliable follow-up.']
+    ],
+    pitfalls: ['Using PERC outside the very-low-risk group or mixing D-dimer thresholds from different pathways.', 'Ruling out PE because oxygen saturation is normal.'],
+    pearls: ['Diagnostic probability and severity after diagnosis answer different questions. Document both.'],
+    refs: ['2026 AHA/ACC multisociety acute PE guideline']
+},
+{
+    id: 'tension-pneumothorax', type: 'diagnosis', name: 'Tension Pneumothorax', icon: '🫁',
+    tag: 'Decompress suspected tension physiology with severe respiratory or circulatory compromise.',
+    overview: 'Rising pleural pressure can impair ventilation and venous return. Tension can follow trauma, a procedure or positive-pressure ventilation, or complicate a spontaneous pneumothorax. Adult emergency pathway.',
+    approach: [
+        'Give oxygen as indicated, monitor and call for resuscitation help. Suspect tension when abrupt respiratory or circulatory compromise accompanies asymmetric chest findings or occurs after positive-pressure ventilation.',
+        'If suspicion is high and the patient has hemodynamic instability or severe respiratory compromise, decompress immediately. Use the technique appropriate to the setting and team training. Do not delay for imaging.',
+        'Ensure definitive pleural drainage after emergency decompression. Reassess ventilation, perfusion, response and drain function immediately.'
+    ],
+    dontMiss: [
+        ['Persistent or recurrent tension', 'critical', 'If the patient fails to improve or deteriorates again, reassess the side, decompression effectiveness and drain patency while searching for other causes.'],
+        ['Major hemothorax or tamponade after trauma', 'critical', 'Persistent shock may reflect bleeding or tamponade even when pleural decompression has succeeded.', ['cardiac-tamponade']]
+    ],
+    history: ['Ask about trauma, recent central access or pleural procedures, lung disease and ventilator changes.'],
+    exam: ['Assess asymmetric air entry or chest movement, work of breathing, perfusion and ventilator pressures. Tracheal deviation and distended neck veins may be absent.'],
+    workup: [
+        ['Unstable', ['Clinical assessment drives emergency action. Use bedside ultrasound only if it does not delay decompression.']],
+        ['Stable or after stabilization', ['Use lung ultrasound or chest imaging as appropriate to define pneumothorax and assess drainage and other injuries.']]
+    ],
+    redFlags: ['Shock, arrest or severe respiratory compromise with plausible tension pneumothorax.', 'Sudden desaturation or high airway pressures after intubation, trauma or a procedure.'],
+    disposition: [['Monitored admission / critical care', 'Continue monitoring and definitive pleural drainage. Involve trauma, thoracic or critical-care teams as appropriate.']],
+    pitfalls: ['Waiting for classic signs or a chest radiograph in a crashing patient.', 'Treating absent lung sliding alone as proof of tension.'],
+    pearls: ['Reassessment after decompression can reveal a blocked drain, ongoing air leak or another cause of shock.'],
+    refs: ['NICE NG39 major trauma recommendations', 'ERC 2025 traumatic cardiac arrest guidance', 'ACEP lung ultrasound Sonoguide']
+},
+{
+    id: 'esophageal-perforation', type: 'diagnosis', name: 'Esophageal Perforation (Boerhaave Syndrome)', icon: '🩺',
+    tag: 'Consider a leak after forceful vomiting or instrumentation and consult early.',
+    overview: 'A full-thickness esophageal tear can contaminate the mediastinum, pleural space or abdomen. Boerhaave syndrome is spontaneous rupture, typically after forceful vomiting. Adult emergency pathway.',
+    approach: [
+        'Resuscitate, keep the patient NPO and involve thoracic or upper GI surgery immediately. Coordinate transfer early if definitive care is unavailable.',
+        'Start IV broad-spectrum antibiotics covering aerobic and anaerobic organisms when perforation is suspected. Treat sepsis and obtain cultures if this does not delay antibiotics.',
+        'When safe to transport, obtain contrast-enhanced CT using the suspected perforation or CT esophagography protocol agreed with radiology. Do not delay surgical contact for imaging.',
+        'Coordinate drainage and repair, endoscopic treatment or selected nonoperative care with the specialist team based on stability, leak location and contamination.'
+    ],
+    dontMiss: [
+        ['Free perforation or mediastinitis', 'critical', 'Sepsis, shock or extensive pleural or mediastinal contamination needs urgent source control.'],
+        ['Competing chest pain emergencies', 'critical', 'Continue parallel assessment for ACS and aortic emergencies when the presentation supports them.', ['acute-coronary-syndrome', 'acute-aortic-syndrome']]
+    ],
+    history: ['Ask about forceful emesis, endoscopy, foreign body, severe pain with swallowing and symptom timing.'],
+    exam: ['Assess for chest or epigastric tenderness, subcutaneous crepitus, respiratory distress and shock. Early findings can be subtle.'],
+    workup: [
+        ['Imaging', ['Look for extraluminal air or contrast, pleural fluid and mediastinal collections. Discuss persistent suspicion after nondiagnostic imaging with the specialist team.']],
+        ['Labs', ['Blood count, metabolic profile and lactate help assess organ dysfunction and support resuscitation.']]
+    ],
+    redFlags: ['Severe chest or epigastric pain after vomiting or instrumentation.', 'Pleural effusion, subcutaneous air or sepsis in that setting.'],
+    disposition: [
+        ['Urgent surgery or transfer', 'Unstable patients or uncontrolled leaks require emergency source-control assessment.'],
+        ['Specialist monitored admission', 'A stable patient with a contained leak may qualify for nonoperative management under close expert surveillance.']
+    ],
+    pitfalls: ['Waiting for vomiting, chest pain and subcutaneous emphysema to all be present.', 'Blindly passing a nasogastric tube when perforation is suspected.'],
+    pearls: ['Distinguish full-thickness rupture from a mucosal Mallory–Weiss tear. Their treatment and risks differ.'],
+    refs: ['WSES esophageal emergencies guideline']
+},
+{
+    id: 'cardiac-tamponade', type: 'diagnosis', name: 'Cardiac Tamponade', icon: '🫀',
+    tag: 'Identify impaired cardiac filling and arrange cause-specific drainage urgently.',
+    overview: 'Pericardial pressure can impair ventricular filling and cause obstructive shock. The rate of fluid accumulation matters. A rapidly developing small effusion can be dangerous. Adult emergency pathway.',
+    approach: [
+        'Assess perfusion, monitor, obtain IV access and perform bedside echo. Call the team capable of urgent drainage as soon as tamponade is suspected.',
+        'Interpret echo findings alongside hemodynamics. Right atrial or right ventricular collapse and a plethoric IVC support the diagnosis in context.',
+        'Use supportive resuscitation as a bridge to urgent drainage in an unstable patient. If intubation is necessary, prepare for hemodynamic deterioration with an experienced team.',
+        'Choose image-guided pericardiocentesis or surgical drainage based on the cause and setting. Suspected type A dissection, traumatic bleeding or myocardial free-wall rupture requires immediate surgical coordination.'
+    ],
+    dontMiss: [
+        ['Hemopericardium from type A dissection', 'critical', 'Abrupt pain, aortic findings and an effusion with shock require emergency aortic surgical evaluation.', ['acute-aortic-syndrome']],
+        ['Traumatic or post-procedure tamponade', 'critical', 'Notify the relevant procedural or trauma team promptly and plan definitive treatment based on mechanism.']
+    ],
+    history: ['Ask about trauma, recent cardiac procedures, cancer, renal failure, infection and anticoagulant use.'],
+    exam: ['Look for tachycardia, low BP, elevated venous pressure and impaired perfusion. The full Beck triad is often absent.'],
+    workup: [
+        ['Echo', ['Perform focused bedside echo in shock and obtain formal imaging when feasible. Postoperative collections may be loculated and difficult to see.']],
+        ['ECG', ['Low voltage or electrical alternans may support suspicion. A normal ECG does not exclude tamponade.']]
+    ],
+    redFlags: ['Hypoperfusion, persistent hypotension or PEA with a plausible pericardial cause.', 'New effusion with deterioration after trauma or a cardiac procedure.'],
+    disposition: [['Emergency intervention / critical care', 'Unstable tamponade needs immediate intervention and monitoring for recurrence and the underlying cause.']],
+    pitfalls: ['Equating any effusion with tamponade or excluding it because an effusion looks small.', 'Delaying definitive drainage while waiting for a complete workup in a deteriorating patient.'],
+    pearls: ['The mechanism determines the drainage strategy. State it explicitly in the handover.'],
+    refs: ['2025 ESC myocarditis and pericarditis guideline', 'ERC 2025 traumatic cardiac arrest guidance', '2022 ACC/AHA aortic disease guideline']
+},
+{
+    id: 'acute-mesenteric-ischemia', type: 'diagnosis', name: 'Acute Mesenteric Ischemia', icon: '🩺',
+    tag: 'Order urgent mesenteric CTA when suspected. Early exam and lactate may be reassuring.',
+    overview: 'Acute intestinal ischemia can result from arterial embolism or thrombosis, mesenteric venous thrombosis, or low-flow nonocclusive ischemia. Treatment depends on the mechanism and bowel viability. Adult emergency pathway.',
+    approach: [
+        'Suspect ischemia with severe unexplained abdominal pain, especially with atrial fibrillation, vascular disease or a low-flow state. Peritoneal signs may develop late.',
+        'Request urgent mesenteric CTA with arterial and portal venous phases. Avoid oral contrast. Suspected acute mesenteric ischemia warrants CTA even with acute kidney injury.',
+        'Resuscitate, keep NPO, start broad-spectrum IV antibiotics and involve general and vascular surgery early. Discuss anticoagulation with the treating team based on mechanism, bleeding risk and operative plans.',
+        'Peritonitis needs prompt operative exploration. Coordinate revascularization for arterial occlusion and cause-directed treatment for venous or low-flow disease.'
+    ],
+    dontMiss: [
+        ['Arterial occlusion', 'critical', 'Abrupt pain with AF suggests embolism. Underlying atherosclerotic disease can predispose to arterial thrombosis. Both need urgent assessment for revascularization.'],
+        ['Nonocclusive mesenteric ischemia', 'critical', 'Consider bowel ischemia in a low-flow or vasopressor-dependent patient with new distention, feeding intolerance or unexplained deterioration.'],
+        ['Mesenteric venous thrombosis', 'critical', 'Consider in prothrombotic states. Anticoagulation is generally first-line when there is no peritonitis and bleeding risk permits.'],
+        ['Bowel necrosis', 'critical', 'Peritonitis or shock with suspected infarction requires immediate surgical escalation.']
+    ],
+    history: ['Ask about AF, recent embolic events, prior postprandial pain or weight loss, low-flow illness and venous thrombotic risks.'],
+    exam: ['Repeat perfusion and abdominal examinations. Pain may be out of proportion early. Guarding or rigidity raises concern for infarction.'],
+    workup: [
+        ['CTA', ['Tell radiology the specific concern so the scan includes the required vascular phases. A routine portal-venous CT alone may miss an arterial lesion.']],
+        ['Parallel labs', ['Obtain blood counts, metabolic and coagulation studies, lactate and type and screen as indicated. A normal lactate cannot exclude early ischemia.']]
+    ],
+    redFlags: ['Severe unexplained pain with embolic or vascular risk.', 'Peritonitis, shock or unexplained deterioration in a low-flow state.'],
+    disposition: [['Emergency surgery / vascular care', 'Arrange immediate specialty evaluation and early transfer if revascularization or surgery is unavailable.']],
+    pitfalls: ['Waiting for lactate elevation, bloody stool or peritonitis to request CTA.', 'Using improvement after analgesia to rule out bowel ischemia.'],
+    pearls: ['Name the suspected mechanism in the handover and report whether peritonitis is present.'],
+    refs: ['WSES acute mesenteric ischemia guideline (2022)', 'ESVS mesenteric and renal vessel disease guideline (2025)', 'Emergency General Surgery Algorithms working group: acute mesenteric ischemia (2025)']
+},
+{
+    id: 'ruptured-abdominal-aortic-aneurysm', type: 'diagnosis', name: 'Ruptured Abdominal Aortic Aneurysm (AAA)', icon: '🩺',
+    tag: 'Recognize possible rupture with abdominal, back or flank pain, syncope or shock.',
+    overview: 'An abdominal aortic aneurysm can rupture into the retroperitoneum, sometimes with transient hemodynamic stability. The classic combination of pain, hypotension and a pulsatile mass is often incomplete. Adult emergency pathway.',
+    approach: [
+        'Activate vascular surgery and the local major hemorrhage pathway early. Obtain IV access and prepare blood products while coordinating definitive repair or transfer.',
+        'Use bedside aortic ultrasound when it can rapidly identify an aneurysm. It cannot reliably confirm or exclude rupture.',
+        'Obtain urgent CTA for diagnosis and repair planning when feasible and safe. If the patient is deteriorating, coordinate direct intervention or transfer with the vascular team.',
+        'Use the local ruptured-AAA resuscitation protocol. In hemorrhagic shock, give blood products as indicated and avoid large-volume crystalloid or targeting normal BP before hemorrhage control.'
+    ],
+    dontMiss: [
+        ['Contained rupture', 'critical', 'Transient improvement in BP or pain does not establish stability. Maintain vascular involvement.'],
+        ['Acute aortic syndrome', 'critical', 'Chest pain, pulse deficits or new neurologic signs raise concern for dissection with malperfusion.', ['acute-aortic-syndrome']]
+    ],
+    history: ['Ask about known aneurysm or prior repair, smoking and vascular disease. Clarify pain onset and any syncope.'],
+    exam: ['Assess perfusion and mental status. Look for abdominal tenderness, pulsatile mass and limb ischemia, which may be absent.'],
+    workup: [
+        ['Bedside ultrasound', ['An aneurysm in a compatible presentation raises suspicion. A nondiagnostic scan or absent intraperitoneal free fluid cannot rule out rupture.']],
+        ['CTA and labs', ['Coordinate the aortic imaging protocol and send blood count, coagulation studies and type and crossmatch in parallel.']]
+    ],
+    redFlags: ['New abdominal, flank or back pain in a patient with known AAA.', 'Unexplained hypotension, syncope or transient shock with a plausible aortic cause.'],
+    disposition: [['Emergency vascular intervention / transfer', 'Suspected rupture requires urgent care at a center capable of definitive repair.']],
+    pitfalls: ['Anchoring on renal colic in an older or vascular-risk patient with new flank pain.', 'Waiting for persistent hypotension or a palpable mass before consulting vascular surgery.'],
+    pearls: ['Share the lowest BP, current perfusion, prior aortic repair and imaging availability when arranging transfer.'],
+    refs: ['ESVS 2024 abdominal aorto-iliac aneurysm guideline']
+},
+{
+    id: 'acute-appendicitis', type: 'diagnosis', name: 'Acute Appendicitis', icon: '🩺',
+    tag: 'Use a risk-guided workup and distinguish uncomplicated disease from perforation or abscess.',
+    overview: 'Appendicitis often causes progressive right lower quadrant pain, sometimes after central abdominal pain. Early disease, pregnancy and older age can produce less typical findings. This guide focuses on adult assessment.',
+    approach: [
+        'Assess for peritonitis or sepsis. Provide analgesia, antiemetics and fluids as needed. Contact surgery early for high suspicion, instability or complicated disease.',
+        'Combine history, examination, labs and a validated score when used locally to guide observation and imaging. Obtain pregnancy testing when relevant.',
+        'Select imaging for the clinical setting. CT is commonly used in nonpregnant adults with unresolved suspicion. In pregnancy, use ultrasound and consider MRI if ultrasound is nondiagnostic.',
+        'Coordinate appendectomy or selected antibiotic-first management with surgery. Antibiotic-first treatment is an option for selected uncomplicated cases after discussion of failure, recurrence and follow-up.'
+    ],
+    dontMiss: [
+        ['Perforation, abscess or generalized peritonitis', 'critical', 'Give appropriate IV antibiotics and involve surgery promptly for source-control planning.'],
+        ['Ectopic pregnancy or adnexal torsion', 'critical', 'Consider pregnancy-related and gynecologic emergencies in the appropriate patient.', ['pelvic-pain']]
+    ],
+    history: ['Ask about migration, progression, appetite, vomiting, urinary symptoms and pregnancy or gynecologic symptoms when relevant.'],
+    exam: ['Assess focal tenderness, guarding and signs of generalized peritonitis. Repeat the exam if initial findings are equivocal.'],
+    workup: [
+        ['Labs', ['Use CBC, inflammatory markers, urinalysis and pregnancy testing as indicated. Individual normal findings cannot exclude appendicitis.']],
+        ['Imaging', ['Use a local risk-based imaging pathway. Persistent suspicion after a nondiagnostic study needs reassessment or further imaging.']]
+    ],
+    redFlags: ['Generalized peritonitis, sepsis or worsening pain despite observation.'],
+    disposition: [
+        ['Surgical evaluation', 'Confirmed or strongly suspected appendicitis requires surgical assessment.'],
+        ['Observation or selected discharge', 'If uncertainty persists, reassess or observe. Discharge only after a low-risk reassessment with reliable follow-up and explicit return precautions.']
+    ],
+    pitfalls: ['Calling a nondiagnostic ultrasound negative.', 'Using temporary pain relief or a single normal blood test to exclude appendicitis.'],
+    pearls: ['If imaging confirms appendicitis, note whether it shows an appendicolith, perforation or abscess. These findings inform the treatment discussion.'],
+    refs: ['WSES Jerusalem guidelines for acute appendicitis (2025 edition)']
+},
+{
+    id: 'small-bowel-obstruction', type: 'diagnosis', name: 'Small Bowel Obstruction (SBO)', icon: '🩺',
+    tag: 'Identify closed-loop obstruction, ischemia and strangulated hernia early.',
+    overview: 'SBO can cause colicky pain, vomiting, distention and reduced stool or flatus. Prior abdominal surgery suggests adhesions. Hernia and malignancy are other important causes. Adult emergency pathway.',
+    approach: [
+        'Assess perfusion and peritoneal signs. Keep NPO, give IV fluid and correct electrolyte losses. Obtain early surgical review.',
+        'Use CT abdomen and pelvis, typically with IV contrast when suitable, to define the transition point, cause and signs of compromise.',
+        'Consider nasogastric decompression for significant vomiting, distention or aspiration risk. Give appropriate antibiotics when ischemia, perforation or sepsis is suspected.',
+        'Peritonitis, strangulation, bowel ischemia or closed-loop obstruction calls for urgent surgical assessment. Selected uncomplicated adhesive SBO can undergo monitored nonoperative care with serial examinations.'
+    ],
+    dontMiss: [
+        ['Closed-loop obstruction or strangulation', 'critical', 'Continuous severe pain, peritonitis or CT signs of compromised bowel require urgent surgical escalation.'],
+        ['Incarcerated or strangulated hernia', 'critical', 'Examine the groins and abdominal wall, including prior incisions.'],
+        ['Acute mesenteric ischemia', 'critical', 'Severe unexplained pain or embolic risk may require a dedicated mesenteric CTA pathway.', ['acute-mesenteric-ischemia']]
+    ],
+    history: ['Ask about prior operations, hernias, malignancy, vomiting and last stool or flatus. Early or partial obstruction can still permit stool passage.'],
+    exam: ['Assess hydration, distention, focal tenderness, peritoneal signs and hernias. Repeat the exam after resuscitation.'],
+    workup: [
+        ['CT', ['Look for a transition point, closed loop, reduced bowel wall enhancement or free fluid. Interpret CT with the clinical course.']],
+        ['Labs', ['Check electrolytes and renal function for fluid losses, and CBC and lactate when ischemia or systemic illness is suspected.']]
+    ],
+    redFlags: ['Peritonitis, persistent severe pain, fever with deterioration or shock.', 'Closed-loop obstruction or imaging concern for ischemia.'],
+    disposition: [
+        ['Urgent operative assessment', 'Escalate possible ischemia, strangulation or perforation immediately.'],
+        ['Surgical admission', 'Monitor selected uncomplicated adhesive SBO with serial examination and a defined plan for escalation.']
+    ],
+    pitfalls: ['Assuming every obstruction after surgery is uncomplicated adhesive disease.', 'Letting ongoing stool passage or a normal initial lactate override concerning findings.'],
+    pearls: ['Describe the transition point, hernia findings, perfusion and whether the pain is changing from intermittent to continuous.'],
+    refs: ['WSES Bologna guideline for adhesive small bowel obstruction', 'Emergency General Surgery Algorithms working group: small bowel obstruction (2025)']
 }
 ];
 if (typeof window !== 'undefined') window.CP_DATA = CP_DATA;

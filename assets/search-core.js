@@ -259,14 +259,17 @@
             if(!ids.length){ids=run(tokens,true);approximate=ids.length>0;}
             return ids.map(id=>{
                 const d=docs[id], title=d.title;
+                const isDiagnosis = d.entry.kind === 'Diagnosis guide';
+                const isTopic = d.entry.kind === 'Presentation' || isDiagnosis;
                 let rank=title===q?1000:
-                    d.entry.kind==='Presentation' && expandSynonyms(q).some(form=>containsWord(title,form))?950:
+                    isDiagnosis && containsWord(title,q)?975:
+                    isTopic && expandSynonyms(q).some(form=>containsWord(title,form))?950:
                     containsWord(title,q)?(words(title).length<=8?850:560):title.startsWith(q)?800:
                     tokens.every(token=>containsWord(title,token))?700:
                     approximate && tokens.every(token=>containsWord(title,token)||fuzzyContainsWord(title,token))?650:
                     expandSynonyms(q).some(form=>containsWord(title,form))?600:300;
                 const doseIntent=/\b(?:dose|doses|dosing|mg|mcg|kg|antidote)\b/.test(q);
-                if(d.entry.kind==='Presentation')rank+=doseIntent?10:50;
+                if(isTopic)rank+=doseIntent?10:50;
                 if(d.entry.quick && doseIntent)rank+=25;
                 return {id,rank,hit:approximate?Object.assign({},d.entry,{approximate:true}):d.entry};
             }).sort((a,b)=>b.rank-a.rank||a.id-b.id).map(item=>item.hit);
