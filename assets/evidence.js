@@ -6,6 +6,12 @@
 (function () {
     'use strict';
     const sources = {
+        tiaAHA: ["AHA emergency department TIA assessment and risk reduction statement (2023)", "https://www.ahajournals.org/doi/10.1161/STR.0000000000000418"],
+        ichESO: ["ESO/EANS spontaneous intracerebral hemorrhage guideline (2025)", "https://academic.oup.com/esj/article/10/4/1007/8377192"],
+        meningitisWHO: ["WHO meningitis diagnosis, treatment and care guideline (2025)", "https://www.who.int/publications/i/item/9789240108042"],
+        statusAdult: ["Acute management of status epilepticus in adult patients (2025)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC12062632/"],
+        cvtCanada: ["Canadian Stroke Best Practice Recommendations: cerebral venous thrombosis (2024)", "https://pubmed.ncbi.nlm.nih.gov/38826076/"],
+        cvtAHA: ["AHA cerebral venous thrombosis statement (2024)", "https://www.ahajournals.org/doi/10.1161/STR.0000000000000456"],
         acuteHF2026: ["ESC and EUSEM consensus on acute heart failure in emergency settings (2026)", "https://doi.org/10.1093/eurheartj/ehag744"],
         hfESC: ["ESC acute and chronic heart failure guideline (2021)", "https://academic.oup.com/eurheartj/article/42/36/3599/6358045"],
         copdOxygen: ["NICE QS10: emergency oxygen during a COPD exacerbation", "https://www.nice.org.uk/guidance/qs10/chapter/Quality-statement-6-Emergency-oxygen-during-an-exacerbation"],
@@ -175,6 +181,13 @@
         withdrawal: ["ASAM clinical practice guideline on alcohol withdrawal management (2020)", "https://www.asam.org/quality-care/clinical-guidelines/alcohol-withdrawal"],
     };
     const topics = {
+        'acute-ischemic-stroke': ['stroke'],
+        'transient-ischemic-attack': ['tiaAHA', 'stroke'],
+        'aneurysmal-subarachnoid-hemorrhage': ['sah', 'headache'],
+        'spontaneous-intracerebral-hemorrhage': ['ich', 'ichESO'],
+        'acute-bacterial-meningitis': ['meningitis', 'meningitisWHO'],
+        'convulsive-status-epilepticus': ['seizures', 'esett', 'statusAdult'],
+        'cerebral-venous-thrombosis': ['cvtAHA', 'cvtCanada'],
         'acute-heart-failure': ['acuteHF2026', 'hfESC'],
         'acute-asthma-exacerbation': ['asthma', 'dyspneaAssessment'],
         'copd-exacerbation': ['goldCOPD', 'copdOxygen'],
@@ -894,6 +907,62 @@
             "adrenalNICE",
             "adrenal",
             "adrenalESE"
+        ]
+    },
+    "acute-ischemic-stroke": {
+        "checked": "2026-11-14",
+        "scope": "adult stroke activation, imaging, reperfusion eligibility and early care",
+        "sources": [
+            "stroke"
+        ]
+    },
+    "transient-ischemic-attack": {
+        "checked": "2026-11-14",
+        "scope": "adult transient focal symptoms, brain and vascular imaging, prevention and disposition",
+        "sources": [
+            "tiaAHA",
+            "stroke"
+        ]
+    },
+    "aneurysmal-subarachnoid-hemorrhage": {
+        "checked": "2026-11-14",
+        "scope": "adult nontraumatic thunderclap workup, CT and LP limitations, early specialist care",
+        "sources": [
+            "sah",
+            "headache"
+        ]
+    },
+    "spontaneous-intracerebral-hemorrhage": {
+        "checked": "2026-11-14",
+        "scope": "adult spontaneous ICH imaging, BP, anticoagulant reversal and neurosurgical escalation",
+        "sources": [
+            "ich",
+            "ichESO"
+        ]
+    },
+    "acute-bacterial-meningitis": {
+        "checked": "2026-11-14",
+        "scope": "adult recognition, safe LP sequencing, empiric treatment and isolation",
+        "sources": [
+            "meningitis",
+            "meningitisWHO"
+        ]
+    },
+    "convulsive-status-epilepticus": {
+        "checked": "2026-11-14",
+        "scope": "adult time-based emergency treatment, second-line therapy and EEG escalation",
+        "sources": [
+            "seizures",
+            "esett",
+            "statusAdult"
+        ]
+    },
+    "cerebral-venous-thrombosis": {
+        "checked": "2026-11-14",
+        "scope": "adult recognition, venous imaging, anticoagulation and escalation",
+        "sources": [
+            "cvtAHA",
+            "cvtCanada"
         ]
     }
 };

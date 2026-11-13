@@ -17,7 +17,7 @@ test('selected review records distinguish the new scope from the historical audi
   'esophageal-perforation', 'cardiac-tamponade', 'acute-mesenteric-ischemia',
   'ruptured-abdominal-aortic-aneurysm', 'acute-appendicitis', 'small-bowel-obstruction'
  ];
- const november14 = ['ectopic-pregnancy', 'ovarian-torsion', 'testicular-torsion', 'perforated-peptic-ulcer', 'acute-cholecystitis', 'acute-cholangitis', 'acute-pancreatitis', 'acute-diverticulitis', 'acute-heart-failure', 'acute-asthma-exacerbation', 'copd-exacerbation', 'community-acquired-pneumonia', 'sepsis-and-septic-shock', 'cardiogenic-shock', 'adrenal-crisis'];
+ const november14 = ['ectopic-pregnancy', 'ovarian-torsion', 'testicular-torsion', 'perforated-peptic-ulcer', 'acute-cholecystitis', 'acute-cholangitis', 'acute-pancreatitis', 'acute-diverticulitis', 'acute-heart-failure', 'acute-asthma-exacerbation', 'copd-exacerbation', 'community-acquired-pneumonia', 'sepsis-and-septic-shock', 'cardiogenic-shock', 'adrenal-crisis', 'acute-ischemic-stroke', 'transient-ischemic-attack', 'aneurysmal-subarachnoid-hemorrhage', 'spontaneous-intracerebral-hemorrhage', 'acute-bacterial-meningitis', 'convulsive-status-epilepticus', 'cerebral-venous-thrombosis'];
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(), [...ids, ...november13, ...november14].sort());
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(), Array.from(topics, topic => topic.id).sort());
  for(const id of [...ids, ...november13, ...november14]){
@@ -284,4 +284,18 @@ test('dyspnea and shock guides link from their presentations and keep treatment 
  assert.match(text('acute-asthma-exacerbation'), /92–95%/);
  assert.match(text('copd-exacerbation'), /88–92%/);
  assert.match(text('sepsis-and-septic-shock'), /possible sepsis without shock, investigate rapidly/);
+});
+
+test('neurologic differentials link to diagnosis guides and preserve time-sensitive distinctions', () => {
+ const linked = id => topics.find(topic => topic.id === id).dontMiss.flatMap(row => row[3] || []);
+ for (const [presentation, guides] of [
+  ['headache', ['aneurysmal-subarachnoid-hemorrhage', 'spontaneous-intracerebral-hemorrhage', 'acute-bacterial-meningitis', 'cerebral-venous-thrombosis']],
+  ['focal-neurologic-deficit', ['acute-ischemic-stroke', 'transient-ischemic-attack']],
+  ['seizures', ['convulsive-status-epilepticus']]
+ ]) {
+  for (const guide of guides) assert.ok(linked(presentation).includes(guide), presentation + ' → ' + guide);
+ }
+ assert.match(text('aneurysmal-subarachnoid-hemorrhage'), /6 hours or more, or with a new neurologic deficit/);
+ assert.match(text('acute-bacterial-meningitis'), /only when safe and without a significant delay/);
+ assert.match(text('transient-ischemic-attack'), /Using ABCD2 alone to decide discharge/);
 });

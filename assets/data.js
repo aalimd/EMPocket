@@ -11,7 +11,7 @@
    Final targeted expansion: 13 Nov 2026, four additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-13-BATCH-7.md.
    Oncology Emergencies: 13 Nov 2026, six adult emergency guides. See docs/ONCOLOGY-EMERGENCIES-2026-11-13.md.
    Clinical consistency audit: 13 Nov 2026, selected high-risk treatment rows and decision tools. See docs/CLINICAL-CONSISTENCY-2026-11-13.md.
-   Diagnosis guides: 13–14 Nov 2026, including adult dyspnea and shock. See docs/DIAGNOSIS-GUIDES-2026-11-13.md.
+   Diagnosis guides: 13–14 Nov 2026, including adult dyspnea, shock and neurologic emergencies. See docs/DIAGNOSIS-GUIDES-2026-11-13.md.
    Optional fourth differential field: a list of topic IDs with dedicated guidance.
    Educational reference only — never replaces clinical judgment or local protocols.
 */
@@ -166,15 +166,15 @@ tag: 'Thunderclap, worst-ever, or any red flag = imaging.',
 overview: 'Primary headaches (migraine, tension, cluster) dominate ED volumes, but the task is to filter the ~1–5% with secondary catastrophes. Thunderclap onset, fever with meningismus, papilledema, and new neuro deficits change everything.',
 approach: [
     'Thunderclap, worst-ever, or any red flag → image.',
-    'For suspected SAH, a high-quality noncontrast CT within 6 h with expert interpretation can exclude SAH in neurologically intact adults. AHA/ASA 2023 recommends CT then LP if negative when presentation is >6 h or there is a new neurological deficit; ACEP permits LP or CTA for residual risk after negative CT through shared decision-making.',
+    'For suspected SAH, a high-quality noncontrast CT before 6 h with expert interpretation can exclude SAH in eligible neurologically intact adults. AHA/ASA 2023 recommends CT then LP if negative for later presentations or a new neurological deficit; ACEP permits LP or CTA for residual risk after negative CT through shared decision-making.',
     'Do not delay antibiotics for CT when meningitis is possible. Give IV dexamethasone with or before the first antibiotic dose in adults with suspected bacterial meningitis (NICE NG240) — continue only if pneumococcus or Hib is confirmed.',
     'Age ≥50 with visual symptoms: treat GCA on suspicion — do not wait for ESR.'
 ],
 dontMiss: [
-['Subarachnoid hemorrhage', 'critical', 'Sudden worst-ever headache (<1 min to peak). Negative high-quality CT <6 h in a neurologically intact adult rules out SAH (ACEP); otherwise use LP or CTA via shared decision-making. Ottawa SAH applies only to alert, intact patients ≥16 y with new nontraumatic headache peaking <1 h.'],
-['Intracranial hemorrhage', 'critical', 'Focal deficits, anticoagulation, hypertension — non-contrast CT first.'],
-['Meningitis / encephalitis', 'critical', 'Fever + meningismus ± altered mentation — antibiotics within 1 h; add IV dexamethasone with or before the first dose in adults with suspected bacterial meningitis (NICE NG240). Do not wait on CT; LP when safe.'],
-['Cerebral venous sinus thrombosis', 'critical', 'Progressive headache, papilledema, hypercoagulable state, postpartum — CTV/MRV.'],
+['Subarachnoid hemorrhage', 'critical', 'Sudden worst-ever headache (<1 min to peak). Negative high-quality CT <6 h in a neurologically intact adult rules out SAH (ACEP); otherwise use LP or CTA via shared decision-making. Ottawa SAH applies only to alert, intact patients ≥16 y with new nontraumatic headache peaking <1 h.', ['aneurysmal-subarachnoid-hemorrhage']],
+['Intracranial hemorrhage', 'critical', 'Focal deficits, anticoagulation, hypertension — non-contrast CT first.', ['spontaneous-intracerebral-hemorrhage']],
+['Meningitis / encephalitis', 'critical', 'Fever + meningismus ± altered mentation — antibiotics within 1 h; add IV dexamethasone with or before the first dose in adults with suspected bacterial meningitis (NICE NG240). Do not wait on CT; LP when safe.', ['acute-bacterial-meningitis']],
+['Cerebral venous sinus thrombosis', 'critical', 'Progressive headache, papilledema, hypercoagulable state, postpartum — CTV/MRV.', ['cerebral-venous-thrombosis']],
 ['Arterial dissection (carotid/vertebral)', 'critical', 'Head/neck pain + Horner syndrome or posterior-circulation symptoms after trauma or neck manipulation.'],
 ['Acute angle-closure glaucoma', 'critical', 'Painful red eye, halos, mid-dilated pupil, vision loss — ophthalmology now.'],
 ['Giant cell arteritis (temporal arteritis)', 'emergent', 'Age ≥50, jaw claudication, new headache, visual symptoms — start glucocorticoids immediately if cranial GCA/visual threat is suspected; do not wait for biopsy. ESR/CRP can be normal.'],
@@ -201,7 +201,7 @@ pitfalls: [
     'Do not extend the early-CT rule-out to late presentation or new neurological deficits. AHA/ASA recommends LP after a negative CT in these settings; CTA is an alternative under the ACEP shared-decision pathway, with different limitations.', 'Sentinel \u201Cwarning\u201D headaches precede 10–40% of aneurysm ruptures.', 'Ottawa SAH Rule is highly sensitive but poorly specific — any positive criterion requires testing.', 'GCA can present without a tender temporal artery and with a normal ESR.', 'Do not relabel a first \u201Cmigraine\u201D after age 50 without considering imaging.', 'Opioids are not first-line for primary headache in the ED (ACEP).'],
 pearls: [
     "Explain the LP/CTA tradeoffs when considering the ACEP alternative pathway: LP may identify other CSF disease but can produce traumatic taps; CTA can reveal incidental aneurysms, adds contrast/radiation and does not directly test for subarachnoid blood. Follow local specialist pathways.",
-    'Negative high-quality CT within 6 h in a neurologically intact adult excludes SAH; >6 h or persistent concern needs LP or CTA.', 'An all-negative Ottawa SAH rule avoids SAH testing only in eligible alert patients (peaking <1 h) without other red flags.', 'Start glucocorticoids immediately if cranial GCA with visual threat is suspected — do not wait for ESR or biopsy.', 'A first \u201Cmigraine\u201D after age 50 is a red flag, not a diagnosis.'],
+    'The early CT pathway applies to eligible adults with a typical presentation, no new neurologic deficit and an expert read. At 6 h or later, with a new deficit or with persistent concern, follow the applicable additional testing pathway.', 'An all-negative Ottawa SAH rule avoids SAH testing only in eligible alert patients (peaking <1 h) without other red flags.', 'Start glucocorticoids immediately if cranial GCA with visual threat is suspected — do not wait for ESR or biopsy.', 'A first \u201Cmigraine\u201D after age 50 is a red flag, not a diagnosis.'],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — headache', 'ACEP 2019 Clinical Policy: Acute Headache (Ottawa SAH Rule; 6-hour CT rule; LP or CTA after negative CT)', 'AHA/ASA 2023 Guideline for Aneurysmal SAH', 'ACR/EULAR 2022 GCA classification (research criteria, not a diagnostic exclusion rule); EULAR GCA management recommendations']
 },
 {
@@ -217,9 +217,9 @@ approach: [
 dontMiss: [
 ['Hypoglycemia / hyperglycemic crises', 'critical', 'Bedside glucose in every AMS patient — before anything else. Never delay dextrose for thiamine.'],
 ['Hypoxia / hypercapnia', 'critical', 'SpO₂, VBG; think CO₂ narcosis in COPD.', ['copd-exacerbation']],
-['Stroke / intracranial hemorrhage', 'critical', 'Sudden focal signs or anticoagulation — non-contrast CT now. Check reperfusion eligibility (IV tenecteplase/alteplase ≤4.5 h, or 4.5–9 h/unknown onset via advanced imaging; mechanical thrombectomy up to 24 h in selected large-core and basilar occlusions per 2026 AHA/ASA).'],
-['SAH', 'critical', 'Sudden headache + collapse; CT then LP or CTA as indicated.'],
-['Meningitis / encephalitis', 'critical', 'Fever, meningismus — empiric therapy must not wait on imaging.'],
+['Stroke / intracranial hemorrhage', 'critical', 'Sudden focal signs or anticoagulation — non-contrast CT now. Check reperfusion eligibility (IV tenecteplase/alteplase ≤4.5 h, or 4.5–9 h/unknown onset via advanced imaging; mechanical thrombectomy up to 24 h in selected large-core and basilar occlusions per 2026 AHA/ASA).', ['acute-ischemic-stroke', 'spontaneous-intracerebral-hemorrhage']],
+['SAH', 'critical', 'Sudden headache + collapse; CT then LP or CTA as indicated.', ['aneurysmal-subarachnoid-hemorrhage']],
+['Meningitis / encephalitis', 'critical', 'Fever, meningismus — empiric therapy must not wait on imaging.', ['acute-bacterial-meningitis']],
 ['Wernicke encephalopathy', 'critical', 'Alcohol use/malnutrition — give thiamine with (or immediately after) glucose; do not withhold glucose.'],
 ['Toxic ingestion (CO, TCA, salicylates, opioids)', 'critical', 'Pupils, skin, ECG (QRS widening), anion gap, temperature. Cherry-red skin is an unreliable CO sign — use CO-oximetry.'],
 ['Severe hyponatremia / hyperammonemia / uremia', 'emergent', 'Metabolic catastrophes — labs before labels.'],
@@ -304,7 +304,7 @@ approach: [
     'Cord/cauda: MRI now. Dexamethasone is for MSCC, not routine discogenic CES.'
 ],
 dontMiss: [
-['Acute stroke / TIA', 'critical', 'Sudden focal weakness — last-known-well, glucose, non-contrast CT. Check eligibility for IV TNK/alteplase (≤4.5 h, or 4.5–9 h/unknown onset via advanced imaging) and EVT (≤24 h, including selected large-core infarcts per 2026 AHA/ASA).'],
+['Acute stroke / TIA', 'critical', 'Sudden focal weakness — last-known-well, glucose, non-contrast CT. Check eligibility for IV TNK/alteplase (≤4.5 h, or 4.5–9 h/unknown onset via advanced imaging) and EVT (≤24 h, including selected large-core infarcts per 2026 AHA/ASA).', ['acute-ischemic-stroke', 'transient-ischemic-attack']],
 ['Guillain-Barré syndrome', 'critical', 'Ascending (or variant) weakness, areflexia; monitor NIF/VC — intubate before the crash. CSF may be normal in the first week.'],
 ['Cauda equina / cord compression', 'critical', 'Back pain + leg weakness ± saddle anesthesia, urinary retention — emergency MRI + spine surgery. Dexamethasone is for metastatic cord compression (NICE NG234), not routine for discogenic CES.'],
 ['Myasthenic crisis', 'critical', 'Fatigable weakness (ptosis, diplopia worse late in the day); NIF monitoring; avoid macrolides, fluoroquinolones, aminoglycosides.'],
@@ -396,7 +396,7 @@ dontMiss: [
 ['Sepsis / septic shock', 'critical', 'Hypotension, tachypnea, altered mentation, lactate >2. Antibiotics within 1 h for shock or probable sepsis; within 3 h for possible sepsis without shock after a rapid look. Use balanced crystalloid for initial resuscitation and dynamic measures to guide further fluid. Begin norepinephrine if MAP remains low during resuscitation (SSC 2026).', ['sepsis-and-septic-shock']],
 ['Necrotizing soft-tissue infection / toxic shock', 'critical', 'Pain out of proportion, rapid spread, crepitus, or shock with a wound/soft-tissue source — surgery now, not a wait-for-CT strategy.'],
 ['Neutropenic fever', 'critical', 'ANC <500 + a single temperature ≥38.3°C (or ≥38.0°C for 1 h) — immediate empiric antipseudomonal antibiotics. MASCC/CISNE may identify low-risk outpatient candidates.', ['neutropenic-sepsis']],
-['Bacterial meningitis', 'critical', 'Fever + meningismus/altered mentation — first antibiotic dose within 1 h; give IV dexamethasone with or before it in adults with suspected bacterial meningitis (continue only if pneumococcus/Hib). Do not wait on CT.'],
+['Bacterial meningitis', 'critical', 'Fever + meningismus/altered mentation — first antibiotic dose within 1 h; give IV dexamethasone with or before it in adults with suspected bacterial meningitis (continue only if pneumococcus/Hib). Do not wait on CT.', ['acute-bacterial-meningitis']],
 ['Infective endocarditis', 'critical', 'Fever + new murmur, IVDU, embolic signs — blood cultures ×3, echo.'],
 ['Malaria / travel sepsis', 'critical', 'Any fever returning from an endemic area = malaria until proven otherwise (thick/thin smear ± RDT, repeated if negative).'],
 ['Ectopic pregnancy / puerperal sepsis', 'critical', 'Fever in pregnancy or within 6 weeks postpartum — obstetric pathway.'],
@@ -442,8 +442,8 @@ approach: [
     'Sustained vertigo with vascular risks: MRI-DWI (CT misses posterior stroke).'
 ],
 dontMiss: [
-['Posterior circulation stroke', 'critical', 'Sustained vertigo + HINTS central signs, or any focal/cranial-nerve deficit — MRI-DWI (CT misses most).'],
-['Cerebellar hemorrhage', 'critical', 'Headache, ataxia, inability to walk — CT now; neurosurgery.'],
+['Posterior circulation stroke', 'critical', 'Sustained vertigo + HINTS central signs, or any focal/cranial-nerve deficit — MRI-DWI (CT misses most).', ['acute-ischemic-stroke']],
+['Cerebellar hemorrhage', 'critical', 'Headache, ataxia, inability to walk — CT now; neurosurgery.', ['spontaneous-intracerebral-hemorrhage']],
 ['Vestibular schwannoma / CPA mass', 'emergent', 'Progressive unilateral hearing loss + vertigo — MRI.'],
 ['BPPV', 'common', 'Brief (<1 min) positional vertigo, positive Dix-Hallpike — Epley maneuver treats in the ED.'],
 ['Vestibular neuritis', 'common', 'Acute sustained vertigo, HINTS peripheral, no hearing loss — symptomatic care + vestibular rehab. Do not use HINTS for episodic symptoms.'],
@@ -624,9 +624,9 @@ dontMiss: [
 ['Hypoglycemia', 'critical', 'Glucose every time — the most treatable cause of coma.'],
 ['Opioid overdose', 'critical', 'Pinpoint pupils + hypoventilation — titrate naloxone to breathing.'],
 ['Herniation (uncal / central)', 'critical', 'Blown or unilateral pupil, posturing, Cushing reflex — hypertonic saline/mannitol, neurosurgery.'],
-['Massive ICH / SAH / basilar occlusion', 'critical', 'Non-contrast CT immediately; basilar thrombosis can present as coma without lateralizing signs.'],
+['Massive ICH / SAH / basilar occlusion', 'critical', 'Non-contrast CT immediately; basilar thrombosis can present as coma without lateralizing signs.', ['spontaneous-intracerebral-hemorrhage', 'aneurysmal-subarachnoid-hemorrhage', 'acute-ischemic-stroke']],
 ['Non-convulsive status epilepticus', 'critical', 'Coma with subtle myoclonus — EEG; treat without waiting.'],
-['Meningoencephalitis', 'critical', 'Fever or no focus — empiric therapy when suspected.'],
+['Meningoencephalitis', 'critical', 'Fever or no focus — empiric therapy when suspected.', ['acute-bacterial-meningitis']],
 ['Wernicke encephalopathy', 'critical', 'Alcohol use/malnutrition — give thiamine with (or immediately after) glucose; never delay dextrose.'],
 ['Toxic-metabolic (CO, TCA, hypothermia)', 'critical', 'ECG, temperature, anion/osmolar gaps; consider toxins, but preserved pupillary responses do not exclude structural disease.']
 ],
@@ -799,10 +799,10 @@ approach: [
     'A patient who is not waking up may be in non-convulsive status.'
 ],
 dontMiss: [
-['Convulsive status epilepticus', 'critical', '≥5 min continuous or ≥2 seizures without recovery. IM midazolam or IV lorazepam first (AES 2016 / RAMPART). Then levetiracetam 60 mg/kg (max 4.5 g), valproate 40 mg/kg (max 3 g), or fosphenytoin 20 mg PE/kg (max 1,500 mg PE) — ESETT 2019 showed equivalent efficacy (~47%).'],
+['Convulsive status epilepticus', 'critical', '≥5 min continuous or ≥2 seizures without recovery. IM midazolam or IV lorazepam first (AES 2016 / RAMPART). Then levetiracetam 60 mg/kg (max 4.5 g), valproate 40 mg/kg (max 3 g), or fosphenytoin 20 mg PE/kg (max 1,500 mg PE) — ESETT 2019 showed equivalent efficacy (~47%).', ['convulsive-status-epilepticus']],
 ['Eclampsia', 'critical', 'Seizure in pregnancy or ≤6 weeks postpartum — magnesium sulfate, not a conventional AED as first-line; deliver.'],
 ['Hypoglycemia / hyponatremia / isoniazid', 'critical', 'Glucose every time. Severe hyponatremia: careful 3% saline. INH: pyridoxine in gram-for-gram equivalent.'],
-['ICH / SAH / CNS infection', 'critical', 'First seizure with fever, headache, anticoagulation, or incomplete recovery — CT ± LP, antimicrobials if meningitis is possible.'],
+['ICH / SAH / CNS infection', 'critical', 'First seizure with fever, headache, anticoagulation, or incomplete recovery — CT ± LP, antimicrobials if meningitis is possible.', ['spontaneous-intracerebral-hemorrhage', 'aneurysmal-subarachnoid-hemorrhage', 'acute-bacterial-meningitis']],
 ['Non-convulsive status epilepticus', 'critical', 'Prolonged post-ictal state or coma with subtle twitching — EEG; treat empirically if high suspicion.'],
 ['Eclampsia mimics / PRES / TTP', 'emergent', 'Visual change, hypertension, thrombocytopenia — the seizure is the siren, not the diagnosis.'],
 ['Alcohol withdrawal seizure', 'common', 'Usually brief, within 48 h of stopping; still exclude other causes the first time. Benzodiazepines treat the withdrawal, not a new AED.'],
@@ -1519,7 +1519,14 @@ overview: 'A new focal deficit is stroke until proven otherwise, but hemorrhage,
 approach: [
     "After correcting hypoglycemia, immediately reassess residual deficits; persistent focal findings still need the stroke pathway.",
     'Record exact last-known-well time, baseline function, anticoagulant use, bedside glucose, and deficit severity.', 'Activate the local stroke pathway immediately; get noncontrast head CT to exclude hemorrhage and CTA head/neck to identify large-vessel occlusion.', 'Assess both NIHSS and functional disability (aphasia, hemianopia, gait inability); low NIHSS does not exclude a disabling stroke.', 'Screen for posterior-circulation strokes and cervical dissection when vertigo, diplopia, ataxia, or neck pain accompany focal signs.'],
-dontMiss: [['Acute ischemic stroke with disabling deficit', 'critical', 'Rapid stroke-team assessment; IV thrombolysis and/or thrombectomy eligibility follows local protocol and imaging.'], ['Intracranial hemorrhage', 'critical', 'CT first; control physiology and reverse anticoagulation per local pathway.'], ['Basilar artery occlusion', 'critical', 'Vertigo, diplopia, dysarthria, weakness, coma, or fluctuating signs demand posterior-circulation vigilance.'], ['Cervical artery dissection', 'emergent', 'Neck pain/headache with partial Horner syndrome or focal deficit; CTA/MRA.'], ['Hypoglycemia, seizure/Todd paralysis, migraine', 'common', 'Treat mimics promptly, but do not delay stroke imaging when uncertainty remains.']],
+dontMiss: [
+    ['Acute ischemic stroke with disabling deficit', 'critical', 'Rapid stroke-team assessment; IV thrombolysis and/or thrombectomy eligibility follows local protocol and imaging.', ['acute-ischemic-stroke']],
+    ['Intracranial hemorrhage', 'critical', 'CT first; control physiology and reverse anticoagulation per local pathway.', ['spontaneous-intracerebral-hemorrhage']],
+    ['Basilar artery occlusion', 'critical', 'Vertigo, diplopia, dysarthria, weakness, coma, or fluctuating signs demand posterior-circulation vigilance.', ['acute-ischemic-stroke']],
+    ['Cervical artery dissection', 'emergent', 'Neck pain/headache with partial Horner syndrome or focal deficit; CTA/MRA.'],
+    ['Transient focal deficit / possible TIA', 'emergent', 'Resolved focal symptoms still require urgent brain and vascular assessment. Recurrent or persistent deficits need acute stroke activation.', ['transient-ischemic-attack']],
+    ['Hypoglycemia, seizure/Todd paralysis, migraine', 'common', 'Treat mimics promptly, but do not delay stroke imaging when uncertainty remains.']
+],
 history: ['Last known well vs wake-up symptoms, exact deficit onset and progression', 'Anticoagulants (last dose), recent surgery/bleeding, prior stroke, seizure, headache/neck trauma', 'Baseline disability, pregnancy/postpartum status, vascular risk factors (AF, hypertension)'],
 exam: ['Bedside glucose, NIHSS, gaze deviation, visual fields, language, and neglect', 'Posterior signs: truncal ataxia/gait, dysarthria, diplopia, crossed cranial-nerve/motor findings', 'Blood pressure, cardiac rhythm, airway protection, and dysphagia screen before oral intake'],
 workup: [['Bedside', ['Capillary glucose immediately; 12-lead ECG and continuous rhythm monitoring (do not delay CT)', 'Focused NIHSS + posterior-circulation screen']], ['Labs', ['CBC, electrolytes, creatinine, coagulation (INR/aPTT/anti-Xa), type & screen, troponin', 'Pregnancy test when relevant; do not delay imaging or thrombolysis for routine labs unless coagulopathy is suspected']], ['Imaging', ['Immediate noncontrast head CT + CTA head/neck; CT perfusion or MRI per extended-window/wake-up protocol']]],
@@ -2959,6 +2966,192 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
     ],
     pearls: ["Ask specifically about recent steroid taper or cessation when the medication list no longer shows a steroid."],
     refs: ["NICE NG243: adrenal insufficiency and emergency management (2024)", "Endocrine Society primary adrenal insufficiency guideline", "ESE/Endocrine Society glucocorticoid-induced adrenal insufficiency guideline (2024)"]
+},
+{
+    id: 'acute-ischemic-stroke', type: 'diagnosis', name: "Acute Ischemic Stroke", icon: '🩺',
+    tag: "Activate stroke care promptly and establish the last-known-well time.",
+    overview: "Sudden focal weakness, aphasia, visual loss, neglect or ataxia may reflect acute cerebral ischemia. Posterior circulation stroke can present with diplopia, dysarthria, severe imbalance or reduced consciousness.",
+    approach: [
+        "Activate the stroke pathway, establish last known well and baseline function, check bedside glucose and assess whether the deficit is disabling.",
+        "Obtain urgent noncontrast head CT to assess for hemorrhage. Add head and neck vascular imaging when large-vessel occlusion is suspected. Do not delay eligible standard-window thrombolysis for additional multimodal imaging.",
+        "Discuss IV tenecteplase or alteplase with the stroke team for eligible patients with disabling deficits within 4.5 hours. Selected patients with unknown onset or later presentation may qualify through advanced imaging.",
+        "Coordinate thrombectomy assessment promptly for eligible large-vessel occlusion, including selected later presentations. Follow stroke protocol for BP, swallowing and antithrombotic timing."
+    ],
+    dontMiss: [
+        ["Basilar artery occlusion", "critical", "Abrupt reduced consciousness or acute brainstem findings require urgent vascular imaging when suspected."],
+        ["Intracerebral hemorrhage", "critical", "Urgent brain imaging distinguishes bleeding from ischemia and changes BP and antithrombotic decisions.", ["spontaneous-intracerebral-hemorrhage"]],
+        ["Resolved deficits", "emergent", "Transient symptoms still warrant urgent stroke or TIA assessment.", ["transient-ischemic-attack"]]
+    ],
+    history: ["Ask about exact onset, last known well, anticoagulant type and last dose, prior disability and recent bleeding or surgery."],
+    exam: ["Assess airway and perfusion, then document the NIHSS and any disabling finding it underrepresents, such as severe gait ataxia or a deficit affecting usual work."],
+    workup: [["Parallel testing", ["Check glucose immediately. Obtain ECG and indicated blood tests without delaying stroke imaging. A normal early noncontrast CT can occur in ischemic stroke."]]],
+    redFlags: ["New disabling deficit, suspected large-vessel occlusion, or progressive brainstem symptoms."],
+    disposition: [["Stroke unit / transfer", "Arrange stroke specialist monitoring and transfer when reperfusion or neurocritical care is unavailable locally."]],
+    pitfalls: [
+        "Using a low NIHSS alone to exclude a disabling deficit.",
+        "Waiting to see whether symptoms improve before activating the stroke pathway."
+    ],
+    pearls: ["Handover last known well, baseline function, current disabling deficits and the anticoagulant history."],
+    refs: ["AHA/ASA acute ischemic stroke guideline (2026)"]
+},
+{
+    id: 'transient-ischemic-attack', type: 'diagnosis', name: "Transient Ischemic Attack (TIA)", icon: '🩺',
+    tag: "Evaluate resolved focal deficits urgently and identify high-risk vascular causes.",
+    overview: "TIA is transient focal ischemic dysfunction without acute infarction. If imaging shows acute infarction, manage as ischemic stroke even if symptoms resolved.",
+    approach: [
+        "Clarify the symptoms and timing with the patient and witnesses. A persistent or recurrent deficit should trigger acute stroke assessment.",
+        "Check glucose and obtain brain imaging. MRI with diffusion-weighted imaging is preferred when promptly available, ideally within 24 hours. Noncontrast CT can identify hemorrhage and some mimics when MRI is unavailable.",
+        "Obtain appropriate head and neck vascular imaging and ECG. Assess for symptomatic stenosis and atrial fibrillation, and arrange further rhythm assessment as indicated.",
+        "Discuss secondary prevention with the stroke team after bleeding is excluded. Short-term dual antiplatelet therapy is reserved for eligible high-risk noncardioembolic events. Cardioembolic disease needs a different plan."
+    ],
+    dontMiss: [
+        ["Ongoing ischemic stroke", "critical", "A deficit that recurs during assessment requires renewed evaluation for acute reperfusion.", ["acute-ischemic-stroke"]],
+        ["Symptomatic arterial stenosis", "emergent", "Timely vascular imaging can identify patients needing urgent specialist treatment."]
+    ],
+    history: ["Clarify abrupt loss of function, laterality, duration, repeated episodes, baseline status and stroke risk factors."],
+    exam: ["Document residual deficits and repeat the neurologic examination if symptoms recur."],
+    workup: [["Cause assessment", ["Brain and vascular imaging, ECG and selected labs or monitoring. Assess alternatives such as hypoglycemia, migraine or seizure."]]],
+    redFlags: ["Persistent or recurrent deficits, acute infarction, significant symptomatic stenosis or an unsafe follow-up plan."],
+    disposition: [
+        ["Observation / admission", "Use an urgent monitored pathway for high-risk findings or incomplete evaluation."],
+        ["Selected rapid outpatient pathway", "Confirm a reliable, prompt specialist appointment and testing plan, with explicit instructions to return immediately for recurrent symptoms."]
+    ],
+    pitfalls: [
+        "Using ABCD2 alone to decide discharge.",
+        "Assuming resolved symptoms exclude cerebral infarction."
+    ],
+    pearls: ["Ask the witness to describe what the patient could no longer do. That often localizes the event better than the word weakness."],
+    refs: ["AHA emergency department TIA assessment and risk reduction statement (2023)", "AHA/ASA acute ischemic stroke guideline (2026)"]
+},
+{
+    id: 'aneurysmal-subarachnoid-hemorrhage', type: 'diagnosis', name: "Aneurysmal Subarachnoid Hemorrhage (SAH)", icon: '🩺',
+    tag: "Use time from onset and neurologic findings to guide testing after a negative CT.",
+    overview: "Aneurysmal SAH can present as abrupt severe headache, collapse, vomiting or neck pain. A patient may initially have a normal neurologic examination.",
+    approach: [
+        "Assess airway and perfusion, establish the exact onset and obtain urgent noncontrast head CT.",
+        "For a typical presentation before 6 hours without a new neurologic deficit, AHA/ASA supports using a high-quality noncontrast CT read by a board-certified neuroradiologist to diagnose or exclude SAH.",
+        "Use the later pathway at 6 hours or more, or with a new neurologic deficit. Obtain CT, then lumbar puncture if CT is negative and LP is safe. For patients still at risk after negative CT, ACEP allows LP or CTA with shared decision-making. CTA evaluates vessels and does not directly test for subarachnoid blood.",
+        "For confirmed SAH, contact a neurovascular center urgently, avoid severe BP extremes and variability, and arrange early aneurysm treatment. Start enteral nimodipine for aneurysmal SAH with specialist guidance and BP monitoring."
+    ],
+    dontMiss: [
+        ["Acute hydrocephalus", "critical", "Declining consciousness after SAH needs urgent repeat assessment and neurosurgical review for CSF diversion."],
+        ["Rebleeding", "critical", "New collapse or neurologic decline before aneurysm treatment requires immediate escalation."]
+    ],
+    history: ["Ask about speed to peak, exertion, loss of consciousness, neck pain, prior episodes and anticoagulants."],
+    exam: ["Assess consciousness, pupils and focal findings. Repeat the examination during evaluation."],
+    workup: [["Imaging and CSF", ["Use the appropriate CT and LP or selected CTA pathway. With confirmed SAH, coordinate vascular imaging to locate the source."]]],
+    redFlags: ["Thunderclap headache with syncope, seizure, focal deficit or declining consciousness."],
+    disposition: [["Neurovascular center", "Confirmed or strongly suspected SAH needs monitored specialist care. Arrange transfer if definitive care is unavailable."]],
+    pitfalls: [
+        "Applying the early CT pathway to an uncertain onset, technically limited study or new deficit.",
+        "Interpreting an incidental aneurysm as proof of hemorrhage."
+    ],
+    pearls: ["Record the onset-to-CT interval and the rationale for any additional testing."],
+    refs: ["AHA/ASA aneurysmal SAH guideline (2023)", "ACEP adult acute headache policy (2019)"]
+},
+{
+    id: 'spontaneous-intracerebral-hemorrhage', type: 'diagnosis', name: "Spontaneous Intracerebral Hemorrhage (ICH)", icon: '🩺',
+    tag: "Identify bleeding rapidly, reverse anticoagulation when indicated and avoid abrupt BP swings.",
+    overview: "Nontraumatic bleeding into brain tissue can cause focal deficit, headache, vomiting, seizure or reduced consciousness. Location, size and intraventricular extension affect urgency and treatment.",
+    approach: [
+        "Stabilize airway and perfusion and obtain urgent noncontrast head CT. Notify stroke or neurocritical care immediately when ICH is suspected or confirmed.",
+        "Identify anticoagulant exposure and last dose. Stop anticoagulation and initiate appropriate agent-specific reversal promptly when indicated, using the local pathway.",
+        "For mild to moderate spontaneous ICH with presenting SBP 150–220 mmHg, the AHA/ASA approach targets about 140 mmHg and maintains 130–150 mmHg when lowering is appropriate. Use smooth titration. Severe hemorrhage, planned surgery or other presentations require individualized targets.",
+        "Arrange urgent neurosurgical assessment for deterioration, hydrocephalus, brainstem compression or cerebellar hemorrhage with concerning features."
+    ],
+    dontMiss: [
+        ["Posterior fossa hemorrhage", "critical", "Even a relatively small cerebellar bleed can compress the brainstem or obstruct CSF flow."],
+        ["Expansion or herniation", "critical", "Worsening consciousness or new pupillary changes require immediate reassessment and escalation."]
+    ],
+    history: ["Ask about onset, trauma, anticoagulants and antiplatelets, last doses and baseline function."],
+    exam: ["Document consciousness, pupils, focal deficits and BP trend. Repeat neurologic checks."],
+    workup: [
+        ["Imaging", ["Assess location, ventricular extension and mass effect. Coordinate repeat imaging for deterioration and vascular imaging when a secondary cause is suspected."]],
+        ["Labs", ["Obtain CBC, coagulation studies and renal function. A routine INR does not reliably quantify factor Xa inhibitor effect."]]
+    ],
+    redFlags: ["Deterioration, hydrocephalus, posterior fossa bleeding or anticoagulant exposure."],
+    disposition: [["Stroke / neurocritical care", "Arrange monitoring, repeat imaging and neurosurgical or transfer access according to severity."]],
+    pitfalls: [
+        "Applying the same BP target to every ICH phenotype.",
+        "Waiting for routine coagulation results to establish all anticoagulant effects."
+    ],
+    pearls: ["Communicate last known well, neurologic trend, bleed location and anticoagulant details early."],
+    refs: ["AHA/ASA spontaneous intracerebral hemorrhage guideline (2022)", "ESO/EANS spontaneous intracerebral hemorrhage guideline (2025)"]
+},
+{
+    id: 'acute-bacterial-meningitis', type: 'diagnosis', name: "Acute Bacterial Meningitis", icon: '🩺',
+    tag: "Start indicated IV antibiotics promptly. Obtain CSF first only when safe and without a meaningful delay.",
+    overview: "Acute bacterial meningitis may present with fever, headache, neck stiffness, confusion or seizure. The full symptom combination is often absent, particularly in older adults.",
+    approach: [
+        "Assess airway, perfusion and mental status. Treat shock and use droplet precautions when meningococcal disease is suspected.",
+        "Obtain blood cultures and perform LP before antibiotics only when safe and without a significant delay. Give IV antibiotics as soon as possible, within 1 hour of hospital arrival under NICE guidance. Treat before imaging if imaging is required first.",
+        "Choose a CNS-penetrating empiric regimen using age, immune status and local resistance. Include Listeria coverage when risk factors are present. For strongly suspected bacterial meningitis, give IV dexamethasone before or with the first antibiotic when possible, without delaying antibiotics.",
+        "Consider a separate encephalitis pathway when altered behavior, focal findings or seizures suggest parenchymal involvement. Seek early infection specialist input."
+    ],
+    dontMiss: [
+        ["Meningococcal sepsis", "critical", "Purpura, shock or rapid deterioration requires immediate resuscitation and antimicrobial treatment.", ["sepsis-and-septic-shock"]],
+        ["Unsafe lumbar puncture", "critical", "Stabilize shock, respiratory compromise or uncontrolled seizure first. New focal findings, abnormal pupils or markedly reduced or falling consciousness require assessment for raised intracranial pressure before LP."]
+    ],
+    history: ["Ask about onset, immune suppression, recent antibiotics, exposures and travel."],
+    exam: ["Assess perfusion, skin, mental status, neck stiffness and focal deficits. Repeat the exam as the condition evolves."],
+    workup: [["Blood and CSF", ["Obtain blood cultures and paired blood glucose. When LP is safe, send CSF cell count, protein, glucose, Gram stain, culture and appropriate molecular tests."]]],
+    redFlags: ["Shock, rapidly spreading purpura, seizure or declining consciousness."],
+    disposition: [["Admission / critical care", "Admit suspected bacterial meningitis and escalate organ dysfunction. Coordinate notification and contact prophylaxis when indicated."]],
+    pitfalls: [
+        "Waiting for CT, LP or the classic symptom combination before treating a convincing case.",
+        "Using a normal early blood marker to exclude meningitis."
+    ],
+    pearls: ["Document when antibiotics were given relative to cultures, dexamethasone and CSF sampling."],
+    refs: ["NICE NG240 bacterial meningitis", "WHO meningitis diagnosis, treatment and care guideline (2025)"]
+},
+{
+    id: 'convulsive-status-epilepticus', type: 'diagnosis', name: "Convulsive Status Epilepticus", icon: '🩺',
+    tag: "Treat convulsions at five minutes or repeated seizures without recovery as status epilepticus.",
+    overview: "Persistent convulsions threaten oxygenation and can become harder to stop with delay. Use a separate obstetric pathway for eclampsia.",
+    approach: [
+        "Time the seizure, protect the airway, support ventilation as needed, establish access and check bedside glucose. Treat hypoglycemia immediately.",
+        "At 5 minutes of ongoing convulsions, or repeated seizures without recovery, give an adequate benzodiazepine dose. Use IV lorazepam when access is ready or IM midazolam when it is not. Count adequate prehospital doses.",
+        "If seizures continue after adequate benzodiazepine treatment, promptly load an appropriate second-line agent such as levetiracetam, fosphenytoin or valproate. Select according to contraindications, interactions and the local protocol.",
+        "Persistent seizures after first- and second-line treatment require critical care, airway and anesthetic planning, and EEG. If convulsions stop without expected recovery, evaluate for nonconvulsive status."
+    ],
+    dontMiss: [
+        ["Nonconvulsive status", "critical", "Persistent depressed consciousness after motor activity stops needs urgent reassessment and EEG when available."],
+        ["Treatable precipitant", "critical", "Check glucose and electrolytes and consider CNS infection, bleeding, toxin exposure and pregnancy-related causes.", ["acute-bacterial-meningitis", "spontaneous-intracerebral-hemorrhage"]]
+    ],
+    history: ["Confirm onset and drugs already given. Ask about epilepsy, adherence, withdrawal, pregnancy, fever, trauma and possible exposure."],
+    exam: ["Track respiratory effort, oxygenation, perfusion, pupils and focal findings during and after treatment."],
+    workup: [["Parallel assessment", ["Check glucose and targeted labs. Use imaging, infection assessment and EEG according to the suspected cause and recovery."]]],
+    redFlags: ["Ongoing convulsions, recurrent seizures without recovery, hypoventilation or failure to regain consciousness."],
+    disposition: [["Monitored admission / ICU", "Escalate refractory seizures, airway compromise or persistent altered consciousness. Arrange EEG capability when needed."]],
+    pitfalls: [
+        "Repeating small benzodiazepine doses while delaying a second-line load.",
+        "Assuming cessation of visible movements establishes seizure termination."
+    ],
+    pearls: ["Record exact drug doses, routes and times so the next team can advance treatment without duplication."],
+    refs: ["AES convulsive status epilepticus guideline (2016)", "ESETT second-line treatment trial (2019)", "Acute management of status epilepticus in adult patients (2025)"]
+},
+{
+    id: 'cerebral-venous-thrombosis', type: 'diagnosis', name: "Cerebral Venous Thrombosis (CVT / CVST)", icon: '🩺',
+    tag: "Request venous imaging when headache, seizure or deficits suggest cerebral venous thrombosis.",
+    overview: "Cerebral venous thrombosis can present with progressive headache, thunderclap headache, seizure, focal deficits or raised intracranial pressure. Pregnancy or postpartum status, estrogen exposure, cancer and thrombophilia raise suspicion.",
+    approach: [
+        "Assess for focal deficits, seizure and signs of raised intracranial pressure. Stabilize the patient and consult stroke or neurology early.",
+        "Request CT venography or MRI with MR venography when CVT is suspected. A routine noncontrast CT can be normal.",
+        "For confirmed CVT, coordinate therapeutic anticoagulation with the stroke team. Venous infarct-related hemorrhage alone generally does not preclude anticoagulation. Individualize management when other bleeding risks or urgent procedures are present.",
+        "Escalate deterioration, mass effect or impending herniation to neurocritical care and neurosurgery. Coordinate pregnancy or postpartum treatment with obstetrics."
+    ],
+    dontMiss: [
+        ["Venous infarction or hemorrhage", "critical", "A hemorrhagic lesion that crosses arterial territories or accompanies a new seizure warrants consideration of CVT."],
+        ["Threatened vision or herniation", "critical", "Papilledema with visual deterioration or falling consciousness warrants urgent specialist care."]
+    ],
+    history: ["Ask about symptom progression, pregnancy or recent delivery, estrogen, malignancy, prior thrombosis and infection."],
+    exam: ["Assess consciousness, focal findings and vision. Check for papilledema when feasible without delaying imaging."],
+    workup: [["Venous imaging", ["Specify suspected CVT when requesting imaging. Discuss persistent suspicion after a nondiagnostic study with radiology and neurology."]]],
+    redFlags: ["Headache with seizure, focal deficit, papilledema or reduced consciousness, especially with a thrombotic risk factor."],
+    disposition: [["Stroke / neurocritical care", "Admit confirmed CVT for specialist treatment. Escalate deterioration, seizure burden or mass effect."]],
+    pitfalls: ["Using normal noncontrast CT or an isolated D-dimer to exclude CVT when suspicion remains."],
+    pearls: ["The request for venous imaging matters. A routine arterial study may not answer the same question."],
+    refs: ["AHA cerebral venous thrombosis statement (2024)", "Canadian Stroke Best Practice Recommendations: cerebral venous thrombosis (2024)"]
 }
 ];
 if (typeof window !== 'undefined') window.CP_DATA = CP_DATA;

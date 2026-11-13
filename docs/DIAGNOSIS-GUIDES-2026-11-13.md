@@ -22,3 +22,9 @@ The review distinguishes the limits of hCG and Doppler imaging, gallbladder infl
 Added seven adult guides for acute heart failure, acute asthma, COPD exacerbation, community-acquired pneumonia, sepsis and septic shock, cardiogenic shock, and adrenal crisis. Differential links appear in Shortness of Breath, Shock, Fever, Edema, Hypertensive Emergency and other relevant pathways.
 
 The guidance distinguishes oxygen targets for asthma and COPD, congestion from hypoperfusion in heart failure, and immediate antibiotics for suspected septic shock or probable sepsis from time-limited assessment for possible sepsis without shock. Each guide includes the scope and source links in its References section.
+
+## 14 November neurologic expansion
+
+Added seven adult emergency guides for ischemic stroke, transient ischemic attack, aneurysmal subarachnoid hemorrhage, spontaneous intracerebral hemorrhage, bacterial meningitis, convulsive status epilepticus and cerebral venous thrombosis. The guides are linked from Headache, Altered Mental Status, Coma, Focal Neurologic Deficit, Weakness, Dizziness, Fever and Seizures.
+
+The References sections record the scope and sources, including AHA/ASA 2026 stroke guidance, the distinct AHA/ASA and ACEP approaches to suspected SAH after a negative CT, and NICE and WHO guidance on timing of antibiotics and lumbar puncture in suspected bacterial meningitis.

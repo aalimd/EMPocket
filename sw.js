@@ -1,55 +1,55 @@
 /* The EM Pocket service worker — resilient app-shell caching for offline clinical reference. */
-const CACHE_VERSION = 'v285';
+const CACHE_VERSION = 'v286';
 // Preserve case, separators and the full path: sibling installations must never share caches.
 const SCOPE_KEY = encodeURIComponent(new URL(self.registration.scope).pathname);
 const CACHE_PREFIX = 'em-cps-scope-' + SCOPE_KEY + '-';
 const CACHE = CACHE_PREFIX + CACHE_VERSION;
 const CORE_ASSETS = [
     './',
-    './assets/app.css?v=20261114-diagnoses-v86',
-    './assets/design.js?v=20261114-diagnoses-v86',
-    './assets/css/tokens.css?v=20261114-diagnoses-v86',
-    './assets/css/scientific.css?v=20261114-diagnoses-v86',
-    './assets/css/base.css?v=20261114-diagnoses-v86',
-    './assets/css/shell.css?v=20261114-diagnoses-v86',
-    './assets/css/components.css?v=20261114-diagnoses-v86',
-    './assets/css/views.css?v=20261114-diagnoses-v86',
-    './assets/css/shift-tools.css?v=20261114-diagnoses-v86',
-    './assets/css/ecg.css?v=20261114-diagnoses-v86',
-    './assets/css/print.css?v=20261114-diagnoses-v86',
-    './assets/em-learning-data.js?v=20261114-diagnoses-v86',
+    './assets/app.css?v=20261114-diagnoses-v87',
+    './assets/design.js?v=20261114-diagnoses-v87',
+    './assets/css/tokens.css?v=20261114-diagnoses-v87',
+    './assets/css/scientific.css?v=20261114-diagnoses-v87',
+    './assets/css/base.css?v=20261114-diagnoses-v87',
+    './assets/css/shell.css?v=20261114-diagnoses-v87',
+    './assets/css/components.css?v=20261114-diagnoses-v87',
+    './assets/css/views.css?v=20261114-diagnoses-v87',
+    './assets/css/shift-tools.css?v=20261114-diagnoses-v87',
+    './assets/css/ecg.css?v=20261114-diagnoses-v87',
+    './assets/css/print.css?v=20261114-diagnoses-v87',
+    './assets/em-learning-data.js?v=20261114-diagnoses-v87',
     './assets/ptb-xl-LICENSE.txt',
     './assets/material-symbols-LICENSE.txt',
-    './assets/em-learning.js?v=20261114-diagnoses-v86',
-    './assets/student-learning.js?v=20261114-diagnoses-v86',
-    './assets/shift-tools.js?v=20261114-diagnoses-v86',
-    './assets/search-core.js?v=20261114-diagnoses-v86',
-    './assets/learning-store.js?v=20261114-diagnoses-v86',
-    './assets/prefs-store.js?v=20261114-diagnoses-v86',
-    './assets/search-index.js?v=20261114-diagnoses-v86',
-    './assets/agreement-store.js?v=20261114-diagnoses-v86',
-    './assets/navigation-store.js?v=20261114-diagnoses-v86',
-    './assets/app.js?v=20261114-diagnoses-v86',
-    './assets/data.js?v=20261114-diagnoses-v86',
-    './assets/evidence.js?v=20261114-diagnoses-v86',
-    './assets/ecg-svg.js?v=20261114-diagnoses-v86',
-    './assets/ecg-engine.js?v=20261114-diagnoses-v86',
-    './assets/ecg-case-tracings.js?v=20261114-diagnoses-v86',
-    './assets/ecg-interactive.js?v=20261114-diagnoses-v86',
-    './assets/ecg-curriculum.js?v=20261114-diagnoses-v86',
-  './assets/ecg-explorer.js?v=20261114-diagnoses-v86',
-  './assets/ecg-recordings.js?v=20261114-diagnoses-v86'
+    './assets/em-learning.js?v=20261114-diagnoses-v87',
+    './assets/student-learning.js?v=20261114-diagnoses-v87',
+    './assets/shift-tools.js?v=20261114-diagnoses-v87',
+    './assets/search-core.js?v=20261114-diagnoses-v87',
+    './assets/learning-store.js?v=20261114-diagnoses-v87',
+    './assets/prefs-store.js?v=20261114-diagnoses-v87',
+    './assets/search-index.js?v=20261114-diagnoses-v87',
+    './assets/agreement-store.js?v=20261114-diagnoses-v87',
+    './assets/navigation-store.js?v=20261114-diagnoses-v87',
+    './assets/app.js?v=20261114-diagnoses-v87',
+    './assets/data.js?v=20261114-diagnoses-v87',
+    './assets/evidence.js?v=20261114-diagnoses-v87',
+    './assets/ecg-svg.js?v=20261114-diagnoses-v87',
+    './assets/ecg-engine.js?v=20261114-diagnoses-v87',
+    './assets/ecg-case-tracings.js?v=20261114-diagnoses-v87',
+    './assets/ecg-interactive.js?v=20261114-diagnoses-v87',
+    './assets/ecg-curriculum.js?v=20261114-diagnoses-v87',
+  './assets/ecg-explorer.js?v=20261114-diagnoses-v87',
+  './assets/ecg-recordings.js?v=20261114-diagnoses-v87'
 ];
 const OPTIONAL_ASSETS = [
-    './manifest.json?v=20261114-diagnoses-v86',
-    './assets/icon.svg?v=20261114-diagnoses-v86',
-    './assets/icon-192.png?v=20261114-diagnoses-v86',
-    './assets/icon-512.png?v=20261114-diagnoses-v86',
-    './assets/icon-maskable-512.png?v=20261114-diagnoses-v86',
-    './assets/apple-touch-icon.png?v=20261114-diagnoses-v86',
+    './manifest.json?v=20261114-diagnoses-v87',
+    './assets/icon.svg?v=20261114-diagnoses-v87',
+    './assets/icon-192.png?v=20261114-diagnoses-v87',
+    './assets/icon-512.png?v=20261114-diagnoses-v87',
+    './assets/icon-maskable-512.png?v=20261114-diagnoses-v87',
+    './assets/apple-touch-icon.png?v=20261114-diagnoses-v87',
     // Optional on purpose: a missing or mis-typed font must never block the
     // offline install, and the UI stays fully usable on the system stack.
-    './assets/fonts/PlusJakartaSans-Variable.ttf?v=20261114-diagnoses-v86'
+    './assets/fonts/PlusJakartaSans-Variable.ttf?v=20261114-diagnoses-v87'
 ];
 
 // Cache the canonical directory URL: Pages redirects index.html to this URL.
