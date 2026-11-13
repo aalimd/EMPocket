@@ -1203,7 +1203,7 @@ test('startup performance exposes a usable library and defers recorded ECG evalu
         domContentLoadedMs:Math.round(nav.domContentLoadedEventEnd),loadMs:Math.round(nav.loadEventEnd),
         scripts:performance.getEntriesByType('resource').filter(e=>e.initiatorType==='script').length};
     })()`);
-    assert.equal(metrics.topics,76);
+    assert.equal(metrics.topics,83);
     assert.equal(metrics.recordingsEvaluated,false);
     t.diagnostic('Local unthrottled Chrome baseline (not physical-device timing): '+JSON.stringify(metrics));
 });
@@ -1319,7 +1319,7 @@ test('every presentation binds More, section shortcuts, accordions and recall co
   }
   return {problems,moreCount,count:window.CP_DATA.length};
  })()`);
- assert.equal(problems.count,76);assert.ok(problems.moreCount>0);
+ assert.equal(problems.count,83);assert.ok(problems.moreCount>0);
  assert.deepEqual(problems.problems,[]);
 });
 
@@ -1483,7 +1483,7 @@ test('second-batch guides are discoverable from the diagnosis filter, differenti
         filter.value = 'Diagnosis guides';
         filter.dispatchEvent(new Event('change', { bubbles: true }));
     })()`);
-    assert.equal(await evaluate(`document.querySelectorAll('#presentationLibrary .cp-card').length`), 18);
+    assert.equal(await evaluate(`document.querySelectorAll('#presentationLibrary .cp-card').length`), 25);
     await load('#pelvic-pain~dont-miss');
     await evaluate(`document.querySelector('#section-dont-miss a[href="#ectopic-pregnancy"]').click()`);
     const deadline = Date.now() + 5000;
@@ -1492,6 +1492,25 @@ test('second-batch guides are discoverable from the diagnosis filter, differenti
         await wait(25);
     }
     for (const [query, id] of [['cholangitis', 'acute-cholangitis'], ['ovarian torsion', 'ovarian-torsion'], ['testicular torsion', 'testicular-torsion'], ['diverticulitis', 'acute-diverticulitis']]) {
+        assert.equal(await evaluate(`window.EM_POCKET_UI.findSearchHits(${JSON.stringify(query)})[0]?.cpId`), id);
+    }
+});
+
+test('dyspnea and shock differential guides open in Full and Quick and rank in search', async t => {
+    if (!await ready(t)) return;
+    for (const [route, selector, id, name] of [
+        ['#dyspnea~dont-miss', '#section-dont-miss', 'copd-exacerbation', 'COPD Exacerbation'],
+        ['#shift~shock', '.shift-crit', 'sepsis-and-septic-shock', 'Sepsis and Septic Shock']
+    ]) {
+        await load(route);
+        await evaluate(`document.querySelector('${selector} a[href="#${id}"]').click()`);
+        const deadline = Date.now() + 5000;
+        while (await evaluate(`document.querySelector('#stage h1')?.textContent`) !== name) {
+            assert.ok(Date.now() < deadline, name + ' opens from its differential');
+            await wait(25);
+        }
+    }
+    for (const [query, id] of [['acute asthma', 'acute-asthma-exacerbation'], ['septic shock', 'sepsis-and-septic-shock'], ['adrenal crisis', 'adrenal-crisis']]) {
         assert.equal(await evaluate(`window.EM_POCKET_UI.findSearchHits(${JSON.stringify(query)})[0]?.cpId`), id);
     }
 });

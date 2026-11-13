@@ -6,6 +6,15 @@
 (function () {
     'use strict';
     const sources = {
+        acuteHF2026: ["ESC and EUSEM consensus on acute heart failure in emergency settings (2026)", "https://doi.org/10.1093/eurheartj/ehag744"],
+        hfESC: ["ESC acute and chronic heart failure guideline (2021)", "https://academic.oup.com/eurheartj/article/42/36/3599/6358045"],
+        copdOxygen: ["NICE QS10: emergency oxygen during a COPD exacerbation", "https://www.nice.org.uk/guidance/qs10/chapter/Quality-statement-6-Emergency-oxygen-during-an-exacerbation"],
+        goldCOPD: ["GOLD global strategy for COPD (2026)", "https://goldcopd.org/2026-gold-report-and-pocket-guide/"],
+        capATS: ["ATS community-acquired pneumonia guideline update (2025, published in 2026 issue)", "https://doi.org/10.1164/rccm.202507-1692ST"],
+        capIDSA: ["ATS/IDSA adult community-acquired pneumonia guideline (2019)", "https://www.idsociety.org/practice-guideline/community-acquired-pneumonia-cap-in-adults"],
+        cardiogenicACC: ["ACC evaluation and management of cardiogenic shock (2025)", "https://www.acc.org/Guidelines/Guidelines/2025/03/17/19/42/Cardiogenic-Shock-Concise-Clinical-Guidance"],
+        adrenalNICE: ["NICE NG243: adrenal insufficiency and emergency management (2024)", "https://www.nice.org.uk/guidance/ng243/chapter/recommendations"],
+        adrenalESE: ["ESE/Endocrine Society glucocorticoid-induced adrenal insufficiency guideline (2024)", "https://www.endocrine.org/journals/jcem/glucocorticoid-induced-adrenal-insufficiency"],
         acepEarlyPregnancy: ["ACEP clinical policy: early pregnancy in the emergency department", "https://www.acep.org/siteassets/new-pdfs/clinical-policies/cp-earlypregnancy-doc.pdf"],
         adnexalTorsion: ["ACOG committee opinion: adnexal torsion in adolescents", "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2019/08/adnexal-torsion-in-adolescents"],
         acutePelvicImaging: ["ACR Appropriateness Criteria: acute pelvic pain in the reproductive age group", "https://acsearch.acr.org/docs/69503/Narrative/"],
@@ -166,6 +175,13 @@
         withdrawal: ["ASAM clinical practice guideline on alcohol withdrawal management (2020)", "https://www.asam.org/quality-care/clinical-guidelines/alcohol-withdrawal"],
     };
     const topics = {
+        'acute-heart-failure': ['acuteHF2026', 'hfESC'],
+        'acute-asthma-exacerbation': ['asthma', 'dyspneaAssessment'],
+        'copd-exacerbation': ['goldCOPD', 'copdOxygen'],
+        'community-acquired-pneumonia': ['capATS', 'capIDSA', 'sepsis'],
+        'sepsis-and-septic-shock': ['sepsis'],
+        'cardiogenic-shock': ['cardiogenicACC', 'acuteHF2026', 'acs'],
+        'adrenal-crisis': ['adrenalNICE', 'adrenal', 'adrenalESE'],
         'ectopic-pregnancy': ['ectopicDiagnosis', 'ectopic', 'acepEarlyPregnancy'],
         'ovarian-torsion': ['adnexalTorsion', 'acutePelvicImaging'],
         'testicular-torsion': ['acuteScrotumAUA', 'acuteScrotumEAU'],
@@ -820,6 +836,64 @@
             "diverticulitisACG",
             "diverticulitisIDSA",
             "diverticulitisNICE"
+        ]
+    },
+    "acute-heart-failure": {
+        "checked": "2026-11-14",
+        "scope": "adult emergency assessment, ventilatory support, decongestion and escalation",
+        "sources": [
+            "acuteHF2026",
+            "hfESC"
+        ]
+    },
+    "acute-asthma-exacerbation": {
+        "checked": "2026-11-14",
+        "scope": "adult acute asthma severity, GINA 2026 treatment and discharge",
+        "sources": [
+            "asthma",
+            "dyspneaAssessment"
+        ]
+    },
+    "copd-exacerbation": {
+        "checked": "2026-11-14",
+        "scope": "adult controlled oxygen, bronchodilators, antibiotics and noninvasive ventilation",
+        "sources": [
+            "goldCOPD",
+            "copdOxygen"
+        ]
+    },
+    "community-acquired-pneumonia": {
+        "checked": "2026-11-14",
+        "scope": "adult imaging, initial antimicrobial decisions and severity-based disposition",
+        "sources": [
+            "capATS",
+            "capIDSA",
+            "sepsis"
+        ]
+    },
+    "sepsis-and-septic-shock": {
+        "checked": "2026-11-14",
+        "scope": "adult recognition, antibiotic timing, initial fluids, norepinephrine and source control",
+        "sources": [
+            "sepsis"
+        ]
+    },
+    "cardiogenic-shock": {
+        "checked": "2026-11-14",
+        "scope": "adult early recognition, bedside phenotyping and cause-directed escalation",
+        "sources": [
+            "cardiogenicACC",
+            "acuteHF2026",
+            "acs"
+        ]
+    },
+    "adrenal-crisis": {
+        "checked": "2026-11-14",
+        "scope": "adult recognition, immediate hydrocortisone, fluid support and monitoring",
+        "sources": [
+            "adrenalNICE",
+            "adrenal",
+            "adrenalESE"
         ]
     }
 };

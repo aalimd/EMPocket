@@ -11,7 +11,7 @@
    Final targeted expansion: 13 Nov 2026, four additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-13-BATCH-7.md.
    Oncology Emergencies: 13 Nov 2026, six adult emergency guides. See docs/ONCOLOGY-EMERGENCIES-2026-11-13.md.
    Clinical consistency audit: 13 Nov 2026, selected high-risk treatment rows and decision tools. See docs/CLINICAL-CONSISTENCY-2026-11-13.md.
-   Diagnosis guides: 13–14 Nov 2026. See docs/DIAGNOSIS-GUIDES-2026-11-13.md.
+   Diagnosis guides: 13–14 Nov 2026, including adult dyspnea and shock. See docs/DIAGNOSIS-GUIDES-2026-11-13.md.
    Optional fourth differential field: a list of topic IDs with dedicated guidance.
    Educational reference only — never replaces clinical judgment or local protocols.
 */
@@ -82,13 +82,13 @@ approach: [
 dontMiss: [
 ['Pulmonary embolism', 'critical', 'Sudden dyspnea with clear lungs; PERC if very-low gestalt, otherwise a validated Wells/age-adjusted or YEARS D-dimer pathway. Echo may show RV strain.', ['pulmonary-embolism']],
 ['Tension pneumothorax', 'critical', 'Trauma, COPD or PPV + hemodynamic collapse → decompress before imaging.', ['tension-pneumothorax']],
-['Acute pulmonary edema / LV failure', 'critical', 'Orthopnea, crackles, diffuse B-lines — early NIV + nitrates if hypertensive.'],
-['Near-fatal asthma / COPD exacerbation', 'critical', 'Silent chest, normalizing CO₂, exhaustion = pre-arrest physiology.'],
+['Acute pulmonary edema / LV failure', 'critical', "Orthopnea, crackles and diffuse B-lines support congestion. Consider early NIV in significant distress, with nitrates when appropriate for hypertensive pulmonary edema.", ['acute-heart-failure']],
+['Near-fatal asthma / COPD exacerbation', 'critical', "Exhaustion or altered mentation signals impending respiratory failure. In severe asthma, a normal or rising PaCO₂ is concerning. In COPD, check for hypercapnic acidosis.", ['acute-asthma-exacerbation', 'copd-exacerbation']],
 ['Anaphylaxis', 'critical', 'IM epinephrine into the anterolateral thigh immediately — do not wait for urticaria (it may be absent).', ['anaphylaxis']],
 ['Carbon monoxide poisoning', 'critical', 'Headache, whole household ill; standard SpO₂ is falsely normal — CO-oximetry.'],
 ['Metabolic acidosis (Kussmaul breathing)', 'emergent', 'DKA, sepsis, salicylates, uremia — lungs compensating for the blood.'],
 ['Neuromuscular weakness (GBS, myasthenia)', 'emergent', 'Orthopnea, weak cough, falling NIF/VC — monitor before the crash.'],
-['Pneumonia / COPD exacerbation / anemia', 'common', 'High-frequency drivers; treat and reassess objectively.']
+['Pneumonia / COPD exacerbation / anemia', 'common', 'High-frequency drivers; treat and reassess objectively.', ['community-acquired-pneumonia', 'copd-exacerbation']]
 ],
 history: ['Tempo: seconds (PE/PTX), minutes (asthma/edema), hours–days (pneumonia/HF), weeks (anemia/effusion)', 'Positional: orthopnea & PND → LV failure; platypnea → shunt', 'Exposures: smoke, allergens, occupational, CO source, diving', 'Background: asthma/COPD, HF, VTE risks, immunosuppression', 'Associated chest pain, fever, leg swelling, hemoptysis'],
 exam: [
@@ -216,14 +216,14 @@ approach: [
 ],
 dontMiss: [
 ['Hypoglycemia / hyperglycemic crises', 'critical', 'Bedside glucose in every AMS patient — before anything else. Never delay dextrose for thiamine.'],
-['Hypoxia / hypercapnia', 'critical', 'SpO₂, VBG; think CO₂ narcosis in COPD.'],
+['Hypoxia / hypercapnia', 'critical', 'SpO₂, VBG; think CO₂ narcosis in COPD.', ['copd-exacerbation']],
 ['Stroke / intracranial hemorrhage', 'critical', 'Sudden focal signs or anticoagulation — non-contrast CT now. Check reperfusion eligibility (IV tenecteplase/alteplase ≤4.5 h, or 4.5–9 h/unknown onset via advanced imaging; mechanical thrombectomy up to 24 h in selected large-core and basilar occlusions per 2026 AHA/ASA).'],
 ['SAH', 'critical', 'Sudden headache + collapse; CT then LP or CTA as indicated.'],
 ['Meningitis / encephalitis', 'critical', 'Fever, meningismus — empiric therapy must not wait on imaging.'],
 ['Wernicke encephalopathy', 'critical', 'Alcohol use/malnutrition — give thiamine with (or immediately after) glucose; do not withhold glucose.'],
 ['Toxic ingestion (CO, TCA, salicylates, opioids)', 'critical', 'Pupils, skin, ECG (QRS widening), anion gap, temperature. Cherry-red skin is an unreliable CO sign — use CO-oximetry.'],
 ['Severe hyponatremia / hyperammonemia / uremia', 'emergent', 'Metabolic catastrophes — labs before labels.'],
-['Delirium from infection / retention / medications', 'common', 'Find the driver; \u201CUTI\u201D alone is an overused explanation in the elderly (asymptomatic bacteriuria does not establish symptomatic UTI).']
+['Delirium from infection / retention / medications', 'common', 'Find the driver; \u201CUTI\u201D alone is an overused explanation in the elderly (asymptomatic bacteriuria does not establish symptomatic UTI).', ['sepsis-and-septic-shock']]
 ],
 history: [
     "Ask family or carers about recent changes in attention, interaction, sleep and function, including fluctuation over hours; establish what is normal for this patient.",
@@ -393,9 +393,9 @@ approach: [
     "Identify early whether infection needs drainage, relief of obstruction, debridement or removal of an infected device; antibiotics alone may not achieve source control."
 ],
 dontMiss: [
-['Sepsis / septic shock', 'critical', 'Hypotension, tachypnea, altered mentation, lactate >2. Antibiotics within 1 h for shock or probable sepsis; within 3 h for possible sepsis without shock after a rapid look. Use balanced crystalloid for initial resuscitation and dynamic measures to guide further fluid. Begin norepinephrine if MAP remains low during resuscitation (SSC 2026).'],
+['Sepsis / septic shock', 'critical', 'Hypotension, tachypnea, altered mentation, lactate >2. Antibiotics within 1 h for shock or probable sepsis; within 3 h for possible sepsis without shock after a rapid look. Use balanced crystalloid for initial resuscitation and dynamic measures to guide further fluid. Begin norepinephrine if MAP remains low during resuscitation (SSC 2026).', ['sepsis-and-septic-shock']],
 ['Necrotizing soft-tissue infection / toxic shock', 'critical', 'Pain out of proportion, rapid spread, crepitus, or shock with a wound/soft-tissue source — surgery now, not a wait-for-CT strategy.'],
-['Neutropenic fever', 'critical', 'ANC <500 + a single temperature ≥38.3°C (or ≥38.0°C for 1 h) — immediate empiric antipseudomonal antibiotics. MASCC/CISNE may identify low-risk outpatient candidates.'],
+['Neutropenic fever', 'critical', 'ANC <500 + a single temperature ≥38.3°C (or ≥38.0°C for 1 h) — immediate empiric antipseudomonal antibiotics. MASCC/CISNE may identify low-risk outpatient candidates.', ['neutropenic-sepsis']],
 ['Bacterial meningitis', 'critical', 'Fever + meningismus/altered mentation — first antibiotic dose within 1 h; give IV dexamethasone with or before it in adults with suspected bacterial meningitis (continue only if pneumococcus/Hib). Do not wait on CT.'],
 ['Infective endocarditis', 'critical', 'Fever + new murmur, IVDU, embolic signs — blood cultures ×3, echo.'],
 ['Malaria / travel sepsis', 'critical', 'Any fever returning from an endemic area = malaria until proven otherwise (thick/thin smear ± RDT, repeated if negative).'],
@@ -931,12 +931,12 @@ approach: [
 ],
 dontMiss: [
 ['Obstructive shock (tamponade, tension PTX, massive PE)', 'critical', 'Use clinical assessment and rapid POCUS when available: effusion/chamber collapse or RV strain may support the cause. Absent lung sliding alone does not diagnose PTX. Treat tension PTX immediately without waiting for imaging; arrange tamponade drainage or PE reperfusion as indicated. Fluids require individualized reassessment.', ['cardiac-tamponade', 'tension-pneumothorax', 'pulmonary-embolism']],
-['Cardiogenic shock', 'critical', 'Wet, cool, JVP up, B-lines, poor LV — cautious fluids, vasopressors (norepinephrine), urgent revascularization if ACS (2025 ACC/AHA ACS).'],
-['Septic / distributive shock', 'critical', 'Antibiotics within 1 h. Use balanced crystalloid for initial resuscitation, then dynamic reassessment to guide further fluid. Start norepinephrine if MAP remains low (SSC 2026).'],
+['Cardiogenic shock', 'critical', "Assess congestion and perfusion, look for an acute cardiac cause and activate the shock team early.", ['cardiogenic-shock']],
+['Septic / distributive shock', 'critical', "Start antimicrobials immediately for suspected septic shock. Give crystalloid with frequent reassessment and start norepinephrine promptly for persistent hypotension. Identify sources needing urgent intervention.", ['sepsis-and-septic-shock']],
 ['Neurogenic shock', 'critical', 'Hypotension with warm dry skin after spinal injury — fluids then norepinephrine; do not treat as hypovolemia alone.'],
 ['Hemorrhagic / hypovolemic shock', 'critical', 'Blood, source control, TXA in trauma/PPH per pathway; do not dilute with liters of crystalloid in exsanguination.'],
 ['Anaphylactic shock', 'critical', 'IM epinephrine anterolateral thigh immediately, then fluids and aerosolized epinephrine if airway edema — do not wait for a rash.', ['anaphylaxis']],
-['Adrenal crisis / occult bleeding / mixed', 'emergent', 'Steroid-dependent, meningococcemia, GI bleed without hematemesis, ruptured AAA — treat while you look.'],
+['Adrenal crisis / occult bleeding / mixed', 'emergent', 'Steroid-dependent, meningococcemia, GI bleed without hematemesis, ruptured AAA — treat while you look.', ['adrenal-crisis']],
 ['Compensated / occult shock', 'common', 'Normal BP with lactate, delayed cap refill, or unexplained tachypnea — especially in the young and pregnant.']
 ],
 history: ['Tempo: sudden (PE, tamponade, anaphylaxis, arrhythmia) vs hours (sepsis, bleed)', 'Chest pain, dyspnea, fever, allergen, trauma, GI bleeding, pregnancy', 'Heart failure, anticoagulation, adrenal replacement, immunocompromise', 'Drugs: beta-blockers, calcium-channel blockers, antihypertensives'],
@@ -977,7 +977,7 @@ dontMiss: [
 ['Bowel obstruction / volvulus / perforation', 'critical', 'Bilious or feculent vomiting, distension, prior surgery, hernia — CT. Sigmoid/cecal volvulus is time-critical ischemia.', ['small-bowel-obstruction', 'perforated-peptic-ulcer']],
 ['ACS / inferior MI', 'critical', 'Isolated vomiting, especially in women, elderly, and diabetics — ECG before the antiemetic is blamed for the \u201Ccure.\u201D', ['acute-coronary-syndrome']],
 ['Raised ICP / SAH / posterior stroke', 'critical', 'Headache, diplopia, ataxia, no abdominal findings — CT/MRI. Projectile vomiting is a clue, not a rule.'],
-['DKA / HHS / adrenal crisis / hyponatremia', 'critical', 'Glucose and electrolytes in every unexplained case. Steroid-dependent patients get stress-dose steroids.'],
+['DKA / HHS / adrenal crisis / hyponatremia', 'critical', 'Glucose and electrolytes in every unexplained case. Steroid-dependent patients get stress-dose steroids.', ['hyperglycemia', 'adrenal-crisis', 'electrolytes']],
 ['Pregnancy complications (hyperemesis vs ectopic vs molar)', 'critical', 'hCG first; assess oral intake, weight loss, hydration and electrolytes in hyperemesis. Ketonuria does not grade severity; blood ketones/acidosis are relevant if DKA is suspected. Ectopic if pain + bleeding.', ['ectopic-pregnancy']],
 ['Acute glaucoma / testicular or ovarian torsion', 'emergent', 'The referred-pain mimics — eye and groin exams exist for a reason.', ['ovarian-torsion', 'testicular-torsion']],
 ['Cannabinoid hyperemesis / cyclic vomiting / gastritis', 'common', 'Hot-water bathing is a cannabinoid clue; capsaicin and haloperidol are options. Still exclude the killers once.']
@@ -1412,8 +1412,8 @@ approach: [
 dontMiss: [
 ['Diabetic ketoacidosis', 'critical', 'Diabetes history or glucose ≥200 mg/dL, β-hydroxybutyrate ≥3 mmol/L (or urine ketones ≥2+), and pH <7.3 and/or bicarbonate <18 mmol/L. Euglycemic DKA on SGLT2 inhibitors is easy to miss — check ketones when the story fits even if glucose is modest.'],
 ['Hyperosmolar hyperglycemic state', 'critical', 'Glucose ≥600 mg/dL, effective osmolality >300 or total >320 mOsm/kg, β-hydroxybutyrate <3 mmol/L, pH ≥7.3 and bicarbonate ≥15 mmol/L; altered mentation is not required — huge water deficit; correct slowly to avoid cerebral edema.'],
-['Adrenal crisis', 'critical', 'Shock, hyponatremia, hyperkalemia, or hypoglycemia in a steroid-dependent, pituitary, or meningococcemia patient — adult hydrocortisone 100 mg IV now; children need age/body-surface dosing under the pediatric protocol.'],
-['Precipitant ACS / sepsis / pancreatitis', 'critical', 'The crisis is often triggered — ECG, cultures, lipase as indicated. Treat the trigger with the protocol.'],
+['Adrenal crisis', 'critical', 'Shock, hyponatremia, hyperkalemia, or hypoglycemia in a steroid-dependent, pituitary, or meningococcemia patient — adult hydrocortisone 100 mg IV now; children need age/body-surface dosing under the pediatric protocol.', ['adrenal-crisis']],
+['Precipitant ACS / sepsis / pancreatitis', 'critical', 'The crisis is often triggered — ECG, cultures, lipase as indicated. Treat the trigger with the protocol.', ['acute-coronary-syndrome', 'sepsis-and-septic-shock', 'acute-pancreatitis']],
 ['Hypokalemia during insulin', 'critical', 'Total-body K⁺ is low even when the first value is normal; insulin drives K⁺ in — replace and monitor.'],
 ['Cerebral injury (especially pediatric DKA)', 'critical', 'Headache, bradycardia or deteriorating GCS — immediate pediatric/critical-care response, head elevation and mannitol/hypertonic saline per protocol; do not wait for CT. Reassess fluids while maintaining perfusion; do not stop resuscitation reflexively.'],
 ['Simple hyperglycemia / missed insulin', 'common', 'No acidosis, no ketones, well-appearing — hydration, insulin plan, follow-up. Still hunt infection.']
@@ -1631,7 +1631,7 @@ id: 'edema', name: 'Peripheral Edema', icon: '🦶',
 tag: 'Bilateral or unilateral? Volume overload, venous disease, thrombosis, or a systemic cause?',
 overview: 'Edema is a finding, not a diagnosis. The high-risk split is acute unilateral swelling that may be DVT or infection versus bilateral edema with heart, renal, hepatic, medication, or low-protein causes.',
 approach: ['Split first by symmetry and tempo: acute unilateral swelling is a vascular/infectious problem (DVT, cellulitis, compartment); bilateral swelling is a systemic/hydrostatic/oncotic problem.', 'Check oxygenation, work of breathing, JVP, and lung ultrasound before prescribing diuretics.', 'Use one validated DVT pathway consistently. NICE uses the two-level Wells score: DVT likely → proximal ultrasound first; DVT unlikely → D-dimer first, then ultrasound if positive.', 'Look for preeclampsia/peripartum cardiomyopathy in any pregnant or postpartum patient with new edema plus hypertension, headache, or dyspnea.'],
-dontMiss: [['Acute heart failure / pulmonary edema', 'critical', 'Dyspnea, hypoxia, JVP elevation, crackles, or diffuse B-lines require an acute-heart-failure assessment.'], ['DVT with pulmonary embolism', 'critical', 'Unilateral swelling plus chest symptoms, syncope, or hypoxia needs VTE pathway assessment.'], ['Necrotizing infection / compartment syndrome', 'critical', 'Pain out of proportion, rapid progression, bullae, anesthesia, or systemic toxicity.'], ['Acute kidney injury / nephrotic syndrome / hepatic decompensation', 'emergent', 'Generalized edema with oliguria, severe hypertension, ascites, or biochemical derangement.'], ['Chronic venous insufficiency / medication-related edema', 'common', 'Consider after dangerous vascular and systemic causes are excluded.']],
+dontMiss: [['Acute heart failure / pulmonary edema', 'critical', 'Dyspnea, hypoxia, JVP elevation, crackles, or diffuse B-lines require an acute-heart-failure assessment.', ['acute-heart-failure']], ['DVT with pulmonary embolism', 'critical', 'Unilateral swelling plus chest symptoms, syncope, or hypoxia needs VTE pathway assessment.'], ['Necrotizing infection / compartment syndrome', 'critical', 'Pain out of proportion, rapid progression, bullae, anesthesia, or systemic toxicity.'], ['Acute kidney injury / nephrotic syndrome / hepatic decompensation', 'emergent', 'Generalized edema with oliguria, severe hypertension, ascites, or biochemical derangement.'], ['Chronic venous insufficiency / medication-related edema', 'common', 'Consider after dangerous vascular and systemic causes are excluded.']],
 history: [
     "For suspected DVT, record previous DVT, active cancer, recent surgery/immobility and whether another diagnosis explains the swelling; use these findings in the validated probability pathway.",
     'Unilateral vs bilateral onset, calf/thigh pain, erythema, rapid weight gain, orthopnea, PND', 'VTE risks: recent surgery/trauma, immobilization, active cancer, estrogen/pregnancy, prior DVT/PE', 'Heart failure, CKD/nephrotic history, cirrhosis, dihydropyridine CCBs (amlodipine), NSAIDs, steroids'],
@@ -1896,7 +1896,7 @@ approach: [
 dontMiss: [
     ['Hypertensive encephalopathy', 'critical', 'Severe hypertension with headache, confusion, visual disturbance, seizure or coma — cerebral oedema. Reduce MAP by ~20–25% in the first hour. Nicardipine or labetalol.'],
     ['Acute aortic dissection', 'critical', 'Tearing chest/back pain with a pulse or pressure differential. Target heart rate ≤60 bpm first (esmolol or labetalol), then SBP 100–120 mmHg; avoid pure vasodilators before beta-blockade.', ['acute-aortic-syndrome']],
-    ['Acute pulmonary oedema', 'critical', 'Hypertension with flash pulmonary oedema — nitroglycerin infusion plus non-invasive ventilation.'],
+    ['Acute pulmonary oedema', 'critical', 'Hypertension with flash pulmonary oedema — nitroglycerin infusion plus non-invasive ventilation.', ['acute-heart-failure']],
     ['Acute coronary syndrome / ischaemic stroke', 'critical', 'Lower blood pressure only when it threatens therapy or exceeds the thrombolysis threshold; navigate within the ACS/stroke pathways.', ['acute-coronary-syndrome', 'focal-neurologic-deficit']],
     ['Intracerebral haemorrhage', 'emergent', 'Smoothly target SBP ~140 mmHg when presenting SBP is 150–220 mmHg (INTERACT2/ATACH-II); avoid drops below 130 mmHg.'],
     ['Eclampsia / pre-eclampsia', 'critical', 'Magnesium sulfate for seizure prophylaxis and treatment; labetalol, hydralazine or nifedipine for blood pressure. Delivery is definitive.'],
@@ -2752,6 +2752,213 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
     pitfalls: ["Applying the no-antibiotic approach to a septic, immunocompromised or otherwise high-risk patient."],
     pearls: ["Document whether imaging shows uncomplicated inflammation or a source-control problem."],
     refs: ["ACG colonic diverticulitis guideline (2026)", "IDSA diagnostic imaging for acute diverticulitis (2024)", "NICE NG147: diverticular disease"]
+},
+{
+    id: 'acute-heart-failure', type: 'diagnosis', name: "Acute Heart Failure (Cardiogenic Pulmonary Edema)", icon: '🩺',
+    tag: "Assess respiratory failure, congestion and perfusion together before choosing treatment.",
+    overview: "Acute heart failure can cause rapid pulmonary edema from fluid redistribution or progressive congestion from fluid retention. Low output can coexist with congestion.",
+    approach: [
+        "Monitor BP, rhythm and oxygenation. Give oxygen for hypoxemia and consider early CPAP or bilevel ventilation for significant respiratory distress if the patient can protect the airway and tolerate positive pressure.",
+        "Give an IV loop diuretic for clinical fluid overload. Reassess urine output, renal function, electrolytes and perfusion. Use the prior diuretic dose to guide the initial regimen.",
+        "Consider titrated IV nitrates for hypertensive pulmonary edema when BP allows and contraindications are absent. Recheck BP closely. Hypoperfusion or shock needs a different pathway.",
+        "Evaluate and treat the precipitant in parallel, including acute coronary syndrome, arrhythmia, hypertensive emergency, infection or an acute valve complication."
+    ],
+    dontMiss: [
+        ["Cardiogenic shock", "critical", "Cool skin, confusion, oliguria or rising lactate may precede marked hypotension.", ["cardiogenic-shock"]],
+        ["ACS or acute mechanical complication", "critical", "New ischemia or sudden edema with a new murmur needs urgent ECG, echo and cardiology assessment.", ["acute-coronary-syndrome"]]
+    ],
+    history: ["Ask about orthopnea, sudden versus progressive symptoms, weight change, medications, chest pain and prior cardiac or valve disease."],
+    exam: ["Assess work of breathing, crackles, venous congestion, edema and peripheral perfusion. Peripheral edema can be absent in rapid pulmonary edema."],
+    workup: [
+        ["Immediate assessment", ["ECG, chest imaging and focused cardiac and lung ultrasound when available. Obtain urgent echocardiography if shock or an acute mechanical cause is suspected."]],
+        ["Labs", ["Check renal function, electrolytes and troponin. Natriuretic peptides can help when the diagnosis is uncertain. Interpret all results with the clinical picture."]]
+    ],
+    redFlags: ["Progressive respiratory failure, hypotension, signs of poor perfusion, ischemia or unstable arrhythmia."],
+    disposition: [["Monitored care", "New or persistent congestion, an untreated precipitant or ongoing oxygen requirement warrants monitored evaluation. Escalate shock or worsening respiratory failure to critical care."]],
+    pitfalls: [
+        "Giving a large fluid bolus for hypotension without reassessing congestion and perfusion.",
+        "Using B-lines alone to diagnose cardiogenic edema."
+    ],
+    pearls: ["Record whether the patient is congested and whether they are perfusing adequately. Those findings guide the immediate treatment."],
+    refs: ["ESC and EUSEM consensus on acute heart failure in emergency settings (2026)", "ESC acute and chronic heart failure guideline (2021)"]
+},
+{
+    id: 'acute-asthma-exacerbation', type: 'diagnosis', name: "Acute Asthma Exacerbation", icon: '🩺',
+    tag: "Treat airflow obstruction early and reassess for fatigue and respiratory failure.",
+    overview: "Use this adult emergency pathway for an acute asthma flare. Severity is based on speech, work of breathing, air entry, oxygenation and response to treatment. Minimal wheeze can reflect critically reduced airflow.",
+    approach: [
+        "Start inhaled salbutamol promptly. Use a spacer when suitable or nebulized delivery when needed. Add ipratropium in severe exacerbations and give systemic corticosteroids early when indicated.",
+        "Give controlled oxygen for hypoxemia. GINA 2026 targets SpO₂ 92–95% for adults receiving supplemental oxygen during an exacerbation.",
+        "Reassess symptoms, air entry, respiratory effort, SpO₂ and peak flow when feasible. Consider IV magnesium sulfate for a severe exacerbation with inadequate response to initial treatment.",
+        "Call critical care early for drowsiness, a silent chest, exhaustion or progressive respiratory failure. Prepare for ventilatory support while continuing treatment."
+    ],
+    dontMiss: [
+        ["Impending ventilatory failure", "critical", "A normal or rising PaCO₂ in a severely breathless or tiring patient is concerning."],
+        ["Anaphylaxis", "critical", "Sudden bronchospasm after a likely allergen with compatible features needs IM epinephrine.", ["anaphylaxis"]],
+        ["Tension pneumothorax", "critical", "Abrupt deterioration or asymmetric air entry, particularly after positive-pressure ventilation, requires immediate reassessment.", ["tension-pneumothorax"]]
+    ],
+    history: ["Ask about prior ICU admission or intubation, reliever use, recent steroids, controller adherence and likely triggers."],
+    exam: ["Check speech, respiratory rate, accessory muscles, air entry, mental status and perfusion."],
+    workup: [["Selective testing", ["Measure peak flow if feasible without delaying treatment. Consider a blood gas for severe or worsening disease and imaging when an alternative diagnosis or complication is suspected."]]],
+    redFlags: ["Silent chest, confusion, exhaustion, worsening hypoxemia or rising PaCO₂."],
+    disposition: [
+        ["Admission / critical care", "Escalate a poor response, ongoing oxygen requirement, frequent bronchodilator need or impending respiratory failure."],
+        ["Selected discharge", "After sustained improvement, prescribe or adjust an ICS-containing regimen, check technique, provide a written action plan and arrange early follow-up."]
+    ],
+    pitfalls: [
+        "Using less wheeze as evidence of improvement without checking air entry and work of breathing.",
+        "Discharging on a short-acting bronchodilator alone."
+    ],
+    pearls: ["Compare the work of breathing, oxygen requirement and airflow before and after treatment."],
+    refs: ["GINA strategy report (2026)", "SAEM CDEM shortness of breath assessment"]
+},
+{
+    id: 'copd-exacerbation', type: 'diagnosis', name: "COPD Exacerbation", icon: '🩺',
+    tag: "Control oxygen, check for acute respiratory acidosis and reassess after initial treatment.",
+    overview: "An exacerbation can cause increased breathlessness, cough or sputum. Pneumonia, heart failure, pulmonary embolism and pneumothorax can mimic or accompany it.",
+    approach: [
+        "Give controlled oxygen for hypoxemia and initially target SpO₂ 88–92%. Obtain a blood gas when hypercapnia or severe illness is suspected and reassess after starting oxygen or ventilation.",
+        "Start inhaled short-acting beta₂-agonist, with or without short-acting antimuscarinic. In significant exacerbations, GOLD recommends prednisone-equivalent 40 mg daily for 5 days. Use the oral route when feasible.",
+        "Use antibiotics when indicated by the clinical picture and local policy. GOLD includes increased sputum purulence with increased dyspnea, fever or increased sputum volume, a prior positive sputum culture during an exacerbation, or need for invasive or noninvasive ventilation.",
+        "Use bilevel noninvasive ventilation for acute hypercapnic respiratory failure with acidosis when appropriate. Monitor response closely and escalate if airway protection fails or respiratory failure worsens."
+    ],
+    dontMiss: [
+        ["Acute hypercapnic respiratory failure", "critical", "Drowsiness or worsening acidosis needs immediate reassessment and ventilatory support planning."],
+        ["Pneumonia or acute heart failure", "emergent", "New infiltrates, fever or congestion may explain the exacerbation or require additional treatment.", ["community-acquired-pneumonia", "acute-heart-failure"]],
+        ["Pulmonary embolism or pneumothorax", "critical", "Assess abrupt, asymmetric or otherwise unexplained deterioration for competing diagnoses.", ["pulmonary-embolism", "tension-pneumothorax"]]
+    ],
+    history: ["Ask about home oxygen or ventilation, baseline exercise tolerance, sputum changes, recent antibiotics and previous intubation."],
+    exam: ["Assess work of breathing, air entry, mental status and perfusion. Look for unilateral findings or congestion."],
+    workup: [["Bedside and imaging", ["Check SpO₂ and obtain a blood gas when indicated. Use ECG and chest imaging to assess alternative causes in severe or atypical disease."]]],
+    redFlags: ["Acidosis, rising CO₂, reduced consciousness, hemodynamic instability or a new oxygen requirement above baseline."],
+    disposition: [
+        ["Monitored admission", "Acidosis, ventilatory support or inadequate response requires admission. Escalate early if NIV is failing."],
+        ["Selected discharge", "Confirm sustained improvement and safe oxygenation near baseline. Review inhalers, medication access, follow-up and return precautions."]
+    ],
+    pitfalls: [
+        "Leaving oxygen untitrated after stabilization.",
+        "Using pulse oximetry to judge ventilation."
+    ],
+    pearls: ["Compare the blood gas, oxygen requirement and mental status with the patient’s baseline when available."],
+    refs: ["GOLD global strategy for COPD (2026)", "NICE QS10 emergency oxygen during a COPD exacerbation"]
+},
+{
+    id: 'community-acquired-pneumonia', type: 'diagnosis', name: "Community-Acquired Pneumonia (CAP)", icon: '🩺',
+    tag: "Confirm the diagnosis and use oxygen needs, physiology and home support to guide disposition.",
+    overview: "This guide focuses on adults with suspected community-acquired pneumonia. Immunocompromised patients and hospital-acquired infection need adapted pathways.",
+    approach: [
+        "Assess oxygenation, perfusion and mental status. Treat respiratory failure or suspected sepsis while arranging diagnostic testing.",
+        "Use chest radiography or lung ultrasound where appropriate expertise exists. Reassess persistent suspicion after nondiagnostic imaging and consider alternative diagnoses.",
+        "Choose empiric antibiotics according to severity, comorbidities, resistance risk and local guidance. A positive viral test does not by itself exclude bacterial coinfection, especially in hospitalized or severe CAP.",
+        "Use the Pneumonia Severity Index with clinical judgment for site-of-care decisions. Assess separately for severe CAP and the need for critical care."
+    ],
+    dontMiss: [
+        ["Severe CAP or septic shock", "critical", "Vasopressor-dependent shock or need for invasive ventilation warrants ICU care.", ["sepsis-and-septic-shock"]],
+        ["Complicated parapneumonic effusion or empyema", "emergent", "Evaluate a significant effusion, persistent sepsis or failure to improve for drainage and source control."]
+    ],
+    history: ["Ask about cough, fever, dyspnea, aspiration risk, comorbidities, recent hospitalization or IV antibiotics, and previous resistant respiratory isolates."],
+    exam: ["Check oxygen requirement, respiratory effort, perfusion and mentation. Older adults can present with confusion or functional decline."],
+    workup: [
+        ["Imaging", ["Document infiltrates, distribution and effusion. Consider pulmonary edema or PE when the findings do not explain the clinical picture."]],
+        ["Microbiology", ["Use cultures in severe CAP or when indicated by resistant-pathogen risk. Order viral testing when it can change treatment or infection control."]]
+    ],
+    redFlags: ["Escalating oxygen requirement, hypotension, confusion, or suspected pleural infection."],
+    disposition: [
+        ["Admission or ICU", "Use physiology, organ dysfunction and severe-CAP criteria to guide escalation."],
+        ["Selected outpatient care", "Confirm safe oxygenation, oral tolerance, medication access and follow-up, then give return precautions."]
+    ],
+    pitfalls: [
+        "Using a low severity score to override new hypoxemia or an unsafe home plan.",
+        "Withholding needed treatment solely because procalcitonin is low."
+    ],
+    pearls: ["Record the reason for the selected site of care and the patient’s oxygen requirement relative to baseline."],
+    refs: ["ATS community-acquired pneumonia guideline update (2025, published in 2026 issue)", "ATS/IDSA adult community-acquired pneumonia guideline (2019)", "Surviving Sepsis Campaign adult guideline (2026)"]
+},
+{
+    id: 'sepsis-and-septic-shock', type: 'diagnosis', name: "Sepsis and Septic Shock", icon: '🩺',
+    tag: "Treat organ dysfunction and suspected infection in parallel. Arrange source control early.",
+    overview: "Sepsis is life-threatening organ dysfunction caused by a dysregulated response to infection. Fever and hypotension may be absent early. This pathway is for adults.",
+    approach: [
+        "Assess perfusion and organ dysfunction, measure lactate and obtain blood cultures promptly, ideally before antimicrobials when this does not delay treatment.",
+        "Give antimicrobials immediately, ideally within 1 hour, for septic shock or probable or definite sepsis. For possible sepsis without shock, investigate rapidly and give antimicrobials within 3 hours of suspicion if concern persists.",
+        "Use IV crystalloid for sepsis-induced hypoperfusion or shock, preferably balanced crystalloid in most cases. SSC suggests at least 30 mL/kg in the first 3 hours. Individualize delivery and reassess response and fluid tolerance frequently.",
+        "Start norepinephrine promptly for persistent hypotension. In unstable shock it may be needed alongside initial fluids. An initial MAP of 65 mmHg is typical. SSC suggests 60–65 mmHg initially for adults aged 65 or older. Identify any source requiring urgent drainage, surgery or device removal."
+    ],
+    dontMiss: [
+        ["Source requiring intervention", "critical", "An infected obstructed biliary or urinary system, abscess or necrotizing infection may require urgent intervention.", ["acute-cholangitis"]],
+        ["Neutropenic sepsis", "critical", "Recent systemic cancer therapy or known neutropenia warrants its own urgent pathway.", ["neutropenic-sepsis"]],
+        ["Noninfectious or mixed shock", "critical", "Consider bleeding, cardiogenic or obstructive shock and adrenal crisis while treating plausible infection.", ["cardiogenic-shock", "adrenal-crisis"]]
+    ],
+    history: ["Ask about likely source, recent procedures, immunosuppression, antibiotics, devices, resistant organisms and allergies."],
+    exam: ["Assess mentation, capillary refill, skin temperature, BP, urine output and respiratory status. Recheck after each major intervention."],
+    workup: [
+        ["Perfusion", ["Measure lactate and follow elevated values with clinical perfusion markers. Lactate elevation is nonspecific."]],
+        ["Source", ["Use focused imaging and cultures directed by the history and exam. Arrange consultation or transfer early for source control. If source control is required, SSC suggests performing it as early as possible, ideally within 6 hours of diagnosis."]]
+    ],
+    redFlags: ["Shock, rising oxygen needs, oliguria, new confusion or progressive organ dysfunction."],
+    disposition: [["Admission / critical care", "Admit for ongoing organ dysfunction or unresolved infection. Escalate vasopressor use or respiratory failure and communicate the source-control plan."]],
+    pitfalls: [
+        "Using qSOFA alone to rule out sepsis.",
+        "Waiting for the full fluid volume before starting vasopressors in unstable shock."
+    ],
+    pearls: ["Document recognition time, cultures, antibiotic administration, perfusion response and planned source control."],
+    refs: ["Surviving Sepsis Campaign adult guideline (2026)"]
+},
+{
+    id: 'cardiogenic-shock', type: 'diagnosis', name: "Cardiogenic Shock", icon: '🩺',
+    tag: "Recognize hypoperfusion from pump failure and activate the cardiac or shock team early.",
+    overview: "Cardiogenic shock can follow acute MI, decompensated heart failure, arrhythmia or a mechanical complication. Hypoperfusion can be present even before BP falls.",
+    approach: [
+        "Monitor and obtain IV access, an ECG and rapid cardiac ultrasound or echocardiography. Activate the shock team or arrange early transfer if definitive care is unavailable.",
+        "Identify the cause and assess ventricular function, congestion and perfusion. Treat acute ischemia, unstable rhythm or a mechanical complication in parallel.",
+        "Individualize fluid and vasoactive support. Avoid routine large boluses in congestion. Use vasopressor support for hypotension and consider inotropic support for persistent low output with expert input.",
+        "Reassess perfusion and organ function after each intervention. Discuss escalation, including selected mechanical circulatory support, with the shock team if deterioration continues."
+    ],
+    dontMiss: [
+        ["Acute MI with shock", "critical", "Involve cardiology immediately for emergency revascularization assessment.", ["acute-coronary-syndrome"]],
+        ["Mechanical complication", "critical", "New murmur, sudden pulmonary edema or collapse after MI needs urgent echo and surgical or interventional assessment."],
+        ["Obstructive or mixed shock", "critical", "Consider PE, tamponade or concurrent sepsis when the findings do not fit isolated pump failure.", ["pulmonary-embolism", "cardiac-tamponade", "sepsis-and-septic-shock"]]
+    ],
+    history: ["Ask about acute ischemic symptoms, known heart failure, recent MI or cardiac procedures, infection, medication changes and arrhythmia."],
+    exam: ["Check mentation, capillary refill, urine output and temperature of the extremities. Look for congestion, new murmur or unequal pulses."],
+    workup: [
+        ["ECG and echo", ["Assess ischemia, rhythm, LV and RV function and mechanical causes early."]],
+        ["Perfusion labs", ["Check lactate, blood gas, renal and liver function and troponin as indicated. Follow trends with the clinical exam."]]
+    ],
+    redFlags: ["Rising lactate, oliguria, altered mentation, worsening hypotension or progressive respiratory failure."],
+    disposition: [["Cardiac critical care / emergency transfer", "Communicate likely mechanism, perfusion trends, vasoactive support and the intervention or transfer plan."]],
+    pitfalls: [
+        "Waiting for marked hypotension before recognizing hypoperfusion.",
+        "Treating a low ejection fraction alone as evidence of shock."
+    ],
+    pearls: ["Reassess both congestion and perfusion after each intervention. Mixed shock is possible."],
+    refs: ["ACC evaluation and management of cardiogenic shock (2025)", "ESC and EUSEM consensus on acute heart failure in emergency settings (2026)", "ACC/AHA multisociety ACS guideline (2025)"]
+},
+{
+    id: 'adrenal-crisis', type: 'diagnosis', name: "Adrenal Crisis", icon: '🩺',
+    tag: "Give hydrocortisone immediately when adrenal crisis is suspected.",
+    overview: "Adrenal crisis can follow infection, vomiting, surgery or interruption of glucocorticoids. Consider it with unexplained hypotension, abdominal symptoms, weakness or hypoglycemia, especially with known adrenal insufficiency or recent long-term steroid exposure.",
+    approach: [
+        "Give hydrocortisone 100 mg IV or IM immediately in adults with suspected adrenal crisis. Draw cortisol and ACTH first only if this can be done without delaying treatment.",
+        "Start IV 0.9% sodium chloride promptly and reassess perfusion, sodium and fluid tolerance. Check bedside glucose and treat hypoglycemia immediately.",
+        "Continue stress-dose hydrocortisone after the initial dose, commonly 200 mg IV over 24 hours or 50 mg IV every 6 hours, with endocrinology input.",
+        "Treat the precipitant in parallel, including suspected sepsis. Monitor BP, glucose and electrolytes frequently."
+    ],
+    dontMiss: [
+        ["Sepsis as a trigger or alternative", "critical", "Start indicated sepsis treatment while treating suspected adrenal crisis.", ["sepsis-and-septic-shock"]],
+        ["Hypoglycemia or severe electrolyte disturbance", "critical", "Treat hypoglycemia and manage significant hyperkalemia with ECG assessment and the appropriate pathway.", ["electrolytes"]]
+    ],
+    history: ["Ask about known adrenal or pituitary disease, steroid dose or recent cessation, missed doses, persistent vomiting and recent infection or procedures."],
+    exam: ["Assess perfusion, hydration, mentation and abdominal tenderness. Repeat vitals after treatment."],
+    workup: [["Bedside and labs", ["Check glucose, electrolytes and renal function. Obtain cortisol and ACTH if feasible before hydrocortisone. Investigate infection and other causes of shock."]]],
+    redFlags: ["Persistent hypotension, confusion, hypoglycemia or inability to retain steroid replacement during acute illness."],
+    disposition: [["Monitored admission", "Continue parenteral therapy until stable and oral absorption is reliable. Arrange endocrine review and sick-day and emergency injection education before discharge."]],
+    pitfalls: [
+        "Waiting for cortisol results before giving hydrocortisone.",
+        "Requiring hyperkalemia to make the diagnosis. It may be absent in secondary or glucocorticoid-induced adrenal insufficiency."
+    ],
+    pearls: ["Ask specifically about recent steroid taper or cessation when the medication list no longer shows a steroid."],
+    refs: ["NICE NG243: adrenal insufficiency and emergency management (2024)", "Endocrine Society primary adrenal insufficiency guideline", "ESE/Endocrine Society glucocorticoid-induced adrenal insufficiency guideline (2024)"]
 }
 ];
 if (typeof window !== 'undefined') window.CP_DATA = CP_DATA;

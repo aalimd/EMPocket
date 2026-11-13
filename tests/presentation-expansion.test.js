@@ -17,7 +17,7 @@ test('selected review records distinguish the new scope from the historical audi
   'esophageal-perforation', 'cardiac-tamponade', 'acute-mesenteric-ischemia',
   'ruptured-abdominal-aortic-aneurysm', 'acute-appendicitis', 'small-bowel-obstruction'
  ];
- const november14 = ['ectopic-pregnancy', 'ovarian-torsion', 'testicular-torsion', 'perforated-peptic-ulcer', 'acute-cholecystitis', 'acute-cholangitis', 'acute-pancreatitis', 'acute-diverticulitis'];
+ const november14 = ['ectopic-pregnancy', 'ovarian-torsion', 'testicular-torsion', 'perforated-peptic-ulcer', 'acute-cholecystitis', 'acute-cholangitis', 'acute-pancreatitis', 'acute-diverticulitis', 'acute-heart-failure', 'acute-asthma-exacerbation', 'copd-exacerbation', 'community-acquired-pneumonia', 'sepsis-and-septic-shock', 'cardiogenic-shock', 'adrenal-crisis'];
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(), [...ids, ...november13, ...november14].sort());
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(), Array.from(topics, topic => topic.id).sort());
  for(const id of [...ids, ...november13, ...november14]){
@@ -270,4 +270,18 @@ test('abdominal, pelvic, biliary and scrotal differentials open their diagnosis 
  ]) {
   for (const guide of guides) assert.ok(linked(presentation).includes(guide), presentation + ' → ' + guide);
  }
+});
+
+test('dyspnea and shock guides link from their presentations and keep treatment distinctions', () => {
+ const linked = id => topics.find(topic => topic.id === id).dontMiss.flatMap(row => row[3] || []);
+ for (const [presentation, guides] of [
+  ['dyspnea', ['acute-heart-failure', 'acute-asthma-exacerbation', 'copd-exacerbation', 'community-acquired-pneumonia']],
+  ['shock', ['sepsis-and-septic-shock', 'cardiogenic-shock', 'adrenal-crisis']],
+  ['fever', ['sepsis-and-septic-shock', 'neutropenic-sepsis']]
+ ]) {
+  for (const guide of guides) assert.ok(linked(presentation).includes(guide), presentation + ' → ' + guide);
+ }
+ assert.match(text('acute-asthma-exacerbation'), /92–95%/);
+ assert.match(text('copd-exacerbation'), /88–92%/);
+ assert.match(text('sepsis-and-septic-shock'), /possible sepsis without shock, investigate rapidly/);
 });

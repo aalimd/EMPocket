@@ -16,3 +16,9 @@ The review covers the ten additions and the companion wording changes in Chest P
 Added ectopic pregnancy, ovarian torsion, testicular torsion, perforated peptic ulcer, acute cholecystitis, acute cholangitis, acute pancreatitis and acute colonic diverticulitis. Differential links also appear in related pathways including Pelvic Pain, Scrotal Pain, Jaundice, Vaginal Bleeding and Pregnancy Emergencies.
 
 The review distinguishes the limits of hCG and Doppler imaging, gallbladder inflammation from infected bile duct obstruction, and low-risk uncomplicated diverticulitis from complications needing source control. The References section on each guide records its sources and scope. Testicular torsion includes children and adolescents. The ovarian guide focuses on adolescents and reproductive-age patients.
+
+## 14 November dyspnea and shock expansion
+
+Added seven adult guides for acute heart failure, acute asthma, COPD exacerbation, community-acquired pneumonia, sepsis and septic shock, cardiogenic shock, and adrenal crisis. Differential links appear in Shortness of Breath, Shock, Fever, Edema, Hypertensive Emergency and other relevant pathways.
+
+The guidance distinguishes oxygen targets for asthma and COPD, congestion from hypoperfusion in heart failure, and immediate antibiotics for suspected septic shock or probable sepsis from time-limited assessment for possible sepsis without shock. Each guide includes the scope and source links in its References section.

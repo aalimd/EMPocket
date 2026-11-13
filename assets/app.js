@@ -142,6 +142,13 @@
         { title: 'Oncology Emergencies', ids: ['neutropenic-sepsis', 'tumor-lysis-syndrome', 'metastatic-spinal-cord-compression', 'hypercalcemia-of-malignancy', 'superior-vena-cava-syndrome', 'cancer-immunotherapy-toxicity'] }
     ];
     const RELATED = {
+        'acute-heart-failure': ['dyspnea', 'shock', 'edema', 'hypertensive-emergency'],
+        'acute-asthma-exacerbation': ['dyspnea', 'chest-pain', 'anaphylaxis'],
+        'copd-exacerbation': ['dyspnea', 'cyanosis', 'ams'],
+        'community-acquired-pneumonia': ['dyspnea', 'fever', 'hemoptysis', 'shock'],
+        'sepsis-and-septic-shock': ['shock', 'fever', 'ams', 'neutropenic-sepsis'],
+        'cardiogenic-shock': ['shock', 'dyspnea', 'chest-pain', 'cardiac-arrest'],
+        'adrenal-crisis': ['shock', 'nausea-vomiting', 'abdominal-pain', 'hyperglycemia'],
         'ectopic-pregnancy': ['pelvic-pain', 'vaginal-bleeding', 'pregnancy-emergency', 'abdominal-pain'],
         'ovarian-torsion': ['pelvic-pain', 'abdominal-pain', 'nausea-vomiting'],
         'testicular-torsion': ['scrotal-pain', 'abdominal-pain', 'nausea-vomiting'],
@@ -368,6 +375,13 @@
     if (typeof window !== 'undefined') window.EM_ICONS = { svg: semanticSvg, map: SEMANTIC_ICONS };
 
     const TOPIC_CATS = {
+        'acute-heart-failure': 'cardio',
+        'acute-asthma-exacerbation': 'pulm',
+        'copd-exacerbation': 'pulm',
+        'community-acquired-pneumonia': 'pulm',
+        'sepsis-and-septic-shock': 'critical',
+        'cardiogenic-shock': 'critical',
+        'adrenal-crisis': 'endocrine',
         'ectopic-pregnancy': 'obgyn',
         'ovarian-torsion': 'obgyn',
         'testicular-torsion': 'gu',
@@ -3471,7 +3485,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = isAppWorker(navigator.serviceWorker.controller);
-                navigator.serviceWorker.register('./sw.js?v=20261114-diagnoses-v85').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261114-diagnoses-v86').then((registration) => {
                     navigator.serviceWorker.ready.then((ready) => {
                         if (ready.scope === new URL('./', location.href).href) setOfflineStatus('Ready for offline use');
                     });
