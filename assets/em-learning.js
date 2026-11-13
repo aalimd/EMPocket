@@ -271,7 +271,7 @@
     let recordingsPromise = null;
     function loadRecordings() {
         if (!recordingsPromise) {
-            recordingsPromise = import('./ecg-recordings.js?v=20261110-content-v80')
+            recordingsPromise = import('./ecg-recordings.js?v=20261113-content-v81')
                 .catch(function (error) { recordingsPromise = null; throw error; });
         }
         return recordingsPromise || Promise.resolve();

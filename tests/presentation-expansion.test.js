@@ -9,9 +9,12 @@ const text=id=>JSON.stringify(topics.find(t=>t.id===id));
 test('selected review records distinguish the new scope from the historical audit',()=>{
  assert.equal(evidence.checked,'2026-10-08');
  const ids=['chest-pain','dyspnea','abdominal-pain','headache','ams','syncope','fever','dizziness','gib','back-pain','joint-pain','pelvic-pain','seizures','overdose','hyperglycemia','flank-pain','red-eye','sore-throat','scrotal-pain','diarrhea','rash','limb-ischemia','urinary-retention','head-injury','pediatric-fever','pediatric-respiratory-distress','anaphylaxis','burns','heat-cold','alcohol-withdrawal','suicidal','constipation','weakness','coma','hemoptysis','shock','palpitations','focal-neurologic-deficit','electrolytes','hypertensive-emergency','vaginal-bleeding','nausea-vomiting','jaundice','cyanosis','diplopia','airway-stridor','edema','falls-geriatric-trauma'];
- assert.deepEqual(Object.keys(evidence.topicReviews).sort(),ids.sort());
- for(const id of ids){
-  const r=evidence.topicReviews[id];assert.equal(r.checked,'2026-11-10');assert.ok(r.scope.length>15);
+ const finalBatch = ['multiple-trauma', 'pregnancy-emergency', 'cardiac-arrest', 'thyroid-storm'];
+ assert.deepEqual(Object.keys(evidence.topicReviews).sort(), [...ids, ...finalBatch].sort());
+ assert.deepEqual(Object.keys(evidence.topicReviews).sort(), Array.from(topics, topic => topic.id).sort());
+ for(const id of [...ids, ...finalBatch]){
+  const r=evidence.topicReviews[id];
+  assert.equal(r.checked, finalBatch.includes(id) ? '2026-11-13' : '2026-11-10');assert.ok(r.scope.length>15);
   assert.ok(r.sources.length);for(const key of r.sources){assert.ok(evidence.topics[id].includes(key),id+': '+key);assert.ok(evidence.sources[key]);}
  }
 });
@@ -36,12 +39,13 @@ test('new teaching is indexed at its authored topic and section',()=>{
   assert.ok(idx.some(h=>h.cpId===id&&h.target===target&&h.title.includes(phrase)),id+' '+target);
  }
 });
-test('references display a scoped addition date without relabelling unreviewed topics',()=>{
+test('references display a scoped addition date separately from the historical audit',()=>{
  const source=fs.readFileSync('assets/app.js','utf8');
  for(const name of ['esc','evidenceHtml']){const start=source.indexOf('    function '+name+'('),end=source.indexOf('\n    function ',start+1);vm.runInContext(source.slice(start,end),c);}
  assert.match(c.evidenceHtml('headache'),/Selected additions checked 2026-11-10/);
  assert.match(c.evidenceHtml('headache'),/This date applies only to these additions/);
- assert.doesNotMatch(c.evidenceHtml('multiple-trauma'),/Selected additions checked/);
+ assert.match(c.evidenceHtml('multiple-trauma'),/Selected additions checked 2026-11-13/);
+ assert.match(c.evidenceHtml('multiple-trauma'),/source check 2026-10-08/);
 });
 
 test('pregnancy follow-up cannot substitute an hCG trend for clinical reassessment',()=>{
@@ -206,4 +210,25 @@ test('symptom improvement and isolated measurements do not substitute for reasse
 test('sixth-batch teaching is searchable at the authored clinical section',()=>{
  const idx=c.window.EM_SEARCH_INDEX.buildSearchIndex(topics,c.window.ECG_DATA);
  for(const [id,target,phrase] of [['vaginal-bleeding','pearls-pitfalls','postmenopausal bleeding'],['nausea-vomiting','history','regular cannabis use'],['jaundice','pearls-pitfalls','Falling aminotransferases'],['cyanosis','history','generators'],['diplopia','exam','facial sensation'],['airway-stridor','pearls-pitfalls','2–4 hours'],['edema','workup','repeat proximal scan'],['falls-geriatric-trauma','pearls-pitfalls','comprehensive falls assessment']])assert.ok(idx.some(h=>h.cpId===id&&h.target===target&&h.title.includes(phrase)),id);
+});
+
+test('final batch replaces outdated emergency action rows with sourced distinctions', () => {
+ const arrest = text('cardiac-arrest');
+ assert.match(arrest, /AF or atrial flutter 200 J/);
+ assert.match(arrest, /polymorphic VT needs an unsynchronized/);
+ assert.doesNotMatch(arrest, /narrow regular 50–100 J|target QRS <100 ms/);
+
+ const pregnancy = text('pregnancy-emergency');
+ assert.match(pregnancy, /Prepare for resuscitative delivery at recognition/);
+ assert.match(pregnancy, /complete it by 5 minutes if ROSC is absent/);
+ assert.match(pregnancy, /where the arrest occurs/);
+ assert.doesNotMatch(pregnancy, /hysterotomy at 4 min/);
+
+ const thyroid = topics.find(topic => topic.id === 'thyroid-storm');
+ const [, myxoedema] = thyroid.doses.find(([name]) => name === 'Myxoedema coma');
+ assert.match(myxoedema[0], /Hydrocortisone 100 mg IV before levothyroxine/);
+ assert.match(myxoedema[1], /1\.6 mcg\/kg\/day enterally, reduced to 75% while given IV/);
+ assert.doesNotMatch(text('thyroid-storm'), /50–100 mcg IV daily/);
+
+ assert.match(text('multiple-trauma'), /negative eFAST leaves intraperitoneal and retroperitoneal bleeding possible/);
 });

@@ -1,11 +1,22 @@
 /* Selected primary guidance for the teaching points reviewed 8 October 2026.
- * Targeted presentation additions checked 10 November 2026; topicReviews records scope.
+ * Targeted presentation additions checked 10–13 November 2026; topicReviews records scope.
  * Links support specific topics, not certification of every statement on a page.
  * Keep titles/URLs explicit: no guessed links generated from citation text.
  */
 (function () {
     'use strict';
     const sources = {
+        majorTrauma: ["NICE NG39: major trauma assessment and initial management", "https://www.nice.org.uk/guidance/ng39/chapter/recommendations"],
+        traumaBleeding: ["European guideline on major bleeding and coagulopathy following trauma (2023)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9977110/"],
+        pregnancyTrauma: ["EAST practice management guideline on trauma in pregnancy (2025)", "https://www.east.org/education-resources/practice-management-guidelines/details/trauma-in-pregnancy-a-systematic-review-metaanalysis-and-practice-management-guideline-from-the-east"],
+        obstetricBP: ["ACOG Committee Opinion 767: acute severe hypertension in pregnancy and postpartum", "https://pubmed.ncbi.nlm.nih.gov/30575639/"],
+        obstetricSevereFeatures: ["ACOG clinician education: hypertensive disorders and severe features", "https://www.acog.org/community/districts-and-sections/district-iv/whats-new/countdown-to-intern-year-week-3-hypertensive-disorders"],
+        cardioversionEnergy: ["AHA 2025 adult electrical cardioversion algorithm", "https://cpr.heart.org/en/-/media/CPR-Files/CPR-Guidelines-Files/2025-Algorithms/Algorithm-ACLS-Electrical-Cardioversion-250514.pdf"],
+        postArrest: ["AHA 2025 adult post-cardiac arrest care", "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/post-cardiac-arrest-care"],
+        stormConsensus: ["Joint endocrine society consensus on thyroid storm (2026)", "https://doi.org/10.1530/ETJ-26-0043"],
+        myxoedemaConsensus: ["Joint endocrine society consensus on myxoedema coma (2026)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC13452032/"],
+        ataThyrotoxicosis: ["ATA hyperthyroidism and thyrotoxicosis guideline (2016)", "https://doi.org/10.1089/thy.2016.0229"],
+        ataHypothyroidism: ["ATA hypothyroidism guideline (2014), including myxoedema coma", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4267409/"],
         antepartumExam: ['RCOG Green-top 63 antepartum haemorrhage (2011): foundational examination precautions', 'https://www.rcog.org.uk/media/pwdi1tef/gtg_63.pdf'],
         previaExam: ['RCOG placenta praevia patient information: speculum examination', 'https://www.rcog.org.uk/for-the-public/browse-our-patient-information/placenta-praevia-placenta-accreta-and-vasa-praevia'],
         heavyBleeding: ["NICE NG88 heavy menstrual bleeding: history and selective tests", "https://www.nice.org.uk/guidance/ng88/chapter/Recommendations"],
@@ -111,7 +122,6 @@
         hypertension: ["ESH 2023 arterial hypertension guideline", "https://journals.lww.com/jhypertension/fulltext/2023/06000/2023_esh_guidelines_for_the_management_of.2.aspx"],
         burns: ["American Burn Association burn-shock resuscitation guidelines", "https://ameriburn.org/quality-care/clinical-guidelines/"],
         withdrawal: ["ASAM clinical practice guideline on alcohol withdrawal management (2020)", "https://www.asam.org/quality-care/clinical-guidelines/alcohol-withdrawal"],
-        thyroid: ["ATA/AACE thyroid storm and myxoedema emergency guidance", "https://www.thyroid.org/thyroid-storm/"]
     };
     const topics = {
         'chest-pain': ['aorta', 'chest', 'acs', 'mi', 'pe'], dyspnea: ['asthma', 'pe', 'dyspneaAssessment'],
@@ -119,19 +129,19 @@
         weakness: ['stroke', 'gbs'], dizziness: ['dizziness', 'stroke'], diplopia: ['cn3', 'stroke', 'diplopiaAssessment'],
         'focal-neurologic-deficit': ['stroke', 'ich'], fever: ['sepsis', 'meningitis'], shock: ['sepsis', 'lung', 'special'],
         'joint-pain': ['joint'], 'pelvic-pain': ['ectopic', 'ectopicDiagnosis', 'pid'], 'abdominal-pain': ['appendicitis', 'ectopic', 'abdominalAssessment', 'mesenteric'],
-        'vaginal-bleeding': ['pph', 'rh', 'ectopic', 'heavyBleeding', 'endometrialReferral', 'antepartumExam', 'previaExam'], 'pregnancy-emergency': ['special', 'pe', 'rh', 'hyperemesis', 'pph'],
+        'vaginal-bleeding': ['pph', 'rh', 'ectopic', 'heavyBleeding', 'endometrialReferral', 'antepartumExam', 'previaExam'], 'pregnancy-emergency': ['special', 'pe', 'rh', 'hyperemesis', 'pph', 'obstetricBP', 'obstetricSevereFeatures', 'ectopicDiagnosis', 'pregnancyTrauma'],
         'scrotal-pain': ['epididymitis'], seizures: ['seizures', 'esett', 'firstSeizure'], hemoptysis: ['hemoptysis', 'pe'],
         'nausea-vomiting': ['hyperemesis', 'dka', 'adrenal', 'chest', 'chs'], diarrhea: ['cdi', 'infectiousDiarrhea'], cyanosis: ['methb', 'neonate', 'special', 'oximetry', 'coExposure'],
         overdose: ['special', 'acetaminophen', 'selfharm'], jaundice: ['acetaminophen', 'alfAssessment', 'alfEASL', 'cholangitis'], 'back-pain': ['mscc', 'back'], 'pediatric-fever': ['infant', 'infant90', 'childFever', 'kawasaki', 'meningitis'], hyperglycemia: ['dka', 'adrenal'],
         'heat-cold': ['special'], palpitations: ['af', 'als', 'ambulatoryECG'], syncope: ['syncope', 'syncopeGuideline', 'als'],
         'airway-stridor': ['special', 'croup'], anaphylaxis: ['special', 'rcukAnaphylaxis'], 'flank-pain': ['stones'],
-        'urinary-retention': ['stones', 'urethralTrauma', 'catheterCare'], edema: ['pe', 'dvt', 'dvtUltrasound'], 'multiple-trauma': ['headinjury'],
+        'urinary-retention': ['stones', 'urethralTrauma', 'catheterCare'], edema: ['pe', 'dvt', 'dvtUltrasound'], 'multiple-trauma': ['headinjury', 'majorTrauma', 'traumaBleeding'],
         'falls-geriatric-trauma': ['headinjury', 'falls', 'occultHip'], 'pediatric-respiratory-distress': ['bronchiolitis', 'asthma'],
         gib: ['ugib', 'lgib', 'lgibASGE'], 'red-eye': ['keratitis', 'chemicalEye'], 'sore-throat': ['gas', 'gasTesting'],
         suicidal: ['selfharm'], constipation: ['constipation'], 'limb-ischemia': ['pad'], rash: ['ssti'],
-        'cardiac-arrest': ['acls', 'als', 'special'], electrolytes: ['hyperkalemia', 'hyponatremia', 'sodiumUS', 'potassiumKDIGO'],
+        'cardiac-arrest': ['acls', 'als', 'special', 'cardioversionEnergy', 'postArrest'], electrolytes: ['hyperkalemia', 'hyponatremia', 'sodiumUS', 'potassiumKDIGO'],
         'head-injury': ['tbi', 'headinjury', 'mtbi', 'csfLeak'], 'hypertensive-emergency': ['hypertension', 'stroke', 'acuteBP', 'aorta', 'ich'],
-        burns: ['burns', 'burnResuscitation', 'burnReferral', 'burnCooling', 'special'], 'alcohol-withdrawal': ['withdrawal', 'wernickeUK'], 'thyroid-storm': ['thyroid'],
+        burns: ['burns', 'burnResuscitation', 'burnReferral', 'burnCooling', 'special'], 'alcohol-withdrawal': ['withdrawal', 'wernickeUK'], 'thyroid-storm': ['stormConsensus', 'myxoedemaConsensus', 'ataThyrotoxicosis', 'ataHypothyroidism'],
         ecg: ['mi', 'af', 'als', 'special', 'pericarditis']
     };
     const topicReviews = {
@@ -499,6 +509,45 @@
         "sources": [
             "falls",
             "occultHip"
+        ]
+    },
+    "multiple-trauma": {
+        "checked": "2026-11-13",
+        "scope": "selected hemorrhage resuscitation, eFAST limitations and CT decisions",
+        "sources": [
+            "majorTrauma",
+            "traumaBleeding"
+        ]
+    },
+    "pregnancy-emergency": {
+        "checked": "2026-11-13",
+        "scope": "selected severe hypertension, early pregnancy follow-up, trauma observation and maternal resuscitation",
+        "sources": [
+            "obstetricBP",
+            "obstetricSevereFeatures",
+            "ectopicDiagnosis",
+            "pregnancyTrauma",
+            "special"
+        ]
+    },
+    "cardiac-arrest": {
+        "checked": "2026-11-13",
+        "scope": "selected rhythm-specific shocks, reversible causes and adult post-arrest care",
+        "sources": [
+            "als",
+            "special",
+            "cardioversionEnergy",
+            "postArrest"
+        ]
+    },
+    "thyroid-storm": {
+        "checked": "2026-11-13",
+        "scope": "selected diagnostic limitations, beta blockade precautions and thyroid hormone replacement",
+        "sources": [
+            "stormConsensus",
+            "myxoedemaConsensus",
+            "ataThyrotoxicosis",
+            "ataHypothyroidism"
         ]
     }
 };
