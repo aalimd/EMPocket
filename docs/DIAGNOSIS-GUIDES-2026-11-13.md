@@ -28,3 +28,9 @@ The guidance distinguishes oxygen targets for asthma and COPD, congestion from h
 Added seven adult emergency guides for ischemic stroke, transient ischemic attack, aneurysmal subarachnoid hemorrhage, spontaneous intracerebral hemorrhage, bacterial meningitis, convulsive status epilepticus and cerebral venous thrombosis. The guides are linked from Headache, Altered Mental Status, Coma, Focal Neurologic Deficit, Weakness, Dizziness, Fever and Seizures.
 
 The References sections record the scope and sources, including AHA/ASA 2026 stroke guidance, the distinct AHA/ASA and ACEP approaches to suspected SAH after a negative CT, and NICE and WHO guidance on timing of antibiotics and lumbar puncture in suspected bacterial meningitis.
+
+## 14 November spinal, neuromuscular and urinary expansion
+
+Added six guides for cauda equina syndrome, spinal epidural abscess and discitis, Guillain–Barré syndrome, myasthenic crisis, infected upper urinary tract obstruction and acute pyelonephritis. The guides link from Back Pain, Weakness, Shortness of Breath, Diplopia, Constipation, Urinary Retention and Flank Pain.
+
+The source checks cover when to obtain emergency MRI despite a low post-void residual, when antibiotics must precede tissue sampling in suspected spinal infection, respiratory monitoring in progressive weakness, and when urinary infection requires urgent decompression.

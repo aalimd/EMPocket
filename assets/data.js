@@ -11,7 +11,7 @@
    Final targeted expansion: 13 Nov 2026, four additional presentations — see docs/PRESENTATION-EXPANSION-2026-11-13-BATCH-7.md.
    Oncology Emergencies: 13 Nov 2026, six adult emergency guides. See docs/ONCOLOGY-EMERGENCIES-2026-11-13.md.
    Clinical consistency audit: 13 Nov 2026, selected high-risk treatment rows and decision tools. See docs/CLINICAL-CONSISTENCY-2026-11-13.md.
-   Diagnosis guides: 13–14 Nov 2026, including adult dyspnea, shock and neurologic emergencies. See docs/DIAGNOSIS-GUIDES-2026-11-13.md.
+   Diagnosis guides: 13–14 Nov 2026, including adult dyspnea, shock, neurologic and urinary emergencies. See docs/DIAGNOSIS-GUIDES-2026-11-13.md.
    Optional fourth differential field: a list of topic IDs with dedicated guidance.
    Educational reference only — never replaces clinical judgment or local protocols.
 */
@@ -87,7 +87,7 @@ dontMiss: [
 ['Anaphylaxis', 'critical', 'IM epinephrine into the anterolateral thigh immediately — do not wait for urticaria (it may be absent).', ['anaphylaxis']],
 ['Carbon monoxide poisoning', 'critical', 'Headache, whole household ill; standard SpO₂ is falsely normal — CO-oximetry.'],
 ['Metabolic acidosis (Kussmaul breathing)', 'emergent', 'DKA, sepsis, salicylates, uremia — lungs compensating for the blood.'],
-['Neuromuscular weakness (GBS, myasthenia)', 'emergent', 'Orthopnea, weak cough, falling NIF/VC — monitor before the crash.'],
+['Neuromuscular weakness (GBS, myasthenia)', 'emergent', 'Orthopnea, weak cough, falling NIF/VC — monitor before the crash.', ['guillain-barre-syndrome', 'myasthenic-crisis']],
 ['Pneumonia / COPD exacerbation / anemia', 'common', 'High-frequency drivers; treat and reassess objectively.', ['community-acquired-pneumonia', 'copd-exacerbation']]
 ],
 history: ['Tempo: seconds (PE/PTX), minutes (asthma/edema), hours–days (pneumonia/HF), weeks (anemia/effusion)', 'Positional: orthopnea & PND → LV failure; platypnea → shunt', 'Exposures: smoke, allergens, occupational, CO source, diving', 'Background: asthma/COPD, HF, VTE risks, immunosuppression', 'Associated chest pain, fever, leg swelling, hemoptysis'],
@@ -305,9 +305,9 @@ approach: [
 ],
 dontMiss: [
 ['Acute stroke / TIA', 'critical', 'Sudden focal weakness — last-known-well, glucose, non-contrast CT. Check eligibility for IV TNK/alteplase (≤4.5 h, or 4.5–9 h/unknown onset via advanced imaging) and EVT (≤24 h, including selected large-core infarcts per 2026 AHA/ASA).', ['acute-ischemic-stroke', 'transient-ischemic-attack']],
-['Guillain-Barré syndrome', 'critical', 'Ascending (or variant) weakness, areflexia; monitor NIF/VC — intubate before the crash. CSF may be normal in the first week.'],
-['Cauda equina / cord compression', 'critical', 'Back pain + leg weakness ± saddle anesthesia, urinary retention — emergency MRI + spine surgery. Dexamethasone is for metastatic cord compression (NICE NG234), not routine for discogenic CES.'],
-['Myasthenic crisis', 'critical', 'Fatigable weakness (ptosis, diplopia worse late in the day); NIF monitoring; avoid macrolides, fluoroquinolones, aminoglycosides.'],
+['Guillain-Barré syndrome', 'critical', 'Ascending (or variant) weakness, areflexia; monitor NIF/VC — intubate before the crash. CSF may be normal in the first week.', ['guillain-barre-syndrome']],
+['Cauda equina / cord compression', 'critical', 'Back pain + leg weakness ± saddle anesthesia, urinary retention — emergency MRI + spine surgery. Dexamethasone is for metastatic cord compression (NICE NG234), not routine for discogenic CES.', ['cauda-equina-syndrome', 'metastatic-spinal-cord-compression']],
+['Myasthenic crisis', 'critical', 'Fatigable weakness (ptosis, diplopia worse late in the day); NIF monitoring; avoid macrolides, fluoroquinolones, aminoglycosides.', ['myasthenic-crisis']],
 ['Transverse myelitis', 'critical', 'Sensory level, bladder dysfunction — MRI + steroids after infection is addressed.'],
 ['Botulism / tick paralysis', 'emergent', 'Descending weakness with poorly reactive pupils (botulism); find and remove the tick.'],
 ['Rhabdomyolysis / dyskalemic paralysis', 'emergent', 'Pigmented urine or extreme K⁺ shifts — ECG and treat the potassium.'],
@@ -486,14 +486,14 @@ approach: [
     'NSAIDs and activity, not bed rest or opioids-first.'
 ],
 dontMiss: [
-['Cauda equina syndrome', 'critical', 'Saddle anesthesia, urinary retention/incontinence, bilateral leg weakness — emergency MRI + neurosurgery. Do not wait for a \u201Ccomplete\u201D picture.'],
+['Cauda equina syndrome', 'critical', 'New saddle sensory change, urinary or bowel dysfunction, or progressive leg weakness with a compatible history warrants emergency MRI and spine review.', ['cauda-equina-syndrome']],
 ['Metastatic cord compression', 'critical', 'Cancer history + spinal pain or neurology — contact the MSCC pathway, MRI, and start dexamethasone 16 mg if there are neurological signs (NICE NG234).', ['metastatic-spinal-cord-compression']],
-['Spinal epidural abscess / discitis', 'critical', 'Fever, IVDU, immunosuppression, recent procedures, exquisite midline tenderness — MRI + antibiotics. Do not give steroids if infection is the leading diagnosis.'],
+['Spinal epidural abscess / discitis', 'critical', "Focal spine pain with bacteremia risk, fever or neurologic change warrants urgent MRI. Start empiric IV antibiotics promptly for sepsis, instability or severe or progressive neurologic compromise.", ['spinal-epidural-abscess']],
 ['Pathologic fracture / malignancy', 'critical', 'Cancer history, night pain, weight loss, age >50 — MRI; myeloma can have normal X-rays.'],
 ['Rupturing / expanding AAA', 'critical', 'Elderly vasculopath with back pain = AAA until excluded (bedside US/CTA).', ['ruptured-abdominal-aortic-aneurysm']],
 ['Osteoporotic compression fracture', 'emergent', 'Elderly, steroids, minimal or no trauma — X-ray, treat pain, brace per ortho. Not immediately life-threatening but easy to miss.'],
 ['Inflammatory spondyloarthropathy', 'common', 'Night pain, morning stiffness >30 min, improves with activity, onset <40 y — not an ED emergency; HLA-B27 and SI-joint MRI as outpatient.'],
-['Renal colic / pyelonephritis / pancreatitis', 'common', 'Flank radiation, urinary symptoms — urinalysis, lipase, CT as indicated.', ['acute-pancreatitis']],
+['Renal colic / pyelonephritis / pancreatitis', 'common', 'Flank radiation, urinary symptoms — urinalysis, lipase, CT as indicated.', ['acute-pyelonephritis', 'acute-pancreatitis']],
 ['Mechanical / radicular pain (sciatica)', 'common', 'Positional, dermatomal radiation, positive straight-leg raise — NSAIDs, stay active, no bed rest.']
 ],
 history: [
@@ -1282,7 +1282,7 @@ dontMiss: [
 ['Posterior communicating artery aneurysm (CN III)', 'critical', 'Painful pupil-involving third-nerve palsy (down-and-out, ptosis, blown pupil) — CTA/MRA now, neurosurgery. Pupil sparing does not exclude an aneurysm. Obtain urgent specialist assessment and vascular imaging for every new acquired CN III palsy rather than relying on the pupil rule.'],
 ['Brainstem stroke / INO (internuclear ophthalmoplegia)', 'critical', 'Sudden diplopia with ataxia, dysarthria, or crossed findings — posterior-circulation pathway, MRI-DWI. INO (impaired adduction + contralateral nystagmus) is MLF until proven otherwise.'],
 ['Giant cell arteritis', 'critical', 'Age ≥50, new headache, jaw claudication, diplopia or amaurosis — start glucocorticoids immediately to protect the other eye; ESR/CRP can be normal.'],
-['Myasthenic crisis', 'critical', 'Fatigable binocular diplopia and ptosis, worse late in the day; pupils spared. Watch NIF/VC; avoid triggering antibiotics.'],
+['Myasthenic crisis', 'critical', 'Fatigable binocular diplopia and ptosis, worse late in the day; pupils spared. Watch NIF/VC; avoid triggering antibiotics.', ['myasthenic-crisis']],
 ['Cavernous sinus thrombosis / orbital apex', 'critical', 'Diplopia + proptosis, chemosis, fever or CN V1 pain — CT/MR venography, antibiotics if septic, anticoagulation if atraumatic.'],
 ['Botulism', 'emergent', 'Descending paralysis, poorly reactive pupils, GI prodrome — antitoxin; do not wait for culture.'],
 ['Microvascular cranial neuropathy / decompensated phoria', 'common', 'Isolated CN IV/VI palsy may be microvascular after appropriate assessment. Every new acquired CN III palsy needs urgent imaging/specialist assessment, even with pupil sparing.']
@@ -1325,7 +1325,7 @@ approach: [
 dontMiss: [
 ['Bowel obstruction / volvulus', 'critical', 'Vomiting, distension, prior surgery, hernia, tympany — CT. Sigmoid/cecal volvulus is time-critical.', ['small-bowel-obstruction']],
 ['Mesenteric ischemia', 'critical', 'Pain out of proportion, AF, bloody stool — CTA, not a discharge laxative.', ['acute-mesenteric-ischemia']],
-['Cauda equina / cord compression', 'critical', 'New constipation plus back pain, saddle anesthesia, or urinary retention — emergency MRI.'],
+['Cauda equina / cord compression', 'critical', 'New bowel dysfunction with saddle sensory change, urinary dysfunction or progressive leg weakness warrants emergency assessment for spinal compression.', ['cauda-equina-syndrome', 'metastatic-spinal-cord-compression']],
 ['Fecal impaction with overflow / stercoral colitis', 'critical', 'The frail elderly \u201Cdiarrhea\u201D that is overflow; DRE. Stercoral ulceration can perforate.'],
 ['Hypercalcemia / myxedema / opioid ileus', 'emergent', 'Bones, stones, groans, psychiatric overtones; delayed reflexes; the medication list.'],
 ['Toxic megacolon / Ogilvie (acute colonic pseudo-obstruction)', 'emergent', 'Distended silent abdomen in IBD, C. diff, or the hospitalized/post-op patient — decompression pathway.'],
@@ -1596,7 +1596,7 @@ id: 'flank-pain', name: 'Flank Pain & Renal Colic', icon: '🪨',
 tag: 'Confirm the stone—but first exclude infected obstruction, AAA, and the surgical mimics.',
 overview: 'Renal colic is common, but flank pain can be vascular, infectious, gynecologic, gastrointestinal, or spinal. A stone with sepsis, solitary kidney, anuria, or refractory symptoms is not a routine discharge.',
 approach: ['Give prompt analgesia (NSAID + IV opioid if severe) while checking vitals, pregnancy status, urinalysis, and creatinine.', 'Screen older or hypotensive patients with flank/back pain for ruptured AAA by bedside aorta ultrasound before calling it a first stone.', 'Rule out infected ureteral obstruction (fever/SIRS/pyuria + hydronephrosis/stone) — that requires emergency urologic decompression.', 'Choose imaging wisely: POCUS/ultrasound first in young recurrent stone formers and pregnancy; low-dose noncontrast CT for first episode, older age, or diagnostic uncertainty.'],
-dontMiss: [['Infected obstructed urinary system', 'critical', 'Fever/systemic illness plus obstruction requires urgent urology drainage and antibiotics—not outpatient stone management.'], ['Ruptured AAA / aortic dissection', 'critical', 'Older patient, hypotension, vascular risk, abdominal/back pain, or pulse deficit: image the aorta.', ['ruptured-abdominal-aortic-aneurysm', 'acute-aortic-syndrome']], ['Pyelonephritis with sepsis', 'critical', 'Fever, flank tenderness, shock, or vomiting warrants sepsis treatment and source-control assessment.'], ['Ectopic pregnancy / ovarian torsion', 'emergent', 'Pregnancy test and pelvic consideration remain essential when anatomy and symptoms fit.', ['ectopic-pregnancy', 'ovarian-torsion']], ['Uncomplicated ureteral stone', 'common', 'Analgesia, hydration advice, urine straining where used, and follow-up depend on size, location, renal function, and symptoms.']],
+dontMiss: [['Infected obstructed urinary system', 'critical', 'Fever/systemic illness plus obstruction requires urgent urology drainage and antibiotics—not outpatient stone management.', ['infected-obstructed-kidney']], ['Ruptured AAA / aortic dissection', 'critical', 'Older patient, hypotension, vascular risk, abdominal/back pain, or pulse deficit: image the aorta.', ['ruptured-abdominal-aortic-aneurysm', 'acute-aortic-syndrome']], ['Pyelonephritis with sepsis', 'critical', 'Fever, flank tenderness, shock, or vomiting warrants sepsis treatment and source-control assessment.', ['acute-pyelonephritis', 'sepsis-and-septic-shock']], ['Ectopic pregnancy / ovarian torsion', 'emergent', 'Pregnancy test and pelvic consideration remain essential when anatomy and symptoms fit.', ['ectopic-pregnancy', 'ovarian-torsion']], ['Uncomplicated ureteral stone', 'common', 'Analgesia, hydration advice, urine straining where used, and follow-up depend on size, location, renal function, and symptoms.']],
 history: ['Abrupt colicky vs constant tearing pain, radiation to groin/testicle/labia, gross hematuria, dysuria', 'Fever, rigors, intractable vomiting, anuria, solitary or transplant kidney, prior stones/stents', 'Pregnancy possibility, age >60 with smoking/hypertension (AAA mimic), anticoagulation, AFib (renal infarct)'],
 exam: ['Vitals (fever, tachycardia, hypotension); abdominal tenderness vs benign soft belly of classic colic', 'CVA tenderness, palpation for pulsatile abdominal mass, femoral pulses', 'Testicular/inguinal exam in males and pelvic consideration in females with lower-quadrant/groin radiation'],
 workup: [['Bedside', ['Urinalysis, urine hCG in childbearing potential, and POCUS (hydronephrosis + abdominal aorta <3 cm)', '12-lead ECG if older or AFib/renal-infarct mimic suspected']], ['Labs', ['BMP/creatinine, CBC; add blood/urine cultures and lactate if febrile or SIRS-positive', 'Absence of microscopic hematuria (~10–15% of stones) does not exclude ureterolithiasis']], ['Imaging', [
@@ -1617,7 +1617,7 @@ id: 'urinary-retention', name: 'Urinary Symptoms & Acute Retention', icon: '🚻
 tag: 'Measure the bladder, relieve obstruction safely, and never miss cord compression or sepsis.',
 overview: 'Dysuria and retention are often straightforward, but retention can be the first sign of cauda equina, spinal cord disease, medication toxicity, obstructed infection, or a neurologic emergency.',
 approach: ['Screen every retention patient for cauda equina/cord compression (back pain, saddle sensory change, bilateral sciatica, leg weakness) before assuming BPH.', 'Confirm bladder volume on bedside ultrasound and decompress promptly with a Foley catheter (or coudé/urology escalation if resistance is met).', 'Check renal function and electrolytes in high-volume or chronic retention, and monitor for post-obstructive diuresis (>200 mL/h for ≥2 consecutive hours).', 'Review culprit medications (anticholinergics, antihistamines, opioids, sympathomimetics, TCAs) and stop offending agents.'],
-dontMiss: [['Cauda equina syndrome / spinal cord compression', 'critical', 'Back pain with saddle sensory change, new retention/incontinence, bilateral symptoms, or weakness needs urgent MRI and spine review.'], ['Urosepsis / infected obstruction', 'critical', 'Systemic illness with urinary source needs sepsis treatment and source-control assessment.'], ['Acute kidney injury from obstruction', 'emergent', 'Bilateral obstruction, solitary kidney, anuria, or rising creatinine requires urgent decompression planning.'], ['Prostatitis with retention', 'emergent', 'Fever, pelvic pain, toxic appearance; avoid traumatic repeated instrumentation and involve urology.'], ['UTI / medication-related / BPH-related symptoms', 'common', 'Use targeted therapy and follow-up after excluding high-risk features.']],
+dontMiss: [['Cauda equina syndrome / spinal cord compression', 'critical', 'Back pain with saddle sensory change, new retention/incontinence, bilateral symptoms, or weakness needs urgent MRI and spine review.', ['cauda-equina-syndrome', 'metastatic-spinal-cord-compression']], ['Urosepsis / infected obstruction', 'critical', 'Systemic illness with urinary source needs sepsis treatment and source-control assessment.', ['infected-obstructed-kidney', 'sepsis-and-septic-shock']], ['Acute kidney injury from obstruction', 'emergent', 'Bilateral obstruction, solitary kidney, anuria, or rising creatinine requires urgent decompression planning.'], ['Prostatitis with retention', 'emergent', 'Fever, pelvic pain, toxic appearance; avoid traumatic repeated instrumentation and involve urology.'], ['UTI / medication-related / BPH-related symptoms', 'common', 'Use targeted therapy and follow-up after excluding high-risk features.']],
 history: ['Last void, suprapubic pain vs painless overflow incontinence, weak stream/hesitancy, gross hematuria/clots', 'Back pain, saddle numbness, bilateral leg pain/weakness, fecal incontinence, malignancy history', 'New anticholinergics, opioids, cold remedies, spinal anesthesia/surgery, urethral trauma or stricture history'],
 exam: ['Vitals, suprapubic palpation, CVA tenderness, external meatus (blood, phimosis/paraphimosis, stricture)', 'Lower-extremity motor/reflexes, perineal/saddle pinprick sensation, and rectal tone when neurologic cause is plausible', 'Gently assess prostate only when indicated; avoid vigorous prostatic massage in suspected acute bacterial prostatitis'],
 workup: [['Bedside', [
@@ -2130,7 +2130,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
     ],
     dontMiss: [
         ['Motor deficit or new gait change', 'critical', 'New weakness, difficulty walking, or neurological deterioration requires immediate MSCC assessment.'],
-        ['Cauda equina compression', 'critical', 'New urinary retention or incontinence, saddle sensory change or bowel dysfunction requires urgent evaluation.'],
+        ['Cauda equina compression', 'critical', 'New urinary retention or incontinence, saddle sensory change or bowel dysfunction requires urgent evaluation.', ['cauda-equina-syndrome']],
         ['Pain suggesting spinal metastases', 'emergent', 'With a cancer history, severe unremitting, progressive, nocturnal or mechanical spinal pain warrants MSCC pathway advice within 24 hours even without neurological findings.']
     ],
     history: ['Ask about prior cancer, known spinal lesions, escalating pain, radicular symptoms and pain with movement or straining.', 'Establish the onset and trajectory of weakness, gait change, sensory symptoms and bladder or bowel dysfunction.'],
@@ -2892,7 +2892,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
         "Start norepinephrine promptly for persistent hypotension. In unstable shock it may be needed alongside initial fluids. An initial MAP of 65 mmHg is typical. SSC suggests 60–65 mmHg initially for adults aged 65 or older. Identify any source requiring urgent drainage, surgery or device removal."
     ],
     dontMiss: [
-        ["Source requiring intervention", "critical", "An infected obstructed biliary or urinary system, abscess or necrotizing infection may require urgent intervention.", ["acute-cholangitis"]],
+        ["Source requiring intervention", "critical", "An infected obstructed biliary or urinary system, abscess or necrotizing infection may require urgent intervention.", ["acute-cholangitis", "infected-obstructed-kidney"]],
         ["Neutropenic sepsis", "critical", "Recent systemic cancer therapy or known neutropenia warrants its own urgent pathway.", ["neutropenic-sepsis"]],
         ["Noninfectious or mixed shock", "critical", "Consider bleeding, cardiogenic or obstructive shock and adrenal crisis while treating plausible infection.", ["cardiogenic-shock", "adrenal-crisis"]]
     ],
@@ -3152,6 +3152,151 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
     pitfalls: ["Using normal noncontrast CT or an isolated D-dimer to exclude CVT when suspicion remains."],
     pearls: ["The request for venous imaging matters. A routine arterial study may not answer the same question."],
     refs: ["AHA cerebral venous thrombosis statement (2024)", "Canadian Stroke Best Practice Recommendations: cerebral venous thrombosis (2024)"]
+},
+{
+    id: 'cauda-equina-syndrome', type: 'diagnosis', name: "Cauda Equina Syndrome (CES)", icon: '🩺',
+    tag: "Arrange emergency MRI for suspected nerve root compression, even before retention develops.",
+    overview: "Compression of the lumbosacral nerve roots can cause permanent bladder, bowel, sexual or leg dysfunction. A large disc herniation is one cause. Tumor, infection and bleeding can also compress the roots.",
+    approach: [
+        "Ask directly about new difficulty initiating urination, reduced awareness of urine flow, altered saddle sensation, loss of rectal fullness and new sexual dysfunction.",
+        "Assess leg strength, sensation and gait when safe. Arrange emergency lumbar MRI through the local pathway and discuss suspected compression with the spine team.",
+        "Measure post-void residual if available without delaying MRI. A low residual, normal anal tone or unilateral symptoms do not independently exclude early or incomplete CES.",
+        "If the patient cannot void, document bladder volume and catheter drainage as appropriate. Arrange urgent transfer if emergency imaging or definitive treatment is unavailable."
+    ],
+    dontMiss: [
+        ["Incomplete CES", "critical", "Patients can still void despite new urinary sensory changes or difficulty initiating flow."],
+        ["Infection or malignant compression", "critical", "Fever, bacteremia or a cancer history should broaden the imaging and specialist plan.", ["spinal-epidural-abscess", "metastatic-spinal-cord-compression"]]
+    ],
+    history: ["Establish when each neurologic or sphincter symptom began and how it changed from baseline. Ask about recent spine procedures, infection, cancer and anticoagulation."],
+    exam: ["Document lower-limb power and sensation, and reported saddle sensory changes. Repeat the assessment if symptoms progress."],
+    workup: [["MRI and bladder assessment", ["MRI assesses the cause and degree of compression. Use bladder scanning to support assessment and manage retention while imaging proceeds."]]],
+    redFlags: ["New saddle sensory change, urinary or bowel dysfunction, or severe or progressive leg weakness with a compatible presentation."],
+    disposition: [["Emergency spine assessment", "MRI-confirmed compression requires immediate discussion of decompression. If imaging excludes compression, reassess symptoms and arrange a plan for the remaining cause."]],
+    pitfalls: ["Waiting for painless retention, bilateral sciatica or a complete syndrome before imaging."],
+    pearls: ["Give the spine team the onset of bladder or saddle symptoms separately from the onset of back pain."],
+    refs: ["NHS England GIRFT national suspected cauda equina pathway (March 2026)", "Royal College of Radiologists: MRI provision for cauda equina syndrome"]
+},
+{
+    id: 'spinal-epidural-abscess', type: 'diagnosis', name: "Spinal Epidural Abscess and Discitis", icon: '🩺',
+    tag: "Consider spinal infection with focal spine pain, bacteremia or new neurologic dysfunction.",
+    overview: "Epidural abscess may occur with vertebral osteomyelitis or discitis. Fever may be absent. Neurologic deterioration can be rapid when the spinal cord or roots are compressed.",
+    approach: [
+        "Examine motor, sensory and sphincter function and assess for sepsis. Involve spine surgery early if a deficit, compression or instability is suspected.",
+        "Obtain urgent MRI of the suspected region, preferably without and with contrast when appropriate. Discuss scan extent with radiology if symptoms are poorly localized or multifocal infection is suspected.",
+        "Draw blood cultures promptly. In sepsis, hemodynamic instability or severe or progressive neurologic compromise, start empiric IV antibiotics and coordinate urgent surgical assessment without waiting for biopsy.",
+        "In a stable patient with a stable neurologic examination, discuss culture and biopsy timing with spine and infection specialists before empiric antibiotics when safe."
+    ],
+    dontMiss: [
+        ["Spinal cord or cauda equina compression", "critical", "New weakness, sensory level or sphincter symptoms require urgent MRI and spine review.", ["cauda-equina-syndrome"]],
+        ["Sepsis or persistent bacteremia", "critical", "Resuscitate and assess the need for drainage or surgery in parallel.", ["sepsis-and-septic-shock"]]
+    ],
+    history: ["Ask about recent bacteremia, spine surgery or injections, injection drug use, dialysis, diabetes and immune suppression."],
+    exam: ["Localize spinal tenderness and document strength, sensation, gait if safe, and any new bladder or bowel dysfunction. Repeat the neurologic exam."],
+    workup: [["Cultures and imaging", ["Obtain blood cultures and inflammatory markers as appropriate. MRI assesses epidural extension and compression. Discuss alternative imaging if MRI cannot be obtained."]]],
+    redFlags: ["Focal spinal pain with new neurologic symptoms, recent bacteremia, sepsis or a recent spinal procedure."],
+    disposition: [["Admission / urgent spine care", "Coordinate spine and infection specialists. Arrange transfer when urgent MRI or definitive source control is unavailable."]],
+    pitfalls: [
+        "Waiting for the triad of fever, back pain and neurologic deficit.",
+        "Treating a reassuring radiograph as exclusion of spinal infection."
+    ],
+    pearls: ["Document the last normal neurologic examination and any changes while awaiting imaging."],
+    refs: ["ACR Appropriateness Criteria: suspected spine infection", "IDSA native vertebral osteomyelitis guideline (2015)", "EANS Spine Section consensus on de novo spinal infection"]
+},
+{
+    id: 'guillain-barre-syndrome', type: 'diagnosis', name: "Guillain–Barré Syndrome (GBS)", icon: '🩺',
+    tag: "Check cough, swallowing and respiratory function early in progressive weakness.",
+    overview: "GBS is an acute immune-mediated neuropathy. Progressive bilateral weakness with reduced reflexes is typical. Facial, bulbar, autonomic or respiratory involvement can occur, and variants may present differently.",
+    approach: [
+        "Assess respiratory effort, cough and secretion handling immediately. Obtain serial vital capacity and inspiratory strength when feasible, alongside the clinical trajectory.",
+        "Monitor ECG and BP for dysautonomia. Involve neurology and critical care early for rapidly progressive weakness, bulbar symptoms, declining respiratory measurements or marked autonomic instability.",
+        "Use CSF and nerve conduction testing to support the diagnosis when appropriate. Early CSF protein or electrodiagnostic testing can be normal.",
+        "Discuss IV immunoglobulin or plasma exchange promptly for patients unable to walk unaided or with other severe features. Corticosteroids are not effective treatment for GBS."
+    ],
+    dontMiss: [
+        ["Ventilatory or bulbar failure", "critical", "Weak cough, difficulty swallowing or falling vital capacity can precede desaturation."],
+        ["Autonomic instability", "critical", "Bradyarrhythmia or marked BP swings warrant close monitoring."],
+        ["Spinal compression", "critical", "A sensory level, early prominent sphincter symptoms or focal spinal pain should prompt evaluation for an alternative cause.", ["cauda-equina-syndrome", "spinal-epidural-abscess"]]
+    ],
+    history: ["Clarify the progression, ability to walk, recent respiratory or diarrheal illness, swallowing, breathing when supine and palpitations."],
+    exam: ["Assess reflexes, limb and neck strength, sensation, facial movement and bulbar function."],
+    workup: [["Serial assessment", ["Track respiratory measurements and ability to protect the airway. Request CSF, electrodiagnostic studies or imaging with neurology as indicated."]]],
+    redFlags: ["Rapid progression, weak cough, bulbar weakness, declining respiratory measurements or autonomic instability."],
+    disposition: [["Monitored admission / ICU", "Suspected progressive GBS requires monitored evaluation. Escalate any respiratory, bulbar or autonomic compromise."]],
+    pitfalls: ["Using normal oxygen saturation or an early normal CSF protein value to reassure against progression."],
+    pearls: ["Trend respiratory function and secretion handling together. Either can drive escalation."],
+    refs: ["EAN/PNS Guillain–Barré syndrome guideline (2023)"]
+},
+{
+    id: 'myasthenic-crisis', type: 'diagnosis', name: "Myasthenic Crisis", icon: '🩺',
+    tag: "Recognize bulbar or respiratory weakness and plan airway support before collapse.",
+    overview: "Myasthenia gravis can cause fatigable ocular, bulbar, neck and respiratory weakness. Crisis may be the first presentation and is often precipitated by infection, medication changes or surgery.",
+    approach: [
+        "Assess cough, speech, swallowing, secretion handling and breathing. Obtain serial vital capacity when feasible and interpret it with clinical findings.",
+        "Call neurology and critical care early for impending or established crisis. Plan controlled intubation when airway protection or ventilation deteriorates. Use noninvasive ventilation only in selected, closely monitored patients.",
+        "Look for and treat triggers, including infection and medications that can worsen weakness. Review pyridostigmine and immunotherapy with the treating team.",
+        "Coordinate rescue therapy with IV immunoglobulin or plasma exchange. The choice depends on clinical severity, contraindications and availability."
+    ],
+    dontMiss: [
+        ["Bulbar failure and aspiration", "critical", "Pooling secretions, weak cough or progressive dysphagia can require airway support despite a reassuring oxygen saturation."],
+        ["Other causes of neuromuscular respiratory weakness", "critical", "Reflex loss or sensory symptoms support alternative diagnoses such as GBS.", ["guillain-barre-syndrome"]]
+    ],
+    history: ["Ask about fatigable ptosis or diplopia, voice and swallowing changes, prior crisis, recent infection and new medications."],
+    exam: ["Assess neck flexion, speech, cough and respiratory effort. Look for accessory muscle use or paradoxical breathing."],
+    workup: [["Serial respiratory review", ["Trend respiratory function when feasible. Obtain a blood gas if ventilation is in question and investigate the precipitant in parallel."]]],
+    redFlags: ["Inability to clear secretions, rapidly progressive weakness, falling vital capacity or hypercapnia."],
+    disposition: [["Monitored admission / ICU", "Impending or established crisis needs closely monitored care with immediate airway capability."]],
+    pitfalls: ["Waiting for desaturation or relying on one apparently normal vital capacity measurement."],
+    pearls: ["Tell the airway team about suspected myasthenia because it affects neuromuscular blocker choice and response."],
+    refs: ["Association of British Neurologists myasthenia gravis guideline (2025)", "International consensus guidance for myasthenia gravis: crisis recommendations"]
+},
+{
+    id: 'infected-obstructed-kidney', type: 'diagnosis', name: "Infected Obstructed Kidney (Obstructive Pyelonephritis)", icon: '🩺',
+    tag: "Suspected infection behind an obstructed collecting system requires antibiotics and urgent drainage assessment.",
+    overview: "An obstructing stone or other lesion can trap infected urine in the upper urinary tract and rapidly lead to sepsis. A patient can still pass urine when the other kidney drains normally.",
+    approach: [
+        "Assess for sepsis and begin resuscitation. Obtain urine and blood cultures when feasible without delaying indicated IV antibiotics.",
+        "Image urgently for suspected obstruction. Use ultrasound or CT as appropriate to stability, pregnancy and the diagnostic question. A nondiagnostic ultrasound with ongoing concern requires reassessment.",
+        "Contact urology immediately when infected upper tract obstruction is suspected. Coordinate urgent decompression by ureteral stent or percutaneous nephrostomy and arrange transfer if needed.",
+        "Treat the infection and reassess perfusion and renal function after drainage. Delay definitive stone treatment until sepsis has resolved."
+    ],
+    dontMiss: [
+        ["Septic shock", "critical", "Give immediate treatment and arrange source control in parallel.", ["sepsis-and-septic-shock"]],
+        ["Anuria or threatened solitary kidney", "critical", "Urgently assess for bilateral obstruction or obstruction of a solitary functioning kidney."]
+    ],
+    history: ["Ask about fever or rigors, stones, urinary devices, recent procedures, prior resistant isolates and solitary kidney."],
+    exam: ["Assess perfusion, mental status, flank tenderness and urine output. Pain relief does not establish resolution of obstruction."],
+    workup: [["Labs and imaging", ["Send urine culture and check renal function and electrolytes. Obtain indicated sepsis studies. Confirm the side, level and cause of obstruction when possible."]]],
+    redFlags: ["Infection with hydronephrosis or an obstructing stone, shock, anuria or worsening kidney injury."],
+    disposition: [["Admission with urgent urology", "Coordinate drainage and monitored care, with critical-care involvement for organ dysfunction."]],
+    pitfalls: ["Treating infected obstruction as uncomplicated renal colic or pyelonephritis with antibiotics alone."],
+    pearls: ["A bladder catheter treats lower tract retention. Upper tract obstruction may still require a stent or nephrostomy."],
+    refs: ["EAU urolithiasis guideline: infected obstruction", "EAU urological infections guideline (2026)", "Surviving Sepsis Campaign adult guideline (2026)"]
+},
+{
+    id: 'acute-pyelonephritis', type: 'diagnosis', name: "Acute Pyelonephritis", icon: '🩺',
+    tag: "Treat kidney infection promptly and assess for sepsis or obstruction.",
+    overview: "Acute pyelonephritis may cause fever, flank pain, nausea and costovertebral tenderness. Lower urinary symptoms may be absent. Pregnancy requires an obstetric pathway.",
+    approach: [
+        "Assess perfusion, oral tolerance and risk of complications. Start the sepsis pathway if organ dysfunction or shock is suspected.",
+        "Collect urine for culture and susceptibility before antibiotics when feasible. Choose therapy using severity, prior cultures, recent antibiotic exposure, renal function and local resistance.",
+        "Assess for obstruction or abscess when there is stone history, kidney injury, severe illness or lack of improvement. Arrange urgent imaging and urology assessment when infected obstruction is suspected.",
+        "Review cultures and clinical response to refine therapy. Reassess promptly if symptoms worsen or fail to improve over 48–72 hours."
+    ],
+    dontMiss: [
+        ["Infected obstruction", "critical", "Flank pain and systemic infection with suspected obstruction need urgent imaging and drainage assessment.", ["infected-obstructed-kidney"]],
+        ["Renal or perinephric abscess", "emergent", "Persistent fever or deterioration despite treatment warrants imaging and source-control assessment."]
+    ],
+    history: ["Ask about stones, previous culture results, urinary procedures, immune suppression and pregnancy possibility."],
+    exam: ["Check perfusion, flank and abdominal tenderness and hydration. Consider alternate causes when the presentation is atypical."],
+    workup: [["Urine and selective imaging", ["Obtain urinalysis and urine culture. Check kidney function and obtain blood cultures when severe illness warrants them. Select imaging based on complication risk."]]],
+    redFlags: ["Shock, worsening kidney function, inability to tolerate oral treatment, pregnancy or suspected obstruction."],
+    disposition: [
+        ["Admission or monitored treatment", "Use inpatient care when severe illness, a complication, inability to tolerate therapy or an unsafe follow-up plan is present."],
+        ["Selected outpatient treatment", "Confirm stability, an appropriate oral agent and a plan to review cultures and reassess."]
+    ],
+    pitfalls: ["Using nitrofurantoin or oral fosfomycin for a kidney infection."],
+    pearls: ["Document who will review the culture and change therapy if susceptibility results require it."],
+    refs: ["EAU urological infections guideline (2026)", "IDSA complicated urinary tract infections guideline (2025)"]
 }
 ];
 if (typeof window !== 'undefined') window.CP_DATA = CP_DATA;

@@ -6,6 +6,15 @@
 (function () {
     'use strict';
     const sources = {
+        cesGIRFT: ["NHS England GIRFT national suspected cauda equina pathway (March 2026)", "https://gettingitrightfirsttime.co.uk/wp-content/uploads/2026/04/National-Suspected-Cauda-Equina-Pathway-March-2026.pdf"],
+        cesRCR: ["Royal College of Radiologists: MRI provision for cauda equina syndrome", "https://www.rcr.ac.uk/our-services/all-our-publications/clinical-radiology-publications/mri-provision-for-cauda-equina-syndrome/"],
+        spineACR: ["ACR Appropriateness Criteria: suspected spine infection", "https://pubmed.ncbi.nlm.nih.gov/34794603/"],
+        spineIDSA: ["IDSA native vertebral osteomyelitis guideline (2015)", "https://www.idsociety.org/practice-guideline/vertebral-osteomyelitis/"],
+        spineEANS: ["EANS Spine Section consensus on de novo spinal infection", "https://pmc.ncbi.nlm.nih.gov/articles/PMC11763570/"],
+        mgABN: ["Association of British Neurologists myasthenia gravis guideline (2025)", "https://pn.bmj.com/content/25/5/422"],
+        mgConsensus: ["International consensus guidance for myasthenia gravis: crisis recommendations", "https://www.neurology.org/doi/10.1212/wnl.0000000000002790"],
+        uroInfectEAU: ["EAU urological infections guideline (2026)", "https://uroweb.org/guidelines/urological-infections/chapter/the-guideline"],
+        uroInfectIDSA: ["IDSA complicated urinary tract infections guideline (2025)", "https://www.idsociety.org/practice-guideline/complicated-urinary-tract-infections"],
         tiaAHA: ["AHA emergency department TIA assessment and risk reduction statement (2023)", "https://www.ahajournals.org/doi/10.1161/STR.0000000000000418"],
         ichESO: ["ESO/EANS spontaneous intracerebral hemorrhage guideline (2025)", "https://academic.oup.com/esj/article/10/4/1007/8377192"],
         meningitisWHO: ["WHO meningitis diagnosis, treatment and care guideline (2025)", "https://www.who.int/publications/i/item/9789240108042"],
@@ -181,6 +190,12 @@
         withdrawal: ["ASAM clinical practice guideline on alcohol withdrawal management (2020)", "https://www.asam.org/quality-care/clinical-guidelines/alcohol-withdrawal"],
     };
     const topics = {
+        'cauda-equina-syndrome': ['cesGIRFT', 'cesRCR'],
+        'spinal-epidural-abscess': ['spineACR', 'spineIDSA', 'spineEANS'],
+        'guillain-barre-syndrome': ['gbs'],
+        'myasthenic-crisis': ['mgABN', 'mgConsensus'],
+        'infected-obstructed-kidney': ['stones', 'uroInfectEAU', 'sepsis'],
+        'acute-pyelonephritis': ['uroInfectEAU', 'uroInfectIDSA'],
         'acute-ischemic-stroke': ['stroke'],
         'transient-ischemic-attack': ['tiaAHA', 'stroke'],
         'aneurysmal-subarachnoid-hemorrhage': ['sah', 'headache'],
@@ -963,6 +978,55 @@
         "sources": [
             "cvtAHA",
             "cvtCanada"
+        ]
+    },
+    "cauda-equina-syndrome": {
+        "checked": "2026-11-14",
+        "scope": "adult symptom recognition, bladder scan limitations and emergency MRI",
+        "sources": [
+            "cesGIRFT",
+            "cesRCR"
+        ]
+    },
+    "spinal-epidural-abscess": {
+        "checked": "2026-11-14",
+        "scope": "adult imaging, microbiologic sampling, urgent antibiotics and spine escalation",
+        "sources": [
+            "spineACR",
+            "spineIDSA",
+            "spineEANS"
+        ]
+    },
+    "guillain-barre-syndrome": {
+        "checked": "2026-11-14",
+        "scope": "recognition, serial respiratory and autonomic assessment, and adult treatment escalation",
+        "sources": [
+            "gbs"
+        ]
+    },
+    "myasthenic-crisis": {
+        "checked": "2026-11-14",
+        "scope": "adult bulbar and respiratory assessment, airway escalation and rescue therapy",
+        "sources": [
+            "mgABN",
+            "mgConsensus"
+        ]
+    },
+    "infected-obstructed-kidney": {
+        "checked": "2026-11-14",
+        "scope": "adult detection, empiric treatment and urgent upper tract drainage",
+        "sources": [
+            "stones",
+            "uroInfectEAU",
+            "sepsis"
+        ]
+    },
+    "acute-pyelonephritis": {
+        "checked": "2026-11-14",
+        "scope": "adult urine culture, empiric selection, imaging for complications and disposition",
+        "sources": [
+            "uroInfectEAU",
+            "uroInfectIDSA"
         ]
     }
 };

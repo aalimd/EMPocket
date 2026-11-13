@@ -6,7 +6,7 @@ How clinical content in The EM Pocket is reviewed, sourced and changed.
 
 | File | Content |
 |---|---|
-| `assets/data.js` | 90 clinical topics (`CP_DATA`), including 32 diagnosis guides + ECG guide data (`ECG_DATA`: steps, 18 patterns) |
+| `assets/data.js` | 96 clinical topics (`CP_DATA`), including 38 diagnosis guides + ECG guide data (`ECG_DATA`: steps, 18 patterns) |
 | `assets/em-learning-data.js` | learning tracks, cases, short cases |
 | `assets/student-learning.js` | short-case library |
 | `assets/evidence.js` | selected primary-guidance links per topic |

@@ -1203,7 +1203,7 @@ test('startup performance exposes a usable library and defers recorded ECG evalu
         domContentLoadedMs:Math.round(nav.domContentLoadedEventEnd),loadMs:Math.round(nav.loadEventEnd),
         scripts:performance.getEntriesByType('resource').filter(e=>e.initiatorType==='script').length};
     })()`);
-    assert.equal(metrics.topics,90);
+    assert.equal(metrics.topics,96);
     assert.equal(metrics.recordingsEvaluated,false);
     t.diagnostic('Local unthrottled Chrome baseline (not physical-device timing): '+JSON.stringify(metrics));
 });
@@ -1319,7 +1319,7 @@ test('every presentation binds More, section shortcuts, accordions and recall co
   }
   return {problems,moreCount,count:window.CP_DATA.length};
  })()`);
- assert.equal(problems.count,90);assert.ok(problems.moreCount>0);
+ assert.equal(problems.count,96);assert.ok(problems.moreCount>0);
  assert.deepEqual(problems.problems,[]);
 });
 
@@ -1483,7 +1483,7 @@ test('second-batch guides are discoverable from the diagnosis filter, differenti
         filter.value = 'Diagnosis guides';
         filter.dispatchEvent(new Event('change', { bubbles: true }));
     })()`);
-    assert.equal(await evaluate(`document.querySelectorAll('#presentationLibrary .cp-card').length`), 32);
+    assert.equal(await evaluate(`document.querySelectorAll('#presentationLibrary .cp-card').length`), 38);
     await load('#pelvic-pain~dont-miss');
     await evaluate(`document.querySelector('#section-dont-miss a[href="#ectopic-pregnancy"]').click()`);
     const deadline = Date.now() + 5000;
@@ -1530,6 +1530,25 @@ test('neurologic diagnosis guides open from Headache and Seizures and rank in se
         }
     }
     for (const [query, id] of [['TIA', 'transient-ischemic-attack'], ['CVST', 'cerebral-venous-thrombosis'], ['bacterial meningitis', 'acute-bacterial-meningitis']]) {
+        assert.equal(await evaluate(`window.EM_POCKET_UI.findSearchHits(${JSON.stringify(query)})[0]?.cpId`), id);
+    }
+});
+
+test('spinal and urinary diagnosis guides open from differentials and rank in search', async t => {
+    if (!await ready(t)) return;
+    for (const [route, selector, id, name] of [
+        ['#back-pain~dont-miss', '#section-dont-miss', 'cauda-equina-syndrome', 'Cauda Equina Syndrome (CES)'],
+        ['#shift~flank-pain', '.shift-crit', 'infected-obstructed-kidney', 'Infected Obstructed Kidney (Obstructive Pyelonephritis)']
+    ]) {
+        await load(route);
+        await evaluate(`document.querySelector('${selector} a[href="#${id}"]').click()`);
+        const deadline = Date.now() + 5000;
+        while (await evaluate(`document.querySelector('#stage h1')?.textContent`) !== name) {
+            assert.ok(Date.now() < deadline, name + ' opens from its differential');
+            await wait(25);
+        }
+    }
+    for (const [query, id] of [['GBS', 'guillain-barre-syndrome'], ['myasthenic crisis', 'myasthenic-crisis'], ['spinal epidural abscess', 'spinal-epidural-abscess']]) {
         assert.equal(await evaluate(`window.EM_POCKET_UI.findSearchHits(${JSON.stringify(query)})[0]?.cpId`), id);
     }
 });

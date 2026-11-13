@@ -17,7 +17,7 @@ test('selected review records distinguish the new scope from the historical audi
   'esophageal-perforation', 'cardiac-tamponade', 'acute-mesenteric-ischemia',
   'ruptured-abdominal-aortic-aneurysm', 'acute-appendicitis', 'small-bowel-obstruction'
  ];
- const november14 = ['ectopic-pregnancy', 'ovarian-torsion', 'testicular-torsion', 'perforated-peptic-ulcer', 'acute-cholecystitis', 'acute-cholangitis', 'acute-pancreatitis', 'acute-diverticulitis', 'acute-heart-failure', 'acute-asthma-exacerbation', 'copd-exacerbation', 'community-acquired-pneumonia', 'sepsis-and-septic-shock', 'cardiogenic-shock', 'adrenal-crisis', 'acute-ischemic-stroke', 'transient-ischemic-attack', 'aneurysmal-subarachnoid-hemorrhage', 'spontaneous-intracerebral-hemorrhage', 'acute-bacterial-meningitis', 'convulsive-status-epilepticus', 'cerebral-venous-thrombosis'];
+ const november14 = ['ectopic-pregnancy', 'ovarian-torsion', 'testicular-torsion', 'perforated-peptic-ulcer', 'acute-cholecystitis', 'acute-cholangitis', 'acute-pancreatitis', 'acute-diverticulitis', 'acute-heart-failure', 'acute-asthma-exacerbation', 'copd-exacerbation', 'community-acquired-pneumonia', 'sepsis-and-septic-shock', 'cardiogenic-shock', 'adrenal-crisis', 'acute-ischemic-stroke', 'transient-ischemic-attack', 'aneurysmal-subarachnoid-hemorrhage', 'spontaneous-intracerebral-hemorrhage', 'acute-bacterial-meningitis', 'convulsive-status-epilepticus', 'cerebral-venous-thrombosis', 'cauda-equina-syndrome', 'spinal-epidural-abscess', 'guillain-barre-syndrome', 'myasthenic-crisis', 'infected-obstructed-kidney', 'acute-pyelonephritis'];
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(), [...ids, ...november13, ...november14].sort());
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(), Array.from(topics, topic => topic.id).sort());
  for(const id of [...ids, ...november13, ...november14]){
@@ -298,4 +298,19 @@ test('neurologic differentials link to diagnosis guides and preserve time-sensit
  assert.match(text('aneurysmal-subarachnoid-hemorrhage'), /6 hours or more, or with a new neurologic deficit/);
  assert.match(text('acute-bacterial-meningitis'), /only when safe and without a significant delay/);
  assert.match(text('transient-ischemic-attack'), /Using ABCD2 alone to decide discharge/);
+});
+
+test('spinal, neuromuscular and urinary differentials point to guides with escalation criteria', () => {
+ const linked = id => topics.find(topic => topic.id === id).dontMiss.flatMap(row => row[3] || []);
+ for (const [presentation, guides] of [
+  ['back-pain', ['cauda-equina-syndrome', 'spinal-epidural-abscess']],
+  ['weakness', ['guillain-barre-syndrome', 'myasthenic-crisis']],
+  ['urinary-retention', ['cauda-equina-syndrome', 'infected-obstructed-kidney']],
+  ['flank-pain', ['infected-obstructed-kidney', 'acute-pyelonephritis']]
+ ]) {
+  for (const guide of guides) assert.ok(linked(presentation).includes(guide), presentation + ' → ' + guide);
+ }
+ assert.match(text('cauda-equina-syndrome'), /low residual.*do not independently exclude/);
+ assert.match(text('spinal-epidural-abscess'), /without waiting for biopsy/);
+ assert.match(text('infected-obstructed-kidney'), /ureteral stent or percutaneous nephrostomy/);
 });

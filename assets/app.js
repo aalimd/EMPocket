@@ -142,6 +142,12 @@
         { title: 'Oncology Emergencies', ids: ['neutropenic-sepsis', 'tumor-lysis-syndrome', 'metastatic-spinal-cord-compression', 'hypercalcemia-of-malignancy', 'superior-vena-cava-syndrome', 'cancer-immunotherapy-toxicity'] }
     ];
     const RELATED = {
+        'cauda-equina-syndrome': ['back-pain', 'weakness', 'urinary-retention', 'constipation'],
+        'spinal-epidural-abscess': ['back-pain', 'weakness', 'fever'],
+        'guillain-barre-syndrome': ['weakness', 'dyspnea', 'diplopia'],
+        'myasthenic-crisis': ['weakness', 'dyspnea', 'diplopia'],
+        'infected-obstructed-kidney': ['flank-pain', 'urinary-retention', 'fever', 'shock'],
+        'acute-pyelonephritis': ['flank-pain', 'fever', 'back-pain'],
         'acute-ischemic-stroke': ['focal-neurologic-deficit', 'weakness', 'dizziness', 'ams'],
         'transient-ischemic-attack': ['focal-neurologic-deficit', 'weakness', 'diplopia'],
         'aneurysmal-subarachnoid-hemorrhage': ['headache', 'coma', 'ams', 'seizures'],
@@ -382,6 +388,12 @@
     if (typeof window !== 'undefined') window.EM_ICONS = { svg: semanticSvg, map: SEMANTIC_ICONS };
 
     const TOPIC_CATS = {
+        'cauda-equina-syndrome': 'neuro',
+        'spinal-epidural-abscess': 'neuro',
+        'guillain-barre-syndrome': 'neuro',
+        'myasthenic-crisis': 'neuro',
+        'infected-obstructed-kidney': 'gu',
+        'acute-pyelonephritis': 'gu',
         'acute-ischemic-stroke': 'neuro',
         'transient-ischemic-attack': 'neuro',
         'aneurysmal-subarachnoid-hemorrhage': 'neuro',
@@ -3499,7 +3511,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = isAppWorker(navigator.serviceWorker.controller);
-                navigator.serviceWorker.register('./sw.js?v=20261114-diagnoses-v87').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261114-diagnoses-v88').then((registration) => {
                     navigator.serviceWorker.ready.then((ready) => {
                         if (ready.scope === new URL('./', location.href).href) setOfflineStatus('Ready for offline use');
                     });
