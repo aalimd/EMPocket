@@ -34,3 +34,15 @@ The References sections record the scope and sources, including AHA/ASA 2026 str
 Added six guides for cauda equina syndrome, spinal epidural abscess and discitis, Guillain–Barré syndrome, myasthenic crisis, infected upper urinary tract obstruction and acute pyelonephritis. The guides link from Back Pain, Weakness, Shortness of Breath, Diplopia, Constipation, Urinary Retention and Flank Pain.
 
 The source checks cover when to obtain emergency MRI despite a low post-void residual, when antibiotics must precede tissue sampling in suspected spinal infection, respiratory monitoring in progressive weakness, and when urinary infection requires urgent decompression.
+
+## 14 November review and expansion
+
+Reviewed the 38 previously shipped diagnosis guides by presentation and compared the emergency decision points with the linked presentation pages. The review covered recognition, initial workup and test limitations, first treatment, escalation or disposition, common pitfalls, and source mapping. It was an editorial clinical review, with primary-source checks concentrated on management thresholds, medication decisions and guidance that had changed. It did not include independent clinician sign-off or local formulary validation.
+
+- Chest pain and vascular guides (six). Updated ACS oxygen and nitrate precautions and MI terminology, expanded PE anticoagulation selection and delayed-imaging decisions, and clarified the ventilation risk in tamponade. Compared aortic imaging and anti-impulse treatment, emergency pleural decompression and esophageal source control with the linked pathways.
+- Abdominal, biliary and pelvic guides (12). Compared vascular imaging, operative escalation, torsion assessment, ectopic follow-up, and the criteria for selected nonoperative care. Clarified ERCP timing for biliary pancreatitis with cholangitis.
+- Dyspnea and shock guides (seven). Checked oxygen targets, ventilation and shock resuscitation branches, and made the adult asthma follow-up interval explicit.
+- Neurologic guides (seven). Clarified selected basilar thrombectomy eligibility and the initial swallowing screen. Updated oral factor Xa inhibitor-associated intracranial hemorrhage reversal in the guide and linked Stroke and Head Injury topics using the 2026 NCS/SCCM update and Saudi FDA recall notice.
+- Spinal, neuromuscular and urinary guides (six). Compared MRI and culture sequencing, respiratory reassessment, and early decompression versus antibiotics alone for infected upper tract obstruction.
+
+Added separate adult guides for DKA, HHS, bleeding peptic ulcer, and acute variceal hemorrhage. The linked Hyperglycemia dose table now distinguishes DKA and HHS insulin pathways and uses the adult consensus fluid, potassium, bicarbonate and phosphate instructions. The GI Bleeding presentation links directly to the variceal and peptic ulcer pathways. Each new guide has a dated source record.

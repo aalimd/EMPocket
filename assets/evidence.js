@@ -6,6 +6,12 @@
 (function () {
     'use strict';
     const sources = {
+        ulcer2026: ["ESGE peptic ulcer bleeding guideline update (2026)", "https://www.esge.com/assets/downloads/pdfs/guidelines/2026_a-2863-8314.pdf"],
+        varicesAASLD: ["AASLD portal hypertension and varices guidance (2024)", "https://doi.org/10.1097/HEP.0000000000000647"],
+        varicesBaveno: ["Baveno VII consensus on portal hypertension", "https://pmc.ncbi.nlm.nih.gov/articles/PMC11090185/"],
+        ichReversal2026: ['NCS/SCCM antithrombotic-associated intracranial hemorrhage guideline update (2026)', 'https://link.springer.com/article/10.1007/s12028-026-02601-4'],
+        andexanetSFDA: ['Saudi FDA notice: recall of all Andexxa batches (2026)', 'https://www.sfda.gov.sa/sites/default/files/2026-04/andexxa.pdf'],
+        diabetes2026: ['ADA Standards of Care in Diabetes: hospital care and hyperglycemic crises (2026)', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC12690180/'],
         cesGIRFT: ["NHS England GIRFT national suspected cauda equina pathway (March 2026)", "https://gettingitrightfirsttime.co.uk/wp-content/uploads/2026/04/National-Suspected-Cauda-Equina-Pathway-March-2026.pdf"],
         cesRCR: ["Royal College of Radiologists: MRI provision for cauda equina syndrome", "https://www.rcr.ac.uk/our-services/all-our-publications/clinical-radiology-publications/mri-provision-for-cauda-equina-syndrome/"],
         spineACR: ["ACR Appropriateness Criteria: suspected spine infection", "https://pubmed.ncbi.nlm.nih.gov/34794603/"],
@@ -190,6 +196,10 @@
         withdrawal: ["ASAM clinical practice guideline on alcohol withdrawal management (2020)", "https://www.asam.org/quality-care/clinical-guidelines/alcohol-withdrawal"],
     };
     const topics = {
+        'diabetic-ketoacidosis': ['dka', 'diabetes2026'],
+        'hyperosmolar-hyperglycemic-state': ['dka', 'diabetes2026'],
+        'bleeding-peptic-ulcer': ['ugib', 'ulcer2026'],
+        'acute-variceal-hemorrhage': ['varicesAASLD', 'varicesBaveno'],
         'cauda-equina-syndrome': ['cesGIRFT', 'cesRCR'],
         'spinal-epidural-abscess': ['spineACR', 'spineIDSA', 'spineEANS'],
         'guillain-barre-syndrome': ['gbs'],
@@ -199,7 +209,7 @@
         'acute-ischemic-stroke': ['stroke'],
         'transient-ischemic-attack': ['tiaAHA', 'stroke'],
         'aneurysmal-subarachnoid-hemorrhage': ['sah', 'headache'],
-        'spontaneous-intracerebral-hemorrhage': ['ich', 'ichESO'],
+        'spontaneous-intracerebral-hemorrhage': ['ich', 'ichESO', 'ichReversal2026', 'andexanetSFDA'],
         'acute-bacterial-meningitis': ['meningitis', 'meningitisWHO'],
         'convulsive-status-epilepticus': ['seizures', 'esett', 'statusAdult'],
         'cerebral-venous-thrombosis': ['cvtAHA', 'cvtCanada'],
@@ -238,20 +248,20 @@
         'chest-pain': ['aorta', 'chest', 'acs', 'mi', 'pe'], dyspnea: ['asthma', 'pe', 'dyspneaAssessment'],
         headache: ['headache', 'sah', 'stroke'], ams: ['stroke', 'special', 'meningitis', 'delirium'], coma: ['stroke', 'special', 'comaAssessment'],
         weakness: ['stroke', 'gbs'], dizziness: ['dizziness', 'stroke'], diplopia: ['cn3', 'stroke', 'diplopiaAssessment'],
-        'focal-neurologic-deficit': ['stroke', 'ich'], fever: ['sepsis', 'meningitis'], shock: ['sepsis', 'lung', 'special'],
+        'focal-neurologic-deficit': ['stroke', 'ich', 'ichReversal2026', 'andexanetSFDA'], fever: ['sepsis', 'meningitis'], shock: ['sepsis', 'lung', 'special'],
         'joint-pain': ['joint'], 'pelvic-pain': ['ectopic', 'ectopicDiagnosis', 'pid'], 'abdominal-pain': ['appendicitis', 'ectopic', 'abdominalAssessment', 'mesenteric'],
         'vaginal-bleeding': ['pph', 'rh', 'ectopic', 'heavyBleeding', 'endometrialReferral', 'antepartumExam', 'previaExam'], 'pregnancy-emergency': ['special', 'pe', 'rh', 'hyperemesis', 'pph', 'obstetricBP', 'obstetricSevereFeatures', 'ectopicDiagnosis', 'pregnancyTrauma'],
         'scrotal-pain': ['epididymitis'], seizures: ['seizures', 'esett', 'firstSeizure'], hemoptysis: ['hemoptysis', 'pe'],
         'nausea-vomiting': ['hyperemesis', 'dka', 'adrenal', 'chest', 'chs'], diarrhea: ['cdi', 'infectiousDiarrhea'], cyanosis: ['methb', 'neonate', 'special', 'oximetry', 'coExposure'],
-        overdose: ['special', 'acetaminophen', 'selfharm', 'acmtNAC', 'snapNAC'], jaundice: ['acetaminophen', 'alfAssessment', 'alfEASL', 'cholangitis'], 'back-pain': ['mscc', 'back'], 'pediatric-fever': ['infant', 'infant90', 'childFever', 'kawasaki', 'meningitis'], hyperglycemia: ['dka', 'adrenal', 'hillierSodium'],
+        overdose: ['special', 'acetaminophen', 'selfharm', 'acmtNAC', 'snapNAC'], jaundice: ['acetaminophen', 'alfAssessment', 'alfEASL', 'cholangitis'], 'back-pain': ['mscc', 'back'], 'pediatric-fever': ['infant', 'infant90', 'childFever', 'kawasaki', 'meningitis'], hyperglycemia: ['dka', 'diabetes2026', 'adrenal', 'hillierSodium'],
         'heat-cold': ['special'], palpitations: ['af', 'als', 'ambulatoryECG'], syncope: ['syncope', 'syncopeGuideline', 'als'],
         'airway-stridor': ['special', 'croup', 'intubationACEP', 'intubationTrial'], anaphylaxis: ['special', 'rcukAnaphylaxis', 'waoAnaphylaxis', 'jtfppAnaphylaxis'], 'flank-pain': ['stones'],
         'urinary-retention': ['stones', 'urethralTrauma', 'catheterCare'], edema: ['pe', 'dvt', 'dvtUltrasound'], 'multiple-trauma': ['headinjury', 'majorTrauma', 'traumaBleeding'],
         'falls-geriatric-trauma': ['headinjury', 'falls', 'occultHip'], 'pediatric-respiratory-distress': ['bronchiolitis', 'asthma'],
-        gib: ['ugib', 'lgib', 'lgibASGE'], 'red-eye': ['keratitis', 'chemicalEye'], 'sore-throat': ['gas', 'gasTesting'],
+        gib: ['ugib', 'lgib', 'lgibASGE', 'ulcer2026', 'varicesAASLD', 'varicesBaveno'], 'red-eye': ['keratitis', 'chemicalEye'], 'sore-throat': ['gas', 'gasTesting'],
         suicidal: ['selfharm'], constipation: ['constipation'], 'limb-ischemia': ['pad'], rash: ['ssti'],
         'cardiac-arrest': ['acls', 'als', 'special', 'cardioversionEnergy', 'postArrest'], electrolytes: ['hyperkalemia', 'hyponatremia', 'sodiumUS', 'potassiumKDIGO'],
-        'head-injury': ['tbi', 'headinjury', 'mtbi', 'csfLeak', 'cchr', 'pecarn', 'intubationACEP', 'intubationTrial'], 'hypertensive-emergency': ['hypertension', 'stroke', 'acuteBP', 'aorta', 'ich'],
+        'head-injury': ['ichReversal2026', 'andexanetSFDA', 'tbi', 'headinjury', 'mtbi', 'csfLeak', 'cchr', 'pecarn', 'intubationACEP', 'intubationTrial'], 'hypertensive-emergency': ['hypertension', 'stroke', 'acuteBP', 'aorta', 'ich'],
         burns: ['burns', 'burnResuscitation', 'burnReferral', 'burnCooling', 'special'], 'alcohol-withdrawal': ['withdrawal', 'wernickeUK'], 'thyroid-storm': ['stormConsensus', 'myxoedemaConsensus', 'ataThyrotoxicosis', 'ataHypothyroidism'],
         ecg: ['mi', 'af', 'als', 'special', 'pericarditis']
     };
@@ -315,12 +325,15 @@
         ]
     },
     "gib": {
-        "checked": "2026-11-10",
-        "scope": "bleeding severity, selective CTA and colonoscopy timing",
+        "checked": "2026-11-14",
+        "scope": "adult risk assessment, lower bleeding disposition and updated upper GI bleeding pathways",
         "sources": [
             "ugib",
             "lgib",
-            "lgibASGE"
+            "lgibASGE",
+            "ulcer2026",
+            "varicesAASLD",
+            "varicesBaveno"
         ]
     },
     "back-pain": {
@@ -363,11 +376,12 @@
         ]
     },
     "hyperglycemia": {
-        "checked": "2026-11-10",
-        "scope": "adult hyperglycemic crises, insulin transition and osmolality calculation",
+        "checked": "2026-11-14",
+        "scope": "adult DKA and HHS fluids, insulin, electrolyte thresholds, monitoring and transition",
         "sources": [
             "dka",
-            "hillierSodium"
+            "hillierSodium",
+            "diabetes2026"
         ]
     },
     "flank-pain": {
@@ -429,8 +443,8 @@
         ]
     },
     "head-injury": {
-        "checked": "2026-11-10",
-        "scope": "adult minor head injury, imaging rule scope, and emergency intubation precautions",
+        "checked": "2026-11-14",
+        "scope": "adult minor injury follow-up and 2026 traumatic intracranial hemorrhage reversal",
         "sources": [
             "tbi",
             "mtbi",
@@ -438,7 +452,9 @@
             "cchr",
             "pecarn",
             "intubationACEP",
-            "intubationTrial"
+            "intubationTrial",
+            "ichReversal2026",
+            "andexanetSFDA"
         ]
     },
     "pediatric-fever": {
@@ -542,11 +558,13 @@
         ]
     },
     "focal-neurologic-deficit": {
-        "checked": "2026-11-10",
-        "scope": "selected stroke escalation, post-EVT BP and ICH target scope",
+        "checked": "2026-11-14",
+        "scope": "post-reperfusion care and 2026 oral factor Xa inhibitor-associated ICH reversal",
         "sources": [
             "stroke",
-            "ich"
+            "ich",
+            "ichReversal2026",
+            "andexanetSFDA"
         ]
     },
     "electrolytes": {
@@ -949,10 +967,12 @@
     },
     "spontaneous-intracerebral-hemorrhage": {
         "checked": "2026-11-14",
-        "scope": "adult spontaneous ICH imaging, BP, anticoagulant reversal and neurosurgical escalation",
+        "scope": "adult spontaneous ICH imaging, BP, updated anticoagulant reversal and neurosurgical escalation",
         "sources": [
             "ich",
-            "ichESO"
+            "ichESO",
+            "ichReversal2026",
+            "andexanetSFDA"
         ]
     },
     "acute-bacterial-meningitis": {
@@ -1027,6 +1047,38 @@
         "sources": [
             "uroInfectEAU",
             "uroInfectIDSA"
+        ]
+    },
+    "diabetic-ketoacidosis": {
+        "checked": "2026-11-14",
+        "scope": "adult diagnosis, electrolyte and insulin sequencing, monitoring and resolution",
+        "sources": [
+            "dka",
+            "diabetes2026"
+        ]
+    },
+    "hyperosmolar-hyperglycemic-state": {
+        "checked": "2026-11-14",
+        "scope": "adult diagnostic thresholds, osmolar correction, insulin selection and resolution",
+        "sources": [
+            "dka",
+            "diabetes2026"
+        ]
+    },
+    "bleeding-peptic-ulcer": {
+        "checked": "2026-11-14",
+        "scope": "adult bleeding resuscitation, risk, timing of endoscopy and rebleeding escalation",
+        "sources": [
+            "ugib",
+            "ulcer2026"
+        ]
+    },
+    "acute-variceal-hemorrhage": {
+        "checked": "2026-11-14",
+        "scope": "adult initial therapy, resuscitation, endoscopy and escalation for portal hypertensive bleeding",
+        "sources": [
+            "varicesAASLD",
+            "varicesBaveno"
         ]
     }
 };

@@ -86,7 +86,7 @@ dontMiss: [
 ['Near-fatal asthma / COPD exacerbation', 'critical', "Exhaustion or altered mentation signals impending respiratory failure. In severe asthma, a normal or rising PaCO₂ is concerning. In COPD, check for hypercapnic acidosis.", ['acute-asthma-exacerbation', 'copd-exacerbation']],
 ['Anaphylaxis', 'critical', 'IM epinephrine into the anterolateral thigh immediately — do not wait for urticaria (it may be absent).', ['anaphylaxis']],
 ['Carbon monoxide poisoning', 'critical', 'Headache, whole household ill; standard SpO₂ is falsely normal — CO-oximetry.'],
-['Metabolic acidosis (Kussmaul breathing)', 'emergent', 'DKA, sepsis, salicylates, uremia — lungs compensating for the blood.'],
+['Metabolic acidosis (Kussmaul breathing)', 'emergent', 'DKA, sepsis, salicylates, uremia — lungs compensating for the blood.', ['diabetic-ketoacidosis']],
 ['Neuromuscular weakness (GBS, myasthenia)', 'emergent', 'Orthopnea, weak cough, falling NIF/VC — monitor before the crash.', ['guillain-barre-syndrome', 'myasthenic-crisis']],
 ['Pneumonia / COPD exacerbation / anemia', 'common', 'High-frequency drivers; treat and reassess objectively.', ['community-acquired-pneumonia', 'copd-exacerbation']]
 ],
@@ -132,7 +132,7 @@ dontMiss: [
 ['Ovarian / testicular torsion', 'critical', "Abrupt unilateral pelvic, groin or scrotal pain with vomiting warrants urgent specialist assessment. Preserved Doppler flow does not exclude torsion.", ['ovarian-torsion', 'testicular-torsion']],
 ['Aortic dissection with abdominal malperfusion', 'critical', 'Abrupt abdominal or back pain with pulse deficits, neurologic changes or shock warrants urgent aortic assessment.', ['acute-aortic-syndrome']],
 ['Acute cholangitis', 'critical', 'Right upper quadrant pain with fever, jaundice or sepsis warrants evaluation for infected biliary obstruction.', ['acute-cholangitis']],
-['DKA, inferior MI, basal pneumonia', 'emergent', 'Medical mimics — check glucose, ECG, and lungs in every atypical story.', ['hyperglycemia', 'acute-coronary-syndrome']],
+['DKA, inferior MI, basal pneumonia', 'emergent', 'Medical mimics — check glucose, ECG, and lungs in every atypical story.', ['diabetic-ketoacidosis', 'acute-coronary-syndrome', 'community-acquired-pneumonia']],
 ['Appendicitis / cholecystitis / diverticulitis / obstruction', 'common', "Use pain location, serial examination and selective imaging to narrow the cause. Escalate peritonitis, sepsis or suspected bowel compromise.", ['acute-appendicitis', 'acute-cholecystitis', 'acute-diverticulitis', 'small-bowel-obstruction']],
 ['Acute pancreatitis', 'emergent', 'Persistent epigastric pain, often radiating to the back, warrants lipase testing when the presentation fits.', ['acute-pancreatitis']]
 ],
@@ -215,7 +215,7 @@ approach: [
     'In the elderly, an acute change from baseline is delirium with a driver, not “UTI until proven otherwise.”'
 ],
 dontMiss: [
-['Hypoglycemia / hyperglycemic crises', 'critical', 'Bedside glucose in every AMS patient — before anything else. Never delay dextrose for thiamine.'],
+['Hypoglycemia / hyperglycemic crises', 'critical', 'Bedside glucose in every AMS patient — before anything else. Never delay dextrose for thiamine.', ['diabetic-ketoacidosis', 'hyperosmolar-hyperglycemic-state']],
 ['Hypoxia / hypercapnia', 'critical', 'SpO₂, VBG; think CO₂ narcosis in COPD.', ['copd-exacerbation']],
 ['Stroke / intracranial hemorrhage', 'critical', 'Sudden focal signs or anticoagulation — non-contrast CT now. Check reperfusion eligibility (IV tenecteplase/alteplase ≤4.5 h, or 4.5–9 h/unknown onset via advanced imaging; mechanical thrombectomy up to 24 h in selected large-core and basilar occlusions per 2026 AHA/ASA).', ['acute-ischemic-stroke', 'spontaneous-intracerebral-hemorrhage']],
 ['SAH', 'critical', 'Sudden headache + collapse; CT then LP or CTA as indicated.', ['aneurysmal-subarachnoid-hemorrhage']],
@@ -349,13 +349,13 @@ approach: [
     'In stable UGIB, usual Hb trigger 7 g/dL (often 8 with CVD); active shock and ACS need individualized transfusion. Avoid over-transfusing varices.'
 ],
 dontMiss: [
-['Variceal hemorrhage', 'critical', 'Cirrhosis + hematemesis: vasoactive drug (octreotide; terlipressin where available) + ceftriaxone + endoscopy within 12 h; restrictive transfusion (Hb 7–8 g/dL).'],
+['Variceal hemorrhage', 'critical', "Suspected portal hypertensive bleeding needs early vasoactive therapy and antibiotics for cirrhosis. Arrange endoscopy within 12 hours after presentation following resuscitation.", ['acute-variceal-hemorrhage']],
 ['Aortoenteric fistula', 'critical', 'Prior AAA repair + any GI bleed = fistula until excluded (CTA / surgery).'],
 ['Massive lower GI bleed (diverticular, angiodysplasia)', 'critical', 'Instability directs CTA → IR/endoscopy over colonoscopy-first.'],
 ['Mesenteric ischemia with bleeding', 'critical', 'Bloody stool + pain out of proportion in a vasculopath.'],
 ['Anticoagulant-associated bleeding', 'critical', 'Agent-specific reversal for life-threatening hemorrhage; balance thrombosis risk (ACG/CAG 2022).'],
 ['Ischemic colitis / IBD flare', 'emergent', 'Pain + bloody diarrhea; steroids for IBD per severity.'],
-['Peptic ulcer / gastritis / anorectal sources', 'common', 'Most frequent; PPI after endoscopy per ACG; outpatient endoscopy if GBS 0–1.']
+['Peptic ulcer / gastritis / anorectal sources', 'common', 'Most frequent; PPI after endoscopy per ACG; outpatient endoscopy if GBS 0–1.', ['bleeding-peptic-ulcer']]
 ],
 history: [
     "Record the exact antithrombotic drug, indication and last dose, and assess renal function; reversal and interruption decisions need the bleeding severity and thrombotic risk.",
@@ -977,7 +977,7 @@ dontMiss: [
 ['Bowel obstruction / volvulus / perforation', 'critical', 'Bilious or feculent vomiting, distension, prior surgery, hernia — CT. Sigmoid/cecal volvulus is time-critical ischemia.', ['small-bowel-obstruction', 'perforated-peptic-ulcer']],
 ['ACS / inferior MI', 'critical', 'Isolated vomiting, especially in women, elderly, and diabetics — ECG before the antiemetic is blamed for the \u201Ccure.\u201D', ['acute-coronary-syndrome']],
 ['Raised ICP / SAH / posterior stroke', 'critical', 'Headache, diplopia, ataxia, no abdominal findings — CT/MRI. Projectile vomiting is a clue, not a rule.'],
-['DKA / HHS / adrenal crisis / hyponatremia', 'critical', 'Glucose and electrolytes in every unexplained case. Steroid-dependent patients get stress-dose steroids.', ['hyperglycemia', 'adrenal-crisis', 'electrolytes']],
+['DKA / HHS / adrenal crisis / hyponatremia', 'critical', 'Glucose and electrolytes in every unexplained case. Steroid-dependent patients get stress-dose steroids.', ['diabetic-ketoacidosis', 'hyperosmolar-hyperglycemic-state', 'adrenal-crisis', 'electrolytes']],
 ['Pregnancy complications (hyperemesis vs ectopic vs molar)', 'critical', 'hCG first; assess oral intake, weight loss, hydration and electrolytes in hyperemesis. Ketonuria does not grade severity; blood ketones/acidosis are relevant if DKA is suspected. Ectopic if pain + bleeding.', ['ectopic-pregnancy']],
 ['Acute glaucoma / testicular or ovarian torsion', 'emergent', 'The referred-pain mimics — eye and groin exams exist for a reason.', ['ovarian-torsion', 'testicular-torsion']],
 ['Cannabinoid hyperemesis / cyclic vomiting / gastritis', 'common', 'Hot-water bathing is a cannabinoid clue; capsaicin and haloperidol are options. Still exclude the killers once.']
@@ -1410,8 +1410,8 @@ approach: [
     'Steroid-dependent + shock or vomiting: stress-dose hydrocortisone now — do not wait for a cortisol.'
 ],
 dontMiss: [
-['Diabetic ketoacidosis', 'critical', 'Diabetes history or glucose ≥200 mg/dL, β-hydroxybutyrate ≥3 mmol/L (or urine ketones ≥2+), and pH <7.3 and/or bicarbonate <18 mmol/L. Euglycemic DKA on SGLT2 inhibitors is easy to miss — check ketones when the story fits even if glucose is modest.'],
-['Hyperosmolar hyperglycemic state', 'critical', 'Glucose ≥600 mg/dL, effective osmolality >300 or total >320 mOsm/kg, β-hydroxybutyrate <3 mmol/L, pH ≥7.3 and bicarbonate ≥15 mmol/L; altered mentation is not required — huge water deficit; correct slowly to avoid cerebral edema.'],
+['Diabetic ketoacidosis', 'critical', 'Diabetes history or glucose ≥200 mg/dL, β-hydroxybutyrate ≥3 mmol/L (or urine ketones ≥2+), and pH <7.3 and/or bicarbonate <18 mmol/L. Euglycemic DKA on SGLT2 inhibitors is easy to miss — check ketones when the story fits even if glucose is modest.', ['diabetic-ketoacidosis']],
+['Hyperosmolar hyperglycemic state', 'critical', 'Glucose ≥600 mg/dL, effective osmolality >300 or total >320 mOsm/kg, β-hydroxybutyrate <3 mmol/L, pH ≥7.3 and bicarbonate ≥15 mmol/L; altered mentation is not required — huge water deficit; correct slowly to avoid cerebral edema.', ['hyperosmolar-hyperglycemic-state']],
 ['Adrenal crisis', 'critical', 'Shock, hyponatremia, hyperkalemia, or hypoglycemia in a steroid-dependent, pituitary, or meningococcemia patient — adult hydrocortisone 100 mg IV now; children need age/body-surface dosing under the pediatric protocol.', ['adrenal-crisis']],
 ['Precipitant ACS / sepsis / pancreatitis', 'critical', 'The crisis is often triggered — ECG, cultures, lipase as indicated. Treat the trigger with the protocol.', ['acute-coronary-syndrome', 'sepsis-and-septic-shock', 'acute-pancreatitis']],
 ['Hypokalemia during insulin', 'critical', 'Total-body K⁺ is low even when the first value is normal; insulin drives K⁺ in — replace and monitor.'],
@@ -1432,19 +1432,19 @@ workup: [
 redFlags: ['Altered mentation with hyperglycemia or ketones', 'K⁺ <3.5 before insulin, or falling K⁺ on treatment', 'Steroid-dependent patient with shock or vomiting', 'SGLT2 inhibitor + acidosis even with a \u201Cnormal\u201D glucose', 'Headache or falling GCS in a child on a DKA protocol', 'Hypotension that does not respond to fluids (think adrenal, sepsis, ACS)'],
 disposition: [
 ['Discharge', 'Isolated hyperglycemia without ketosis or HHS features, a clear missed-dose story, reliable insulin access and follow-up.'],
-['Admit (ward / HDU)', 'Uncomplicated DKA responding on a protocol, new diabetes needing education, HHS with improving osmolality under monitoring.'],
-['ICU', 'Severe acidosis, shock, HHS with coma, cerebral injury or a dangerous precipitant. All pediatric DKA needs a pediatric protocol and specialist monitored care; ICU depends on severity and neurologic/hemodynamic status. Adrenal crisis with instability needs ICU.']
+['Admit (ward / HDU)', 'Selected uncomplicated adult DKA on a monitored protocol. Choose the care setting by severity, monitoring capacity and comorbidity.'],
+['ICU', 'Severe DKA, HHS, shock, altered mental status, cerebral injury or a dangerous precipitant. All pediatric DKA needs a pediatric protocol and specialist monitored care; ICU depends on severity and neurologic/hemodynamic status. Adrenal crisis with instability needs ICU.']
 ],
 pitfalls: ['Starting insulin before potassium is replaced when K⁺ is already low — ventricular arrhythmia.', 'Missing euglycemic DKA because the glucose is 180 mg/dL on an SGLT2 inhibitor.', 'Waiting for a random cortisol in adrenal crisis.', 'Over-rapid correction of HHS sodium/osmolality.', 'Calling DKA abdominal pain \u201Cjust ketosis\u201D without considering pancreatitis or a surgical abdomen.', 'Do not stop insulin just because glucose falls: add dextrose and continue until ketoacidosis resolves. Adult resolution: β-hydroxybutyrate <0.6 mmol/L plus venous pH ≥7.3 or bicarbonate ≥18 mmol/L; ideally glucose <200 mg/dL. The anion gap and urine ketones are not resolution targets.'],
 pearls: [
     "When transitioning resolved adult DKA from IV to subcutaneous insulin, overlap by 1–2 hours according to the protocol to prevent rebound ketosis; account for intake and hypoglycemia risk.",
-    "Before discharge, address the precipitant, insulin access, supplies, injection technique, ketone testing and sick-day advice; agree a follow-up plan rather than treating insulin omission as the whole explanation.",
+    "Before discharge, address the precipitant, insulin access, supplies, injection technique, ketone testing and sick-day advice. Agree on a follow-up plan.",
     'Fluids, potassium, then insulin. That order prevents the crash.', 'SGLT2 + unwell = check ketones even if glucose is not high.', 'Hydrocortisone in the crashing steroid-dependent patient is a resuscitation drug, not an endocrine consult.', 'Clear ketonemia and acidosis, not just hyperglycemia; saline-related hyperchloremic acidosis can leave bicarbonate low despite ketone clearance; the anion gap is not a resolution target.'],
 doses: [
-    ['Fluids', ['Isotonic crystalloid (0.9% saline or balanced crystalloid) 1–1.5 L in the first hour (15–20 mL/kg in children, then reassess)', 'Thereafter 250–500 mL/h guided by volume status, sodium and urine output; prefer balanced crystalloid when chloride is rising', 'Severe hypovolaemia/shock: faster initial resuscitation, then individualise for heart failure, renal failure or frailty']],
-    ['Insulin', ['Regular insulin 0.1 U/kg/h IV infusion (or 0.14 U/kg/h if no bolus)', 'Continue until ketoacidosis resolves — do not stop insulin when glucose normalises', 'When glucose <200–250 mg/dL: add dextrose (5–10%) and reduce to 0.05 U/kg/h', 'Subcutaneous rapid-acting analogue (0.1–0.2 U/kg q2h) is an alternative for mild DKA; not for HHS or severe DKA']],
-    ['Potassium', ['If K⁺ <3.5 mmol/L: replace (e.g. 20–40 mmol/h) and defer insulin until K⁺ ≥3.5 and stable', 'If K⁺ 3.5–5.0 mmol/L: add 20–30 mmol/L of infusion fluid to keep K⁺ in range', 'If K⁺ >5.0 mmol/L: hold replacement and recheck', 'Check K⁺ and glucose 2 h after starting insulin, then every 2–4 h']],
-    ['Bicarbonate / phosphate', ['Bicarbonate only for pH <6.9: 100 mmol in 400 mL sterile water with 20 mmol KCl over 2 h, repeat until pH >7.0', 'Phosphate only if <1 mg/dL (0.32 mmol/L) or with cardiac/respiratory compromise: 20–30 mmol potassium phosphate']],
+    ['Fluids (adults)', ['Without cardiac or renal compromise, start isotonic saline or balanced crystalloid at 500–1,000 mL/h for the first 2–4 hours, with reassessment. Adjust to perfusion, sodium and fluid balance.', 'Use smaller boluses with frequent reassessment in older adults or patients with heart failure or advanced kidney disease. Use a separate pediatric protocol.']],
+    ['Insulin (adults)', ['After initial fluid assessment and when potassium permits, start IV regular insulin 0.1 units/kg/h for DKA or mixed DKA/HHS. For HHS without acidosis and without significant ketonemia, use the dedicated HHS protocol, typically 0.05 units/kg/h.', 'In DKA, add 5–10% dextrose and reduce insulin to 0.05 units/kg/h when glucose falls below 250 mg/dL. Start dextrose earlier for euglycemic DKA. Continue insulin until ketoacidosis resolves.', 'Selected uncomplicated mild or moderate DKA can use a validated monitored subcutaneous protocol. Use IV treatment for severe DKA, complicated DKA or HHS.']],
+    ['Potassium (adults)', ['If K⁺ <3.5 mmol/L, the adult consensus starts replacement at 10 mmol/h and delays insulin until K⁺ is above 3.5 mmol/L. Follow local IV potassium, monitoring and renal-adjustment protocols.', 'Once K⁺ falls below 5.0 mmol/L, many adults need 20–30 mmol/L of IV fluid to maintain K⁺ at 4–5 mmol/L. Individualize for renal function and urine output.', 'Check glucose every 1–2 hours. Check K⁺ 2 hours after insulin starts and at least every 4 hours thereafter, more often when unstable.']],
+    ['Bicarbonate / phosphate (adults)', ['Avoid routine bicarbonate. Consider it for severe acidosis with pH <7.0 under the local monitored protocol. Manage potassium separately.', 'Avoid routine phosphate. Consider replacement when phosphate is below 1.0 mmol/L with muscle weakness or cardiac or respiratory compromise. Monitor calcium and potassium.']],
     ['Adrenal crisis (adjunct)', ['Adult hydrocortisone 100 mg IV immediately, then 50 mg IV q6h (or 200 mg/24 h infusion)', 'Children (adrenal crisis): hydrocortisone 50–100 mg/m² IV/IM, or age-banded 25 mg (<3 y), 50 mg (3–12 y), 100 mg (>12 y), then 50–100 mg/m²/day', 'Add fludrocortisone only after stabilisation and when on a maintenance regimen']]
 ],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — DKA, HHS, adrenal insufficiency', 'ADA/EASD/AACE/JBDS/DTS Hyperglycemic Crises in Adults Consensus Report (2024); ADA Standards of Care 2026', 'ISPAD pediatric DKA; Endocrine Society adrenal insufficiency guidance']
@@ -1541,7 +1541,7 @@ pearls: [
 doses: [
     ['IV thrombolysis (alteplase / tenecteplase)', ['Alteplase 0.9 mg/kg IV (10% as a bolus over 1 min, remainder over 60 min), max 90 mg — within 4.5 h of onset', 'Tenecteplase 0.25 mg/kg IV bolus (max 25 mg) is an accepted alternative in eligible patients', 'Do not give if BP >185/110 mmHg — lower first and keep <180/105 for 24 h; no antiplatelet/anticoagulant for 24 h']],
     ['BP targets', ['Ischemic stroke without reperfusion: permissive hypertension unless >220/120 mmHg or another condition requires treatment; if lowering, use the specialist protocol (usually ~15% in 24 h)', 'Before/after thrombolysis: <185/110 to start, then <180/105 for 24 h', 'Selected mild-to-moderate ICH with initial SBP 150–220 mmHg: target ~140, maintaining 130–150 mmHg; avoid <130. Severe/large ICH requires individualized specialist targets']],
-    ['Reversal (haemorrhage / anticoagulated)', ['Warfarin: 4-factor PCC + vitamin K 10 mg IV', 'Dabigatran: idarucizumab 5 g IV; anti-Xa DOACs: andexanet alfa or 4F-PCC per protocol', 'Heparin (last 4 h): protamine 1 mg per 100 units (max 50 mg)']],
+    ['Reversal (haemorrhage / anticoagulated)', ['Warfarin: 4-factor PCC + vitamin K 10 mg IV', 'Dabigatran: idarucizumab 5 g IV. Oral factor Xa inhibitor-associated intracerebral hemorrhage: use the local 4-factor PCC reversal pathway (NCS/SCCM 2026).', 'Heparin (last 4 h): protamine 1 mg per 100 units (max 50 mg)']],
     ['Glucose & seizure', ['Treat hypoglycaemia (<60 mg/dL) immediately; target 140–180 mg/dL', 'Status epilepticus: benzodiazepine first — see the Status Epilepticus quick sheet', 'Do not treat mild permissive hyperglycaemia with insulin infusions in the acute phase']]
 ],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — acute stroke', '2026 AHA/ASA Early Management of Acute Ischemic Stroke Guideline; local stroke pathway']
@@ -1862,7 +1862,7 @@ dontMiss: [
     ['Acute subdural haematoma', 'critical', 'Crescentic bleed, common in the elderly, anticoagulated and alcohol-dependent. Can expand rapidly; a thin film can look benign and still need surgery.'],
     ['Diffuse axonal injury / cerebral oedema', 'critical', 'Impaired consciousness out of proportion to the CT, or diffuse swelling with lost cisterns. Manage intracranial pressure and avoid hypotension and hypoxia.'],
     ['Skull base or open fracture', 'critical', 'Skull-base signs or an open fracture need urgent specialist assessment; avoid nasal instrumentation. Basilar fracture/CSF leak alone does not justify prophylactic antibiotics; open or penetrating injury has separate antibiotic indications.'],
-    ['Anticoagulation-related haemorrhage', 'critical', 'Warfarin: 4F-PCC + vitamin K. Dabigatran: idarucizumab. Anti-Xa DOACs: andexanet alfa or PCC. Antithrombotic use changes the imaging assessment; aspirin monotherapy is not an automatic CT indication. After a reassuring adult minor-injury assessment, admission is not automatic.'],
+    ['Anticoagulation-related haemorrhage', 'critical', 'Warfarin: 4F-PCC + vitamin K. Dabigatran: idarucizumab. Oral factor Xa inhibitor-associated traumatic intracranial hemorrhage: use the local 4-factor PCC reversal pathway. Antithrombotic use changes the imaging assessment; aspirin monotherapy is not an automatic CT indication. After a reassuring adult minor-injury assessment, admission is not automatic.'],
     ['Cervical spine injury', 'critical', 'Distracting injuries and intoxication mask it. Keep the collar until clinical or imaging clearance per NEXUS/Canadian C-spine rules.']
 ],
 history: [
@@ -1885,7 +1885,7 @@ pearls: [
 doses: [
     ['Intracranial pressure / neuroprotection', ['Head-up 30°, normocapnia (PaCO₂ 35–40 mmHg) unless herniating, and normothermia', 'Hypertonic saline 3% 100–250 mL bolus or mannitol 0.25–1 g/kg for acute herniation while arranging surgery', 'Brief hyperventilation (PaCO₂ 30–35 mmHg) only as a bridge to definitive treatment']],
     ['Seizure and sedation', ['Levetiracetam 60 mg/kg IV (max 4.5 g) or fosphenytoin 20 mg PE/kg for post-traumatic seizures', 'Ketamine 1–2 mg/kg or etomidate 0.3 mg/kg for induction in haemodynamic compromise (either drug can be followed by hypotension. Prepare hemodynamic support)']],
-    ['Reversal of anticoagulation', ['Warfarin: 4-factor PCC (per INR) + vitamin K 10 mg IV', 'Dabigatran: idarucizumab 5 g IV', 'Anti-Xa DOAC: andexanet alfa or 4F-PCC per local protocol', 'Heparin: protamine 1 mg per 100 units (max 50 mg)']]
+    ['Reversal of anticoagulation', ['Warfarin: 4-factor PCC (per INR) + vitamin K 10 mg IV', 'Dabigatran: idarucizumab 5 g IV', 'Oral factor Xa inhibitor-associated traumatic intracranial hemorrhage: use the local 4-factor PCC reversal pathway (NCS/SCCM 2026).', 'Heparin: protamine 1 mg per 100 units (max 50 mg)']]
 ],
 refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — head trauma', 'NICE NG232 head injury (2023); Canadian CT Head and NEXUS rules', 'Brain Trauma Foundation severe TBI guidance; ACS/ATLS 10th ed.']
 },
@@ -2257,7 +2257,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
         'Obtain and interpret a 12-lead ECG within 10 minutes. Repeat with persistent or recurrent symptoms and compare with prior tracings when available.',
         'Activate the local reperfusion pathway for STEMI. For other patterns concerning for acute coronary occlusion, ongoing refractory ischemia or hemodynamic instability, seek immediate cardiology and reperfusion assessment. Do not wait for troponin.',
         'Give aspirin 162–325 mg orally, chewed, for ACS if eligible. If acute aortic syndrome is suspected, prioritize urgent aortic assessment before starting antithrombotic therapy. Coordinate further antiplatelet and anticoagulant treatment with the local ACS pathway.',
-        'For suspected non-ST-elevation ACS without an immediate invasive indication, use serial ECGs and a validated, assay-specific high-sensitivity troponin pathway.'
+        'For suspected non-ST-elevation ACS without an immediate invasive indication, use serial ECGs and a validated, assay-specific high-sensitivity troponin pathway. Give supplemental oxygen for hypoxemia (SpO₂ <90% in the ACS guideline) or other indications. Avoid nitrates with hypotension, suspected right ventricular infarction or recent PDE5 inhibitor use.'
     ],
     dontMiss: [
         ['Posterior or right ventricular infarction', 'critical', 'Record V7–V9 for suspected posterior infarction and right-sided leads such as V4R for suspected right ventricular involvement.'],
@@ -2268,7 +2268,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
     exam: ['Assess perfusion, heart failure, new murmur and pulse asymmetry. A reassuring exam can occur in ACS.'],
     workup: [
         ['ECG', ['Repeat during symptoms. ST depression maximal in V1–V3 may reflect posterior occlusion even with negative supplemental leads.']],
-        ['Biomarkers', ['Acute MI requires acute myocardial injury, usually a rise or fall in troponin with a value above the assay’s 99th percentile, and evidence of ischemia. An elevated troponin alone indicates injury.']]
+        ['Biomarkers', ['Acute MI requires acute myocardial injury, usually a rise or fall in troponin with a value above the assay’s sex-specific 99th percentile upper reference limit, and evidence of ischemia. An elevated troponin alone indicates injury.']]
     ],
     redFlags: ['STEMI or suspected acute coronary occlusion.', 'Ongoing ischemia, shock, acute heart failure or a life-threatening arrhythmia.'],
     disposition: [
@@ -2276,7 +2276,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
         ['Monitored evaluation', 'Confirmed or suspected ACS with unresolved risk requires continued observation or admission and a documented management plan.'],
         ['Discharge', 'Use a completed validated low-risk pathway, reassess symptoms and alternative diagnoses, and arrange follow-up and return precautions.']
     ],
-    pitfalls: ['Ruling out ACS with a single reference-range troponin or a nondiagnostic ECG.', 'Equating every troponin rise with type 1 MI.'],
+    pitfalls: ['Ruling out ACS with a single reference-range troponin or a nondiagnostic ECG.', 'Equating an isolated troponin rise with primary MI. Use evidence of ischemia and the clinical mechanism to classify the event.'],
     pearls: ['Document symptom onset, serial ECG and troponin times, and the reason for escalation or discharge.'],
     refs: ['2025 ACC/AHA multisociety ACS guideline', '2022 ACC ED chest pain pathway', 'Fifth Universal Definition of MI']
 },
@@ -2318,7 +2318,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
         'In shock or deterioration, resuscitate and involve critical care and the local PE response or reperfusion team early. Use bedside echo when transport to CT is unsafe and integrate other causes of shock.',
         'In a stable patient with very low clinical probability, apply PERC when appropriate. If all criteria are negative, further PE testing is generally unnecessary.',
         'For low or intermediate probability, use D-dimer in a validated pathway, with age-adjusted or probability-adjusted thresholds as specified. High probability goes directly to imaging.',
-        'Treat confirmed PE with anticoagulation when eligible. Choose the agent according to bleeding risk, renal function and procedural plans. Assess patients with shock or deterioration for urgent reperfusion.'
+        'Treat confirmed PE with anticoagulation when eligible. Choose the agent according to bleeding risk, renal function and procedural plans. A DOAC is generally preferred over a vitamin K antagonist when oral therapy is suitable. If imaging is delayed in a higher-severity suspected PE with low bleeding risk, discuss empiric anticoagulation using the local pathway. Assess shock or deterioration for urgent reperfusion.'
     ],
     dontMiss: [
         ['PE with cardiopulmonary failure', 'critical', 'Persistent hypotension, shock or arrest needs immediate resuscitation and consideration of advanced therapy.'],
@@ -2402,7 +2402,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
     approach: [
         'Assess perfusion, monitor, obtain IV access and perform bedside echo. Call the team capable of urgent drainage as soon as tamponade is suspected.',
         'Interpret echo findings alongside hemodynamics. Right atrial or right ventricular collapse and a plethoric IVC support the diagnosis in context.',
-        'Use supportive resuscitation as a bridge to urgent drainage in an unstable patient. If intubation is necessary, prepare for hemodynamic deterioration with an experienced team.',
+        'Use supportive resuscitation as a bridge to urgent drainage. Positive-pressure ventilation can worsen tamponade. If intubation is unavoidable, involve an experienced team and prepare for hemodynamic deterioration.',
         'Choose image-guided pericardiocentesis or surgical drainage based on the cause and setting. Suspected type A dissection, traumatic bleeding or myocardial free-wall rupture requires immediate surgical coordination.'
     ],
     dontMiss: [
@@ -2710,7 +2710,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
         "Provide analgesia and antiemetics. Use moderately aggressive isotonic crystalloid when IV resuscitation is needed, preferably lactated Ringer’s. Reassess early and adjust to perfusion, volume status and cardiac or renal comorbidity.",
         "Check for gallstones with ultrasound and investigate other causes when the history and labs suggest them.",
         "Offer early oral feeding as tolerated in mild disease. Avoid routine prophylactic antibiotics, including for sterile necrosis.",
-        "If biliary pancreatitis is complicated by cholangitis, discuss early ERCP with gastroenterology. Coordinate same-admission cholecystectomy for mild biliary pancreatitis when appropriate."
+        "If biliary pancreatitis is complicated by cholangitis, arrange early ERCP assessment. The ACG guideline favors ERCP within 24 hours in this setting. Biliary pancreatitis without cholangitis does not routinely need early ERCP. Coordinate same-admission cholecystectomy for mild biliary pancreatitis when appropriate."
     ],
     dontMiss: [
         ["Organ failure", "critical", "Hypoxemia, shock or evolving kidney injury requires monitored care and reassessment."],
@@ -2810,7 +2810,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
     redFlags: ["Silent chest, confusion, exhaustion, worsening hypoxemia or rising PaCO₂."],
     disposition: [
         ["Admission / critical care", "Escalate a poor response, ongoing oxygen requirement, frequent bronchodilator need or impending respiratory failure."],
-        ["Selected discharge", "After sustained improvement, prescribe or adjust an ICS-containing regimen, check technique, provide a written action plan and arrange early follow-up."]
+        ["Selected discharge", "After sustained improvement, confirm stable oxygenation and airflow, prescribe or adjust an ICS-containing regimen, check technique and provide a written action plan. Arrange adult follow-up within 2–7 days under GINA guidance."]
     ],
     pitfalls: [
         "Using less wheeze as evidence of improvement without checking air entry and work of breathing.",
@@ -2975,7 +2975,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
         "Activate the stroke pathway, establish last known well and baseline function, check bedside glucose and assess whether the deficit is disabling.",
         "Obtain urgent noncontrast head CT to assess for hemorrhage. Add head and neck vascular imaging when large-vessel occlusion is suspected. Do not delay eligible standard-window thrombolysis for additional multimodal imaging.",
         "Discuss IV tenecteplase or alteplase with the stroke team for eligible patients with disabling deficits within 4.5 hours. Selected patients with unknown onset or later presentation may qualify through advanced imaging.",
-        "Coordinate thrombectomy assessment promptly for eligible large-vessel occlusion, including selected later presentations. Follow stroke protocol for BP, swallowing and antithrombotic timing."
+        "Coordinate thrombectomy assessment promptly for eligible large-vessel occlusion, including selected later presentations. Selected basilar artery occlusion can qualify for thrombectomy up to 24 hours. Use the local reperfusion BP protocol and screen swallowing before oral intake."
     ],
     dontMiss: [
         ["Basilar artery occlusion", "critical", "Abrupt reduced consciousness or acute brainstem findings require urgent vascular imaging when suspected."],
@@ -3002,7 +3002,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
         "Clarify the symptoms and timing with the patient and witnesses. A persistent or recurrent deficit should trigger acute stroke assessment.",
         "Check glucose and obtain brain imaging. MRI with diffusion-weighted imaging is preferred when promptly available, ideally within 24 hours. Noncontrast CT can identify hemorrhage and some mimics when MRI is unavailable.",
         "Obtain appropriate head and neck vascular imaging and ECG. Assess for symptomatic stenosis and atrial fibrillation, and arrange further rhythm assessment as indicated.",
-        "Discuss secondary prevention with the stroke team after bleeding is excluded. Short-term dual antiplatelet therapy is reserved for eligible high-risk noncardioembolic events. Cardioembolic disease needs a different plan."
+        "Discuss secondary prevention with the stroke team after bleeding is excluded. Short-term dual antiplatelet therapy is for selected high-risk noncardioembolic events, after review of timing, mechanism and bleeding risk. Cardioembolic disease needs a different plan."
     ],
     dontMiss: [
         ["Ongoing ischemic stroke", "critical", "A deficit that recurs during assessment requires renewed evaluation for acute reperfusion.", ["acute-ischemic-stroke"]],
@@ -3055,7 +3055,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
     overview: "Nontraumatic bleeding into brain tissue can cause focal deficit, headache, vomiting, seizure or reduced consciousness. Location, size and intraventricular extension affect urgency and treatment.",
     approach: [
         "Stabilize airway and perfusion and obtain urgent noncontrast head CT. Notify stroke or neurocritical care immediately when ICH is suspected or confirmed.",
-        "Identify anticoagulant exposure and last dose. Stop anticoagulation and initiate appropriate agent-specific reversal promptly when indicated, using the local pathway.",
+        "Identify anticoagulant exposure and last dose. Stop anticoagulation and initiate agent-specific reversal promptly when indicated. For oral factor Xa inhibitor-associated spontaneous ICH, the 2026 NCS/SCCM update suggests 4-factor PCC over andexanet alfa. Follow the local dosing pathway.",
         "For mild to moderate spontaneous ICH with presenting SBP 150–220 mmHg, the AHA/ASA approach targets about 140 mmHg and maintains 130–150 mmHg when lowering is appropriate. Use smooth titration. Severe hemorrhage, planned surgery or other presentations require individualized targets.",
         "Arrange urgent neurosurgical assessment for deterioration, hydrocephalus, brainstem compression or cerebellar hemorrhage with concerning features."
     ],
@@ -3297,6 +3297,113 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
     pitfalls: ["Using nitrofurantoin or oral fosfomycin for a kidney infection."],
     pearls: ["Document who will review the culture and change therapy if susceptibility results require it."],
     refs: ["EAU urological infections guideline (2026)", "IDSA complicated urinary tract infections guideline (2025)"]
+},
+{
+    id: 'diabetic-ketoacidosis', type: 'diagnosis', name: "Diabetic Ketoacidosis (DKA)", icon: '🩺',
+    tag: "Check blood ketones and acid–base status even when glucose is modest.",
+    overview: "Adult DKA requires diabetes or glucose ≥200 mg/dL, ketosis (blood β-hydroxybutyrate ≥3 mmol/L or urine ketones ≥2+), and acidosis (pH <7.3 or bicarbonate <18 mmol/L). Use dedicated pediatric and pregnancy pathways.",
+    approach: [
+        "Start isotonic fluid with frequent reassessment. Check potassium before insulin. If K⁺ is below 3.5 mmol/L, replace it and defer insulin until above 3.5 mmol/L.",
+        "When potassium permits, start the adult DKA insulin pathway. With IV treatment, regular insulin is typically 0.1 units/kg/h. Add dextrose and reduce to 0.05 units/kg/h when glucose is below 250 mg/dL. In euglycemic DKA, start dextrose with initial treatment as needed to give insulin safely.",
+        "Check bedside glucose every 1–2 hours and follow electrolytes, renal function, β-hydroxybutyrate and venous pH about every 4 hours, more often when clinically indicated. Recheck potassium 2 hours after starting insulin and at least every 4 hours thereafter.",
+        "Treat precipitants and continue insulin until ketosis and acidosis resolve. Overlap subcutaneous basal insulin by 1–2 hours before stopping IV insulin according to protocol."
+    ],
+    dontMiss: [
+        ["Euglycemic DKA", "critical", "Consider with SGLT2 inhibitor use, reduced intake or pregnancy. Stop the SGLT2 inhibitor during the episode."],
+        ["HHS overlap", "critical", "Marked hyperosmolality with DKA requires slow osmotic correction and DKA-dose insulin when potassium allows.", ["hyperosmolar-hyperglycemic-state"]]
+    ],
+    history: ["Ask about insulin interruption or pump problems, SGLT2 inhibitors, poor intake, infection and pregnancy."],
+    exam: ["Assess perfusion, hydration, respiratory compensation and mental status. Reassess abdominal findings during treatment."],
+    workup: [["Diagnosis and response", ["Check glucose, venous gas, blood ketones, electrolytes and renal function. Obtain ECG and targeted trigger studies. Resolution is β-hydroxybutyrate <0.6 mmol/L plus pH ≥7.3 or bicarbonate ≥18 mmol/L."]]],
+    redFlags: ["Shock, severe acidosis, altered consciousness, severe potassium disturbance or a critical precipitant."],
+    disposition: [
+        ["Monitored treatment", "Severe or complicated DKA needs critical care. Selected uncomplicated mild or moderate cases may use a monitored subcutaneous protocol."],
+        ["Transition planning", "Before discharge resolve the crisis, address the cause, confirm insulin and testing supplies, and teach sick-day rules."]
+    ],
+    pitfalls: [
+        "Stopping insulin because glucose normalizes before ketosis resolves.",
+        "Using urine ketones or anion gap alone to determine resolution."
+    ],
+    pearls: ["If the glucose and clinical picture disagree, measure blood ketones directly."],
+    refs: ["Multisociety adult hyperglycemic crises consensus (2024)", "ADA Standards of Care in Diabetes (2026)"]
+},
+{
+    id: 'hyperosmolar-hyperglycemic-state', type: 'diagnosis', name: "Hyperosmolar Hyperglycemic State (HHS)", icon: '🩺',
+    tag: "Correct volume and osmolality gradually. Check for mixed DKA/HHS.",
+    overview: "Adult HHS requires glucose ≥600 mg/dL, effective osmolality >300 or total osmolality >320 mOsm/kg, no significant ketonemia (β-hydroxybutyrate <3 mmol/L), pH ≥7.3 and bicarbonate ≥15 mmol/L. Altered consciousness is not required.",
+    approach: [
+        "Start isotonic crystalloid and reassess perfusion, fluid balance and comorbidities. Use smaller reassessed boluses in frail adults or those with heart or kidney failure.",
+        "Monitor glucose, sodium, potassium, mental status and osmolality. Aim for an osmolality fall of 3–8 mOsm/kg/h. Avoid a sodium fall above 10 mmol/L per 24 hours or a glucose fall above 90–120 mg/dL/h.",
+        "Use the HHS protocol for insulin timing after initial fluid assessment and potassium evaluation. Uncomplicated HHS without acidosis or significant ketosis typically uses IV insulin 0.05 units/kg/h. Mixed DKA/HHS uses the DKA pathway, typically 0.1 units/kg/h once potassium permits.",
+        "Treat the precipitant and reassess new focal deficits or worsening consciousness promptly. A rising measured sodium as glucose falls can be expected. Interpret it with the osmolality trend."
+    ],
+    dontMiss: [
+        ["Mixed DKA/HHS", "critical", "Significant ketonemia or acidosis requires assessment for overlap.", ["diabetic-ketoacidosis"]],
+        ["Acute precipitant", "critical", "Evaluate for infection, coronary ischemia or stroke when clinically indicated.", ["sepsis-and-septic-shock", "acute-ischemic-stroke"]]
+    ],
+    history: ["Ask about fluid access, medication changes, polyuria and recent infection or ischemic symptoms."],
+    exam: ["Assess perfusion, hydration, cognition and focal neurologic findings. Follow urine output."],
+    workup: [["Serial testing", ["Check glucose every 1–2 hours and osmolality, electrolytes and renal function about every 4 hours, with closer monitoring as needed. The adult consensus considers osmolality <300 mOsm/kg, glucose <250 mg/dL, improved cognition and urine output >0.5 mL/kg/h when assessing resolution."]]],
+    redFlags: ["Shock, altered consciousness, rapidly changing osmolality or serious precipitant."],
+    disposition: [["Critical care", "HHS generally requires ICU-level monitoring, especially with altered consciousness, shock or critical illness."]],
+    pitfalls: [
+        "Using the presenting glucose as the only severity marker.",
+        "Changing to hypotonic fluid solely because measured sodium rises as glucose falls."
+    ],
+    pearls: ["Follow the rate of osmolality decline along with clinical perfusion and neurologic status."],
+    refs: ["Multisociety adult hyperglycemic crises consensus (2024)", "ADA Standards of Care in Diabetes (2026)"]
+},
+{
+    id: 'bleeding-peptic-ulcer', type: 'diagnosis', name: "Bleeding Peptic Ulcer (Nonvariceal Upper GI Bleeding)", icon: '🩺',
+    tag: "Resuscitate first and arrange early endoscopy for suspected ulcer bleeding.",
+    overview: "A bleeding gastric or duodenal ulcer can cause hematemesis, melena or brisk hematochezia. Initial hemoglobin can be normal despite significant blood loss.",
+    approach: [
+        "Assess perfusion and airway. Establish IV access, send type and screen or crossmatch, and activate major hemorrhage support when indicated.",
+        "Use a restrictive red-cell strategy in stable patients, commonly at hemoglobin 7 g/dL. Individualize for active hemorrhage or myocardial ischemia. Use the Glasgow–Blatchford score as an adjunct after assessing stability.",
+        "Arrange upper endoscopy within 24 hours after presentation for admitted patients after resuscitation. Escalate persistent instability immediately for individualized timing. Pre-endoscopy IV PPI can be considered without delaying endoscopy.",
+        "After high-risk ulcer hemostasis, use the recommended high-dose PPI regimen. Rebleeding needs urgent reassessment and usually repeat endoscopy, followed by embolization or surgery if endoscopic control fails."
+    ],
+    dontMiss: [
+        ["Variceal hemorrhage", "critical", "Suspected portal hypertensive bleeding needs early vasoactive treatment and antibiotics when indicated.", ["acute-variceal-hemorrhage"]],
+        ["Aortoenteric fistula", "critical", "GI bleeding after aortic graft or repair warrants immediate vascular assessment."]
+    ],
+    history: ["Ask about NSAIDs, previous ulcer or bleeding, anticoagulants, cirrhosis and prior aortic repair."],
+    exam: ["Assess perfusion and ongoing bleeding, and look for clues to portal hypertension or peritonitis."],
+    workup: [["Resuscitation labs", ["Obtain serial CBC, renal function and coagulation tests as indicated. Coordinate testing for H. pylori and eradication if positive."]]],
+    redFlags: ["Shock, ongoing hematemesis, ischemia or recurrent bleeding after initial control."],
+    disposition: [
+        ["Admission / urgent intervention", "Admit ongoing or clinically significant bleeding. Arrange GI, interventional radiology or surgery according to severity and response."],
+        ["Selected outpatient care", "A Glasgow–Blatchford score of 0–1 may support outpatient follow-up when stable, with no other indication for admission and a reliable plan."]
+    ],
+    pitfalls: ["Waiting for hemoglobin to fall before treating hemorrhagic shock."],
+    pearls: ["Document the last episode of bleeding, perfusion trend and antithrombotic exposure when calling endoscopy."],
+    refs: ["ACG upper gastrointestinal and ulcer bleeding guideline (2021)", "ESGE peptic ulcer bleeding guideline update (2026)"]
+},
+{
+    id: 'acute-variceal-hemorrhage', type: 'diagnosis', name: "Acute Variceal Hemorrhage", icon: '🩺',
+    tag: "Start vasoactive therapy and antibiotics early while arranging urgent endoscopy.",
+    overview: "Variceal hemorrhage can present with hematemesis, melena or hematochezia in patients with portal hypertension. Endoscopy identifies the source and guides therapy.",
+    approach: [
+        "Assess perfusion and airway. Obtain IV access, arrange blood products when indicated and protect the airway in selected patients with impaired consciousness or active hematemesis.",
+        "Start a vasoactive agent such as octreotide promptly when variceal bleeding is suspected. Give antibiotic prophylaxis early for patients with cirrhosis and upper GI bleeding using local guidance.",
+        "Coordinate endoscopy within 12 hours after presentation following hemodynamic resuscitation. For unstable patients, perform endoscopy as soon as it can be done safely. Use a restrictive transfusion strategy when stable and individualize in ongoing major bleeding.",
+        "Discuss early TIPS eligibility in high-risk patients and rescue therapy if bleeding remains uncontrolled. Endoscopic treatment differs for esophageal and gastric varices."
+    ],
+    dontMiss: [
+        ["Ongoing shock or loss of airway protection", "critical", "Resuscitate and call endoscopy, anesthesia and critical care in parallel."],
+        ["Alternative upper GI source", "emergent", "Portal hypertension does not exclude ulcer bleeding or other causes.", ["bleeding-peptic-ulcer"]]
+    ],
+    history: ["Ask about cirrhosis, prior varices or banding, TIPS, anticoagulants and prior decompensation."],
+    exam: ["Assess consciousness, perfusion and signs of chronic liver disease. Recheck for bleeding and deterioration during resuscitation."],
+    workup: [["Early studies", ["Obtain CBC, type and crossmatch, liver and renal function, and coagulation tests. INR in cirrhosis is a poor measure of bleeding risk."]]],
+    redFlags: ["Persistent bleeding, shock, recurrent hematemesis or worsening consciousness."],
+    disposition: [["Monitored admission / urgent endoscopy", "Arrange GI and critical care input, and transfer when endoscopy or rescue intervention is unavailable."]],
+    pitfalls: [
+        "Waiting for endoscopic confirmation before treating suspected variceal bleeding.",
+        "Giving plasma solely to normalize cirrhosis-associated INR."
+    ],
+    pearls: ["Communicate portal hypertension history, ongoing blood loss and response to initial therapy."],
+    refs: ["AASLD portal hypertension and varices guidance (2024)", "Baveno VII consensus on portal hypertension"]
 }
 ];
 if (typeof window !== 'undefined') window.CP_DATA = CP_DATA;

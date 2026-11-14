@@ -7,7 +7,7 @@ for(const name of ['data','evidence','ecg-svg'])vm.runInContext(fs.readFileSync(
 const topics=ctx.window.CP_DATA,ecg=ctx.window.ECG_DATA,ev=ctx.window.CLINICAL_EVIDENCE;
 const prose=id=>JSON.stringify(topics.find(c=>c.id===id));
 test('all presentations and the ECG course expose explicit supporting sources',()=>{
- assert.equal(topics.length,96);
+ assert.equal(topics.length,100);
  for(const id of [...topics.map(c=>c.id),'ecg']){
   assert.ok(ev.topics[id]?.length,id);
   for(const key of ev.topics[id]){assert.equal(ev.sources[key]?.length,2,key);assert.equal(new URL(ev.sources[key][1]).protocol,'https:');}

@@ -142,6 +142,10 @@
         { title: 'Oncology Emergencies', ids: ['neutropenic-sepsis', 'tumor-lysis-syndrome', 'metastatic-spinal-cord-compression', 'hypercalcemia-of-malignancy', 'superior-vena-cava-syndrome', 'cancer-immunotherapy-toxicity'] }
     ];
     const RELATED = {
+        'diabetic-ketoacidosis': ['hyperglycemia', 'abdominal-pain', 'nausea-vomiting', 'ams'],
+        'hyperosmolar-hyperglycemic-state': ['hyperglycemia', 'ams', 'coma', 'weakness'],
+        'bleeding-peptic-ulcer': ['gib', 'shock', 'syncope'],
+        'acute-variceal-hemorrhage': ['gib', 'shock', 'syncope', 'jaundice'],
         'cauda-equina-syndrome': ['back-pain', 'weakness', 'urinary-retention', 'constipation'],
         'spinal-epidural-abscess': ['back-pain', 'weakness', 'fever'],
         'guillain-barre-syndrome': ['weakness', 'dyspnea', 'diplopia'],
@@ -388,6 +392,10 @@
     if (typeof window !== 'undefined') window.EM_ICONS = { svg: semanticSvg, map: SEMANTIC_ICONS };
 
     const TOPIC_CATS = {
+        'diabetic-ketoacidosis': 'endocrine',
+        'hyperosmolar-hyperglycemic-state': 'endocrine',
+        'bleeding-peptic-ulcer': 'gi',
+        'acute-variceal-hemorrhage': 'gi',
         'cauda-equina-syndrome': 'neuro',
         'spinal-epidural-abscess': 'neuro',
         'guillain-barre-syndrome': 'neuro',
@@ -3511,7 +3519,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const hadController = isAppWorker(navigator.serviceWorker.controller);
-                navigator.serviceWorker.register('./sw.js?v=20261114-diagnoses-v88').then((registration) => {
+                navigator.serviceWorker.register('./sw.js?v=20261114-diagnoses-v89').then((registration) => {
                     navigator.serviceWorker.ready.then((ready) => {
                         if (ready.scope === new URL('./', location.href).href) setOfflineStatus('Ready for offline use');
                     });

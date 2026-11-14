@@ -8,7 +8,7 @@ const topics=c.window.CP_DATA,evidence=c.window.CLINICAL_EVIDENCE;
 const text=id=>JSON.stringify(topics.find(t=>t.id===id));
 test('selected review records distinguish the new scope from the historical audit',()=>{
  assert.equal(evidence.checked,'2026-10-08');
- const ids=['chest-pain','dyspnea','abdominal-pain','headache','ams','syncope','fever','dizziness','gib','back-pain','joint-pain','pelvic-pain','seizures','overdose','hyperglycemia','flank-pain','red-eye','sore-throat','scrotal-pain','diarrhea','rash','limb-ischemia','urinary-retention','head-injury','pediatric-fever','pediatric-respiratory-distress','anaphylaxis','burns','heat-cold','alcohol-withdrawal','suicidal','constipation','weakness','coma','hemoptysis','shock','palpitations','focal-neurologic-deficit','electrolytes','hypertensive-emergency','vaginal-bleeding','nausea-vomiting','jaundice','cyanosis','diplopia','airway-stridor','edema','falls-geriatric-trauma'];
+ const ids=['chest-pain','dyspnea','abdominal-pain','headache','ams','syncope','fever','dizziness','back-pain','joint-pain','pelvic-pain','seizures','overdose','flank-pain','red-eye','sore-throat','scrotal-pain','diarrhea','rash','limb-ischemia','urinary-retention','pediatric-fever','pediatric-respiratory-distress','anaphylaxis','burns','heat-cold','alcohol-withdrawal','suicidal','constipation','weakness','coma','hemoptysis','shock','palpitations','electrolytes','hypertensive-emergency','vaginal-bleeding','nausea-vomiting','jaundice','cyanosis','diplopia','airway-stridor','edema','falls-geriatric-trauma'];
  const november13 = [
   'multiple-trauma', 'pregnancy-emergency', 'cardiac-arrest', 'thyroid-storm',
   'neutropenic-sepsis', 'tumor-lysis-syndrome', 'metastatic-spinal-cord-compression',
@@ -17,7 +17,7 @@ test('selected review records distinguish the new scope from the historical audi
   'esophageal-perforation', 'cardiac-tamponade', 'acute-mesenteric-ischemia',
   'ruptured-abdominal-aortic-aneurysm', 'acute-appendicitis', 'small-bowel-obstruction'
  ];
- const november14 = ['ectopic-pregnancy', 'ovarian-torsion', 'testicular-torsion', 'perforated-peptic-ulcer', 'acute-cholecystitis', 'acute-cholangitis', 'acute-pancreatitis', 'acute-diverticulitis', 'acute-heart-failure', 'acute-asthma-exacerbation', 'copd-exacerbation', 'community-acquired-pneumonia', 'sepsis-and-septic-shock', 'cardiogenic-shock', 'adrenal-crisis', 'acute-ischemic-stroke', 'transient-ischemic-attack', 'aneurysmal-subarachnoid-hemorrhage', 'spontaneous-intracerebral-hemorrhage', 'acute-bacterial-meningitis', 'convulsive-status-epilepticus', 'cerebral-venous-thrombosis', 'cauda-equina-syndrome', 'spinal-epidural-abscess', 'guillain-barre-syndrome', 'myasthenic-crisis', 'infected-obstructed-kidney', 'acute-pyelonephritis'];
+ const november14 = ['hyperglycemia', 'head-injury', 'focal-neurologic-deficit', 'gib', 'ectopic-pregnancy', 'ovarian-torsion', 'testicular-torsion', 'perforated-peptic-ulcer', 'acute-cholecystitis', 'acute-cholangitis', 'acute-pancreatitis', 'acute-diverticulitis', 'acute-heart-failure', 'acute-asthma-exacerbation', 'copd-exacerbation', 'community-acquired-pneumonia', 'sepsis-and-septic-shock', 'cardiogenic-shock', 'adrenal-crisis', 'acute-ischemic-stroke', 'transient-ischemic-attack', 'aneurysmal-subarachnoid-hemorrhage', 'spontaneous-intracerebral-hemorrhage', 'acute-bacterial-meningitis', 'convulsive-status-epilepticus', 'cerebral-venous-thrombosis', 'cauda-equina-syndrome', 'spinal-epidural-abscess', 'guillain-barre-syndrome', 'myasthenic-crisis', 'infected-obstructed-kidney', 'acute-pyelonephritis', 'diabetic-ketoacidosis', 'hyperosmolar-hyperglycemic-state', 'bleeding-peptic-ulcer', 'acute-variceal-hemorrhage'];
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(), [...ids, ...november13, ...november14].sort());
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(), Array.from(topics, topic => topic.id).sort());
  for(const id of [...ids, ...november13, ...november14]){
@@ -313,4 +313,28 @@ test('spinal, neuromuscular and urinary differentials point to guides with escal
  assert.match(text('cauda-equina-syndrome'), /low residual.*do not independently exclude/);
  assert.match(text('spinal-epidural-abscess'), /without waiting for biopsy/);
  assert.match(text('infected-obstructed-kidney'), /ureteral stent or percutaneous nephrostomy/);
+});
+
+test('every dedicated guide includes bedside assessment, management and follow-through', () => {
+ const diagnoses = topics.filter(topic => topic.type === 'diagnosis');
+ assert.equal(diagnoses.length, 42);
+ const required = ['approach', 'dontMiss', 'history', 'exam', 'workup', 'redFlags', 'disposition', 'pitfalls', 'pearls', 'refs'];
+ for (const topic of diagnoses) {
+  assert.ok(topic.overview.trim() && topic.tag.trim(), topic.id);
+  for (const field of required) assert.ok(topic[field].length, topic.id + ' ' + field);
+  assert.ok(topics.some(source => source.id !== topic.id && source.dontMiss.some(row => row[3]?.includes(topic.id))), topic.id + ' has an incoming differential link');
+  assert.deepEqual(Array.from(evidence.topicReviews[topic.id].sources), Array.from(evidence.topics[topic.id]));
+ }
+});
+
+test('linked pathways preserve revised factor Xa reversal and adult DKA thresholds', () => {
+ for (const id of ['head-injury', 'focal-neurologic-deficit', 'spontaneous-intracerebral-hemorrhage']) {
+  assert.match(text(id), /4-factor PCC/);
+  assert.ok(evidence.topics[id].includes('ichReversal2026'));
+ }
+ assert.doesNotMatch(text('head-injury') + text('focal-neurologic-deficit'), /andexanet/i);
+ assert.match(text('hyperglycemia'), /10 mmol\/h.*above 3\.5 mmol\/L/);
+ assert.match(text('hyperglycemia'), /pH <7\.0/);
+ assert.doesNotMatch(text('hyperglycemia'), /20–40 mmol\/h|pH <6\.9|0\.14 U\/kg\/h/);
+ assert.match(text('hyperosmolar-hyperglycemic-state'), /3–8 mOsm\/kg\/h/);
 });
