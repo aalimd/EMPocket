@@ -18,8 +18,9 @@
     }
 
     function num(value) {
-        const n = parseFloat(value);
-        return isFinite(n) ? n : NaN;
+        if (typeof value !== 'number' && (typeof value !== 'string' || !value.trim())) return NaN;
+        const n = Number(value);
+        return Number.isFinite(n) ? n : NaN;
     }
 
     /* ────────────────────────────────────────────────────────────
@@ -90,16 +91,17 @@
             ],
             compute: function (v) {
                 const hits = this.inputs.filter(input => input.key !== 'lowPretest' && v[input.key]).length;
-                if (!v.lowPretest) return { points: hits, band: 'Assess pretest probability first', riskLevel: 'emergent', advice: 'PERC is for adults with very low pretest probability. Use a validated PE pathway for other patients.' };
+                if (!v.lowPretest) return { points: null, band: 'Assess pretest probability first', advice: 'PERC is for adults with very low pretest probability. Use a validated PE pathway for other patients.' };
                 if (hits === 0) return { points: 0, band: 'PERC negative', riskLevel: 'common', advice: 'All 8 criteria absent: in a very-low-pretest patient, PE can be excluded without D-dimer or imaging. Document the low gestalt. If pretest probability is not low, do not use this result.' };
                 return { points: hits, band: hits + ' of 8 present — PERC positive', riskLevel: 'emergent', advice: 'PERC cannot rule out PE. Use a validated pathway: age-adjusted D-dimer (age × 10 ng/mL FEU if > 50 yr) or YEARS before CTPA. High pretest probability → proceed directly to CTPA.' };
             }
         },
         {
             id: 'wells-pe',
-            name: 'Wells Score — PE',
+            name: 'Wells Score — PE (three levels)',
             topic: 'Pulmonary embolism',
             href: '#dyspnea',
+            confirmChecks: true,
             summary: 'Pretest probability estimate for pulmonary embolism.',
             caveat: 'Combine with D-dimer only for low/intermediate probability. Do not use D-dimer to exclude PE in high probability or high-risk presentations.',
             inputs: [
@@ -114,7 +116,7 @@
             compute: function (v) {
                 let points = 0;
                 this.inputs.forEach(function (i) { if (v[i.key]) points += i.weight; });
-                if (points <= 1) return { points: points, band: 'Low probability', riskLevel: 'common', advice: 'Low pretest probability: a negative age-adjusted D-dimer can exclude PE. Escalate to CTPA if the D-dimer is positive or clinical concern persists.' };
+                if (points < 2) return { points: points, band: 'Low probability', riskLevel: 'common', advice: 'Use a validated PE pathway. If clinical pretest probability is very low, assess PERC; otherwise use the appropriate D-dimer pathway.' };
                 if (points <= 6) return { points: points, band: 'Moderate probability', riskLevel: 'emergent', advice: 'Intermediate pretest probability: use an age-adjusted or YEARS D-dimer pathway before CTPA. If the D-dimer is positive, image.' };
                 return { points: points, band: 'High probability', riskLevel: 'critical', advice: 'High pretest probability: proceed directly to CTPA; do not use D-dimer to exclude. Assess hemodynamic stability — a massive PE with shock needs immediate escalation.' };
             }
@@ -122,6 +124,7 @@
         {
             id: 'qsofa',
             name: 'qSOFA',
+            confirmChecks: true,
             topic: 'Sepsis screening',
             href: '#fever',
             summary: 'Bedside prompt for suspected infection. Not a stand-alone sepsis rule-in or rule-out.',
@@ -141,6 +144,7 @@
         {
             id: 'curb65',
             name: 'CURB-65',
+            confirmChecks: true,
             topic: 'Community-acquired pneumonia severity',
             href: '#dyspnea',
             summary: 'Pneumonia severity estimate to support site-of-care decisions.',
@@ -193,6 +197,7 @@
             compute: function (v) {
                 const points = v.eye + v.verbal + v.motor;
                 const detail = 'E' + v.eye + ' V' + v.verbal + ' M' + v.motor;
+                if (points === 15) return { points: points, band: 'GCS 15 (' + detail + ')', riskLevel: 'common', advice: 'Document all three assessed responses and reassess trends in clinical context.' };
                 if (points <= 8) return { points: points, band: 'GCS ' + points + ' — severe (' + detail + ')', riskLevel: 'critical', advice: 'Severe impairment. Assess airway protection, capillary glucose, pupils and neuro exam. A GCS ≤ 8 with loss of protective reflexes raises airway concern — discuss early with senior/anaesthetic support.' };
                 if (points <= 12) return { points: points, band: 'GCS ' + points + ' — moderate (' + detail + ')', riskLevel: 'emergent', advice: 'Moderate impairment. Reassess the trend and treat reversible causes (glucose, hypoxia, drugs, seizure). A falling GCS is more important than the absolute value.' };
                 return { points: points, band: 'GCS ' + points + ' — mild (' + detail + ')', riskLevel: 'common', advice: 'Mildly reduced to normal. Reassess trends and document the components. Interpret in context with the mechanism and pupil exam.' };
@@ -201,6 +206,7 @@
         {
             id: 'wells-dvt',
             name: 'Wells Score — DVT',
+            confirmChecks: true,
             topic: 'Deep vein thrombosis',
             href: '#edema',
             summary: 'NICE two-level Wells score for suspected lower-limb DVT in adults.',
@@ -244,7 +250,7 @@
             compute: function (v) {
                 let points = 0;
                 this.inputs.forEach(function (i) { if (v[i.key] && i.weight) points += i.weight; });
-                if (!v.eligible) return { points: points, band: 'Confirm rule eligibility', riskLevel: 'emergent', advice: 'Check the inclusion and exclusion criteria before using this rule to exclude imaging. Suspected skull fracture or neurological deterioration needs urgent assessment.' };
+                if (!v.eligible) return { points: null, band: 'Confirm rule eligibility', advice: 'Check the inclusion and exclusion criteria before using this rule to exclude imaging. Suspected skull fracture or neurological deterioration needs urgent assessment.' };
                 if (points === 0) return { points: points, band: 'CT not indicated by the rule', riskLevel: 'common', advice: 'No high- or medium-risk feature: CT is not indicated by the Canadian CT Head Rule. Provide head-injury observation advice and return precautions.' };
                 return { points: points, band: points + ' feature(s) present — CT indicated', riskLevel: 'emergent', advice: 'At least one high- or medium-risk criterion is present. Obtain a non-contrast head CT. A normal CT does not by itself permit discharge — apply observation criteria and anticoagulation status.' };
             }
@@ -333,6 +339,17 @@
 
     /* Pure evaluation used by rendering and tests. `state` maps input key → value. */
     function evaluate(score, state) {
+        const missingChoice = score.inputs.some(input => input.type === 'select' &&
+            !input.options.some(option => option.value === num(state[input.key])));
+        if (missingChoice || (score.confirmChecks && state.assessed !== true)) {
+            const untestable = score.id === 'gcs' && score.inputs.some(input => state[input.key] === 'nt');
+            return {
+                points: null,
+                band: untestable ? 'GCS total unavailable' : 'Assessment incomplete',
+                advice: untestable ? 'Record the observed components and which response could not be tested.' :
+                    'Assess all criteria before interpreting this score.'
+            };
+        }
         const values = {};
         score.inputs.forEach(function (input) {
             if (input.type === 'check') values[input.key] = !!state[input.key];
@@ -341,9 +358,7 @@
                 values[input.key] = (raw === '' || raw === undefined || raw === null) ? NaN : num(raw);
             }
             else {
-                const raw = state[input.key];
-                const parsed = num(raw);
-                values[input.key] = isFinite(parsed) ? parsed : (input.options[0] ? input.options[0].value : 0);
+                values[input.key] = num(state[input.key]);
             }
         });
         return score.compute(values);
@@ -356,6 +371,10 @@
        "I don't know the diagnosis yet" entry point.
     ──────────────────────────────────────────────────────────── */
     const SYMPTOM_TERMS = [
+        { cpId: 'chest-pain', terms: ['ألم الصدر', 'ألم في الصدر', 'ضغط على الصدر'] },
+        { cpId: 'dyspnea', terms: ['ضيق التنفس', 'ضيق نفس', 'صعوبة التنفس'] },
+        { cpId: 'sepsis-and-septic-shock', terms: ['الصدمة الإنتانية', 'صدمة إنتانية', 'الإنتان', 'تسمم الدم'] },
+        { cpId: 'acute-ischemic-stroke', terms: ['السكتة', 'السكتة الدماغية', 'جلطة دماغية', 'جلطة المخ'] },
         { cpId: 'chest-pain', terms: ['crushing chest pain', 'chest tightness', 'pain radiating to jaw', 'pain to left arm', 'tearing chest pain to back', 'chest pain worse on breathing', 'heart attack'] },
         { cpId: 'dyspnea', terms: ['cannot breathe', 'short of breath', 'breathless at rest', 'low oxygen saturation', 'hypoxia'] },
         { cpId: 'dyspnea', terms: ['sudden breathlessness after immobility', 'pleuritic chest pain and breathlessness'] },
@@ -438,16 +457,20 @@
                     ' value="' + esc(val) + '" placeholder="' + esc(input.placeholder || '') + '"></label>';
             }
             return '<label class="st-field"><span>' + esc(input.label) + '</span><select data-st-score="' + esc(score.id) + '" data-st-key="' + esc(input.key) + '">' +
+                '<option value="">Select assessed response</option>' +
                 input.options.map(function (opt) {
-                    const selected = s[input.key] !== undefined ? s[input.key] === opt.value : opt.value === input.options[0].value;
+                    const selected = num(s[input.key]) === opt.value;
                     return '<option value="' + esc(opt.value) + '"' + (selected ? ' selected' : '') + '>' + esc(opt.label) + '</option>';
-                }).join('') + '</select></label>';
+                }).join('') + (score.id === 'gcs' ? '<option value="nt"' + (s[input.key] === 'nt' ? ' selected' : '') + '>Not testable</option>' : '') +
+                '</select></label>';
         }).join('');
+        const confirmation = score.confirmChecks ? '<label class="st-check"><input type="checkbox" data-st-score="' +
+            esc(score.id) + '" data-st-key="assessed"' + (s.assessed ? ' checked' : '') + '><span>I assessed all criteria above</span></label>' : '';
         return '<section class="st-score" data-st-score-card="' + esc(score.id) + '">' +
             '<div class="st-score-head"><div><h2>' + esc(score.name) + '</h2><p class="st-score-topic">' + esc(score.topic) + '</p></div>' +
             '<button type="button" class="st-reset" data-st-reset="' + esc(score.id) + '">Reset</button></div>' +
             '<p class="st-score-summary">' + esc(score.summary) + '</p>' +
-            '<div class="st-inputs">' + inputs + '</div>' +
+            '<div class="st-inputs">' + inputs + confirmation + '</div>' +
             '<output class="st-result" data-st-result="' + esc(score.id) + '" aria-live="polite"></output>' +
             '<p class="st-caveat"><strong>Use with care:</strong> ' + esc(score.caveat) + '</p>' +
             '<p class="st-score-link"><a href="' + esc(score.href) + '">Open the full pathway →</a></p>' +
@@ -458,7 +481,9 @@
         const out = document.querySelector('[data-st-result="' + score.id + '"]');
         if (!out) return;
         const r = evaluate(score, stateFor(score.id));
-        out.innerHTML = riskBadge(r.riskLevel, r.band + ' · ' + r.points + (r.points === 1 ? ' point' : ' points')) +
+        const showPoints = r.points !== null && score.id !== 'gcs' && !score.inputs.some(input => input.type === 'number');
+        const result = r.band + (showPoints ? ' · ' + r.points + (r.points === 1 ? ' point' : ' points') : '');
+        out.innerHTML = (r.points === null ? '<strong>' + esc(result) + '</strong>' : riskBadge(r.riskLevel, result)) +
             '<p class="st-advice">' + esc(r.advice) + '</p>';
     }
 
@@ -468,51 +493,59 @@
        per kg), unit, max, note}. Computed live from the entered weight so the
        resident gets a real number, not just a formula. Educational reference.
     ──────────────────────────────────────────────────────────── */
+    const MIN_PEDS_WEIGHT = 0.5;
+    const MAX_PEDS_WEIGHT = 200;
+    const NEONATAL_AGE_LIMIT = 1 / 12;
+    const MAX_PEDS_AGE = 18;
+    const validPedsWeight = value => value >= MIN_PEDS_WEIGHT && value <= MAX_PEDS_WEIGHT;
+    const validPedsAge = value => value >= 0 && value < MAX_PEDS_AGE;
     const PEDS_DOSES = [
-        { key: 'epi-arrest', label: 'Epinephrine (cardiac arrest)', perKg: 0.01, unit: 'mg', route: 'IV/IO', max: 1, note: 'AHA/AAP PALS cardiac arrest: 0.1 mg/mL IV/IO. Repeat every 3–5 minutes.' },
-        { key: 'epi-anaph', label: 'Epinephrine (anaphylaxis IM)', perKg: 0.01, unit: 'mg', route: 'IM', max: 0.3, note: 'Pediatric weight-based regimen shown. Use 1 mg/mL IM. RCUK uses separate age bands.' },
+        { key: 'epi-arrest', label: 'Epinephrine (cardiac arrest)', perKg: 0.01, unit: 'mg', route: 'IV/IO', max: 1, concentration: '0.1 mg/mL', note: 'AHA/AAP PALS cardiac arrest. Repeat every 3–5 minutes.' },
+        { key: 'epi-anaph', label: 'Epinephrine (anaphylaxis IM)', perKg: 0.01, unit: 'mg', route: 'IM', max: 0.3, concentration: '1 mg/mL', note: 'Pediatric weight-based regimen shown. RCUK uses separate age bands.' },
         { key: 'defib', label: 'Defibrillation (VF / pulseless VT)', perKg: 2, unit: 'J', route: 'unsynchronised', max: 200, note: 'First shock 2 J/kg; subsequent 4 J/kg (max 10 J/kg or adult dose).' },
-        { key: 'cardio', label: 'Synchronised cardioversion', perKg: 0.75, unit: 'J', route: 'synchronised', max: 100, note: '0.5–1 J/kg first, then 2 J/kg. Sedate if conscious.' },
+        { key: 'cardio', label: 'Synchronised cardioversion (tachyarrhythmia with a pulse)', perKg: 0.5, upperPerKg: 1, repeatPerKg: 2, unit: 'J', route: 'synchronised', note: 'AHA/AAP PALS. Sedate if needed without delaying cardioversion.' },
         { key: 'amio', label: 'Amiodarone', perKg: 5, unit: 'mg', route: 'IV/IO', max: 300, note: 'For refractory VF/pulseless VT. PALS permits up to 3 total doses, with a 150 mg cap on subsequent doses.' },
         { key: 'lido', label: 'Lidocaine', perKg: 1, unit: 'mg', route: 'IV/IO', max: 100, note: 'Alternative to amiodarone.' },
         { key: 'mgso4', label: 'Magnesium sulfate (torsades)', perKg: 40, unit: 'mg', route: 'IV/IO', max: 2000, note: '25–50 mg/kg for torsades de pointes.' },
         { key: 'atropine', label: 'Atropine (vagal bradycardia or primary AV block)', perKg: 0.02, unit: 'mg', route: 'IV/IO', min: 0.1, max: 0.5, note: 'PALS bradycardia with compromise. This 0.1 mg minimum applies to this indication. Intubation premedication has separate dosing.' },
         { key: 'adenosine', label: 'Adenosine (SVT)', perKg: 0.1, unit: 'mg', route: 'IV/IO rapid', max: 6, note: 'First 0.1 mg/kg (max 6 mg); second 0.2 mg/kg (max 12 mg).' },
         { key: 'fluid', label: 'Initial crystalloid aliquot (septic shock)', perKg: 10, unit: 'mL', route: 'IV/IO', note: 'Use balanced isotonic crystalloid when available. Reassess perfusion and signs of fluid overload after each aliquot. Adjust to the clinical setting and shock cause.' },
-        { key: 'd10', label: 'Glucose 10% (severe hypoglycemia in children)', perKg: 2, unit: 'mL of D10W', route: 'IV', note: 'RCH pediatric regimen. Recheck glucose and provide ongoing carbohydrate or glucose infusion as indicated. Use a neonatal pathway for newborns.' },
-        { key: 'ceftriaxone', label: 'Ceftriaxone (suspected meningitis, age ≥2 months)', perKg: 100, unit: 'mg', route: 'IV', max: 4000, note: 'RCH initial regimen for this age group. Follow local resistance guidance and age-specific antibiotic coverage.' },
+        { key: 'd10', label: 'Glucose 10% (severe hypoglycemia in children)', perKg: 2, unit: 'mL of D10W', route: 'IV', minAge: NEONATAL_AGE_LIMIT, note: 'RCH pediatric regimen. Recheck glucose and provide ongoing carbohydrate or glucose infusion as indicated. Use a neonatal pathway for newborns.' },
+        { key: 'ceftriaxone', label: 'Ceftriaxone (suspected meningitis, age ≥2 months)', perKg: 100, unit: 'mg', route: 'IV', max: 4000, minAge: 2 / 12, note: 'RCH initial regimen for this age group. Follow local resistance guidance and age-specific antibiotic coverage.' },
         { key: 'dex-croup', label: 'Dexamethasone (severe croup)', perKg: 0.6, unit: 'mg', route: 'PO/IM/IV', max: 12, note: 'RCH severe croup single dose. Give indicated nebulized epinephrine and reassess the airway. Follow the separate mild or moderate croup regimen.' }
     ];
 
-    /* Age-based airway equipment (does not need weight). */
-    const PEDS_AIRWAY = [
-        { label: 'ETT (cuffed)', formula: function (age) { return (age / 4) + 3; }, unit: 'mm ID', note: 'Cuffed tube = (age/4) + 3.' },
-        { label: 'ETT (uncuffed)', formula: function (age) { return (age / 4) + 4; }, unit: 'mm ID', note: 'Uncuffed tube = (age/4) + 4.' },
-        { label: 'ETT depth (children > 1 y)', formula: function (age) { return (age / 2) + 13; }, unit: 'cm at lip', note: 'Depth = age/2 + 13.' }
-    ];
-
-    /* Pure: compute pediatric doses for a weight in kg. Exposed for tests. */
-    function pedsDoses(weightKg) {
+    /* Age is in years. Apply row-specific eligibility before doing any arithmetic. */
+    function pedsDoses(weightKg, ageYears) {
         const w = num(weightKg);
-        if (!isFinite(w) || w <= 0) return [];
-        return PEDS_DOSES.map(function (d) {
+        const age = num(ageYears);
+        const ageProvided = ageYears !== undefined && ageYears !== '';
+        if (!validPedsWeight(w) || (ageProvided && (!validPedsAge(age) || age < NEONATAL_AGE_LIMIT))) return [];
+        return PEDS_DOSES.filter(d => d.minAge === undefined || age >= d.minAge).map(function (d) {
             const raw = w * d.perKg;
             const capped = Math.min(raw, d.max ?? Infinity);
             const value = Math.max(capped, d.min ?? 0);
             return {
                 key: d.key, label: d.label, route: d.route, unit: d.unit, note: d.note,
-                value, capped: capped < raw, floored: value > capped, max: d.max
+                value, capped: capped < raw, floored: value > capped, max: d.max, min: d.min,
+                concentration: d.concentration,
+                upper: d.upperPerKg && w * d.upperPerKg, repeat: d.repeatPerKg && w * d.repeatPerKg
             };
         });
     }
 
-    /* Pure: age-based airway equipment sizes. */
+    // ANZCOR 12.2 age bands and oral depth measured at the teeth/gums.
     function pedsAirway(ageYears) {
-        const a = num(ageYears);
-        if (!isFinite(a) || a < 0) return [];
-        return PEDS_AIRWAY.map(function (s) {
-            return { label: s.label, unit: s.unit, note: s.note, value: s.formula(a) };
-        });
+        const age = num(ageYears);
+        if (!validPedsAge(age) || age < NEONATAL_AGE_LIMIT) return [];
+        const cuffed = age < 1 ? 3 : age <= 2 ? 3.5 : age / 4 + 3.5;
+        const uncuffed = age < 7 / 12 ? 3.5 : age <= 1 ? 4 : age / 4 + 4;
+        const rows = [
+            { label: 'ETT (cuffed)', unit: 'mm ID', value: Math.round(cuffed * 2) / 2 },
+            { label: 'ETT (uncuffed)', unit: 'mm ID', value: Math.round(uncuffed * 2) / 2 }
+        ];
+        if (age > 1) rows.push({ label: 'Oral ETT depth (age >1 year)', unit: 'cm at teeth/gums', value: age / 2 + 12 });
+        return rows;
     }
 
     function fmtValue(v) {
@@ -739,7 +772,7 @@
                 else if (parts.length !== 1) continue;
             }
             const weight = num(String(match[1]).replace(',', '.'));
-            if (!isFinite(weight) || weight < 0.5 || weight > 200) continue;
+            if (!validPedsWeight(weight)) continue;
             return {
                 weight: weight,
                 text: parts.filter(function (_, j) { return j < i || j > last; }).join(' ')
@@ -748,7 +781,7 @@
         return null;
     }
 
-    const pedsState = { weight: '', age: '' };
+    const pedsState = { weight: '', age: '', ageUnit: 'years' };
 
     function pedsCardHtml() {
         return '<section class="st-score st-peds" data-st-peds>' +
@@ -756,8 +789,9 @@
             '<button type="button" class="st-reset" data-st-peds-reset>Reset</button></div>' +
             '<p class="st-score-summary">Enter a weight to see calculated PALS and common emergency doses. Age gives airway device sizes. Check the indication, concentration and source for each row.</p>' +
             '<div class="st-inputs"><div class="st-peds-inputs">' +
-            '<label class="st-field"><span>Weight (kg)</span><input type="number" inputmode="decimal" step="any" data-st-peds-weight value="' + esc(pedsState.weight) + '" placeholder="e.g. 12"></label>' +
-            '<label class="st-field"><span>Age (years, optional)</span><input type="number" inputmode="decimal" step="any" data-st-peds-age value="' + esc(pedsState.age) + '" placeholder="e.g. 3"></label>' +
+            '<label class="st-field"><span>Measured weight (kg)</span><input type="number" inputmode="decimal" step="any" min="' + MIN_PEDS_WEIGHT + '" max="' + MAX_PEDS_WEIGHT + '" data-st-peds-weight value="' + esc(pedsState.weight) + '" placeholder="e.g. 12"></label>' +
+            '<label class="st-field"><span>Age</span><input type="number" inputmode="decimal" step="any" min="0" data-st-peds-age value="' + esc(pedsState.age) + '" placeholder="e.g. 3"></label>' +
+            '<label class="st-field"><span>Age unit</span><select data-st-peds-age-unit><option value="years">Years</option><option value="months"' + (pedsState.ageUnit === 'months' ? ' selected' : '') + '>Months</option></select></label>' +
             '</div></div>' +
             '<output class="st-result" data-st-peds-result aria-live="polite"></output>' +
             '<p class="st-caveat"><strong>Use with care:</strong> Doses follow AHA 2025 PALS for resuscitation and common references for the others; always confirm weight, indication and local protocol. This is an educational aid, not an order set.</p>' +
@@ -767,25 +801,43 @@
     function renderPeds(root) {
         const out = root.querySelector('[data-st-peds-result]');
         if (!out) return;
-        const w = pedsState.weight;
-        if (w === '' || !isFinite(num(w)) || num(w) <= 0) {
-            out.innerHTML = '<p class="st-advice">Enter a weight in kilograms to calculate doses.</p>';
+        const w = num(pedsState.weight);
+        const age = num(pedsState.age) / (pedsState.ageUnit === 'months' ? 12 : 1);
+        const ageEntered = pedsState.age !== '';
+        if (ageEntered && !validPedsAge(age)) {
+            out.innerHTML = '<p class="st-advice">Check the age and unit. This calculator is for children younger than 18 years.</p>';
             return;
         }
-        const rows = pedsDoses(w);
+        if (ageEntered && age < NEONATAL_AGE_LIMIT) {
+            out.innerHTML = '<p class="st-advice">Use a neonatal protocol for this age. <a href="#pediatric-fever">Young infant assessment</a> · <a href="https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/neonatal-resuscitation">Newborn resuscitation guidance for birth transition</a>.</p>';
+            return;
+        }
+        const rows = pedsDoses(w, ageEntered ? age : undefined);
         const dsRows = rows.map(function (r) {
-            return '<tr><th scope="row">' + esc(r.label) + '<span class="route-badge ' + routeClass(r.route) + '">' + esc(r.route) + '</span></th>' +
-                '<td><span class="dose-amount">' + esc(fmtValue(r.value)) + ' ' + esc(r.unit) + '</span>' + (r.capped ? ' <span class="st-peds-max">(max)</span>' : r.floored ? ' <span class="st-peds-max">(min)</span>' : '') + '</td></tr>';
+            const amount = r.upper === undefined ? fmtValue(r.value) : 'First ' + fmtValue(r.value) + '–' + fmtValue(r.upper);
+            const repeat = r.repeat === undefined ? '' : '<small>Then ' + esc(fmtValue(r.repeat)) + ' J if ineffective</small>';
+            const limits = [r.min == null ? '' : 'Min ' + r.min + ' ' + r.unit, r.max == null ? '' : 'Max ' + r.max + ' ' + r.unit].filter(Boolean).join(' · ');
+            return '<tr><th scope="row">' + esc(r.label) + '<span class="route-badge ' + routeClass(r.route) + '">' + esc(r.route) + '</span>' +
+                (r.concentration ? '<small>Use ' + esc(r.concentration) + '</small>' : '') + '</th>' +
+                '<td><span class="dose-amount">' + esc(amount + ' ' + r.unit) + '</span>' + repeat +
+                (limits ? '<small class="st-peds-max">' + esc(limits) + '</small>' : '') + '</td></tr>';
         }).join('');
         let airwayHtml = '';
-        if (pedsState.age !== '' && isFinite(num(pedsState.age))) {
-            const air = pedsAirway(pedsState.age);
-            airwayHtml = '<h3 class="st-peds-sub">Airway equipment (by age)</h3><table class="st-peds-table"><tbody>' +
+        if (ageEntered) {
+            const air = pedsAirway(age);
+            airwayHtml = '<h3 class="st-peds-sub">Airway equipment (by age)</h3><p class="st-advice">Starting estimates. Prepare adjacent tube sizes. Confirm placement with waveform capnography and assess depth separately. <a href="https://www.anzcor.org/assets/anzcor-guidelines/guideline-12-2-paediatric-advanced-life-support-pals-255.pdf">ANZCOR 12.2</a>.</p><table class="st-peds-table"><tbody>' +
                 air.map(function (r) {
                     return '<tr><th scope="row">' + esc(r.label) + '</th><td>' + esc(fmtValue(r.value)) + ' ' + esc(r.unit) + '</td></tr>';
                 }).join('') + '</tbody></table>';
         }
-        out.innerHTML = '<p class="st-advice"><strong>Weight ' + esc(fmtValue(num(w))) + ' kg</strong> — calculated doses:</p>' +
+        if (!validPedsWeight(w)) {
+            out.innerHTML = '<p class="st-advice">Enter a measured weight in kilograms (' + MIN_PEDS_WEIGHT + '–' + MAX_PEDS_WEIGHT + ') to calculate doses.</p>' + airwayHtml;
+            return;
+        }
+        const ageNotice = !ageEntered ? 'Enter age to check age-restricted rows and airway sizes. Use the neonatal pathway for newborns.' :
+            age < 2 / 12 ? 'The ceftriaxone regimen shown for age ≥2 months does not apply. Follow your young-infant meningitis pathway.' : '';
+        out.innerHTML = '<p class="st-advice"><strong>Weight ' + esc(String(w)) + ' kg</strong> — calculated doses:</p>' +
+            (ageNotice ? '<p class="st-advice">' + esc(ageNotice) + '</p>' : '') +
             '<table class="st-peds-table"><tbody>' + dsRows + '</tbody></table>' + airwayHtml +
             '<details class="st-peds-notes"><summary>Notes, maxima and sources</summary><ul>' +
             rows.map(function (r) { return '<li><strong>' + esc(r.label) + ':</strong> ' + (r.max === undefined ? '' : esc(r.max + ' ' + r.unit + ' max. ')) + esc(r.note) + '</li>'; }).join('') +
@@ -832,7 +884,11 @@
         /* A weight in the route or the filter box preloads the dose card, so a
            "#calc~12kg" link and a typed "12 kg" behave the same way. */
         const parsedWeight = parseWeightFilter(filter);
-        if (parsedWeight) pedsState.weight = String(parsedWeight.weight);
+        if (parsedWeight && num(pedsState.weight) !== parsedWeight.weight) {
+            pedsState.weight = String(parsedWeight.weight);
+            pedsState.age = '';
+            pedsState.ageUnit = 'years';
+        }
         root.innerHTML = calculatorsHtml(filter, facetKey);
         const filterInput = root.querySelector('#stCalcFilter');
         if (filterInput) {
@@ -856,11 +912,11 @@
                 const s = stateFor(el.dataset.stScore);
                 if (el.type === 'checkbox') s[el.dataset.stKey] = el.checked;
                 else if (el.type === 'number') s[el.dataset.stKey] = el.value === '' ? '' : num(el.value);
-                else s[el.dataset.stKey] = num(el.value);
+                else s[el.dataset.stKey] = el.value;
                 renderResult(score);
             };
             el.addEventListener('change', apply);
-            if (el.type !== 'checkbox') { el.addEventListener('input', apply); apply(); }
+            if (el.type !== 'checkbox') el.addEventListener('input', apply);
         });
         root.querySelectorAll('[data-st-reset]').forEach(function (btn) {
             btn.addEventListener('click', function () {
@@ -871,23 +927,35 @@
         /* Pediatric weight-based doses. */
         const wInput = root.querySelector('[data-st-peds-weight]');
         const aInput = root.querySelector('[data-st-peds-age]');
+        const ageUnit = root.querySelector('[data-st-peds-age-unit]');
         if (wInput) wInput.addEventListener('input', function () {
-            pedsState.weight = this.value;
+            const ageInput = root.querySelector('[data-st-peds-age]');
+            if (pedsState.weight && num(this.value) !== num(pedsState.weight)) {
+                pedsState.age = '';
+                if (ageInput) ageInput.value = '';
+            }
+            pedsState.weight = this.validity.badInput ? 'invalid' : this.value;
             renderPeds(root);
         });
         if (aInput) aInput.addEventListener('input', function () {
-            pedsState.age = this.value;
+            pedsState.age = this.validity.badInput ? 'invalid' : this.value;
+            renderPeds(root);
+        });
+        if (ageUnit) ageUnit.addEventListener('change', function () {
+            pedsState.ageUnit = this.value;
             renderPeds(root);
         });
         const pedsReset = root.querySelector('[data-st-peds-reset]');
         if (pedsReset) pedsReset.addEventListener('click', function () {
             pedsState.weight = '';
             pedsState.age = '';
-            calculatorsScreen(root, filterInput ? filterInput.value : '', facetKey);
+            pedsState.ageUnit = 'years';
+            const filterText = filterInput ? filterInput.value : '';
+            calculatorsScreen(root, parseWeightFilter(filterText)?.text ?? filterText, facetKey);
         });
         if (wInput) renderPeds(root);
         mountCprCard(root);
-        SCORES.forEach(function (s) { if (state[s.id]) renderResult(s); });
+        SCORES.forEach(renderResult);
     }
 
     /* ────────────────────────────────────────────────────────────

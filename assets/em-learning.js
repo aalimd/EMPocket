@@ -8,6 +8,10 @@
     const backupKeys = ['em-cps-learning','em-cps-prefs','em-student-progress','em-ecg-learning-v1','em-ecg-practice-v1','em-learning-focus-v1',progressKey];
     const object = v => !!v && typeof v === 'object' && !Array.isArray(v);
     const own = (o,k) => Object.prototype.hasOwnProperty.call(o,k);
+    const timestamp = v => Number.isSafeInteger(v) && v >= 0 && v <= 8640000000000000;
+    const reviewInterval = 3 * 24 * 60 * 60 * 1000;
+    const validDecision = value => object(value) && typeof value.correct === 'boolean' &&
+        (value.due === null || timestamp(value.due));
     let memory = {cases:{},viewed:[]}, volatile = false;
     const sessionKey='em-workspace-session-v1';
     const sessions = new Map();
@@ -31,7 +35,16 @@
         if (!object(v)) return result;
         for (const c of D.cases) {
             const x=object(v.cases)&&v.cases[c.id];
-            if (object(x)&&Number.isInteger(x.correct)&&x.correct>=0&&x.correct<=c.steps.length&&x.total===c.steps.length&&Number.isInteger(x.runs)&&x.runs>0&&Number.isFinite(x.last)&&x.last>=0) result.cases[c.id]={correct:x.correct,total:x.total,runs:x.runs,last:x.last};
+            if (!object(x) || !Number.isInteger(x.total) || x.total < 1 ||
+                !Number.isInteger(x.correct) || x.correct < 0 || x.correct > x.total ||
+                !Number.isInteger(x.runs) || x.runs < 1 || !timestamp(x.last)) continue;
+            const record = {correct:x.correct,total:x.total,runs:x.runs,last:x.last};
+            if (object(x.decisions)) {
+                record.decisions = Object.fromEntries(Object.entries(x.decisions)
+                    .filter(([id, value]) => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id) && validDecision(value))
+                    .map(([id, value]) => [id, {correct:value.correct, due:value.due}]));
+            }
+            result.cases[c.id] = record;
         }
         result.viewed=Array.isArray(v.viewed)?[...new Set(v.viewed.filter(id=>D.modules.some(m=>m.id===id)||['abg','lung','chest','ecg-pairs','recordings'].includes(id)))]:[];
         return result;
@@ -41,9 +54,31 @@
         try { localStorage.setItem(progressKey,JSON.stringify(memory)); volatile=false; return true; }
         catch (_) { volatile=true; return false; }
     }
-    function sourceHtml(key) {
+    function sourceLink(key) {
         const source=D.sources[key];
-        return source?'<details class="workspace-source"><summary>Source and scope</summary><p>Supporting teaching points checked '+D.checked+'. This is an educational synthesis, not an independently peer-reviewed protocol.</p><a href="'+esc(source[1])+'" target="_blank" rel="noopener noreferrer">'+esc(source[0])+'</a><p>Confirm patient context, full recommendations and local policy. External sources need an internet connection.</p></details>':'';
+        return source ? '<a href="'+esc(source[1])+'" target="_blank" rel="noopener noreferrer">'+esc(source[0])+'</a>' : '';
+    }
+    function sourceHtml(key, checked = D.checked) {
+        const link = sourceLink(key);
+        return link ? '<details class="workspace-source"><summary>Source and scope</summary><p>Supporting teaching points checked '+esc(checked)+'. This is an educational synthesis, not an independently peer-reviewed protocol.</p>'+link+'<p>Confirm patient context, full recommendations and local policy. External sources need an internet connection.</p></details>' : '';
+    }
+    function attemptRecord(c, answers, previous, now) {
+        const decisions = {...previous?.decisions};
+        let correct = 0;
+        for (const [index, step] of c.steps.entries()) {
+            const passed = step.options.find(option => option.id === answers[index]).correct;
+            if (passed) correct++;
+            const pending = decisions[step.id]?.due;
+            // A correct case retry is distinct from delayed recall. Keep a pending review.
+            decisions[step.id] = {correct:passed, due:pending ?? (passed ? null : now + reviewInterval)};
+        }
+        return {correct,total:c.steps.length,runs:(previous?.runs || 0) + 1,last:now,decisions};
+    }
+    function reviewItems(p) {
+        return D.cases.flatMap(c => c.steps.flatMap(step => {
+            const due = p.cases[c.id]?.decisions?.[step.id]?.due;
+            return timestamp(due) ? [{c,step,due}] : [];
+        })).sort((first, second) => first.due - second.due);
     }
     function shell(title,description,active,board) {
         /* The board used to render without the kicker or the lead, so moving
@@ -166,7 +201,7 @@
                 /* The per-domain hue is set from data-domain on the card itself. */
                 attrs: ' data-domain="' + esc(c.domain) + '"',
                 icon: CARD_DOMAIN_ICONS[c.domain] || 'generic',
-                kind: c.domain,
+                kind: c.domain + (c.steps[0].level ? ' · PGY-1–4' : ''),
                 state: status,
                 stateClass: inProg ? 'badge-progress' : done ? 'badge-done' : '',
                 title: c.title,
@@ -205,10 +240,10 @@
             const domainSvg = (window.EM_ICONS && window.EM_ICONS.map) ? window.EM_ICONS.svg(window.EM_ICONS.map[domainKey] || window.EM_ICONS.map['generic'], 'badge-svg') : '';
             const perfectScore = s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length === c.steps.length;
             const resultSvg = (window.EM_ICONS && window.EM_ICONS.map) ? window.EM_ICONS.svg(window.EM_ICONS.map[perfectScore ? 'practice' : 'generic'], 'result-svg') : '';
-            body.innerHTML='<article class="evolving-case"><div class="evolving-case-header"><span class="ios-icon-badge practice-hero-badge practice-hero-emoji" aria-hidden="true">' + domainSvg + '</span><div><p class="study-kicker">'+esc(c.domain)+' · FICTIONAL TEACHING CASE</p><h2 tabindex="-1">'+esc(c.title)+'</h2></div></div><p class="case-prompt">'+esc(c.stem)+'</p><p class="workspace-session-note">'+esc(depth.charAt(0).toUpperCase()+depth.slice(1))+' focus · '+objective+'</p>'+(complete?'<section class="workspace-result"><div class="result-header"><span class="ios-icon-badge result-emoji" aria-hidden="true">' + resultSvg + '</span><h3>Case debrief</h3></div><p>'+s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length+' / '+c.steps.length+' first choices correct in this attempt. This is a learning result, not a competency score.</p><ol>'+c.steps.map((x,i)=>'<li><strong>'+esc(x.prompt)+'</strong><p>Your choice: '+esc(x.options.find(o=>o.id===s.answers[i]).text)+'</p><p>'+esc(x.options.find(o=>o.correct).why)+'</p></li>').join('')+'</ol><h3>Discuss with a colleague</h3><ul>'+c.debrief.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul><p role="status">'+(s.saved?'Attempt saved on this device.':'Attempt available for this session only; storage is unavailable.')+'</p></section>':'<div class="workspace-stepper-wrap"><div class="stepper-track"><div class="stepper-fill" style="width: '+Math.round(((s.index+1)/c.steps.length)*100)+'%"></div></div><p class="workspace-step">Decision '+(s.index+1)+' of '+c.steps.length+'</p></div><div class="case-update"><strong>Teaching update</strong><p>'+esc(q.update)+'</p></div><fieldset class="quiz-question"><legend>'+esc(q.prompt)+'</legend><div class="quiz-options">'+window.STUDENT_LEARNING.shuffled(q.options,s.seed+s.index*97).map((o, idx)=>'<button type="button" data-evolving-choice="'+o.id+'"'+(selected?' disabled':'')+' class="quiz-option'+(selected&&o.id===selected?(o.correct?' correct':' incorrect'):'')+'"><span class="option-pill" aria-hidden="true">'+(letters[idx]||(idx+1))+'</span><span class="option-label">'+esc(o.text)+'</span></button>').join('')+'</div></fieldset>'
-+(selected?'<div class="workspace-feedback" role="status"><h3>'+(q.options.find(o=>o.id===selected).correct?'Correct for this scenario':'Review this decision')+'</h3><p>'+esc(q.options.find(o=>o.id===selected).why)+'</p><details><summary>Compare all options</summary>'+q.options.map(o=>'<p><strong>'+esc(o.text)+'</strong> '+esc(o.why)+'</p>').join('')+'</details><p>Each next update describes the teaching team’s actions, independently of your choice.</p><button class="workspace-primary" type="button" data-case-next>'+(s.index===c.steps.length-1?'Open debrief':'Continue case')+'</button></div>':''))+'<div class="workspace-actions">'+(complete?'<button type="button" data-case-retry>Start a new attempt</button>':'')+'<a href="#'+esc(c.topic)+'">Full presentation →</a><a href="#learn~practice">All evolving cases →</a></div>'+sourceHtml(c.source)+'</article>';
+            body.innerHTML='<article class="evolving-case"><div class="evolving-case-header"><span class="ios-icon-badge practice-hero-badge practice-hero-emoji" aria-hidden="true">' + domainSvg + '</span><div><p class="study-kicker">'+esc(c.domain)+' · FICTIONAL TEACHING CASE</p><h2 tabindex="-1">'+esc(c.title)+'</h2></div></div><p class="case-prompt">'+esc(c.stem)+'</p><p class="workspace-session-note">'+esc(depth.charAt(0).toUpperCase()+depth.slice(1))+' focus · '+objective+'</p>'+(complete?'<section class="workspace-result"><div class="result-header"><span class="ios-icon-badge result-emoji" aria-hidden="true">' + resultSvg + '</span><h3>Case debrief</h3></div><p>'+s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length+' / '+c.steps.length+' first choices correct in this attempt. This is a learning result, not a competency score.</p><ol>'+c.steps.map((x,i)=>'<li><strong>'+esc(x.prompt)+'</strong><p>Your choice: '+esc(x.options.find(o=>o.id===s.answers[i]).text)+'</p><p>'+esc(x.options.find(o=>o.correct).why)+'</p><p>'+sourceLink(x.source || c.source)+'</p></li>').join('')+'</ol><h3>Discuss with a colleague</h3><ul>'+c.debrief.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul><p role="status">'+(s.saved?'Attempt saved on this device.':'Attempt available for this session only; storage is unavailable.')+'</p></section>':'<div class="workspace-stepper-wrap"><div class="stepper-track"><div class="stepper-fill" style="width: '+Math.round(((s.index+1)/c.steps.length)*100)+'%"></div></div><p class="workspace-step">Decision '+(s.index+1)+' of '+c.steps.length+(q.level?' · PGY-'+q.level:'')+'</p></div><div class="case-update"><strong>Teaching update</strong><p>'+esc(q.update)+'</p></div><fieldset class="quiz-question"><legend>'+esc(q.prompt)+'</legend><div class="quiz-options">'+window.STUDENT_LEARNING.shuffled(q.options,s.seed+s.index*97).map((o, idx)=>'<button type="button" data-evolving-choice="'+o.id+'"'+(selected?' disabled':'')+' class="quiz-option'+(selected&&o.id===selected?(o.correct?' correct':' incorrect'):'')+'"><span class="option-pill" aria-hidden="true">'+(letters[idx]||(idx+1))+'</span><span class="option-label">'+esc(o.text)+'</span></button>').join('')+'</div></fieldset>'
++(selected?'<div class="workspace-feedback" role="status"><h3>'+(q.options.find(o=>o.id===selected).correct?'Correct for this scenario':'Review this decision')+'</h3><p>'+esc(q.options.find(o=>o.id===selected).why)+'</p><p>'+sourceLink(q.source || c.source)+'</p><details><summary>Compare all options</summary>'+q.options.map(o=>'<p><strong>'+esc(o.text)+'</strong> '+esc(o.why)+'</p>').join('')+'</details><p>Each next update describes the teaching team’s actions, independently of your choice.</p><button class="workspace-primary" type="button" data-case-next>'+(s.index===c.steps.length-1?'Open debrief':'Continue case')+'</button></div>':''))+'<div class="workspace-actions">'+(complete?'<button type="button" data-case-retry>Start a new attempt</button>':'')+'<a href="#'+esc(c.topic)+'">Full presentation →</a><a href="#learn~practice">All evolving cases →</a></div>'+sourceHtml(c.source,c.checked)+'</article>';
             body.querySelectorAll('[data-evolving-choice]').forEach(b=>b.addEventListener('click',()=>{if(s.answers[s.index])return;s.answers[s.index]=b.dataset.evolvingChoice;const retained=persistSessions();draw();if(!retained)body.querySelector('.workspace-feedback').insertAdjacentHTML('beforeend','<p>Reload recovery is unavailable; keep this tab open.</p>');body.querySelector('.workspace-feedback h3').setAttribute('tabindex','-1');body.querySelector('.workspace-feedback h3').focus();}));
-            body.querySelector('[data-case-next]')?.addEventListener('click',()=>{if(!s.answers[s.index])return;if(s.index<c.steps.length-1)s.index++;else if(!s.done){s.done=true;const p=progress();p.cases[id]={correct:s.answers.filter((a,i)=>c.steps[i].options.find(o=>o.id===a).correct).length,total:c.steps.length,runs:(p.cases[id]?.runs||0)+1,last:Date.now()};s.saved=saveProgress(p);}persistSessions();draw(true);});
+            body.querySelector('[data-case-next]')?.addEventListener('click',()=>{if(!s.answers[s.index])return;if(s.index<c.steps.length-1)s.index++;else if(!s.done){s.done=true;const p=progress();p.cases[id]=attemptRecord(c,s.answers,p.cases[id],Date.now());s.saved=saveProgress(p);}persistSessions();draw(true);});
             body.querySelector('[data-case-retry]')?.addEventListener('click',()=>{s=newSession();sessions.set(id,s);persistSessions();draw(true);});
             if(focus)body.querySelector('h2').focus();
         }
@@ -271,7 +306,7 @@
     let recordingsPromise = null;
     function loadRecordings() {
         if (!recordingsPromise) {
-            recordingsPromise = import('./ecg-recordings.js?v=20261114-diagnoses-v89')
+            recordingsPromise = import('./ecg-recordings.js?v=20261118-audit-v90')
                 .catch(function (error) { recordingsPromise = null; throw error; });
         }
         return recordingsPromise || Promise.resolve();
@@ -358,7 +393,6 @@
         const data=JSON.parse(text);safeTree(data);
         if(!object(data)||data.app!=='EM Pocket free'||data.version!==1||!object(data.values))throw Error('This backup is not supported by The EM Pocket.');
         const fields=(v,allowed)=>Object.keys(v).every(k=>allowed.includes(k));
-        const timestamp=v=>Number.isFinite(v)&&v>=0;
         for(const [key,value] of Object.entries(data.values)) {
             if(!backupKeys.includes(key))throw Error('Backup contains an unsupported storage key.');
             if(key==='em-learning-focus-v1'){if(!['core','applied','advanced'].includes(value))throw Error('Invalid learning depth.');}
@@ -377,7 +411,16 @@
             if(key==='em-student-progress' && (!fields(value,['ratings','last'])||(value.ratings&&(!object(value.ratings)||!Object.values(value.ratings).every(v=>object(v)&&fields(v,['value','at'])&&['got','partly','again'].includes(v.value)&&timestamp(v.at))))||(value.last!==undefined&&typeof value.last!=='string')))throw Error('Invalid self-assessment record.');
             if(key==='em-ecg-learning-v1' && (!fields(value,['last','finding','completed','review'])||(value.last!==undefined&&typeof value.last!=='string')||(value.finding!==undefined&&(!Number.isInteger(value.finding)||value.finding<0))))throw Error('Invalid ECG location.');
             if(key==='em-ecg-learning-v1' && ['completed','review'].some(k=>value[k]!==undefined&&(!Array.isArray(value[k])||!value[k].every(x=>typeof x==='string'))))throw Error('Invalid ECG learning record.');
-            if(key===progressKey && (!fields(value,['cases','viewed'])||!object(value.cases)||!Array.isArray(value.viewed)||Object.keys(normalizeProgress(value).cases).length!==Object.keys(value.cases).length||normalizeProgress(value).viewed.length!==value.viewed.length))throw Error('Invalid workspace progress.');
+            if(key===progressKey) {
+                const normalized = normalizeProgress(value);
+                const validCases = object(value.cases) && Object.entries(value.cases).every(([id, record]) =>
+                    own(normalized.cases,id) && fields(record,['correct','total','runs','last','decisions']) &&
+                    (record.decisions === undefined || (object(record.decisions) &&
+                        Object.entries(record.decisions).every(([step,decision]) =>
+                            own(normalized.cases[id].decisions,step) && fields(decision,['correct','due'])))));
+                if(!fields(value,['cases','viewed']) || !validCases || !Array.isArray(value.viewed) ||
+                    normalized.viewed.length!==value.viewed.length) throw Error('Invalid workspace progress.');
+            }
         }
         return data;
     }
@@ -406,8 +449,53 @@
         return writes.length;
     }
     function download(data,name) {const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+    function mountDecisionReview(body, target) {
+        const [id, stepId] = target.split('--');
+        const c = D.cases.find(item => item.id === id);
+        const step = c?.steps.find(item => item.id === stepId);
+        const due = progress().cases[id]?.decisions?.[stepId]?.due;
+        const back = '<p><a href="#learn~progress">Back to decision reviews</a></p>';
+        if (!step || !timestamp(due) || due > Date.now()) {
+            body.innerHTML = '<p>This decision is not due for review.</p>' + back;
+            return;
+        }
+        const answer = step.options.find(option => option.correct);
+        body.innerHTML = '<article class="evolving-case"><h2>' + esc(c.title) + '</h2>' +
+            '<p>Recall your next action and explain your reasoning before revealing the answer.</p>' +
+            (step.review ? '<p class="case-prompt">' + esc(step.review) + '</p>' :
+                '<p class="case-prompt">' + esc(c.stem) + '</p><p>' + esc(step.update) + '</p><p><strong>' + esc(step.prompt) + '</strong></p>') +
+            '<details class="workspace-callout"><summary>Reveal answer</summary><p><strong>' + esc(answer.text) +
+            '</strong></p><p>' + esc(answer.why) + '</p><p>' + sourceLink(step.source || c.source) + '</p>' +
+            '<div class="workspace-actions"><button type="button" data-decision-rating="again">Review again in three days</button>' +
+            '<button type="button" data-decision-rating="recalled">I recalled the key decision</button></div></details>' +
+            '<p role="status" data-decision-status></p>' + back + '</article>';
+        const buttons = body.querySelectorAll('[data-decision-rating]');
+        buttons.forEach(button => button.addEventListener('click', () => {
+            const p = progress();
+            const record = p.cases[id]?.decisions?.[stepId];
+            const status = body.querySelector('[data-decision-status]');
+            buttons.forEach(item => { item.disabled = true; });
+            if (record?.due !== due) {
+                status.textContent = 'This review has already changed. Open the review list again.';
+                return;
+            }
+            const recalled = button.dataset.decisionRating === 'recalled';
+            record.due = recalled ? null : Date.now() + reviewInterval;
+            const saved = saveProgress(p);
+            status.textContent = saved ? (recalled ? 'Review complete.' : 'Review scheduled in three days.') :
+                'Saved for this session only. Device storage is unavailable.';
+        }));
+    }
     function mountProgress(body) {
         const p=progress(),done=Object.keys(p.cases),review=done.filter(id=>p.cases[id].correct<p.cases[id].total);
+        const scheduled = reviewItems(p);
+        const now = Date.now();
+        const reviewList = scheduled.map(({c,step,due}) => '<li><span><strong>' + esc(c.title) + '</strong> · ' +
+            esc(step.id.replace(/-/g,' ')) + '</span>' + (due <= now ?
+                '<a href="#learn~decision-' + esc(c.id + '--' + step.id) + '">Review decision</a>' :
+                '<span>Available ' + esc(new Date(due).toLocaleDateString()) + '</span>') + '</li>').join('');
+        const scheduledHtml = '<section class="workspace-callout"><h2>Decision reviews</h2><p>Missed decisions are available after three days.</p>' +
+            (reviewList ? '<ul class="workspace-progress-list">' + reviewList + '</ul>' : '<p>No decisions scheduled.</p>') + '</section>';
         body.innerHTML='<h2>Your learning record</h2><p class="workspace-section-intro">Reading, attempted decisions and self-confidence describe different activities. None is a certification of clinical competence.</p><div class="workspace-grid progress-stats-grid">'
         + workspaceCard({ icon: 'completed', kind: 'Attempted', headingTag: 'h3', title: done.length + ' / ' + D.cases.length + ' evolving cases attempted', body: 'Results below show the latest completed attempt.' })
         + workspaceCard({ icon: 'references', kind: 'Reading', headingTag: 'h3', title: p.viewed.length + ' modules marked read', body: 'Reading is recorded separately from correct answers.' })
@@ -418,16 +506,16 @@
             href: review.length ? '#learn~case-' + review[0] : null,
             action: review.length ? 'Revisit a case' : null
         })
-        + '</div><ul class="workspace-progress-list">'+D.cases.map(c=>'<li><a href="#learn~case-'+c.id+'">'+esc(c.title)+'</a><span>'+(p.cases[c.id]?p.cases[c.id].correct+'/'+p.cases[c.id].total+' correct · '+p.cases[c.id].runs+' completed attempt(s)':'Not yet attempted')+'</span></li>').join('')+'</ul><div class="workspace-actions"><a href="#study~due">Scheduled topic reviews →</a><a href="#study~saved">Saved topics & notes →</a><a href="#ecg-explorer">ECG learning record →</a></div><section class="workspace-callout"><h2>Back up your learning</h2><p>Export saved progress, reading preferences and notes to a local JSON file. Session-only activity is not included. The file may contain your personal study notes; keep it private and avoid patient details.</p><div class="workspace-actions"><button type="button" data-backup-export>Export backup</button><label class="backup-label">Choose a backup to import<input type="file" accept=".json,application/json" data-backup-file></label></div><p>Import adds missing records and keeps existing values when they conflict. It does not transfer an agreement or clear existing progress.</p><div data-backup-preview></div><p data-backup-status role="status"></p></section>';
+        + '</div>' + scheduledHtml + '<ul class="workspace-progress-list">'+D.cases.map(c=>'<li><a href="#learn~case-'+c.id+'">'+esc(c.title)+'</a><span>'+(p.cases[c.id]?p.cases[c.id].correct+'/'+p.cases[c.id].total+' correct · '+p.cases[c.id].runs+' completed attempt(s)':'Not yet attempted')+'</span></li>').join('')+'</ul><div class="workspace-actions"><a href="#study~due">Scheduled topic reviews →</a><a href="#study~saved">Saved topics & notes →</a><a href="#ecg-explorer">ECG learning record →</a></div><section class="workspace-callout"><h2>Back up your learning</h2><p>Export saved progress, reading preferences and notes to a local JSON file. Session-only activity is not included. The file may contain your personal study notes; keep it private and avoid patient details.</p><div class="workspace-actions"><button type="button" data-backup-export>Export backup</button><label class="backup-label">Choose a backup to import<input type="file" accept=".json,application/json" data-backup-file></label></div><p>Import adds missing records and keeps existing values when they conflict. It does not transfer an agreement or clear existing progress.</p><div data-backup-preview></div><p data-backup-status role="status"></p></section>';
         const status=body.querySelector('[data-backup-status]'),preview=body.querySelector('[data-backup-preview]');let pending=null;
         body.querySelector('[data-backup-export]').addEventListener('click',()=>{try{download(exportBackup(),'em-pocket-learning-'+new Date().toISOString().slice(0,10)+'.json');status.textContent='Backup prepared for download.';}catch(_){status.textContent='Backup could not be read. Storage may be unavailable or contain an invalid record. Nothing was changed.';}});
         let selection=0;
         body.querySelector('[data-backup-file]').addEventListener('change',async e=>{const ticket=++selection;pending=null;preview.innerHTML='';const file=e.target.files[0];if(!file)return;try{if(file.size>2000000)throw Error('Choose a backup smaller than 2 MB.');const parsed=validateBackup(await file.text());if(ticket!==selection)return;pending=parsed;preview.innerHTML='<p>Valid backup from The EM Pocket · '+Object.keys(parsed.values).length+' storage groups. Existing values will be kept.</p><button type="button" data-backup-apply>Add missing records</button>';preview.querySelector('button').addEventListener('click',()=>{try{const count=importBackup(pending);preview.innerHTML='<button type="button" data-backup-reload>Reload to use imported data</button>';preview.querySelector('button').onclick=()=>location.reload();status.textContent=count+' storage groups processed. Reload after finishing any session-only work.';pending=null;}catch(error){status.textContent=error.message;}});status.textContent='Review the import above before applying it.';}catch(error){if(ticket===selection)status.textContent=error.message;}});
     }
     function mount(stage,target='practice') {
-        const active=target.startsWith('case-')?'practice':target.startsWith('module-')?'skills':target.startsWith('visual-')?'visuals':['practice','visuals','skills','progress'].includes(target)?target:'practice';
-        const titles={practice:['Practice','Six fictional cases. Read the situation, choose a decision, then see what changes.'],visuals:['Visuals','Choose real recorded ECGs or clearly labeled teaching diagrams to connect findings with limitations.'],skills:['Preparation','Preparation and discussion exercises for supervised practice, handover and clinical teaching.'],progress:['Progress','Track your completed attempts, review notes, and maintain your private local backup.']};
-        const board=!/^(case|module|visual)-/.test(target);
+        const active=target.startsWith('decision-')?'progress':target.startsWith('case-')?'practice':target.startsWith('module-')?'skills':target.startsWith('visual-')?'visuals':['practice','visuals','skills','progress'].includes(target)?target:'practice';
+        const titles={practice:['Practice','Read a fictional scenario, make a decision, then see how the case evolves.'],visuals:['Visuals','Choose real recorded ECGs or clearly labeled teaching diagrams to connect findings with limitations.'],skills:['Preparation','Preparation and discussion exercises for supervised practice, handover and clinical teaching.'],progress:['Progress','Track your completed attempts, review notes, and maintain your private local backup.']};
+        const board=!/^(case|decision|module|visual)-/.test(target);
         const recordings=target==='visual-recordings';
         const heading=recordings?['Recorded ECGs','Inspect recorded signals, compare your interpretation with the source labels, and check recording context.']:titles[active];
         stage.innerHTML=shell(heading[0],heading[1],active,board);
@@ -439,7 +527,7 @@
         if(board)ws.classList.add('practice-board');
         ws.setAttribute('data-learn-tab', active);
         const body=stage.querySelector('.workspace-body');
-        if(/^(case|module|visual)-/.test(target))stage.querySelector('.learning-workspace').classList.add('workspace-detail');if(target.startsWith('case-'))mountCase(body,target.slice(5));else if(target.startsWith('module-'))mountModule(body,target.slice(7));else if(target.startsWith('visual-'))mountVisual(body,target.slice(7));else if(active==='progress')mountProgress(body);else body.innerHTML=active==='practice'?caseCards():active==='skills'?moduleCards():visualCards();
+        if(/^(case|decision|module|visual)-/.test(target))stage.querySelector('.learning-workspace').classList.add('workspace-detail');if(target.startsWith('case-'))mountCase(body,target.slice(5));else if(target.startsWith('decision-'))mountDecisionReview(body,target.slice(9));else if(target.startsWith('module-'))mountModule(body,target.slice(7));else if(target.startsWith('visual-'))mountVisual(body,target.slice(7));else if(active==='progress')mountProgress(body);else body.innerHTML=active==='practice'?caseCards():active==='skills'?moduleCards():visualCards();
         body.querySelectorAll('[data-case-filter]').forEach(btn => {
             btn.addEventListener('click', () => {
                 caseFilter = btn.dataset.caseFilter;
@@ -472,5 +560,5 @@
         return '<div class="workspace-callout evidence-context"><h3>'+esc(item[0])+'</h3><p>'+esc(item[1])+'</p>'+sourceHtml(item[2])+'</div>';
     }
     function searchItems(){return [...D.cases.map(c=>({cpId:'learn',target:'case-'+c.id,title:c.title,sub:c.domain+' evolving case',kind:'Practice'})),...D.modules.map(m=>({cpId:'learn',target:'module-'+m.id,title:m.title,sub:m.kind,kind:'Skills'})),...visuals.map(([id,title,text])=>({cpId:'learn',target:'visual-'+id,title,sub:text,kind:'Visual learning'})),{cpId:'learn',target:'progress',title:'Export or import learning backup',sub:'Progress, saved notes and preferences',kind:'My progress'}];}
-    window.EM_LEARNING={recordingFigure,activeCase,mount,homeHtml,reassessmentHtml,evidenceContext,searchItems,progress,saveProgress,normalizeProgress,validateBackup,exportBackup,importBackup,mergeExisting,backupKeys,visuals};
+    window.EM_LEARNING={recordingFigure,activeCase,mount,homeHtml,reassessmentHtml,evidenceContext,searchItems,progress,saveProgress,normalizeProgress,attemptRecord,reviewItems,validateBackup,exportBackup,importBackup,mergeExisting,backupKeys,visuals};
 }());

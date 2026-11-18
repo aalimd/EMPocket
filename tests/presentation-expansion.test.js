@@ -22,7 +22,7 @@ test('selected review records distinguish the new scope from the historical audi
  assert.deepEqual(Object.keys(evidence.topicReviews).sort(), Array.from(topics, topic => topic.id).sort());
  for(const id of [...ids, ...november13, ...november14]){
   const r=evidence.topicReviews[id];
-  assert.equal(r.checked, november14.includes(id) ? '2026-11-14' : november13.includes(id) ? '2026-11-13' : '2026-11-10');assert.ok(r.scope.length>15);
+  assert.equal(r.checked, id === 'copd-exacerbation' ? '2026-11-18' : november14.includes(id) ? '2026-11-14' : november13.includes(id) ? '2026-11-13' : '2026-11-10');assert.ok(r.scope.length>15);
   assert.ok(r.sources.length);for(const key of r.sources){assert.ok(evidence.topics[id].includes(key),id+': '+key);assert.ok(evidence.sources[key]);}
  }
 });

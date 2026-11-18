@@ -69,9 +69,11 @@
     });
 
     /* Fold to a comparable form: lowercase, strip diacritics and punctuation,
-       collapse whitespace. Keeps Arabic and other scripts untouched. */
+       collapse whitespace and fold common Arabic typing variants. */
     function normalize(value) {
         var s = String(value == null ? '' : value).toLowerCase()
+            .replace(/[\u0640\u064b-\u065f\u0670]/g, '')
+            .replace(/[أإآٱ]/g, 'ا')
             .replace(/[\u2080-\u2089]/g, ch => String(ch.charCodeAt(0)-0x2080));
         /* Fold Latin accents (é→e) without decomposing Arabic: NFD-split a copy
            that only contains Latin, then rebuild non-Latin runs unchanged. */

@@ -5,16 +5,16 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 
-function worker({ offline = false, storageError = false, cached = {}, scope = 'http://localhost/EM-CPs/' } = {}) {
+function worker({ offline = false, storageError = false, cached = {}, network, scope = 'http://localhost/EM-CPs/' } = {}) {
   const handlers = {};
   const response = { status: 200, type: 'basic', clone() { return this; } };
   const context = {
     URL, Promise, Response,
     self: { registration: { scope }, location: new URL(scope), addEventListener(type, handler) { handlers[type] = handler; } },
-    fetch: async () => { if (offline) throw new Error('offline'); return response; },
+    fetch: async request => { if (offline) throw new Error('offline'); return network ? network(request) : response; },
     caches: { open: async () => {
       if (storageError) throw new Error('storage unavailable');
-      return { match: async request => cached[typeof request === 'string' ? request : request.url], put: async () => {} };
+      return { match: async request => cached[typeof request === 'string' ? request : request.url], put: async (request,value) => { cached[typeof request === 'string' ? request : request.url]=value; } };
     } }
   };
   vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname, '../sw.js'), 'utf8'), context);
@@ -137,4 +137,18 @@ test('HTML fallback for a missing required script never activates an offline bun
   caches:{open:async()=>({addAll:async()=>{},match:async()=>({headers:{get:()=> 'text/html; charset=utf-8'}}),add:async()=>{}})}
  });
  let pending;handlers.install({waitUntil:p=>pending=p});await assert.rejects(pending,/Invalid offline asset type/);assert.equal(skipped,false);
+});
+
+test('runtime asset refresh keeps the cached script when the network returns HTML', async () => {
+ const path='./assets/app.js',url=new URL(path,'http://localhost/EM-CPs/').href;
+ const reply=type=>({ok:true,status:200,type:'basic',headers:new Headers({'Content-Type':type}),clone(){return this;}});
+ const good=reply('text/javascript; charset=utf-8'),html=reply('text/html');
+ const cached={[url]:good}; let offline=false;
+ const w=worker({cached,network:async()=>{if(offline)throw Error('offline');return html;}});
+ assert.equal(await w.fetch(path,'cors'),good);
+ assert.equal(cached[url],good);
+ offline=true;
+ assert.equal(await w.fetch(path,'cors'),good);
+ offline=false;
+ assert.equal((await w.fetch('./assets/data.js','cors')).type,'error');
 });

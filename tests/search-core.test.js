@@ -53,10 +53,10 @@ test('treatment-content kinds outrank plain teaching for the same query', () => 
     assert.ok(asText > asTeaching, 'dose cards must rank above teaching items');
 });
 
-test('normalize strips diacritics, punctuation and case without touching Arabic', () => {
+test('normalize strips diacritics, punctuation and case while folding Arabic alef variants', () => {
     assert.equal(core.normalize('  Epinephrine  '), 'epinephrine');
     assert.equal(core.normalize('SpO₂ <94%'), 'spo2 94');
-    assert.equal(core.normalize('أدرينالين'), 'أدرينالين');
+    assert.equal(core.normalize('أدرينالين'), 'ادرينالين');
 });
 
 test('editDistance is bounded and correct for the failing cases', () => {

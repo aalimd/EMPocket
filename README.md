@@ -32,13 +32,13 @@ Recommended Git integration settings (repository root contains `index.html`):
 | Framework preset | None |
 | Production branch | `main` (the current repository branch) |
 | Root directory | Leave blank (repository root) |
-| Build command | `exit 0` (no-op; no compilation or dependency installation) |
-| Build output directory | `.` |
+| Build command | `sh dev/package-pages.sh` |
+| Build output directory | `.wrangler/em-pocket-pages` |
 | Environment variables / bindings | None |
 
 For a completely build-free upload, use **Pages Direct Upload** with a folder containing `index.html`, `sw.js`, `manifest.json`, `robots.txt`, `404.html`, `_headers`, `.htaccess` and the full `assets/` directory. Exclude `.git/`, `dev/`, `tests/`, `docs/` and local/editor files. Keep `index.html` at the upload root, not inside another containing directory. The same runtime folder can be uploaded to Hostinger. Do not upload the separate EM-P paid application.
 
-Git integration with output `.` can also publish tracked development/tests/documentation files; they are not runtime dependencies. Use the runtime-only Direct Upload folder when those files should stay unpublished. No build-time filtering system has been added.
+Run `sh dev/package-pages.sh` to prepare the runtime-only directory locally. For a Git-connected Pages project using the old root output, update both settings above before deployment. Track new runtime assets in Git so they are included. The `empocket` Direct Upload deployment can use the same directory.
 
 Pages serves this upload at the site root. Hostinger can serve the same files at a root or subdirectory. All app, manifest and service-worker URLs remain relative. The `_headers` paths describe the Pages site-root layout; mounting the app beneath a Pages path would require corresponding header-rule prefixes. Hostinger can ignore `_headers` (or omit it from its upload); Pages does not interpret `.htaccess`.
 
@@ -48,9 +48,9 @@ See Cloudflare's official [static HTML settings](https://developers.cloudflare.c
 
 ## Release and offline updates
 
-The current asset token is `20261114-diagnoses-v89`; `CACHE_VERSION` is `v288` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
+The current asset token is `20261118-audit-v90`; `CACHE_VERSION` is `v289` in `sw.js`. When changing shipped assets, update the token in `index.html`, `manifest.json`, `sw.js`, the registration in `assets/app.js`, and local preview references, then increment the worker cache version. Upload the release together. Configuration-only header changes do not need a worker version bump.
 
-The worker precaches the canonical `./` shell because Pages redirects `/index.html` to `/`. Direct hash routes and offline `/index.html` requests fall back to that shell. Required asset failure or an HTML fallback returned instead of required JavaScript/CSS prevents a new worker from activating; optional icon failure does not prevent core offline use. A new worker claims the app and notifies users to refresh. The worker handles only this app's entry points and shipped asset paths, including at the domain root. New cache names encode the exact installation path, preserving case and punctuation. Cleanup touches only that exact namespace; it does not clear saved progress or other apps' caches. Ambiguous legacy cache names are intentionally retained during this one-time naming change.
+The worker precaches the canonical `./` shell because Pages redirects `/index.html` to `/`. Direct hash routes and offline `/index.html` requests fall back to that shell. Required asset failure or a mismatched MIME type prevents a new worker from activating. Runtime refreshes also validate MIME types before replacing cached assets; optional icon failure does not prevent core offline use. A new worker claims the app and notifies users to refresh. The worker handles only this app's entry points and shipped asset paths, including at the domain root. New cache names encode the exact installation path, preserving case and punctuation. Cleanup touches only that exact namespace; it does not clear saved progress or other apps' caches. Ambiguous legacy cache names are intentionally retained during this one-time naming change.
 
 Do not change the installation origin/path when replacing an existing Hostinger deployment if its installed-app identity and local progress must be preserved. Moving to a different origin creates a separate PWA/storage context; this release does not migrate user data between domains.
 

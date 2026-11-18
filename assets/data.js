@@ -112,7 +112,7 @@ pearls: [
     "NIV requires a suitable patient and close monitoring: respiratory arrest, inability to protect the airway, significant aspiration risk or hemodynamic instability demand urgent airway assessment.",
     "After initial treatment, reassess respiratory rate, work of breathing, mentation, oxygen requirement and gas exchange when indicated; deterioration requires escalation even if saturation improves.",
     'POCUS (B-lines, sliding, RV) plus a focused history resolves most dyspnea faster than any single lab.', 'Normal SpO₂ excludes neither PE nor early CO — use the pathway and co-oximetry.', 'A fatiguing asthmatic with a \u201Cnormal\u201D CO₂ is pre-arrest, not improving.', 'Never discharge asthma on SABA alone: pair with ICS-containing therapy (≥6 y) or the preschool pathway (<6 y).'],
-refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — dyspnea & respiratory distress', 'GINA 2026 (ICS-formoterol Track 1; no SABA-only therapy)', 'GOLD 2026', '2019 ESC/ERS PE Guidelines; 2026 AHA/ACC Acute PE Guideline']
+refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — dyspnea & respiratory distress', 'GINA 2026 (ICS-formoterol Track 1; no SABA-only therapy)', 'GOLD 2027', '2019 ESC/ERS PE Guidelines; 2026 AHA/ACC Acute PE Guideline']
 },
 {
 id: 'abdominal-pain', name: 'Abdominal Pain', icon: '🎯',
@@ -2847,7 +2847,7 @@ refs: ['Rosen\u2019s Emergency Medicine, 10th ed. (2023) — thyroid disorders',
         "Using pulse oximetry to judge ventilation."
     ],
     pearls: ["Compare the blood gas, oxygen requirement and mental status with the patient’s baseline when available."],
-    refs: ["GOLD global strategy for COPD (2026)", "NICE QS10 emergency oxygen during a COPD exacerbation"]
+    refs: ["GOLD global strategy for COPD (2027)", "NICE QS10 emergency oxygen during a COPD exacerbation"]
 },
 {
     id: 'community-acquired-pneumonia', type: 'diagnosis', name: "Community-Acquired Pneumonia (CAP)", icon: '🩺',

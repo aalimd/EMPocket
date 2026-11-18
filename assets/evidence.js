@@ -30,7 +30,8 @@
         acuteHF2026: ["ESC and EUSEM consensus on acute heart failure in emergency settings (2026)", "https://doi.org/10.1093/eurheartj/ehag744"],
         hfESC: ["ESC acute and chronic heart failure guideline (2021)", "https://academic.oup.com/eurheartj/article/42/36/3599/6358045"],
         copdOxygen: ["NICE QS10: emergency oxygen during a COPD exacerbation", "https://www.nice.org.uk/guidance/qs10/chapter/Quality-statement-6-Emergency-oxygen-during-an-exacerbation"],
-        goldCOPD: ["GOLD global strategy for COPD (2026)", "https://goldcopd.org/2026-gold-report-and-pocket-guide/"],
+        acuteAngleClosure: ["NSW Agency for Clinical Innovation: Eye Emergency Manual, acute angle closure (2023)", "https://aci.health.nsw.gov.au/__data/assets/pdf_file/0013/155011/ACI-Eye-Emergency-Manual.pdf"],
+        goldCOPD: ["GOLD global strategy for COPD (2027)", "https://goldcopd.org/2027-gold-report-and-pocket-guide/"],
         capATS: ["ATS community-acquired pneumonia guideline update (2025, published in 2026 issue)", "https://doi.org/10.1164/rccm.202507-1692ST"],
         capIDSA: ["ATS/IDSA adult community-acquired pneumonia guideline (2019)", "https://www.idsociety.org/practice-guideline/community-acquired-pneumonia-cap-in-adults"],
         cardiogenicACC: ["ACC evaluation and management of cardiogenic shock (2025)", "https://www.acc.org/Guidelines/Guidelines/2025/03/17/19/42/Cardiogenic-Shock-Concise-Clinical-Guidance"],
@@ -245,7 +246,7 @@
         'hypercalcemia-of-malignancy': ['malignancyCalcium', 'acuteOncology'],
         'superior-vena-cava-syndrome': ['svcImaging', 'svcNHS'],
         'cancer-immunotherapy-toxicity': ['sitcCell', 'sitcCheckpoint'],
-        'chest-pain': ['aorta', 'chest', 'acs', 'mi', 'pe'], dyspnea: ['asthma', 'pe', 'dyspneaAssessment'],
+        'chest-pain': ['aorta', 'chest', 'acs', 'mi', 'pe'], dyspnea: ['asthma', 'pe', 'dyspneaAssessment', 'goldCOPD'],
         headache: ['headache', 'sah', 'stroke'], ams: ['stroke', 'special', 'meningitis', 'delirium'], coma: ['stroke', 'special', 'comaAssessment'],
         weakness: ['stroke', 'gbs'], dizziness: ['dizziness', 'stroke'], diplopia: ['cn3', 'stroke', 'diplopiaAssessment'],
         'focal-neurologic-deficit': ['stroke', 'ich', 'ichReversal2026', 'andexanetSFDA'], fever: ['sepsis', 'meningitis'], shock: ['sepsis', 'lung', 'special'],
@@ -258,7 +259,7 @@
         'airway-stridor': ['special', 'croup', 'intubationACEP', 'intubationTrial'], anaphylaxis: ['special', 'rcukAnaphylaxis', 'waoAnaphylaxis', 'jtfppAnaphylaxis'], 'flank-pain': ['stones'],
         'urinary-retention': ['stones', 'urethralTrauma', 'catheterCare'], edema: ['pe', 'dvt', 'dvtUltrasound'], 'multiple-trauma': ['headinjury', 'majorTrauma', 'traumaBleeding'],
         'falls-geriatric-trauma': ['headinjury', 'falls', 'occultHip'], 'pediatric-respiratory-distress': ['bronchiolitis', 'asthma'],
-        gib: ['ugib', 'lgib', 'lgibASGE', 'ulcer2026', 'varicesAASLD', 'varicesBaveno'], 'red-eye': ['keratitis', 'chemicalEye'], 'sore-throat': ['gas', 'gasTesting'],
+        gib: ['ugib', 'lgib', 'lgibASGE', 'ulcer2026', 'varicesAASLD', 'varicesBaveno'], 'red-eye': ['acuteAngleClosure', 'keratitis', 'chemicalEye'], 'sore-throat': ['gas', 'gasTesting'],
         suicidal: ['selfharm'], constipation: ['constipation'], 'limb-ischemia': ['pad'], rash: ['ssti'],
         'cardiac-arrest': ['acls', 'als', 'special', 'cardioversionEnergy', 'postArrest'], electrolytes: ['hyperkalemia', 'hyponatremia', 'sodiumUS', 'potassiumKDIGO'],
         'head-injury': ['ichReversal2026', 'andexanetSFDA', 'tbi', 'headinjury', 'mtbi', 'csfLeak', 'cchr', 'pecarn', 'intubationACEP', 'intubationTrial'], 'hypertensive-emergency': ['hypertension', 'stroke', 'acuteBP', 'aorta', 'ich'],
@@ -901,8 +902,8 @@
         ]
     },
     "copd-exacerbation": {
-        "checked": "2026-11-14",
-        "scope": "adult controlled oxygen, bronchodilators, antibiotics and noninvasive ventilation",
+        "checked": "2026-11-18",
+        "scope": "GOLD 2027 acute exacerbation guidance on oxygen, bronchodilators, steroids, antibiotics and noninvasive ventilation",
         "sources": [
             "goldCOPD",
             "copdOxygen"

@@ -36,3 +36,13 @@ test('search highlighting preserves subscript notation and escapes the displayed
  assert.equal(context.highlightMatch('SpO2','spo₂'),'<mark>SpO2</mark>');
  assert.ok(!context.highlightMatch('<img src=x> SpO₂','spo2').includes('<img'));
 });
+
+test('Arabic symptom variants find the intended clinical pathways', () => {
+ const context=vm.createContext({window:{},document:{readyState:'loading',addEventListener(){}}});
+ vm.runInContext(fs.readFileSync('assets/shift-tools.js','utf8'),context);
+ const byId=Object.fromEntries(data.map(c=>[c.id,c]));
+ const index=ctx.window.SEARCH_CORE.createIndex(ctx.window.EM_SEARCH_INDEX.buildSearchIndex(data,ecg,{byId,shiftTools:context.window.SHIFT_TOOLS}));
+ for(const [query,id] of [['الم الصدر','chest-pain'],['ضِيق التنفس','dyspnea'],['الصدمة الانتانية','sepsis-and-septic-shock'],['السكتة','acute-ischemic-stroke']]){
+   assert.equal(index.search(query)[0]?.cpId,id,query);
+ }
+});

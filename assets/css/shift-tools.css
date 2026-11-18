@@ -56,6 +56,7 @@
 /* Paediatric weight-based dose card. */
 .st-peds-inputs{display:grid;gap:12px}
 @media(min-width:520px){.st-peds-inputs{grid-template-columns:1fr 1fr}}
+.st-peds-table small{display:block;margin-top:.25rem}
 .st-peds-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9375em}
 .st-peds-table th,.st-peds-table td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
 .st-peds-table th{font-weight:var(--weight-label);color:var(--ink)}

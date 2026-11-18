@@ -49,6 +49,26 @@ window.EM_LEARNING_DATA = {
       "Radiology Assistant: chest X-ray interpretation",
       "https://radiologyassistant.nl/chest/chest-x-ray/basic-interpretation"
     ],
+    "sepsis": [
+      "Surviving Sepsis Campaign adult guidelines (2026)",
+      "https://survivingsepsis.org/guidelines-and-resources/surviving-sepsis-campaign-adult-guidelines"
+    ],
+    "uroInfectEAU": [
+      "EAU urological infections guideline (2026)",
+      "https://uroweb.org/guidelines/urological-infections/chapter/the-guideline"
+    ],
+    "gold": [
+      "GOLD report, management of exacerbations (2027)",
+      "https://goldcopd.org/2027-gold-report-and-pocket-guide/"
+    ],
+    "niv": [
+      "ERS/ATS acute NIV guideline",
+      "https://doi.org/10.1183/13993003.02426-2016"
+    ],
+    "dka": [
+      "Multisociety consensus on adult DKA and HHS (2024)",
+      "https://doi.org/10.2337/dci24-0032"
+    ],
     "acs": [
       "ESC acute coronary syndromes guideline (2023)",
       "https://www.escardio.org/guidelines/clinical-practice-guidelines/all-esc-practice-guidelines/acute-coronary-syndromes/"
@@ -64,6 +84,7 @@ window.EM_LEARNING_DATA = {
       "stem": "A 64-year-old has a regular broad-complex tachycardia at 190/min, BP 72/40, confusion and a palpable pulse. The team is at the bedside.",
       "steps": [
         {
+          "id": "unstable-pulse",
           "update": "Initial assessment",
           "prompt": "Which immediate plan best matches these findings?",
           "options": [
@@ -88,6 +109,7 @@ window.EM_LEARNING_DATA = {
           ]
         },
         {
+          "id": "vf-arrest",
           "update": "The team prepares cardioversion. Before it is delivered, the patient becomes unresponsive; no definite pulse is found promptly, and the monitor shows ventricular fibrillation.",
           "prompt": "How must the plan change?",
           "options": [
@@ -112,6 +134,7 @@ window.EM_LEARNING_DATA = {
           ]
         },
         {
+          "id": "post-arrest",
           "update": "Following resuscitation, a pulse returns. BP remains low and the patient is not following commands.",
           "prompt": "What is the appropriate next destination?",
           "options": [
@@ -151,6 +174,7 @@ window.EM_LEARNING_DATA = {
       "stem": "A 31-year-old arrives after blunt chest trauma. During initial assessment, BP falls to 78/46, respiratory distress worsens and breath sounds are markedly reduced on the left.",
       "steps": [
         {
+          "id": "initial-survey",
           "update": "Initial assessment",
           "prompt": "What should the team prioritize?",
           "options": [
@@ -175,6 +199,7 @@ window.EM_LEARNING_DATA = {
           ]
         },
         {
+          "id": "bleeding-control",
           "update": "The treating team finds a compelling clinical picture of tension pneumothorax with severe compromise. CT is available on another floor.",
           "prompt": "What principle applies?",
           "options": [
@@ -199,6 +224,7 @@ window.EM_LEARNING_DATA = {
           ]
         },
         {
+          "id": "trauma-handover",
           "update": "After decompression, breathing improves but hypotension persists.",
           "prompt": "What is the next reasoning step?",
           "options": [
@@ -238,6 +264,7 @@ window.EM_LEARNING_DATA = {
       "stem": "A 7-week-old with coryza has worsening work of breathing and is taking less than half the usual feeds. A parent reports a pause in breathing at home.",
       "steps": [
         {
+          "id": "initial-severity",
           "update": "Initial assessment",
           "prompt": "Which feature most strongly supports urgent escalation?",
           "options": [
@@ -262,6 +289,7 @@ window.EM_LEARNING_DATA = {
           ]
         },
         {
+          "id": "oxygen-and-feeding",
           "update": "While monitored, the infant develops a further apneic episode and becomes less responsive.",
           "prompt": "What should happen now?",
           "options": [
@@ -286,6 +314,7 @@ window.EM_LEARNING_DATA = {
           ]
         },
         {
+          "id": "infant-disposition",
           "update": "The infant improves with the team’s support but remains unable to feed adequately.",
           "prompt": "Which disposition best fits the course?",
           "options": [
@@ -325,6 +354,7 @@ window.EM_LEARNING_DATA = {
       "stem": "A 28-year-old with a positive pregnancy test has lower abdominal pain, vaginal spotting and a fainting episode. BP is 84/48 and pulse is 124/min.",
       "steps": [
         {
+          "id": "initial-assessment",
           "update": "Initial assessment",
           "prompt": "What is the safest initial approach?",
           "options": [
@@ -349,6 +379,7 @@ window.EM_LEARNING_DATA = {
           ]
         },
         {
+          "id": "deterioration",
           "update": "The team starts resuscitation. No intrauterine pregnancy has yet been confirmed; a laboratory result is pending.",
           "prompt": "What should not be delayed?",
           "options": [
@@ -373,6 +404,7 @@ window.EM_LEARNING_DATA = {
           ]
         },
         {
+          "id": "obstetric-handover",
           "update": "BP improves transiently, but pain and tachycardia continue.",
           "prompt": "How should that response affect disposition?",
           "options": [
@@ -412,6 +444,7 @@ window.EM_LEARNING_DATA = {
       "stem": "A 40-year-old is found drowsy with very slow breathing and a palpable pulse. Opioid exposure is suspected; the amount and timing are unknown.",
       "steps": [
         {
+          "id": "support-ventilation",
           "update": "Initial assessment",
           "prompt": "Which priority best addresses the immediate threat?",
           "options": [
@@ -436,6 +469,7 @@ window.EM_LEARNING_DATA = {
           ]
         },
         {
+          "id": "recurrent-depression",
           "update": "After treatment, breathing improves. Later the respiratory rate falls again and the patient becomes difficult to wake.",
           "prompt": "What does this change require?",
           "options": [
@@ -460,6 +494,7 @@ window.EM_LEARNING_DATA = {
           ]
         },
         {
+          "id": "observation",
           "update": "Repeated support has been required; the substance may be long acting.",
           "prompt": "What is the appropriate disposition principle?",
           "options": [
@@ -499,6 +534,7 @@ window.EM_LEARNING_DATA = {
       "stem": "A 22-year-old presents after self-harm. Physical care is underway. The person is distressed and says they do not feel safe returning home.",
       "steps": [
         {
+          "id": "immediate-safety",
           "update": "Initial assessment",
           "prompt": "What should the team arrange alongside physical care?",
           "options": [
@@ -523,6 +559,7 @@ window.EM_LEARNING_DATA = {
           ]
         },
         {
+          "id": "psychosocial-assessment",
           "update": "A checklist score is described as low, but the person still reports feeling unsafe and has little support.",
           "prompt": "How should the score be used?",
           "options": [
@@ -547,6 +584,7 @@ window.EM_LEARNING_DATA = {
           ]
         },
         {
+          "id": "confirm-safety-plan",
           "update": "The team is developing a care plan with the person.",
           "prompt": "What is an important part of planning any transition?",
           "options": [
@@ -575,6 +613,384 @@ window.EM_LEARNING_DATA = {
         "What might a numeric score conceal?",
         "How can you explore immediate safety without judgment?",
         "Discuss capacity, safeguarding and local legal requirements with the supervising team."
+      ]
+    },
+    {
+      "id": "adult-septic-shock",
+      "checked": "2026-11-18",
+      "relatedTopics": ["shock", "fever"],
+      "title": "Shock with an obstructed kidney",
+      "domain": "Sepsis",
+      "topic": "sepsis-and-septic-shock",
+      "source": "sepsis",
+      "stem": "An adult with fever and right flank pain becomes confused. BP is 78/42, pulse 128/min, respiratory rate 30/min and capillary refill 5 seconds. There is no evident hemorrhage.",
+      "steps": [
+        {
+          "id": "recognition",
+          "level": 1,
+          "update": "At triage the patient can answer only simple questions and appears poorly perfused.",
+          "prompt": "What should the team do first?",
+          "review": "A febrile patient with a suspected urinary source has MAP 54 and new confusion. What actions should run in parallel now?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Activate resuscitation. Obtain access and start assessment, IV fluids and empiric antibiotics promptly.",
+              "why": "Suspected infection and hypoperfusion warrant immediate treatment. Obtain cultures promptly if this does not meaningfully delay antibiotics.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Wait for lactate and imaging to confirm shock before activating resuscitation.",
+              "why": "Cross-sectional imaging and laboratory results are valuable, but persistent hypotension and impaired perfusion already demand action.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Give oral antibiotics while repeating observations in the waiting area.",
+              "why": "This degree of circulatory compromise and altered mentation requires monitored IV resuscitation.",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "id": "vasopressor",
+          "level": 2,
+          "update": "Despite initial balanced crystalloid, MAP is 53 mmHg and capillary refill remains prolonged. Ultrasound suggests fluid tolerance is limited.",
+          "prompt": "Which hemodynamic response is most appropriate?",
+          "review": "After early fluids, another adult with suspected septic shock has MAP 55 and new signs of fluid intolerance. What should change now?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Start norepinephrine promptly and reassess perfusion and responsiveness to fluid.",
+              "why": "Norepinephrine is first line. In unstable shock it can begin before a central line under an appropriate peripheral protocol.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Give further fixed-volume boluses before considering a vasopressor.",
+              "why": "Persistent shock and limited fluid tolerance warrant early pressor support and individualized fluid decisions.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Use dobutamine alone to restore the arterial pressure.",
+              "why": "Inotropy may be useful with cardiac dysfunction and persistent hypoperfusion after adequate pressure, but norepinephrine is the first-line pressor here.",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "id": "source-control",
+          "source": "uroInfectEAU",
+          "level": 3,
+          "update": "MAP improves on norepinephrine. Imaging shows an obstructing ureteral stone and hydronephrosis on the symptomatic side.",
+          "prompt": "What is the next time-critical decision?",
+          "review": "A patient receiving antibiotics and pressors has fever and an infected obstructed collecting system. What definitive intervention must be coordinated?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Escalate to urology for urgent drainage and coordinate critical-care support.",
+              "why": "An infected obstructed collecting system requires urgent source control alongside resuscitation and antibiotics.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Wait for the culture and susceptibility results before discussing drainage.",
+              "why": "Cultures guide antibiotic selection, but they do not relieve the infected obstruction.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Plan stone removal after a trial of outpatient medical expulsive therapy.",
+              "why": "Medical expulsive therapy does not provide timely source control for obstructive sepsis.",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "id": "handover",
+          "level": 4,
+          "update": "Urology can drain the kidney, but the patient remains on a titratable vasopressor. Transfer from the ED is being arranged.",
+          "prompt": "What should the team leader confirm before transfer?",
+          "review": "A patient with abdominal sepsis needs source control and has rising vasopressor requirements. What must the receiving team know before movement?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Confirm the receiving teams, monitored transport, current pressor and perfusion trends, antimicrobial timing and the source-control plan.",
+              "why": "A shared plan with named responsibilities supports safe transfer while resuscitation and urgent drainage proceed.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Transfer once a bed is identified and send the detailed clinical history later.",
+              "why": "Bed assignment alone does not guarantee pressor monitoring, clinical ownership or access to urgent drainage.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Pause the vasopressor to simplify movement if a recent pressure exceeded the initial target.",
+              "why": "A recovered pressure on support does not establish hemodynamic stability without it.",
+              "correct": false
+            }
+          ]
+        }
+      ],
+      "debrief": [
+        "Name one sign of persistent tissue hypoperfusion despite a better blood pressure.",
+        "Discuss how you would reassess further fluids in a patient at risk of overload.",
+        "Rehearse the transfer handover and identify who owns each pending action."
+      ]
+    },
+    {
+      "id": "niv-failure",
+      "checked": "2026-11-18",
+      "relatedTopics": ["dyspnea"],
+      "title": "When noninvasive ventilation fails",
+      "domain": "Respiratory",
+      "topic": "copd-exacerbation",
+      "source": "niv",
+      "stem": "A 69-year-old with COPD presents with marked dyspnea, respiratory rate 34/min and SpO₂ 83% on room air. The patient is alert, cooperative and able to clear secretions. BP is 132/76.",
+      "steps": [
+        {
+          "id": "oxygen",
+          "source": "gold",
+          "level": 1,
+          "update": "There are bilateral wheezes and increased work of breathing. Blood gas results are pending.",
+          "prompt": "What is the best initial respiratory support plan?",
+          "review": "An alert patient with known COPD is hypoxemic and likely hypercapnic. What oxygen strategy and initial reassessment would you use?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Start controlled oxygen targeting SpO₂ 88–92%, obtain a blood gas and initiate exacerbation treatment.",
+              "why": "Treat hypoxemia immediately while titrating oxygen. Use gas results and examination to assess ventilation.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Give high-flow oxygen to keep SpO₂ near 100% throughout assessment.",
+              "why": "Once oxygenation can be measured, controlled oxygen is preferred in an exacerbation at risk of hypercapnic respiratory failure.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Wait for the blood gas before giving supplemental oxygen.",
+              "why": "A blood gas informs ventilation but should not delay correction of significant hypoxemia.",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "id": "trial",
+          "level": 2,
+          "update": "After initial bronchodilators and controlled oxygen, arterial pH is 7.27 and PaCO₂ is 68 mmHg. Breathing remains labored; the patient is cooperative.",
+          "prompt": "Which ventilatory strategy is most appropriate now?",
+          "review": "An alert patient with COPD remains tachypneic after initial treatment, with pH 7.30 and hypercapnia. Which support should be considered?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Start a monitored bilevel NIV trial and prepare a plan for rapid escalation.",
+              "why": "Acute hypercapnic respiratory acidosis in a suitable patient is an indication for bilevel NIV with close reassessment.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Use oxygen alone because the saturation has reached target.",
+              "why": "A target saturation does not correct inadequate ventilation or respiratory acidosis.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Use CPAP alone as the preferred support for this acidotic COPD exacerbation.",
+              "why": "Bilevel NIV provides inspiratory pressure support and is the guideline-supported mode in this setting.",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "id": "escalation",
+          "level": 3,
+          "update": "Despite optimized NIV and minimal leak, pH falls to 7.18. The patient is increasingly drowsy and can no longer clear secretions.",
+          "prompt": "What should guide escalation?",
+          "review": "During NIV a patient becomes progressively obtunded, with rising PaCO₂ and inability to manage secretions. What is the next airway plan?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Call the airway team and proceed toward invasive ventilation if consistent with the goals of care.",
+              "why": "Worsening acidosis and loss of airway protection despite optimized NIV indicate failure. Delaying definitive support adds risk.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Continue NIV unchanged for another scheduled blood gas.",
+              "why": "A worsening clinical examination and airway protection override a fixed reassessment schedule.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Switch to high-flow nasal oxygen and reassess later.",
+              "why": "High-flow oxygen does not secure the airway or replace needed ventilatory support in this setting.",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "id": "post-intubation",
+          "source": "gold",
+          "level": 4,
+          "update": "The patient is intubated. The team observes high airway pressures and incomplete expiratory flow between breaths.",
+          "prompt": "What should be highlighted during the ventilator handover?",
+          "review": "An intubated patient with obstructive lung disease has persistent expiratory flow at the start of the next breath. What should the team reassess?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Assess for dynamic hyperinflation, provide adequate expiratory time and track pressure, gas exchange and hemodynamics.",
+              "why": "Incomplete exhalation suggests air trapping. Individualize ventilation and anticipate hemodynamic effects.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Increase respiratory rate first to normalize PaCO₂ as quickly as possible.",
+              "why": "A higher rate may further shorten expiration and worsen air trapping.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Focus on oxygen saturation as the primary measure of adequate ventilation.",
+              "why": "Oxygenation alone cannot identify dynamic hyperinflation or ventilation failure.",
+              "correct": false
+            }
+          ]
+        }
+      ],
+      "debrief": [
+        "Name early findings of NIV response you can assess before a repeat blood gas.",
+        "Explain what you would do if intubation is outside the patient’s stated goals.",
+        "Discuss what new findings would make you reconsider the diagnosis."
+      ]
+    },
+    {
+      "id": "mixed-dka-hhs",
+      "checked": "2026-11-18",
+      "relatedTopics": ["hyperglycemia", "diabetic-ketoacidosis"],
+      "title": "Ketoacidosis with severe hyperosmolality",
+      "domain": "Metabolic",
+      "topic": "hyperosmolar-hyperglycemic-state",
+      "source": "dka",
+      "stem": "A 63-year-old with diabetes has several days of polyuria and vomiting, marked dehydration and new confusion. Glucose is 860 mg/dL, measured osmolality 342 mOsm/kg, venous pH 7.18, bicarbonate 12 mmol/L and beta-hydroxybutyrate 5.0 mmol/L.",
+      "steps": [
+        {
+          "id": "classification",
+          "level": 1,
+          "update": "The venous sample confirms both metabolic acidosis and significant ketonemia.",
+          "prompt": "Which description best fits this presentation?",
+          "review": "A patient has very high glucose and osmolality plus beta-hydroxybutyrate 4.5 mmol/L and pH 7.22. How does the ketonemia change the working diagnosis?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Mixed DKA and HHS.",
+              "why": "Substantial ketoacidosis coexists with marked hyperosmolality. Both complications matter for management.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Isolated HHS with minimal ketonemia.",
+              "why": "The pronounced ketonemia and acidosis are inconsistent with uncomplicated HHS.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Uncomplicated hyperglycemia and dehydration.",
+              "why": "The combination of acidosis, ketosis and hyperosmolality indicates a monitored hyperglycemic crisis.",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "id": "potassium",
+          "level": 2,
+          "update": "K⁺ is 3.0 mmol/L. ECG is obtained and cardiac monitoring has begun.",
+          "prompt": "What sequencing is safest?",
+          "review": "A confirmed DKA/HHS overlap has initial K⁺ 3.2 mmol/L. What should precede insulin, and why?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Begin appropriate IV fluids and potassium replacement. Defer insulin until potassium is above 3.5 mmol/L.",
+              "why": "Insulin shifts potassium intracellularly and can precipitate dangerous hypokalemia. Recheck and individualize replacement.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Start fixed-rate insulin now because ketoacidosis is severe.",
+              "why": "Severe acidosis does not remove the risk of giving insulin during baseline hypokalemia.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Withhold fluids until the potassium has normalized.",
+              "why": "Volume resuscitation and safe potassium replacement can proceed together with reassessment.",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "id": "insulin",
+          "level": 3,
+          "update": "After initial therapy potassium is 3.8 mmol/L. Hyperosmolality and significant ketoacidosis persist.",
+          "prompt": "How should the insulin and monitoring plan change?",
+          "review": "Potassium has recovered above 3.5 mmol/L in a patient with persistent ketonemic acidosis and hyperosmolality. Which protocol features should be combined?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Use the mixed-crisis IV insulin pathway for ketoacidosis and monitor the rate of osmolar correction.",
+              "why": "Significant ketonemia and acidosis require the DKA approach to insulin. Hyperosmolality still calls for controlled correction and frequent lab review.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Use the lower-dose isolated-HHS approach solely because glucose is very high.",
+              "why": "The degree of hyperglycemia does not negate the need to treat ongoing ketoacidosis.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Defer insulin until osmolality normalizes despite persisting ketoacidosis.",
+              "why": "Once potassium permits, delaying ketosis treatment solely for osmolality normalization risks ongoing metabolic deterioration.",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "id": "transition",
+          "level": 4,
+          "update": "Glucose is now 235 mg/dL, ketonemia persists and mental status is improving. Potassium and osmolality are followed serially.",
+          "prompt": "What should the team communicate at handover?",
+          "review": "During mixed DKA/HHS treatment, glucose reaches the dextrose threshold while ketoacidosis persists. What needs to continue and what should be reassessed?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Add dextrose and adjust insulin per protocol. Continue until ketoacidosis resolves and review the osmolar, potassium and neurologic trends.",
+              "why": "Glucose falls before ketosis resolves. Dextrose permits continuing insulin while serial checks guide safe correction.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Stop insulin because glucose has reached the usual dextrose threshold.",
+              "why": "The dextrose threshold prompts a change in fluids and insulin rate. It does not establish resolution.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Use improvement in mental status alone to transition off IV treatment.",
+              "why": "Clinical improvement helps but does not replace biochemical assessment or a planned overlap with subcutaneous insulin.",
+              "correct": false
+            }
+          ]
+        }
+      ],
+      "debrief": [
+        "Explain which findings establish overlap in this scenario.",
+        "Describe how heart failure or kidney disease would change fluid reassessment.",
+        "Rehearse handover of glucose, ketones, potassium, osmolality and the precipitant."
       ]
     }
   ],

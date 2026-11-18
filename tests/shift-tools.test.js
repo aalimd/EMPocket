@@ -29,11 +29,11 @@ test('GCS sums components and reports severe at 8', () => {
 });
 
 test('Wells DVT applies the −2 alternative-diagnosis weight', () => {
-    const high = ev('wells-dvt', { ca: 1, swell: 1, calf: 1, tender: 1 });
+    const high = ev('wells-dvt', { assessed: true, ca: 1, swell: 1, calf: 1, tender: 1 });
     assert.match(high.band, /DVT likely/);
-    assert.match(ev('wells-dvt', { ca: 1 }).band, /unlikely/);
-    assert.match(ev('wells-dvt', { ca: 1, swell: 1 }).advice, /ultrasound first/);
-    const cancelled = ev('wells-dvt', { swell: 1, alt: 1 });
+    assert.match(ev('wells-dvt', { assessed: true, ca: 1 }).band, /unlikely/);
+    assert.match(ev('wells-dvt', { assessed: true, ca: 1, swell: 1 }).advice, /ultrasound first/);
+    const cancelled = ev('wells-dvt', { assessed: true, swell: 1, alt: 1 });
     assert.ok(cancelled.points < 0, 'alternative diagnosis must reduce the score');
 });
 
@@ -76,7 +76,7 @@ test('PERC requires all eight criteria to be absent', () => {
 });
 
 test('paediatric weight-based doses scale with weight and respect maxima', () => {
-    const d = ST.pedsDoses(12);
+    const d = ST.pedsDoses(12, 3);
     const byKey = Object.fromEntries(d.map(x => [x.key, x]));
     assert.ok(Math.abs(byKey['epi-arrest'].value - 0.12) < 1e-9);
     assert.ok(Math.abs(byKey['defib'].value - 24) < 1e-9);
@@ -89,7 +89,7 @@ test('paediatric weight-based doses scale with weight and respect maxima', () =>
     assert.equal(big['epi-anaph'].capped, true);
     assert.equal(byKey['d10'].value, 24);
     assert.equal(byKey['ceftriaxone'].value, 1200);
-    const infantAtropine = ST.pedsDoses(3).find(row => row.key === 'atropine');
+    const infantAtropine = ST.pedsDoses(3, 1 / 12).find(row => row.key === 'atropine');
     assert.equal(infantAtropine.value, 0.1);
     assert.equal(infantAtropine.floored, true);
     const huge = Object.fromEntries(ST.pedsDoses(200).map(x => [x.key, x]));
@@ -104,9 +104,9 @@ test('paediatric weight-based doses scale with weight and respect maxima', () =>
 
 test('paediatric airway sizes follow the age formulas', () => {
     const air = Object.fromEntries(ST.pedsAirway(3).map(x => [x.label, x.value]));
-    assert.ok(Math.abs(air['ETT (cuffed)'] - 3.75) < 1e-9);
-    assert.ok(Math.abs(air['ETT (uncuffed)'] - 4.75) < 1e-9);
-    assert.ok(Math.abs(air['ETT depth (children > 1 y)'] - 14.5) < 1e-9);
+    assert.equal(air['ETT (cuffed)'], 4.5);
+    assert.equal(air['ETT (uncuffed)'], 5);
+    assert.equal(air['Oral ETT depth (age >1 year)'], 13.5);
     assert.equal(ST.pedsAirway(-1).length, 0);
 });
 
@@ -235,4 +235,33 @@ test('arrest timer accrues real time, pauses without drift and resets to cycle 1
         clock.restore();
         ST.timer.reset();
     }
+});
+
+test('calculator prerequisites suppress premature results and preserve the PE thresholds', () => {
+    for (const id of ['gcs', 'heart', 'wells-pe', 'wells-dvt', 'curb65', 'qsofa', 'perc', 'canadian-ct-head']) {
+        assert.equal(ev(id, {}).points, null, id);
+    }
+    assert.equal(ev('heart', {history:0,ecg:0,age:0,risk:0}).points, null);
+    assert.equal(ev('heart', {history:0,ecg:0,age:0,risk:0,trop:0}).points, 0);
+    assert.match(ev('gcs', {eye:4,verbal:'nt',motor:6}).band, /total unavailable/);
+    for (const [state, band] of [
+        [{hr:true}, 'Low'], [{hemo:true,ca:true}, 'Moderate'], [{dvt:true,hemo:true}, 'Moderate'],
+        [{dvt:true,alt:true}, 'Moderate'], [{dvt:true,hr:true,hemo:true,ca:true}, 'High']
+    ]) {
+        assert.match(ev('wells-pe', {assessed:true,...state}).band, new RegExp('^'+band));
+    }
+});
+
+test('pediatric eligibility gates calculated doses and tube depth', () => {
+    const cef = age => ST.pedsDoses(4.5, age).find(row => row.key === 'ceftriaxone');
+    assert.equal(cef(undefined), undefined);
+    assert.equal(cef(1.99 / 12), undefined);
+    assert.equal(cef(2 / 12).value, 450);
+    for (const weight of [0,.49,200.1,'12lb','12 kg']) assert.equal(ST.pedsDoses(weight,3).length,0);
+    assert.equal(ST.pedsDoses(4.5,0).length,0);
+    assert.equal(ST.pedsDoses(4.5,18).length,0);
+    assert.equal(ST.pedsAirway(0).length,0);
+    assert.equal(ST.pedsAirway(1).some(row => row.label.includes('depth')),false);
+    const shock = ST.pedsDoses(12,3).find(row => row.key === 'cardio');
+    assert.deepEqual([shock.value,shock.upper,shock.repeat],[6,12,24]);
 });

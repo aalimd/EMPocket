@@ -2,7 +2,25 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 function load(){const saved=new Map(),calls=[];let failAt=Infinity,writes=0,blocked=false;const storage={getItem(k){calls.push(k);if(blocked)throw Error('blocked');return saved.get(k)??null;},setItem(k,v){calls.push(k);if(blocked||++writes===failAt)throw Error('quota');saved.set(k,v);},removeItem(k){saved.delete(k);}};const ctx={window:{},localStorage:storage};vm.createContext(ctx);for(const file of ['em-learning-data.js','em-learning.js'])vm.runInContext(fs.readFileSync('assets/'+file,'utf8'),ctx);return {api:ctx.window.EM_LEARNING,data:ctx.window.EM_LEARNING_DATA,saved,calls,block(){blocked=true;},fail(n){failAt=n;writes=0;}};}
 const backup=values=>({app:'EM Pocket free',version:1,values});
-test('six evolving cases have sequential updates, unique choices and explained outcomes',()=>{const {data}=load();assert.equal(data.cases.length,6);assert.equal(new Set(data.cases.map(c=>c.domain)).size,6);for(const c of data.cases){assert.ok(data.sources[c.source]);assert.equal(c.steps.length,3);assert.equal(c.debrief.length,3);for(const q of c.steps){assert.equal(q.options.filter(o=>o.correct).length,1);assert.equal(new Set(q.options.map(o=>o.id)).size,3);assert.ok(q.options.every(o=>o.why.length>25));assert.ok(q.update.length>10);}}});
+test('evolving cases have stable decisions, explained choices and traceable sources', () => {
+    const {data} = load();
+    assert.equal(data.cases.length,9);
+    assert.equal(new Set(data.cases.map(c=>c.domain)).size,9);
+    for(const c of data.cases){
+        assert.ok(data.sources[c.source]);
+        assert.equal(new Set(c.steps.map(q=>q.id)).size,c.steps.length);
+        assert.equal(c.debrief.length,3);
+        if(c.checked)assert.deepEqual(Array.from(c.steps,q=>q.level),[1,2,3,4]);
+        for(const q of c.steps){
+            assert.ok(q.update.length>10);
+            assert.equal(q.options.filter(o=>o.correct).length,1);
+            assert.equal(new Set(q.options.map(o=>o.id)).size,3);
+            assert.ok(q.options.every(o=>o.why.length>25));
+            if(q.source)assert.ok(data.sources[q.source]);
+            if(c.checked)assert.ok(q.review.length>30);
+        }
+    }
+});
 test('progress separates latest scored attempts from reading and survives storage failure',()=>{const {api,block}=load();const p=api.progress();p.cases.resus={correct:2,total:3,runs:1,last:123};p.viewed=['abg'];block();assert.equal(api.saveProgress(p),false);assert.equal(api.progress().cases.resus.correct,2);assert.equal(api.progress().viewed[0],'abg');assert.equal(Object.keys(api.normalizeProgress({cases:{fake:{correct:99}},viewed:['fake']} ).cases).length,0);});
 test('backup reads only explicit free learning keys and excludes agreements',()=>{const {api,saved,calls}=load();saved.set('unrelated-data','private');saved.set('em-cps-disclaimer-agreed','123');saved.set('em-cps-learning',JSON.stringify({notes:{'chest-pain':'My learning note'},saved:{},reviewed:{},reviewPlan:{}}));const data=api.exportBackup();assert.equal(data.values['em-cps-learning'].notes['chest-pain'],'My learning note');assert.ok(calls.every(k=>api.backupKeys.includes(k)));assert.equal(Object.keys(data.values).length,1);});
 test('import merges missing records without replacing existing notes or clearing arrays',()=>{const {api,saved}=load();saved.set('em-cps-learning',JSON.stringify({notes:{'chest-pain':'Current'},saved:{},reviewed:{},reviewPlan:{}}));saved.set('em-ecg-practice-v1','["normal"]');api.importBackup(backup({'em-cps-learning':{notes:{'chest-pain':'Older','shock':'New'},saved:{},reviewed:{},reviewPlan:{}},'em-ecg-practice-v1':['af']}));assert.equal(JSON.parse(saved.get('em-cps-learning')).notes['chest-pain'],'Current');assert.equal(JSON.parse(saved.get('em-cps-learning')).notes.shock,'New');assert.deepEqual(JSON.parse(saved.get('em-ecg-practice-v1')),['normal','af']);});
@@ -64,4 +82,22 @@ test('resume summaries use only validated sessions and return detached snapshots
  assert.equal(api.activeCase().id,'resus');
  api.activeCase().index=99;
  assert.equal(api.activeCase().index,0);
+});
+
+test('delayed recall survives early case retries and retains legacy attempts', () => {
+    const {api,data,saved}=load(),key='em-workspace-progress-v1';
+    const c=data.cases.find(c=>c.id==='adult-septic-shock');
+    saved.set(key,JSON.stringify({cases:{resus:{correct:1,total:2,runs:4,last:100}},viewed:[]}));
+    assert.equal(api.progress().cases.resus.total,2);
+    const first=api.attemptRecord(c,['a','b','a','a'],undefined,1000);
+    const retry=api.attemptRecord(c,['a','a','a','a'],first,2000);
+    assert.equal(retry.correct,4);
+    assert.equal(retry.runs,2);
+    assert.equal(retry.decisions.vasopressor.due,1000+3*86400000);
+    const p=api.progress();p.cases[c.id]=retry;
+    assert.equal(api.saveProgress(p),true);
+    assert.equal(api.reviewItems(api.progress())[0].step.id,'vasopressor');
+    assert.equal(api.exportBackup().values[key].cases.resus.runs,4);
+    const invalid=api.exportBackup();invalid.values[key].cases[c.id].decisions.vasopressor.due='soon';
+    assert.throws(()=>api.validateBackup(JSON.stringify(invalid)),/Invalid workspace progress/);
 });
